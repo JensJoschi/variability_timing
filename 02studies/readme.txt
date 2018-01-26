@@ -1,0 +1,1 @@
+the subfolder "00raw" contains search results from web of science, and the main figures for each study. The subfolder "01 extracted_data" contains x and y coordinates of all points within the figures. Subfolder "02output" processes the data and calculates the slopes of the curves from all figures.

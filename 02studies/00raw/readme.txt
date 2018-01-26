@@ -1,0 +1,1 @@
+I searched the Web of Science Database for titles that include “photoperiodic AND (geogr* OR range)”, “photoperiod* AND latitud*” and “photoperiod* AND longitud*” in three separate searches. This search yielded 1489 unique entries. Í saved the main figure(s) of a subset of the studies (terrestrial invertebrates) in the folder "figs".

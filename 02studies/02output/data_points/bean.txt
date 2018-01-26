@@ -1,0 +1,16 @@
+ID	perc	x	dl	degN	degE	N	off	Nmethod
+Lovell, WYO (LWY)	0		14.167	44.84	-108.3922222	7	NA	accurate
+Lovell, WYO (LWY)	0		14.5	44.84	-108.3922222	14	NA	accurate
+Lovell, WYO (LWY)	2		14.833	44.84	-108.3922222	50	NA	accurate
+Lovell, WYO (LWY)	60		15.167	44.84	-108.3922222	25	NA	accurate
+Lovelock, Nevada (LNV)	2.1		14.5	40.02	-117.5166667	47	NA	accurate
+Lovelock, Nevada (LNV)	16.7		14.833	40.02	-117.5166667	48	NA	accurate
+Lovelock, Nevada (LNV)	95.9		15.167	40.02	-117.5166667	73	NA	accurate
+Pueblo (PCO)	0		14.167	38.27	-103.3833333	19	NA	accurate
+Pueblo (PCO)	0		14.5	38.27	-103.3833333	18	NA	accurate
+Pueblo (PCO)	50		14.833	38.27	-103.3833333	50	NA	accurate
+Pueblo (PCO)	82.5		15.167	38.27	-103.3833333	40	NA	accurate
+Artesia, NM (ANM)	11.6		14.167	33	-103.5833333	43	NA	accurate
+Artesia, NM (ANM)	16		14.5	33	-103.5833333	50	NA	accurate
+Artesia, NM (ANM)	74		14.833	33	-103.5833333	50	NA	accurate
+Artesia, NM (ANM)	95.6		15.167	33	-103.5833333	45	NA	accurate
