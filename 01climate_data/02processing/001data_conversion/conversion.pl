@@ -27,13 +27,13 @@ my @dirs   = File::Spec->splitdir($currdir);        # parse directories
 pop @dirs;  pop @dirs;                              #remove top 2 levels from dir
 my $newdir = File::Spec->catdir(@dirs); 
 
-my $readdir = "$newdir\\01raw\\ghcnd_all\\";
+my $readdir = "$newdir/01raw/ghcnd_all/ghcnd_all/";
 
 print "\nmoved current working directory to $readdir\n";
 
 
-my $writedir = "$newdir\\02processing\\001data_conversion";
-my $writefile = ">>$writedir\\converted.txt";
+my $writedir = "$newdir/02processing/001data_conversion";
+my $writefile = ">>$writedir/converted.txt";
 
 print "I will write to: $writefile\n";
 open (OUT, $writefile) or die ("is writefile open?");
@@ -42,7 +42,7 @@ open (OUT, $writefile) or die ("is writefile open?");
 #starting the actual script
 my @files = <$readdir/*>;;
 print "list of files: \n";
-print @files;
+#print @files;
 foreach $file (@files) {
 	open (IN, "<$file") or die ("cant open readfile!");
 	while(my $line = <IN>){
