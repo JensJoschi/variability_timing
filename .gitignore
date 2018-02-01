@@ -1,0 +1,15 @@
+*/converted.txt
+
+*.dly
+
+/old
+
+*.tar.gz
+
+
+*.Rproj
+
+
+01climate_data/\.Rhistory
+
+01climate_data/\.Rproj\.user/
