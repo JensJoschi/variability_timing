@@ -1,0 +1,61 @@
+---
+title: "clim_var_coldsum"
+author: "Jens Joschinski"
+date: "February 1, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+#setwd(dirname(dirname(dirname(getwd()))))
+```
+# General description  
+## Aim  
+The aim of this project is to correlate climate variability with variability in seasonal timing. Is the slope in seasonal responses a bet-hedging trait, i.e., is it adaptive to spread one's timing in more variable conditions?  
+
+
+### Overview  
+This script processes climate station data to calculate winter variability. There are several ways to calculate variability, these are separate R scripts in subfolders of the folder "01climate_data/02processing".  
+
+This scripts first connects with the NOAA server to get a list of available climate stations together with their latitudes and longitudes. This is the only time a connection to the server is required.  
+
+The script then open a pre-processed (with PERL) dataset, which includes daily average temeratures for all months, years and stations all over the world (~3million). The data is merged with the climate station data, cleaned, and saved as workspace to be used by other scripts.  
+
+### Specific description  
+
+The data was generated with R version `r getRversion()`. It uses the GHCN-daily dataset by NOAA:
+```{r, echo =F}
+library(textreadr)
+text<- read_document("01raw/ghcnd_all/ghcnd-version.txt")
+print (text[1])
+```
+
+
+### Script  
+
+#### Read locations data  
+
+``` {r, include = F}
+library(RCurl)
+library(readr)
+library(data.table)
+```
+
+```{r}
+url<-"ftp://ftp.ncdc.noaa.gov/pub/data/ghcn/daily/ghcnd-stations.txt"
+#this dataset is fixed-width delimited, requiring a few additional steps
+locations<-read.fwf(
+  file=url
+  ,sep="!",na.strings=c("NA","-9999"), #sep = ! because ! does not exist in dataset - > dataset is fixed-width and should have no additional seps
+  widths=c(11, 9, 11, 8,2,35)
+)
+plot(locations[,2]~locations[,3],xlab = "longitude",ylab="latitude",pch=21, cex=0.1)
+```
+This dataset has only station ID, coordinates, altitude and name of the station, no actual data.  
+The data was pre-processed with a PERL script, which now needs to be merged with the location data.
+
+#### Read and merge climate station data  
+```{r}
+#converted<-fread("/02processing/001data_conversion/converted.txt", sep ="|", na.strings=c("NA","-9999"),verbose=T)
+```
+
