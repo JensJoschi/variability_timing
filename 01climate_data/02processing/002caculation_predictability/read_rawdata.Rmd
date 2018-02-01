@@ -46,16 +46,52 @@ url<-"ftp://ftp.ncdc.noaa.gov/pub/data/ghcn/daily/ghcnd-stations.txt"
 #this dataset is fixed-width delimited, requiring a few additional steps
 locations<-read.fwf(
   file=url
-  ,sep="!",na.strings=c("NA","-9999"), #sep = ! because ! does not exist in dataset - > dataset is fixed-width and should have no additional seps
-  widths=c(11, 9, 11, 8,2,35)
+  ,sep="!",na.strings=c("NA","-999.9"), #sep = ! because ! does not exist in dataset - > dataset is fixed-width and should have no additional seps
+  widths=c(11, 9, 10, 7,2,35)
 )
-plot(locations[,2]~locations[,3],xlab = "longitude",ylab="latitude",pch=21, cex=0.1)
+#plot(locations[,2]~locations[,3],xlab = "longitude",ylab="latitude",pch=21, cex=0.1)
 ```
+
 This dataset has only station ID, coordinates, altitude and name of the station, no actual data.  
 The data was pre-processed with a PERL script, which now needs to be merged with the location data.
 
+
 #### Read and merge climate station data  
 ```{r}
-#converted<-fread("/02processing/001data_conversion/converted.txt", sep ="|", na.strings=c("NA","-9999"),verbose=T)
+#print(getwd())
+#print(paste(getwd(),"/02processing/001data_conversion/converted.txt",sep=""))
+converted<-fread(paste(getwd(),"/02processing/001data_conversion/converted.txt",sep=""), sep ="|", na.strings=c("NA","-9999"),verbose=F)
+#this dataset has been made with the perl script conversion.pl in subfolder 01climatedata/02processing/001data_conversion
+```
+
+
+*this perl script takes the NOAA GHCN daily dataset (daily weather data for ~50 ys, around the whole world), and extracts
+daily average temperatures. it ignores all other data flags that are inside that dataset. The format of the old datasets is fixed-width delimited, the new one will be delimited by "|".
+the new data is sorted in the following way:
+station1 | year 1 | month 1 | T(day1) | T(day2) |...| T(day31)
+station1 | year 1 | month 2...
+station1 | year 2 | month 1...
+station2| year 1 | month 1...
+missing data, and non-existent days (eg Feb 31) are called NA
+this script uses a local copy of the dataset from "ftp.ncdc.noaa.gov/pub/data/ghcn/daily/"; the .tar.gz file has to be extracted first (separate folder with 100,000 text files)*
+
+
+```{r}
+newset<-merge.data.frame(converted,locations,by=1)
+rm(converted)
+#now newset contains daily temps of all stations + their coordinates and names
+
+names(newset)<-c("ID","year","month",1:31,"lat","lon","alt","name","?")
+#factors to numeric etc, further cleanup
+newset<-droplevels(newset)
+newset[,2]<-(as.integer(as.character(newset[,2])))
+newset[,3]<-(as.integer(as.character(newset[,3])))
+str(newset)
+newset$alt[newset$alt==-999.9]<-NA
+nona<-newset
+nona$alt<-nona$alt+350
+nona<-nona[is.na(nona$alt)==F,]
+plot(nona$lat~nona$lon,col=rgb(nona$alt,0,0,maxColorValue = max(nona$alt)),main="location of climate stations, altitude in red",cex=0.2)
+rm(nona)
 ```
 

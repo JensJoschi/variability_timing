@@ -1,4 +1,4 @@
-
+the way in which winter onset was calculated in this script is awkward. The script is therefore discontinued. Other ways to calculate winter variability can be found in subfolders of 02calculation_predictability
 
 #this dataset uses the noaa ghcn-daily datset.
 
