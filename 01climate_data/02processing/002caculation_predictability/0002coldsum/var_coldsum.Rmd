@@ -1,0 +1,129 @@
+---
+title: "var_cold_sums"
+author: "Jens Joschinski"
+date: "February 1, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# General description  
+
+## Aim  
+The aim of this project is to correlate climate variability with variability in seasonal timing. Is the slope in seasonal responses a bet-hedging trait, i.e., is it adaptive to spread one's timing in more variable conditions?  
+
+### Overview  
+
+This script uses data from the GHCN dataset, which was processed with a perl script (folder 001data_conversion/conversion.pl), and has been merged with a climate station description from the NOAA server. This script calculates variability in winter onset for each station:
+
+- The data should (over all years) follow a sine-curve. Find the local maxima of this curve (summer)
+- starting from each summer, count the number of cold days (defined as days with average temperature below 5°C). Winter arrived at the 10th cold day
+- calculate circular variance in winter arrival
+
+
+### Specific description  
+
+The data was generated with R version `r getRversion()`. It uses the GHCN-daily dataset by NOAA:
+```{r, echo =F}
+library(textreadr)
+text<- read_document("01raw/ghcnd_all/ghcnd-version.txt")
+print (text[1])
+```
+
+
+### Script  
+
+```{r}
+load(paste(getwd(),"/02processing/001data_conversion/Rworkspace.RData",sep=""))
+```
+
+
+For testing purposes, only a small subset of is used (20-60°N, -1 to +1 °E)
+```{r}
+testset<-newset[newset$lat>20,]
+testset<-testset[testset$lat<60,]
+testset<-testset[testset$lon>(-1),]
+testset<-testset[testset$lon<1,]
+#table(testset$ID)
+testset<-droplevels(testset)
+
+
+```
+
+
+
+The function "daily_t" will use the data provided by one station. It will append all daily temperature recordings of all years (up to 145 years \* 12 months \* 31 days ) into a single vector, filling up with NAs as needed. 
+
+```{r}
+daily_t <- function (station){
+station<-station[order(station[,2],station[,3],na.last=F),] #sorts by year and month
+station<-droplevels(station)
+
+vals<-NA
+#for each year:
+for(y in 1:length(unique(station$year))){
+    year<-station[station[,2]==unique(station[,2])[y],] #reduces dataset to 1 station, 1 year (max 31*5 points)
+  
+#make 12*31 matrix and fill it with daily data
+  mat <- matrix(NA,12,31)
+  
+   for (i in 1:nrow(year)){ #i=month
+    mon<-as.numeric(year[i,3])
+    mat[mon,1:31]<-as.numeric(year[i,4:34])
+   }
+  vals<-c(vals,as.numeric(t(mat)))
+}
+return (vals)
+}
+
+
+```
+
+
+
+The function 'get_nls' takes the daily temperatures of one station (which is supplied as single vector), and applies a non-linear least squares model which estimates intercept, phase angle and amplitude of a sine curve.
+
+```{r}
+get_nls <- function (vals){
+  
+x<-1:length(vals)
+data<-data.frame(x,vals)
+#x<-data$x[is.na(data$vals)==F]
+#vals<-data$vals[is.na(data$vals)==F]
+#data<-data.frame(x,vals)
+
+res <- nls(vals ~ A*cos(x*2*pi/372+phi)+C, data=data, start=list(A=400,phi=pi/2,C=200),upper=c(500,2*pi,300),algorithm="port",lower=c(0,0,0)) #372 and not 365.25, because a vector of 12*31 was used before (filling up e.g. 31.feb with NA). This made coping with leap years easier
+
+
+#c#res <- nls(vals ~ A*sin(x*2*pi/365.25+phi)+C, data=data, start=list(A=50,phi=pi/2,C=100))
+co <- coef(res)
+
+
+cfit <- function(x, amp, phi, int) {amp*cos(2*pi/372*x+phi)+int}
+
+# Plot result
+#plot(x=data$x, y=data$vals)#,xlim=c(0,365))
+#lines(x=x,y= fit(x, a=co["A"], c=co["phi"], d=co["C"]) ,lwd=2, col="steelblue")
+#abline(v=176)
+return(co)
+}
+```
+
+The maximum should be in midsummer, the minimum temperature around christmas. testing with a subset: 
+
+```{r}
+co_avg=NA
+
+for (i in 1:length(unique(testset$ID))){
+temp_set<-testset[testset$ID==unique(testset$ID)[i],]
+vals<-daily_t(temp_set)
+co<-get_nls(vals)
+co_avg[i]<-co[2]
+}
+hist(co_avg/(2*pi)*372) #summer solstice should be on day 170
+
+
+```

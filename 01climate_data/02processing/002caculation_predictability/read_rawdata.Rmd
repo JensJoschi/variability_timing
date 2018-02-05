@@ -95,3 +95,13 @@ plot(nona$lat~nona$lon,col=rgb(nona$alt,0,0,maxColorValue = max(nona$alt)),main=
 rm(nona)
 ```
 
+#### saving output  
+
+The raw data was loaded successfully, and information about coordinates and altitude was added. Now the dataset will be saved as workspace, so that it can be used by other scripts.
+
+```{r}
+rm(locations)
+rm(url)
+save.image(paste(getwd(),"/02processing/001data_conversion/Rworkspace.RData",sep=""))
+```
+
