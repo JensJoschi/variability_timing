@@ -1,0 +1,1 @@
+The perl script 'conversion.pl' takes the NOAA GHCN daily dataset (daily weather data for ~50 ys, around the whole world), and extracts daily average temperatures. Details are in the first lines of the script. The output is saved as 'converted.txt', which is then processed further in the R script 'read_rawdata.rmd' in the folder 002/calculation_predictability
