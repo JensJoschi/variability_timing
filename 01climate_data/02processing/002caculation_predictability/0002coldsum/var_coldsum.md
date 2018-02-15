@@ -1,3 +1,14 @@
+var\_cold\_sums
+================
+Jens Joschinski
+February 1, 2018
+
+output: md\_document:
+=====================
+
+variant: markdown\_github
+=========================
+
 General description
 ===================
 
@@ -26,7 +37,7 @@ The data was generated with R version 3.4.3. It uses the GHCN-daily dataset by N
 load(paste(getwd(),"/02processing/001data_conversion/Rworkspace.RData",sep=""))
 ```
 
-The name of the full dataset is 'newset'. For testing purposes, only a small subset ('testset') was used (e.g. 20-60°N, -1 to +1 °E).
+The name of the full dataset is 'newset'. For testing purposes, only a small subset ('testset') was used (e.g. 20-60°N, -1 to +1 °E). But now the full dataset is loaded.
 
 ``` r
 #testset<-newset[newset$lat>-20,]
@@ -45,7 +56,7 @@ The function "daily\_t" will use the data provided by one station. It will appen
 daily_t <- function (station){
   station<-station[order(station[,2],station[,3],na.last=F),] #sorts by year and month
   station<-droplevels(station)
-  if (length(unique(station$year))<3){return (NA)} #quality control
+  if (length(unique(station$year))<3){vals<- (NA)} #quality control
   else {
     vals<-NA
     #for each year:
@@ -145,15 +156,10 @@ text(-160,-5,min(reg$C)/10)
 text(-110,-5,max(reg$C)/10)
 ```
 
-![](var_coldsum_files/figure-markdown_github/unnamed-chunk-7-1.png)
+![](var_coldsum_files/figure-markdown_github/unnamed-chunk-8-1.png)
 
 ``` r
-hist(reg[,5],breaks=100)
-```
-
-![](var_coldsum_files/figure-markdown_github/unnamed-chunk-7-2.png)
-
-``` r
+#hist(reg[,5],breaks=100)
 reg<-restore
 #mean Temperature behaves as expected
 ```
@@ -172,15 +178,11 @@ text(-150,-5,0)
 text(-120,-5,max(reg[,3]/10))
 ```
 
-![](var_coldsum_files/figure-markdown_github/unnamed-chunk-8-1.png)
+![](var_coldsum_files/figure-markdown_github/unnamed-chunk-9-1.png)
 
 ``` r
-hist(reg[,3])
-```
+#hist(reg[,3])
 
-![](var_coldsum_files/figure-markdown_github/unnamed-chunk-8-2.png)
-
-``` r
 reg<-restore
 #amplitude is 0 at equator, as expected.
 #amplitude increases northwards to >15° diff in summer-winter
@@ -197,15 +199,10 @@ for (i in seq(0,2*pi,0.1)){
 }#left: phi = 0, right: phi=2*pi
 ```
 
-![](var_coldsum_files/figure-markdown_github/unnamed-chunk-9-1.png)
+![](var_coldsum_files/figure-markdown_github/unnamed-chunk-10-1.png)
 
 ``` r
-hist(reg[,4])
-```
-
-![](var_coldsum_files/figure-markdown_github/unnamed-chunk-9-2.png)
-
-``` r
+#hist(reg[,4])
 #Due to the circular nature of the dataset, phase angles of phi=0 and phi=2*pi are equal. 
 #better representation
 
@@ -216,15 +213,11 @@ for (i in seq(0,2*pi,0.1)){
 }
 ```
 
-![](var_coldsum_files/figure-markdown_github/unnamed-chunk-9-3.png)
+![](var_coldsum_files/figure-markdown_github/unnamed-chunk-10-2.png)
 
 ``` r
-hist(cos(reg[,4]))
-```
+#hist(cos(reg[,4]))
 
-![](var_coldsum_files/figure-markdown_github/unnamed-chunk-9-4.png)
-
-``` r
 #phase angles behave as expected. mean of phi in the northern hemisphere:
 mean(reg[,4][reg[,1]>20]) #this is shortly before midsummer
 ```
@@ -238,4 +231,234 @@ According to the subset, the data behaves just as expected.
 \* mean temperature drops in mountain ranges
 \* phase angle is close to midsummer in northern latitudes, and -180° in southern latitudes
 
-The remaining part of the script will be done on northern hemisphere only (&gt;20°N), as there is no empirical data for southern hemisphere. Next step: calculate number of cold-days
+The remaining part of the script will be done on northern hemisphere only (&gt;20°N), as there is no empirical data for southern hemisphere.
+
+Next step:
+\#\#\#\#calculate number of cold-days
+
+First, the data so far needs to be cleaned up a bit:
+
+    ##             used  (Mb) gc trigger   (Mb)  max used   (Mb)
+    ## Ncells    834852  44.6    1442291   77.1   1168576   62.5
+    ## Vcells 124351946 948.8  192439331 1468.2 192439254 1468.2
+
+General idea: Cut dataset at the red dots here
+
+``` r
+plot(daily_t(testset),type="l")
+2.780296/(2*pi)*372 #mean(phi) of 2.78 => highest temperature at day 165
+```
+
+    ## [1] 164.6092
+
+``` r
+points(x=165+372*(1:100),y= daily_t(testset)[165+372*(1:100)],col=2) #okay, dataset can be cut in this positiont
+```
+
+![](var_coldsum_files/figure-markdown_github/unnamed-chunk-14-1.png)
+
+How this is done \* process data from one station with daily\_t to get a single temperature vector \* get rid of the first half year (which lies before the first red dot), and of the last half year (this does not contain full 12 months of information) \* reassemble the temperature vector into a matrix, with each row representing 12 months (june to june) of data. \* For each year(row), count the number of days which have data \* calculate winter onset for each year \* calculate mean winter onset, weighted by number of days with data
+
+#### First trial:
+
+winter onset defined as the day when the temperature falls for the xth time below y°C. Using e.g. x = 10 and y = 5°C.
+
+function daily\_t already exists. Next function: Needs to cut, reassemble, and convert the matrix into binomial: 0 if the day was NA or warmer than y, 1 if the temperature was lower than y
+
+``` r
+reassemble_cd <- function (station,degrees=50){ #method to calculate winter onset based on accumulation of days cooler than 50centidegree (5°C)
+  #expected input: a vector of length 372*n. Should be of the form: for n years{temperatures from (Jan to Dec)}. 372, because the function daily_t uses 12*31 days for calculation (filling up with NAs)
+  
+  #error handling
+  if (length(station[is.na(station)==F])<100){
+    return (NA) #error if <100 days in total
+  } else if ((length(station)-1)%%372 !=0 ){
+    print("ERROR")
+    return(NA) #error if there are incomplete years
+  } else if (length(station)<=754){
+    print ("ERROR")
+    return(NA)#error if there are <3 years
+  } else{
+    
+    #cutting and reassembling
+    station <- station[2:length(station)] #function daily_t() has appended an NA to each year in the beggining
+    nyears <- length(station)/372 #should be an integer
+    station<-station[165:(length(station)-208)] #temperatures from first winter to summer are irrelevant, calculation begins with first summer; the last year ends in december, but data would be needed until june-->last year cannot be used for calculations
+    
+    
+    #conversion to binomial
+    station[station<degrees]<-1
+    station[station>1]<-0
+    m<-matrix(station,(nyears-1),372,byrow=T)
+    return(m) #output: a matrix with 372 cols, n-1 rows(first half of first year, and 2nd half of last year removed)
+  }
+}
+```
+
+next function: Calculate number of days with data
+
+``` r
+row_na<-function (inp_matrix){
+  navec<-NA #this means na_vector
+  if (is.matrix(inp_matrix)==TRUE){
+    navec <- rowSums(!is.na(inp_matrix))
+   # for (i in 1:nrow(inp_matrix)){
+   #   navec[i]<-length(inp_matrix[i,][is.na(inp_matrix[i,]==TRUE)])
+   # }
+  }
+  return(navec)
+}
+```
+
+Function to work on the binomial matrix, and test whether the cumulative sum of occurences of y reaches x = 10
+
+``` r
+calc_cumul <- function (inp_matrix,thres=10, conv_NA =TRUE){ #takes a matrix as input, calculates rowwise cumulative sums, and returns the position on which a threshold was first reached in each row 
+  
+  #input: any 2-dimensional matrix, a threshold
+  #output: sum_vector
+  
+  #error handling
+  if (is.matrix(inp_matrix)==FALSE){stop("no matrix provided in function calc_cumul")}
+  if (conv_NA ==TRUE){
+  vector<-is.na(inp_matrix)
+  inp_matrix[vector]<-0
+  }
+  if (NA %in% inp_matrix){ #This part will only run if conv_NA ==F and there are nevertheless NA in the matrix
+      stop("NA found in function calc_cumul. Try conv_NA=TRUE")
+  }
+  
+  sum_vector <- rep(NA,nrow(inp_matrix))
+  for (m_row in 1:nrow(inp_matrix)){
+    temporary <-cumsum(inp_matrix[m_row,])
+    if  (length(temporary[temporary==thres])>0){#only continue if threshold is reached
+      sum_vector[m_row]<-min(which(temporary==thres))  #Cumsum increases 'from left to right' in the matrix. But if there are zeros in the original matrix, the cumsum may stay on one value, so threshold will occur several times in a row. the min() makes sure only the first value is taken 
+    } #else{sum_vector stays NA}
+  }
+  return (sum_vector)
+}
+
+
+
+#alternative that should also work with calc_cumul:
+#use reassemble function but with the following code instead the binomial part:
+#  codegrees <- station - whats_cold
+#  codegrees[codegrees > 0] <- 0
+#  codregrees <- -1*codegrees #11->0; 20 ->0; 10->0; 9->1;5->5;0->10; -20 ->30
+#this snippet ignores temperatures above e.g. 10 degrees.9°C become 1 cold-degree, 0°C become 9 cold-degrees, -20 °C become 30 cold-degrees
+```
+
+putting all pieces together (for one station)
+
+``` r
+do_all<-function(station,x=10,y=50){
+  temp_set<-newset[newset$ID==unique(newset$ID)[station],] #read all data from one station
+  
+  vals<-daily_t(temp_set)#convert data frame into single vector: (day 1:372)*years
+ #this returns: either a matrix, or NA
+  
+  n_t<-reassemble_cd(vals,y)# convert into binomial matrix of form {1:372}*(years-1)
+  #this returns either a matrix or NA, input NA => output NA
+  
+  ndays<-row_na(n_t) #this vector describes how many temperature measurements are available per year for this station
+  
+  if ((is.null(nrow(n_t))==F) && (nrow(n_t)>1)){#calculation for this station only if functions "temp_set" and "reassemble" did not return {NA}
+    out<- calc_cumul(n_t,x) #vector describing on which day y was reached for the xth time
+  #error if no matrix as input, or if NA provided and setting conv_NA ==F
+  }else{
+    out<-NA
+  }
+  return(list(out,ndays))
+}
+```
+
+One more convenience function
+
+``` r
+weighted_means<-function(resm,nm){ #calculate row-wise means of a matrix, weighted by another matrix, and ignoring any NAs
+  ms<-rep(NA, nrow(resm))
+  for (i in 1:nrow(resm)){
+    worked<-which(!is.na(resm[i,1:ncol(resm)]))
+    if (length(worked)>3){
+      ms[i]<-weighted.mean(resm[i,worked[worked>3]],nm[i,worked[worked>3]])
+    }
+  }
+  return(ms)
+}
+```
+
+wrapping function to run the code for all stations, and store the results
+
+``` r
+loop_stations<-function(x=10,y=50){
+#create a matrix:  9000 rows (1 for each station), 140 columns (1 for each year)+3 columns for ID,latitude, longitude. Each cell has the winter onset in one year
+resmat<-matrix(NA,length(unique(newset$ID)),max(newset$year)-min(newset$year)+3)
+nmat  <-matrix(NA,length(unique(newset$ID)),max(newset$year)-min(newset$year)+3)
+lat_lon<-locations[locations$ID %in% sfile,1:3]
+#table(sfile==lat_lon[,1])#always true
+resmat<-as.data.frame(resmat)
+nmat<-as.data.frame(nmat)
+resmat[,1]<-sfile
+resmat[,2]<-lat_lon[,2]
+resmat[,3]<-lat_lon[,3]
+nmat[,1:3]<-resmat[,1:3]
+#loop through all stations, calculate winter onset given x and y values
+for (station in 1:length(sfile)){
+  r<-do_all(station,x,y)
+  resmat[station,4:(length(r[[1]])+3)]<-r[[1]]
+  nmat  [station,4:(length(r[[2]])+3)]<-r[[2]]
+}
+
+#store only ID,lat,lon,mean winter, sd(winter)
+final<-resmat[,1:3]
+final$means<-weighted_means(resmat,nmat)
+return(final)
+}
+```
+
+call the function with different parameters
+
+``` r
+final_10_50<-loop_stations(x=10,y=50)
+final_5_20<-loop_stations(x=5,y=20)
+final_20_100<-loop_stations(x=20,y=100)
+final_5_0<-loop_stations(5,0)
+```
+
+``` r
+plot_results<-function(input,sub){
+  to_plot<-input[is.na(input$means)==FALSE,]
+  plot(to_plot[,2]~to_plot[,3],bg=rgb(0,to_plot$means,0,maxColorValue=372),col=NA,main="day of winter onset",sub=sub,pch=22,cex=0.8)
+}
+
+plot_results(final_10_50,"10 days below 5°C")
+```
+
+![](var_coldsum_files/figure-markdown_github/unnamed-chunk-22-1.png)
+
+``` r
+plot_results(final_20_100,"20 days below 10°C")
+```
+
+![](var_coldsum_files/figure-markdown_github/unnamed-chunk-22-2.png)
+
+``` r
+plot_results(final_5_0,"5 days below 0°C")
+```
+
+![](var_coldsum_files/figure-markdown_github/unnamed-chunk-22-3.png)
+
+``` r
+plot_results(final_5_20,"5 days below 2°C")
+```
+
+![](var_coldsum_files/figure-markdown_github/unnamed-chunk-22-4.png)
+
+compare different runs
+
+``` r
+mydat<-data.frame(final_10_50[,4],final_20_100[,4],final_5_0[,4],final_5_20[,4])
+plot(mydat)
+```
+
+![](var_coldsum_files/figure-markdown_github/unnamed-chunk-23-1.png)
