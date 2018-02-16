@@ -1,0 +1,1 @@
+There are several ways to calculate winter variability. Each calculation has its own script, in separate subfolders. The first folder (winteronset) was a preliminary calculation that did not work very well, and was discontinued. 

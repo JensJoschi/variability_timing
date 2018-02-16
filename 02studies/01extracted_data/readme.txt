@@ -1,0 +1,2 @@
+I extracted data for photoperiodic response curves from all studies listed in the folder 00raw (subfolder figures). 
+I calculated x and y coordinates with WebPlotDigitizer Version 3.12, and saved these in the folder "raw". I then copied this to the excel file, added information on sample sizes, latitude, longitude and data structure, and saved the individual studies again in the subfolder "formatted".

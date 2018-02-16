@@ -15,7 +15,7 @@ The aim of this project is to correlate climate variability with variability in 
 
 
 ### Overview  
-This script processes climate station data to calculate winter variability. There are several ways to calculate variability, these are separate R scripts in subfolders of the folder "01climate_data/02processing".  
+This script prepares climate station data to calculate winter variability. The actual calculation of winter variability is in separate R scripts in subfolders of the folder "01climate_data/02processing".  
 
 This scripts first connects with the NOAA server to get a list of available climate stations together with their latitudes and longitudes. This is the only time a connection to the server is required.  
 
@@ -52,14 +52,12 @@ locations<-read.fwf(
 #plot(locations[,2]~locations[,3],xlab = "longitude",ylab="latitude",pch=21, cex=0.1)
 ```
 
-This dataset has only station ID, coordinates, altitude and name of the station, no actual data.  
-The data was pre-processed with a PERL script, which now needs to be merged with the location data.
+
+This dataset has only station ID, coordinates, altitude and name of the station, no actual data. The data was pre-processed with a PERL script, which now needs to be merged with the location data.
 
 
 #### Read and merge climate station data  
 ```{r}
-#print(getwd())
-#print(paste(getwd(),"/02processing/001data_conversion/converted.txt",sep=""))
 converted<-fread(paste(getwd(),"/02processing/001data_conversion/converted.txt",sep=""), sep ="|", na.strings=c("NA","-9999"),verbose=F)
 #this dataset has been made with the perl script conversion.pl in subfolder 01climatedata/02processing/001data_conversion
 ```
@@ -67,13 +65,16 @@ converted<-fread(paste(getwd(),"/02processing/001data_conversion/converted.txt",
 
 *this perl script takes the NOAA GHCN daily dataset (daily weather data for ~50 ys, around the whole world), and extracts
 daily average temperatures. it ignores all other data flags that are inside that dataset. The format of the old datasets is fixed-width delimited, the new one will be delimited by "|".
-the new data is sorted in the following way:
-station1 | year 1 | month 1 | T(day1) | T(day2) |...| T(day31)
-station1 | year 1 | month 2...
-station1 | year 2 | month 1...
-station2| year 1 | month 1...
-missing data, and non-existent days (eg Feb 31) are called NA
+the new data is sorted in the following way:  
+station1 | year 1 | month 1 | T(day1) | T(day2) |...| T(day31)  
+station1 | year 1 | month 2...  
+station1 | year 2 | month 1...  
+station2| year 1 | month 1...  
+missing data, and non-existent days (eg Feb 31) are called NA.  
 this script uses a local copy of the dataset from "ftp.ncdc.noaa.gov/pub/data/ghcn/daily/"; the .tar.gz file has to be extracted first (separate folder with 100,000 text files)*
+
+
+Merging of the dataset with location data:
 
 
 ```{r}
@@ -98,6 +99,7 @@ rm(nona)
 #### saving output  
 
 The raw data was loaded successfully, and information about coordinates and altitude was added. Now the dataset will be saved as workspace, so that it can be used by other scripts.
+
 
 ```{r}
 rm(locations)

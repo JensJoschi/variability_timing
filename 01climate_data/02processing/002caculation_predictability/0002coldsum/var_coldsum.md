@@ -1,14 +1,3 @@
-var\_cold\_sums
-================
-Jens Joschinski
-February 1, 2018
-
-output: md\_document:
-=====================
-
-variant: markdown\_github
-=========================
-
 General description
 ===================
 
@@ -17,27 +6,38 @@ Aim
 
 The aim of this project is to correlate climate variability with variability in seasonal timing. Is the slope in seasonal responses a bet-hedging trait, i.e., is it adaptive to spread one's timing in more variable conditions?
 
-### Overview
+Overview
+--------
 
-This script uses data from the GHCN dataset, which was processed with a perl script (folder 001data\_conversion/conversion.pl), and has been merged with a climate station description from the NOAA server. This script calculates variability in winter onset for each station:
+This script uses data from the GHCN dataset, which was processed with a perl script (folder 001data\_conversion/conversion.pl), and has been merged with a climate station description from the NOAA server. This script first tests whether the climate data is read and processed correctly:
 
--   The data should (over all years) follow a sine-curve. Find the local maxima of this curve (summer)
--   starting from each summer, count the number of cold days (defined as days with average temperature below 5°C). Winter arrived at the 10th cold day
--   calculate circular variance in winter arrival
+-   The data should (over all years) follow a sine-curve. Temperatures on the northern hemisphere should be highest around midsummer (june), and in the southern hemisphere highest during december.
+-   Temperatures should generally increase with latitude, decrease with altitudes
+-   the amplitude in temperature change should depend on latitude and continentality (proximity to oceans)
 
-### Specific description
+After the quality check the script calculates variability in winter onset for each station:
+
+-   starting from each summer, count the number of cold days (defined as days with average temperature below y°C). Winter arrived at the x th cold day
+-   calculate between-years variability in winter arrival
+
+Specific description
+--------------------
 
 The data was generated with R version 3.4.3. It uses the GHCN-daily dataset by NOAA:
 
     ## [1] "The current version of GHCN Daily is 3.22-upd-2018010805 (i.e, an update that started at 2018010805 [yyyymmddhh] UTC; yyyy=year; mm=month; dd=day; hh=hour),"
 
-### Script
+Script
+======
+
+station metadata and subsetting
+-------------------------------
 
 ``` r
 load(paste(getwd(),"/02processing/001data_conversion/Rworkspace.RData",sep=""))
 ```
 
-The name of the full dataset is 'newset'. For testing purposes, only a small subset ('testset') was used (e.g. 20-60°N, -1 to +1 °E). But now the full dataset is loaded.
+The name of the full dataset is 'newset'. The following chunk was used For testing purposes, selecting only a small subset ('testset'). For compatibility with the rest of the script, the dataset is now being renamed.
 
 ``` r
 #testset<-newset[newset$lat>-20,]
@@ -49,6 +49,13 @@ The name of the full dataset is 'newset'. For testing purposes, only a small sub
 testset<-newset  #renames newset so that the code below also works on the full dataset
 rm(newset)
 ```
+
+Quality control
+---------------
+
+The following part will append all data from one station to a single vector and make a non-linear least square regression. The data is expected to follow a sine curve with a period of ~1 year.
+
+### Function for creating single vector
 
 The function "daily\_t" will use the data provided by one station. It will append all daily temperature recordings of all years (up to 145 years \* 12 months \* 31 days ) into a single vector, filling up with NAs as needed.
 
@@ -77,6 +84,8 @@ daily_t <- function (station){
 }
 ```
 
+### Function for nonlinear least-square regression
+
 The function 'get\_nls' takes the daily temperatures of one station (which is supplied as single vector), and applies a non-linear least squares model which estimates intercept, phase angle and amplitude of a sine curve.
 
 ``` r
@@ -87,7 +96,6 @@ get_nls <- function (vals,s_A=400,s_phi=pi/2,s_c=200){#s_... are starting values
 
   #make nls regression for function 'y=Amplitude * cosine(period*x + phase angle) + intercept'
   res <- nls(vals ~ A*cos(x*2*pi/372+phi)+C, data=data, start=list(A=s_A,phi=s_phi,C=s_c),
-            # upper=c(500,2*pi,300),algorithm="port",lower=c(0,0,0)) 
             upper=c(500,2*pi,400),algorithm="port",lower=c(0,0,-400)) 
   #372 and not 365.25, because a vector of 12*31 was used before 
   #(filling up e.g. 31.feb with NA). This made coping with leap years easier
@@ -98,10 +106,14 @@ get_nls <- function (vals,s_A=400,s_phi=pi/2,s_c=200){#s_... are starting values
 }
 ```
 
+### applying the functions on the dataset
+
 The following chunk will apply a nls regression on the climate data of each station. The daily temperatures over ~20 years are expected to follow a sine-curve pattern with a period of 1 year. The curve is determined by the following parameters:
 \* a *constant c* that defines the average temperature throughout the year. It is around 20°C in temperate climates, around 30°C at the equator.
 \* the *amplitude A*, which quantifies the difference between winter and summer temperatures. A should decrease with proximity to the poles.
 \* the *phase angle phi*. Phi defines at what time of the year maximum temperatures occur. It should be close to midsummer in all stations of the northern hemisphere, and around midwinter in the southern hemisphere. june 25 is the julian day 176/177. BEcause the function daily\_t assumes 12\*31 = 372 days, it is around day 170 in this dataset. This corresponds to a phase angle of 170/372 \*(2\*pi) = 2.87. The phase angle of midwinter is accordingly, 368/372\*(2\*pi)=6.22.
+
+The function tries up to three times per climate station, with different starting parameters.
 
 ``` r
 #,error=TRUE}
@@ -114,8 +126,8 @@ reg<-data.frame(lon,lat,A,phi,C)
 
 wrap_error = function (vals,s_A,s_phi,s_c) {
   tryCatch(get_nls(vals,s_A,s_phi,s_c),
-                     warning = function (w)  {return(FALSE)},#print(paste("warning at ", i))
-                     error   = function (e)  {return(FALSE)})#print(paste("error at: ",i));
+                     warning = function (w)  {return(FALSE)},
+                     error   = function (e)  {return(FALSE)})
 }
 
 for (i in 1:length(unique(testset$ID))){ #= for each climate station
@@ -141,7 +153,9 @@ reg[i,5]<-parms[3]#intercept
 reg<-reg[is.na(reg[,3])==F,]
 ```
 
-Plotting the results: 1. average Temperature
+### Plotting the results:
+
+1.  average Temperature
 
 ``` r
 restore <- reg
@@ -156,7 +170,7 @@ text(-160,-5,min(reg$C)/10)
 text(-110,-5,max(reg$C)/10)
 ```
 
-![](var_coldsum_files/figure-markdown_github/unnamed-chunk-8-1.png)
+![](var_coldsum_files/figure-markdown_github/T_avg-1.png)
 
 ``` r
 #hist(reg[,5],breaks=100)
@@ -178,7 +192,7 @@ text(-150,-5,0)
 text(-120,-5,max(reg[,3]/10))
 ```
 
-![](var_coldsum_files/figure-markdown_github/unnamed-chunk-9-1.png)
+![](var_coldsum_files/figure-markdown_github/t_amplitude-1.png)
 
 ``` r
 #hist(reg[,3])
@@ -199,7 +213,7 @@ for (i in seq(0,2*pi,0.1)){
 }#left: phi = 0, right: phi=2*pi
 ```
 
-![](var_coldsum_files/figure-markdown_github/unnamed-chunk-10-1.png)
+![](var_coldsum_files/figure-markdown_github/phase_angle-1.png)
 
 ``` r
 #hist(reg[,4])
@@ -213,7 +227,7 @@ for (i in seq(0,2*pi,0.1)){
 }
 ```
 
-![](var_coldsum_files/figure-markdown_github/unnamed-chunk-10-2.png)
+![](var_coldsum_files/figure-markdown_github/phase_angle-2.png)
 
 ``` r
 #hist(cos(reg[,4]))
@@ -233,37 +247,44 @@ According to the subset, the data behaves just as expected.
 
 The remaining part of the script will be done on northern hemisphere only (&gt;20°N), as there is no empirical data for southern hemisphere.
 
-Next step:
-\#\#\#\#calculate number of cold-days
+calculate number of cold-days
+-----------------------------
 
-First, the data so far needs to be cleaned up a bit:
+The location metadata has been erased in the meantime, because it takes quite a bit of memory. Reload it:
+
+A bit of cleaning...
 
     ##             used  (Mb) gc trigger   (Mb)  max used   (Mb)
-    ## Ncells    834852  44.6    1442291   77.1   1168576   62.5
-    ## Vcells 124351946 948.8  192439331 1468.2 192439254 1468.2
+    ## Ncells    835201  44.7    1442291   77.1   1168576   62.5
+    ## Vcells 124352696 948.8  192299748 1467.2 299982432 2288.7
 
-General idea: Cut dataset at the red dots here
+### General idea
+
+It is inconvenient that the year ends around midwinter. To calculate winter arrival, it makes more sense to have one "year" going from june to june:
 
 ``` r
 plot(daily_t(testset),type="l")
-2.780296/(2*pi)*372 #mean(phi) of 2.78 => highest temperature at day 165
-```
-
-    ## [1] 164.6092
-
-``` r
+#mean phase angle is at 2.78. 2.78/(2*pi)*372 =165 => highest temperature at day 165
 points(x=165+372*(1:100),y= daily_t(testset)[165+372*(1:100)],col=2) #okay, dataset can be cut in this positiont
 ```
 
-![](var_coldsum_files/figure-markdown_github/unnamed-chunk-14-1.png)
+![](var_coldsum_files/figure-markdown_github/plot_idea-1.png)
 
-How this is done \* process data from one station with daily\_t to get a single temperature vector \* get rid of the first half year (which lies before the first red dot), and of the last half year (this does not contain full 12 months of information) \* reassemble the temperature vector into a matrix, with each row representing 12 months (june to june) of data. \* For each year(row), count the number of days which have data \* calculate winter onset for each year \* calculate mean winter onset, weighted by number of days with data
+### How this is done
 
-#### First trial:
+-   process data from one station to get a single temperature vector (there is already a function for that, called daily\_t)
+-   get rid of the first half year (which lies before the first red dot), and of the last half year (this does not contain full 12 months of information)
+-   reassemble the temperature vector into a matrix, with each row representing 12 months (june to june) of data.
+-   For each year(row), count the number of days which have data
+-   calculate winter onset for each year:
+-   make a binomial matrix, with all T&lt;y = 1, all other T=0
+-   calculate cumulative sums of each row
+-   note the day where cum\_sum &gt; X
+-   calculate standard deviation and mean winter onset, weighted by number of days with data
 
-winter onset defined as the day when the temperature falls for the xth time below y°C. Using e.g. x = 10 and y = 5°C.
+### Function to cut and reassemble into binomial matrix
 
-function daily\_t already exists. Next function: Needs to cut, reassemble, and convert the matrix into binomial: 0 if the day was NA or warmer than y, 1 if the temperature was lower than y
+This function takes the looong temperature vector of one station (daily temperature of several years), cuts the head and tail (half a year each), puts it back into matrix format (1 row = 1 year), and transforms it into a binomial matrix
 
 ``` r
 reassemble_cd <- function (station,degrees=50){ #method to calculate winter onset based on accumulation of days cooler than 50centidegree (5°C)
@@ -295,7 +316,9 @@ reassemble_cd <- function (station,degrees=50){ #method to calculate winter onse
 }
 ```
 
-next function: Calculate number of days with data
+### Function to calculate number of days with data
+
+The script will later calculate the mean winter onset at each station. Because data quality differs among years, the mean needs to be weighted by the number of days with data per year. To do that, one needs to actually have the number of days:
 
 ``` r
 row_na<-function (inp_matrix){
@@ -310,7 +333,7 @@ row_na<-function (inp_matrix){
 }
 ```
 
-Function to work on the binomial matrix, and test whether the cumulative sum of occurences of y reaches x = 10
+### Function to test whether the cumulative sum of occurences of y reaches x = 10
 
 ``` r
 calc_cumul <- function (inp_matrix,thres=10, conv_NA =TRUE){ #takes a matrix as input, calculates rowwise cumulative sums, and returns the position on which a threshold was first reached in each row 
@@ -337,18 +360,9 @@ calc_cumul <- function (inp_matrix,thres=10, conv_NA =TRUE){ #takes a matrix as 
   }
   return (sum_vector)
 }
-
-
-
-#alternative that should also work with calc_cumul:
-#use reassemble function but with the following code instead the binomial part:
-#  codegrees <- station - whats_cold
-#  codegrees[codegrees > 0] <- 0
-#  codregrees <- -1*codegrees #11->0; 20 ->0; 10->0; 9->1;5->5;0->10; -20 ->30
-#this snippet ignores temperatures above e.g. 10 degrees.9°C become 1 cold-degree, 0°C become 9 cold-degrees, -20 °C become 30 cold-degrees
 ```
 
-putting all pieces together (for one station)
+### Function that puts all these functions for one station together
 
 ``` r
 do_all<-function(station,x=10,y=50){
@@ -372,7 +386,9 @@ do_all<-function(station,x=10,y=50){
 }
 ```
 
-One more convenience function
+### Function to calculate weighted means
+
+The built-in function cannot handle NA
 
 ``` r
 weighted_means<-function(resm,nm){ #calculate row-wise means of a matrix, weighted by another matrix, and ignoring any NAs
@@ -387,7 +403,7 @@ weighted_means<-function(resm,nm){ #calculate row-wise means of a matrix, weight
 }
 ```
 
-wrapping function to run the code for all stations, and store the results
+### wrapping function to run the code for all stations
 
 ``` r
 loop_stations<-function(x=10,y=50){
@@ -416,7 +432,9 @@ return(final)
 }
 ```
 
-call the function with different parameters
+### running the actual code
+
+This chunk tries 4 different parameter combinations
 
 ``` r
 final_10_50<-loop_stations(x=10,y=50)
@@ -424,6 +442,8 @@ final_5_20<-loop_stations(x=5,y=20)
 final_20_100<-loop_stations(x=20,y=100)
 final_5_0<-loop_stations(5,0)
 ```
+
+### plotting the results
 
 ``` r
 plot_results<-function(input,sub){
@@ -434,31 +454,31 @@ plot_results<-function(input,sub){
 plot_results(final_10_50,"10 days below 5°C")
 ```
 
-![](var_coldsum_files/figure-markdown_github/unnamed-chunk-22-1.png)
+![](var_coldsum_files/figure-markdown_github/plot_the_results-1.png)
 
 ``` r
 plot_results(final_20_100,"20 days below 10°C")
 ```
 
-![](var_coldsum_files/figure-markdown_github/unnamed-chunk-22-2.png)
+![](var_coldsum_files/figure-markdown_github/plot_the_results-2.png)
 
 ``` r
 plot_results(final_5_0,"5 days below 0°C")
 ```
 
-![](var_coldsum_files/figure-markdown_github/unnamed-chunk-22-3.png)
+![](var_coldsum_files/figure-markdown_github/plot_the_results-3.png)
 
 ``` r
 plot_results(final_5_20,"5 days below 2°C")
 ```
 
-![](var_coldsum_files/figure-markdown_github/unnamed-chunk-22-4.png)
+![](var_coldsum_files/figure-markdown_github/plot_the_results-4.png)
 
-compare different runs
+These look quite similar...
 
 ``` r
 mydat<-data.frame(final_10_50[,4],final_20_100[,4],final_5_0[,4],final_5_20[,4])
 plot(mydat)
 ```
 
-![](var_coldsum_files/figure-markdown_github/unnamed-chunk-23-1.png)
+![](var_coldsum_files/figure-markdown_github/compare_results-1.png)

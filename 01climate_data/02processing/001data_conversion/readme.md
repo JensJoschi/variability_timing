@@ -1,1 +1,7 @@
-The perl script 'conversion.pl' takes the NOAA GHCN daily dataset (daily weather data for ~50 ys, around the whole world), and extracts daily average temperatures. Details are in the first lines of the script. The output is saved as 'converted.txt', which is then processed further in the R script 'read_rawdata.rmd' in the folder 002/calculation_predictability
+# Contents of this folder
+
+* Conversion.pl is a perl script. It reads the NOAA GHCN daily dataset file by file (~100,000 stations), and extracts daily average temperatures. It removes all data flags, and saves the output in delimited format (using | as delimiter) Details are in the first lines of the script. 
+* 'converted.txt' is the output of the PERL script (~0.5 gb, not on github)
+* 'read.rawdata.RMD' loads the text file converted.txt into the workspace, connects to the NOAA server to get a list of all climate stations, cleans the dataset and saves the workspace as Rworkspace.Rdata
+*'read.rawdata.html' is the same script in html
+* other files in this folder are not working (and not important)
