@@ -453,6 +453,19 @@ weighted_means<-function(resm,nm){ #calculate row-wise means of a matrix, weight
 }
 ``` 
 
+###function to calculate standard deviation
+```{r sd}
+standard_dev<-function(resm){ #calculate row-wise sd of a matrix, ignoring any NAs
+  ms<-rep(NA, nrow(resm))
+  for (i in 1:nrow(resm)){
+    worked<-which(!is.na(resm[i,1:ncol(resm)]))
+    if (length(worked)>3){
+      ms[i]<-sd(resm[i,worked[worked>3]])
+    }
+  }
+  return(ms)
+}
+``` 
 
 
 ###wrapping function to run the code for all stations
@@ -472,14 +485,17 @@ nmat[,1:3]<-resmat[,1:3]
 #loop through all stations, calculate winter onset given x and y values
 for (station in 1:length(sfile)){
   r<-do_all(station,x,y)
+  r[[1]][r[[2]]<100]<-NA #remove all years with less than 100 days of data
   resmat[station,4:(length(r[[1]])+3)]<-r[[1]]
   nmat  [station,4:(length(r[[2]])+3)]<-r[[2]]
 }
 
 #store only ID,lat,lon,mean winter, sd(winter)
-final<-resmat[,1:3]
+final<-resmat#[,1:3]
 final$means<-weighted_means(resmat,nmat)
-return(final)
+final$sd<-standard_dev(resmat)
+final2<-nmat
+return(list(final,final2))
 }
 
 ```
@@ -520,6 +536,37 @@ mydat<-data.frame(final_10_50[,4],final_20_100[,4],final_5_0[,4],final_5_20[,4])
 plot(mydat)
 ```
 
-    
-    
+getting N(days) for all stations and years
+
+```{r}
+cut<-final_10_50[[1]][,4:(ncol(final_10_50[[1]])-2)]
+cut2<-final_10_50[[2]][,4:(ncol(final_10_50[[2]])-2)]
+mark<-!is.na(cut)
+test<-cut2[mark]
+hist(test,breaks=100)
+length(test[test<300])/length(test)
+#20% of the data <350, 12.5 <300
+
+te2<-test[,4:ncol(test)]
+te<-final_10_50[[2]][,4:(ncol(final_10_50[[2]]))]
+t<-!is.na(te)
+hist(te[t][te[t]>100],breaks=100, xlab="Days",ylab ="Frequency",main ="Frequency distribution: Number of days/year")
+length(te[t][te[t]>300])/length(te[t])
+length(te[t][te[t]<100])/length(te[t])
+```
+```{r}
+for (i in 1:nrow(final_10_50[[1]])){
+  w_on<-final_10_50[[1]][i,4:(ncol(final_10_50[[1]])-3)]
+  weights<-final_10_50[[2]][i,4:(ncol(final_10_50[[2]])-3)]
+  w<-!is.na(w_on)
+  weights<-weights[w]
+  weights<-weights/372
+  w_on <- w_on[w]
+  mean_w_on<-weighted.mean(w_on,weights)
+  #formula variance for weighed sample, using frequency weighed unbiased estimateor
+  upper <- sum(weights*(w_on-mean_w_on)^2)
+  lower <- sum(weights)-1
+  final_10_50[[1]]$sd[i] <- sqrt(upper/lower)
+}
+```
 
