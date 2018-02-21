@@ -489,10 +489,7 @@ for (station in 1:length(sfile)){
   nmat  [station,4:(length(r[[2]])+3)]<-r[[2]]
 }
 
-#store only ID,lat,lon,mean winter, sd(winter)
-final<-resmat#[,1:3]
-#final$means<-weighted_means(resmat,nmat)
-#final$sd<-standard_dev(resmat)
+final<-resmat
 final2<-nmat
 return(list(final,final2))
 }
@@ -506,28 +503,85 @@ return(list(final,final2))
 This chunk tries 4 different parameter combinations
 ```{r run_the_code}
 final_10_50<-loop_stations(x=10,y=50)
-#final_5_20<-loop_stations(x=5,y=20)
-#final_20_100<-loop_stations(x=20,y=100)
-#final_5_0<-loop_stations(5,0)
+final_5_20<-loop_stations(x=5,y=20)
+final_20_100<-loop_stations(x=20,y=100)
+final_5_0<-loop_stations(5,0)
 
 ```
 
+###plotting results
 
-###plotting the results
+The follwoing chunk plots mean winter onset (weighted by sample size within each year, i.e. days with data), then sd(winter onset), and lastly the coefficient of variation, sd/mean. This is done for four parameter combinations. 
 
+
+```{r plot_the_results}
+
+lis<-list(final_10_50,final_5_20,final_20_100,final_5_0)
+x<-c(10,5,20,5)
+y<-c(50,20,100,0)
+CV<-list(NA,NA,NA,NA) # will be used in later chunk
+
+
+for (i in 1:length(lis)){
+  input <- lis[[i]]
+  subtitle<-paste(x[i],"days below ", y[i], "°C") #will be needed in figures
+  
+  input[[1]]$means<-weighted_means(input[[1]],input[[2]])
+  input[[1]]$sds<-standard_dev(input[[1]])
+  input<-input[[1]]
+  input<-input[!is.na(input$means),]
+  plot(input[,2]~input[,3],bg=rgb(0,input$means,0,maxColorValue=372),col=NA,main="weighted mean day of winter onset",sub=subtitle,pch=22,cex=0.8)
+   
+  input$sds[!is.finite(input$sds)]<-NA
+  input<-input[!is.na(input$sds),]
+  input<-input[input$sds>0,]
+  plot(input[,2]~input[,3],bg=rgb(0,input$sds,0,maxColorValue=max(input$sds)),col=NA,main="Sd of winter onset",sub=subtitle,pch=22,cex=0.8)
+  
+  input$CV<-input$sds/input$means
+  input$CV[!is.finite(input$CV)]<-NA
+  input<-input[!is.na(input$CV),]
+  CV[[i]]<-input$CV
+  plot(input[,2]~input[,3],bg=rgb(0,input$CV,0,maxColorValue=max(input$CV)),col=NA,main="Sd/mean of winter onset",sub=subtitle,pch=22,cex=0.8)
+}
+
+
+
+
+```
+
+```{r }
+minesweep_r <- function (input_vector){
+  mines_vector <- rep(0,1000)
+  mines_vector[sample(1000,10)]<-1
+  if (sum(mines_vector[input_vector])>0){print ("you lost")} else {print ("you won")}
+}
+minesweep_r(input_vector=sample(1000,990))
+```
+
+
+The results of the 4 runs are very similar, and the sd and CV plots are very dark. this is because the standard deviation is rather long-tailed, caused by the northernmost stations. Cropping it a bit to get a better view:
+
+```{r}
+cropped<-input
+cropped$sds[cropped$sds>50]<-50
+cropped$CV[cropped$CV>0.5]<-0.5
+  plot(cropped[,2]~cropped[,3],bg=rgb(0,cropped$sds,0,maxColorValue=max(cropped$sds)),col=NA,main="Sd of winter onset",sub=subtitle,pch=22,cex=0.6)
+  plot(input[,2]~input[,3],bg=rgb(0,cropped$CV,0,maxColorValue=max(cropped$CV)),col=NA,main="Sd/mean of winter onset",sub=subtitle,pch=22,cex=0.6)
+```
+
+
+
+###comparing the 4 runs
 
 
 These look quite similar... 
 
 
-```{r compare_results}
-mydat<-data.frame(final_10_50[,4],final_20_100[,4],final_5_0[,4],final_5_20[,4])
-plot(mydat)
-```
+###weighted standard deviation  
+The number of days with data is likely different among years. How is the overall data quality?
 
-getting N(days) for all stations and years
 
-```{r}
+```{r ndays}
 cut<-final_10_50[[1]][,4:(ncol(final_10_50[[1]])-2)]
 cut2<-final_10_50[[2]][,4:(ncol(final_10_50[[2]])-2)]
 mark<-!is.na(cut)
@@ -537,8 +591,11 @@ length(test[test<300])/length(test)
 #20% of the data <350, 12.5 <300
 ```
 
-calculating weighted sd
-```{r}
+
+While most years have complete data, a significant proportion (>20%) is incomplete. the between-years standard deviation hence needs to be weighed by the reliability of each year (sample size within year).  
+
+```{r calc_sdweighed}
+weighmean<-NA
 for (i in 1:nrow(final_10_50[[1]])){
   w_on<-final_10_50[[1]][i,4:(ncol(final_10_50[[1]])-3)]
   weights<-final_10_50[[2]][i,4:(ncol(final_10_50[[2]])-3)]
@@ -547,37 +604,35 @@ for (i in 1:nrow(final_10_50[[1]])){
   weights<-weights/372
   w_on <- w_on[w]
   mean_w_on<-weighted.mean(w_on,weights)
-  #formula variance for weighed sample, using frequency weighed unbiased estimateor
+  #formula variance for weighed sample, using frequency weighed unbiased estimateor (i.e. bessel's correction)
   upper <- sum(weights*(w_on-mean_w_on)^2)
   lower <- sum(weights)-1
   if (lower >0){final_10_50[[1]]$sd[i] <- sqrt(upper/lower)} else {final_10_50[[1]]$sd[i]<-NA}
+  weighmean[i]<-mean_w_on
 }
+
 hist(final_10_50[[1]]$sd,breaks=100)
 capped<-final_10_50[[1]]
 capped$sd[capped$sd>50]<-50
 to_plot<-capped[is.na(capped$sd)==FALSE,] #copied and adapted from means plot
-plot(to_plot[,2]~to_plot[,3],bg=rgb(0,to_plot$sd,0,maxColorValue=50),col=NA,main="Winter variability",pch=22,cex=0.8)
-points(x=(-170):(-121),y= rep(25,50), col = rgb (0, 0:50,0,maxColorValue = 50),pch=22,cex=0.6)
+plot(to_plot[,2]~to_plot[,3],bg=rgb(0,to_plot$sd,0,maxColorValue=50),col=NA,main="Winter variability, weighed",sub= "sd =frequency weighed unbiased estiator",pch=22,cex=0.8)
+points(x=(-170):(-121),y= rep(25,50), col = rgb (0, 0:50,0,maxColorValue = 50),pch=22,cex=0.8)
 text(-170,22,"sd=0")
 text(-120,22,"sd = 50")
-```
-```{r plot_the_results}
-final_10_50[[1]]<-final_10_50[[1]][,1:147]
-final_10_50[[1]]$means<-weighted_means(final_10_50[[1]],final_10_50[[2]])
-final_10_50[[1]]$sd<-standard_dev(final_10_50[[1]])
-plot_results<-function(input,sub){
-  to_plot<-input[is.na(input$means)==FALSE,]
-  plot(to_plot[,2]~to_plot[,3],bg=rgb(0,to_plot$means,0,maxColorValue=372),col=NA,main="day of winter onset",sub=sub,pch=22,cex=0.8)
-}
 
-plot_results(final_10_50[[1]],"10 days below 5°C")
-input<-final_10_50[[1]]
-to_plot<-input[is.na(input$sd)==FALSE,]
-to_plot[to_plot$sd>50,"sd"]<-50
-plot(to_plot[,2]~to_plot[,3],bg=rgb(0,to_plot$sd,0,maxColorValue=50),col=NA,main="Winter variability",pch=22,cex=0.8)
-
-plot(final_10_50[[1]]$mean~final_10_50[[1]]$sd,pch=22,cex=0.5)
-#plot_results(final_20_100,"20 days below 10°C")
-#plot_results(final_5_0,"5 days below 0°C")
-#plot_results(final_5_20,"5 days below 2°C")
+#alternative
+#mean<-weighted_means<-function(resm,nm)
+#to_plot$c<-to_plot$sd/to_plot$mean
+#to_plot$c[to_plot$c>0.5]<-0.5
+#hist(to_plot$c,breaks=100)
+#plot(to_plot[,2]~to_plot[,3],bg=rgb(0,to_plot$c,0,maxColorValue=max(to_plot$c)),col=NA,main="Winter variability, sd/n",pch=22,cex=0.8)
+#points(x=(-170):(-121),y= rep(25,50), col = rgb (0, seq(0,max(to_plot$c),length.out=50),0,maxColorValue = max(to_plot$c)),pch=22,cex=0.6)
+#text(-170,22,"sd/N = 1")
+#t#ext(-120,22,"sd/N = 3")
 ```
+
+###plotting mean winter onset and non-corrected winter variability
+
+
+###Comparing the four runs
+
