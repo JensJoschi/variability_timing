@@ -255,8 +255,8 @@ The location metadata has been erased in the meantime, because it takes quite a 
 A bit of cleaning...
 
     ##             used  (Mb) gc trigger   (Mb)  max used   (Mb)
-    ## Ncells    835201  44.7    1442291   77.1   1168576   62.5
-    ## Vcells 124352696 948.8  192299748 1467.2 299982432 2288.7
+    ## Ncells    835466  44.7    1442291   77.1   1168576   62.5
+    ## Vcells 124353909 948.8  192300935 1467.2 299983723 2288.7
 
 ### General idea
 
@@ -403,6 +403,21 @@ weighted_means<-function(resm,nm){ #calculate row-wise means of a matrix, weight
 }
 ```
 
+### function to calculate standard deviation
+
+``` r
+standard_dev<-function(resm){ #calculate row-wise sd of a matrix, ignoring any NAs
+  ms<-rep(NA, nrow(resm))
+  for (i in 1:nrow(resm)){
+    worked<-which(!is.na(resm[i,1:ncol(resm)]))
+    if (length(worked)>3){
+      ms[i]<-sd(resm[i,worked[worked>3]])
+    }
+  }
+  return(ms)
+}
+```
+
 ### wrapping function to run the code for all stations
 
 ``` r
@@ -421,14 +436,14 @@ nmat[,1:3]<-resmat[,1:3]
 #loop through all stations, calculate winter onset given x and y values
 for (station in 1:length(sfile)){
   r<-do_all(station,x,y)
+  r[[1]][r[[2]]<100]<-NA #remove all years with less than 100 days of data
   resmat[station,4:(length(r[[1]])+3)]<-r[[1]]
   nmat  [station,4:(length(r[[2]])+3)]<-r[[2]]
 }
 
-#store only ID,lat,lon,mean winter, sd(winter)
-final<-resmat[,1:3]
-final$means<-weighted_means(resmat,nmat)
-return(final)
+final<-resmat
+final2<-nmat
+return(list(final,final2))
 }
 ```
 
@@ -443,42 +458,241 @@ final_20_100<-loop_stations(x=20,y=100)
 final_5_0<-loop_stations(5,0)
 ```
 
-### plotting the results
+*The results are stored in lists with 2 entries: final\[\[1\]\] is the matrix with winter onsets in each year (columns) and for each station (rows), final\[\[2\]\] is a matrix with the according sample size (number of days per year)*
+
+### plotting results
+
+The follwoing chunk plots mean winter onset (weighted by sample size within each year, i.e. days with data), then sd(winter onset), and lastly the coefficient of variation, sd/mean. This is done for four parameter combinations (only 1 available at github).
 
 ``` r
-plot_results<-function(input,sub){
-  to_plot<-input[is.na(input$means)==FALSE,]
-  plot(to_plot[,2]~to_plot[,3],bg=rgb(0,to_plot$means,0,maxColorValue=372),col=NA,main="day of winter onset",sub=sub,pch=22,cex=0.8)
+lis<-list(final_10_50,final_5_20,final_20_100,final_5_0)
+x<-c(10,5,20,5)
+y<-c(50,20,100,0)
+CV<-list(NA,NA,NA,NA) # will be used in later chunk
+
+
+for (i in 1:length(lis)){
+  input <- lis[[i]]
+  subtitle<-paste(x[i],"days below ", y[i], "°C") #will be needed in figures
+  
+  input[[1]]$means<-weighted_means(input[[1]],input[[2]])
+  input[[1]]$sds<-standard_dev(input[[1]])
+  input<-input[[1]]
+  input<-input[!is.na(input$means),]
+  plot(input[,2]~input[,3],bg=rgb(0,input$means,0,maxColorValue=372),col=NA,main="weighted mean day of winter onset",sub=subtitle,pch=22,cex=0.8)
+   
+  input$sds[!is.finite(input$sds)]<-NA
+  input<-input[!is.na(input$sds),]
+  input<-input[input$sds>0,]
+  plot(input[,2]~input[,3],bg=rgb(0,input$sds,0,maxColorValue=max(input$sds)),col=NA,main="Sd of winter onset",sub=subtitle,pch=22,cex=0.8)
+  
+  input$CV<-input$sds/input$means
+  input$CV[!is.finite(input$CV)]<-NA
+  input<-input[!is.na(input$CV),]
+  CV[[i]]<-as.data.frame(input$CV,input$V1)
+  plot(input[,2]~input[,3],bg=rgb(0,input$CV,0,maxColorValue=max(input$CV)),col=NA,main="Sd/mean of winter onset",sub=subtitle,pch=22,cex=0.8)
+}
+```
+
+![](var_coldsum_files/figure-markdown_github/plot_the_results-1.png)![](var_coldsum_files/figure-markdown_github/plot_the_results-2.png)![](var_coldsum_files/figure-markdown_github/plot_the_results-3.png)![](var_coldsum_files/figure-markdown_github/plot_the_results-4.png)![](var_coldsum_files/figure-markdown_github/plot_the_results-5.png)![](var_coldsum_files/figure-markdown_github/plot_the_results-6.png)![](var_coldsum_files/figure-markdown_github/plot_the_results-7.png)![](var_coldsum_files/figure-markdown_github/plot_the_results-8.png)![](var_coldsum_files/figure-markdown_github/plot_the_results-9.png)![](var_coldsum_files/figure-markdown_github/plot_the_results-10.png)![](var_coldsum_files/figure-markdown_github/plot_the_results-11.png)![](var_coldsum_files/figure-markdown_github/plot_the_results-12.png)
+
+``` r
+minesweep_r <- function (input_vector){
+  mines_vector <- rep(0,1000)
+  mines_vector[sample(1000,10)]<-1
+  if (sum(mines_vector[input_vector])>0){print ("you lost")} else {print ("you won")}
+}
+minesweep_r(input_vector=sample(1000,990))
+```
+
+    ## [1] "you lost"
+
+The results of the 4 runs are very similar, and the sd and CV plots are very dark. this is because the standard deviation is rather long-tailed, caused by the northernmost stations. Cropping it a bit to get a better view (last run only):
+
+``` r
+cropped<-input
+cropped$sds[cropped$sds>50]<-50
+cropped$CV[cropped$CV>0.5]<-0.5
+  plot(cropped[,2]~cropped[,3],bg=rgb(0,cropped$sds,0,maxColorValue=max(cropped$sds)),col=NA,main="Sd of winter onset",sub=subtitle,pch=22,cex=0.6)
+```
+
+![](var_coldsum_files/figure-markdown_github/plot_cropped-1.png)
+
+``` r
+  plot(input[,2]~input[,3],bg=rgb(0,cropped$CV,0,maxColorValue=max(cropped$CV)),col=NA,main="Sd/mean of winter onset",sub=subtitle,pch=22,cex=0.6)
+```
+
+![](var_coldsum_files/figure-markdown_github/plot_cropped-2.png)
+
+### comparing the 4 runs
+
+``` r
+m<-merge(CV[[1]],CV[[2]],by=0) #by=0 merges by rownames
+m2<-merge(CV[[3]],CV[[4]],by=0)
+m<-merge(m,m2,by=1) # 1, because they have now a separate column with names
+names(m) =c("ID","10_50","5_20","20_100","5_0")
+plot(m[,2:5])
+```
+
+![](var_coldsum_files/figure-markdown_github/comparison-1.png)
+
+These look quite similar, only the parameter run "20 days below 10°C" sticks out as different. But this parameter combination is really quite different from the others.
+
+### weighted standard deviation
+
+The number of days with data is likely different among years. How is the overall data quality?
+
+``` r
+cut<-final_10_50[[1]][,4:(ncol(final_10_50[[1]])-2)]
+cut2<-final_10_50[[2]][,4:(ncol(final_10_50[[2]])-2)]
+mark<-!is.na(cut)
+test<-cut2[mark]
+hist(test,breaks=100,xlab="Days",ylab ="Frequency",main ="Frequency distribution: Number of days/year")
+```
+
+![](var_coldsum_files/figure-markdown_github/ndays-1.png)
+
+``` r
+length(test[test<300])/length(test)
+```
+
+    ## [1] 0.1256588
+
+``` r
+#20% of the data <350, 12.5 <300
+```
+
+While most years have complete data, a significant proportion (&gt;20%) is incomplete. the between-years standard deviation hence needs to be weighed by the reliability of each year (sample size within year).
+
+#### calculation of weighted sd
+
+``` r
+weighted<-list(NA,NA,NA,NA)
+for (i in 1:length(lis)){
+  input <- lis[[i]]
+  weighted[[i]]<-data.frame(NA,NA,NA)
+  names(weighted[[i]])<-c("ID","m","sd")
+  
+  for (j in 1:nrow(input[[1]])){
+    mean_w_on<-NA #will temporarily store mean winter onset of this station
+    wsd <- NA     #same for weighted sd
+    
+    w_on<-input[[1]][j,4:(ncol(input[[1]])-3)] #a vector with winter onsets of each year
+    weights<-input[[2]][j,4:(ncol(input[[2]])-3)] #deselect first 3 rows (ID,LAT,LON)
+    
+    #remove NAs
+    w<-!is.na(w_on)
+    weights<-weights[w]
+    weights<-weights/372
+    w_on <- w_on[w]
+  
+    #calculate row-wise weighted mean winter onset
+    mean_w_on<-weighted.mean(w_on,weights)
+    
+    #calculate row-wise weighted variance in winter onset
+    #formula variance for weighed sample, using frequency weighed unbiased estimator (~ bessel's correction)
+    upper <- sum(weights*(w_on-mean_w_on)^2)
+    lower <- sum(weights)-1
+    if (lower >0){wsd <- sqrt(upper/lower)} else {wsd<-NA} #if the whole year is NA, sum(weights) is  ==> lower = -1 ==> wsd <-NA
+    #in that case mean_w_on becomes NAN, but that causes no trouble. upper simply becomes 0
+    
+    #store mean_w_on and wsd in dataframe
+
+    weighted[[i]][1:length(input[[1]][,1]),1]<-input[[1]][,1] #assigns names
+    weighted[[i]][j,2]<-mean_w_on
+    weighted[[i]][j,3]<-wsd
+  }
+}
+```
+
+#### plotting new weighted sd's
+
+plotting the results: mean, sd and weighted sd (all weighted). sd has to be capped at 50, CV at 0.5 due to a long right-tail
+
+``` r
+input<-NA
+for (i in 1:length(weighted)){
+ # hist(weighted[[i]]$sd,breaks=100, main = paste("histogram standard deviation run ",i))
+  input<-weighted[[i]]
+  input$sd[input$sd>50]<-50
+  input<-input[!is.na(input$m),]
+  a<-merge(input,locations,by=1)
+  a<-a[!is.na(a$sd),]
+  plot(a$lat~a$lon,bg=rgb(0,a$m,0,maxColorValue=372),col=NA,main="weighted mean day of winter   onset",sub=subtitle,pch=22,cex=0.8,xlab="",ylab="") #subtitle is recycled from earlier chunk (unweighted calcs)
+  plot(a$lat~a$lon,bg=rgb(0,a$sd,0,maxColorValue=max(a$sd)),col=NA,main="Winter variability, weighed",sub= subtitle,pch=22,cex=0.8,xlab="",ylab="")
+  points(x=(-170):(-121),y= rep(25,50), col = rgb (0, 0:50,0,maxColorValue = 50),pch=22,cex=0.8)
+  text(-170,22,"sd=0")
+  text(-120,22,"sd = 50")
+  a$CV<-a$sd/a$m
+ # hist(a$CV,breaks=100,main =paste ("histogram of CV run ",i))
+  a$CV[a$CV>0.5]<-0.5
+  plot(a$lat~a$lon,bg=rgb(0,a$CV,0,maxColorValue=max(a$CV)),col=NA,main="weighted mean/weighted sd of winter onset",sub=subtitle,pch=22,cex=0.8,xlab="",ylab="")
+}
+```
+
+![](var_coldsum_files/figure-markdown_github/plot_cv-1.png)![](var_coldsum_files/figure-markdown_github/plot_cv-2.png)![](var_coldsum_files/figure-markdown_github/plot_cv-3.png)![](var_coldsum_files/figure-markdown_github/plot_cv-4.png)![](var_coldsum_files/figure-markdown_github/plot_cv-5.png)![](var_coldsum_files/figure-markdown_github/plot_cv-6.png)![](var_coldsum_files/figure-markdown_github/plot_cv-7.png)![](var_coldsum_files/figure-markdown_github/plot_cv-8.png)![](var_coldsum_files/figure-markdown_github/plot_cv-9.png)![](var_coldsum_files/figure-markdown_github/plot_cv-10.png)![](var_coldsum_files/figure-markdown_github/plot_cv-11.png)![](var_coldsum_files/figure-markdown_github/plot_cv-12.png)
+
+### some extremely preliminary models:
+
+``` r
+a$alt[a$alt==-999.9]<-NA
+a$sd[a$sd>100]<-100
+a<-a[!is.na(a$alt),]
+
+do_models<-function(variable,name){
+M<-lm(variable~a$lat+a$lon+a$alt)
+
+M2<-lm(variable~a$lat)
+plot(variable~a$lat,main = paste(name," vs lat"))#,sub=paste("slope ~ ",round(coef(M2)[2]*10,4)," per 10°"))
+abline(M2,col=2,lwd=2)
+
+M3<-lm(variable~a$lon)
+plot(variable~a$lon,main = paste(name," vs lon"))#,sub=paste("slope ~ ",round(coef(M3)[2]*100,4)," per 100°"))
+abline(M3,col=2,lwd=2)
+
+M4<-lm(variable~a$alt)
+plot(variable~a$alt,main = paste(name, " vs altitude"))#,sub=paste("slope ~ ",round(coef(M4)[2]*1000,4), "per 1000m"))
+abline(M4,col=2,lwd=2)
 }
 
-plot_results(final_10_50,"10 days below 5°C")
+do_models(a$m,"mean")
 ```
 
-![](var_coldsum_files/figure-markdown_github/plot_the_results-1.png)
+![](var_coldsum_files/figure-markdown_github/models-1.png)![](var_coldsum_files/figure-markdown_github/models-2.png)![](var_coldsum_files/figure-markdown_github/models-3.png)
 
 ``` r
-plot_results(final_20_100,"20 days below 10°C")
+do_models(a$sd,"sd")
 ```
 
-![](var_coldsum_files/figure-markdown_github/plot_the_results-2.png)
+![](var_coldsum_files/figure-markdown_github/models-4.png)![](var_coldsum_files/figure-markdown_github/models-5.png)![](var_coldsum_files/figure-markdown_github/models-6.png)
 
 ``` r
-plot_results(final_5_0,"5 days below 0°C")
+do_models(a$CV, "cv")
 ```
 
-![](var_coldsum_files/figure-markdown_github/plot_the_results-3.png)
+![](var_coldsum_files/figure-markdown_github/models-7.png)![](var_coldsum_files/figure-markdown_github/models-8.png)![](var_coldsum_files/figure-markdown_github/models-9.png)
+
+### cropping latitudes
+
+latitudes &gt; 60°N are kind of special. remove
 
 ``` r
-plot_results(final_5_20,"5 days below 2°C")
+a<-a[a$lat<60,]
+do_models(a$m,"mean")
 ```
 
-![](var_coldsum_files/figure-markdown_github/plot_the_results-4.png)
-
-These look quite similar...
+![](var_coldsum_files/figure-markdown_github/crop_lats-1.png)![](var_coldsum_files/figure-markdown_github/crop_lats-2.png)![](var_coldsum_files/figure-markdown_github/crop_lats-3.png)
 
 ``` r
-mydat<-data.frame(final_10_50[,4],final_20_100[,4],final_5_0[,4],final_5_20[,4])
-plot(mydat)
+do_models(a$sd,"sd")
 ```
 
-![](var_coldsum_files/figure-markdown_github/compare_results-1.png)
+![](var_coldsum_files/figure-markdown_github/crop_lats-4.png)![](var_coldsum_files/figure-markdown_github/crop_lats-5.png)![](var_coldsum_files/figure-markdown_github/crop_lats-6.png)
+
+``` r
+do_models(a$CV, "cv")
+```
+
+![](var_coldsum_files/figure-markdown_github/crop_lats-7.png)![](var_coldsum_files/figure-markdown_github/crop_lats-8.png)![](var_coldsum_files/figure-markdown_github/crop_lats-9.png)
+
+The mean winter onset decreases (becomes earlier) at higher latitudes, is slightly higher (later) in Europe than in America (though coverage of canada is way lower than scandinavia), and decreases with altitude (earlier high up). SD is not sensible due to these patterns, better use CV = sd/mean. The CV is independent of latitude, but increases with altitude.
