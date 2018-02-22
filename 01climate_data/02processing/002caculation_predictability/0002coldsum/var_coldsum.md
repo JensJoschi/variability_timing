@@ -55,7 +55,7 @@ Quality control
 
 The following part will append all data from one station to a single vector and make a non-linear least square regression. The data is expected to follow a sine curve with a period of ~1 year.
 
-### Function for creating single vector
+#### Function for creating single vector
 
 The function "daily\_t" will use the data provided by one station. It will append all daily temperature recordings of all years (up to 145 years \* 12 months \* 31 days ) into a single vector, filling up with NAs as needed.
 
@@ -84,7 +84,7 @@ daily_t <- function (station){
 }
 ```
 
-### Function for nonlinear least-square regression
+#### Function for nonlinear least-square regression
 
 The function 'get\_nls' takes the daily temperatures of one station (which is supplied as single vector), and applies a non-linear least squares model which estimates intercept, phase angle and amplitude of a sine curve.
 
@@ -106,7 +106,7 @@ get_nls <- function (vals,s_A=400,s_phi=pi/2,s_c=200){#s_... are starting values
 }
 ```
 
-### applying the functions on the dataset
+#### applying the functions on the dataset
 
 The following chunk will apply a nls regression on the climate data of each station. The daily temperatures over ~20 years are expected to follow a sine-curve pattern with a period of 1 year. The curve is determined by the following parameters:
 \* a *constant c* that defines the average temperature throughout the year. It is around 20°C in temperate climates, around 30°C at the equator.
@@ -153,7 +153,7 @@ reg[i,5]<-parms[3]#intercept
 reg<-reg[is.na(reg[,3])==F,]
 ```
 
-### Plotting the results:
+#### Plotting the results:
 
 1.  average Temperature
 
@@ -247,8 +247,8 @@ According to the subset, the data behaves just as expected.
 
 The remaining part of the script will be done on northern hemisphere only (&gt;20°N), as there is no empirical data for southern hemisphere.
 
-calculate number of cold-days
------------------------------
+calculate winter variability
+----------------------------
 
 The location metadata has been erased in the meantime, because it takes quite a bit of memory. Reload it:
 
@@ -258,7 +258,7 @@ A bit of cleaning...
     ## Ncells    835466  44.7    1442291   77.1   1168576   62.5
     ## Vcells 124353909 948.8  192300935 1467.2 299983723 2288.7
 
-### General idea
+#### General idea
 
 It is inconvenient that the year ends around midwinter. To calculate winter arrival, it makes more sense to have one "year" going from june to june:
 
@@ -270,7 +270,7 @@ points(x=165+372*(1:100),y= daily_t(testset)[165+372*(1:100)],col=2) #okay, data
 
 ![](var_coldsum_files/figure-markdown_github/plot_idea-1.png)
 
-### How this is done
+#### How this is done
 
 -   process data from one station to get a single temperature vector (there is already a function for that, called daily\_t)
 -   get rid of the first half year (which lies before the first red dot), and of the last half year (this does not contain full 12 months of information)
@@ -282,7 +282,7 @@ points(x=165+372*(1:100),y= daily_t(testset)[165+372*(1:100)],col=2) #okay, data
 -   note the day where cum\_sum &gt; X
 -   calculate standard deviation and mean winter onset, weighted by number of days with data
 
-### Function to cut and reassemble into binomial matrix
+#### Function to cut and reassemble into binomial matrix
 
 This function takes the looong temperature vector of one station (daily temperature of several years), cuts the head and tail (half a year each), puts it back into matrix format (1 row = 1 year), and transforms it into a binomial matrix
 
@@ -316,7 +316,7 @@ reassemble_cd <- function (station,degrees=50){ #method to calculate winter onse
 }
 ```
 
-### Function to calculate number of days with data
+#### Function to calculate number of days with data
 
 The script will later calculate the mean winter onset at each station. Because data quality differs among years, the mean needs to be weighted by the number of days with data per year. To do that, one needs to actually have the number of days:
 
@@ -333,7 +333,7 @@ row_na<-function (inp_matrix){
 }
 ```
 
-### Function to test whether the cumulative sum of occurences of y reaches x = 10
+#### Function to test whether the cumulative sum of occurences of y reaches x = 10
 
 ``` r
 calc_cumul <- function (inp_matrix,thres=10, conv_NA =TRUE){ #takes a matrix as input, calculates rowwise cumulative sums, and returns the position on which a threshold was first reached in each row 
@@ -362,7 +362,7 @@ calc_cumul <- function (inp_matrix,thres=10, conv_NA =TRUE){ #takes a matrix as 
 }
 ```
 
-### Function that puts all these functions for one station together
+#### Function that puts all these functions for one station together
 
 ``` r
 do_all<-function(station,x=10,y=50){
@@ -386,7 +386,7 @@ do_all<-function(station,x=10,y=50){
 }
 ```
 
-### Function to calculate weighted means
+#### Function to calculate weighted means
 
 The built-in function cannot handle NA
 
@@ -403,7 +403,7 @@ weighted_means<-function(resm,nm){ #calculate row-wise means of a matrix, weight
 }
 ```
 
-### function to calculate standard deviation
+#### function to calculate standard deviation
 
 ``` r
 standard_dev<-function(resm){ #calculate row-wise sd of a matrix, ignoring any NAs
@@ -418,7 +418,7 @@ standard_dev<-function(resm){ #calculate row-wise sd of a matrix, ignoring any N
 }
 ```
 
-### wrapping function to run the code for all stations
+#### wrapping function to run the code for all stations
 
 ``` r
 loop_stations<-function(x=10,y=50){
@@ -447,7 +447,7 @@ return(list(final,final2))
 }
 ```
 
-### running the actual code
+#### running the actual code
 
 This chunk tries 4 different parameter combinations
 
@@ -460,9 +460,9 @@ final_5_0<-loop_stations(5,0)
 
 *The results are stored in lists with 2 entries: final\[\[1\]\] is the matrix with winter onsets in each year (columns) and for each station (rows), final\[\[2\]\] is a matrix with the according sample size (number of days per year)*
 
-### plotting results
+#### plotting results
 
-The follwoing chunk plots mean winter onset (weighted by sample size within each year, i.e. days with data), then sd(winter onset), and lastly the coefficient of variation, sd/mean. This is done for four parameter combinations (only 1 available at github).
+The follwoing chunk plots mean winter onset (weighted by sample size within each year, i.e. days with data), then sd(winter onset), and lastly the coefficient of variation, sd/mean. This is done for four parameter combinations.
 
 ``` r
 lis<-list(final_10_50,final_5_20,final_20_100,final_5_0)
@@ -524,7 +524,7 @@ cropped$CV[cropped$CV>0.5]<-0.5
 
 ![](var_coldsum_files/figure-markdown_github/plot_cropped-2.png)
 
-### comparing the 4 runs
+#### comparing the 4 runs
 
 ``` r
 m<-merge(CV[[1]],CV[[2]],by=0) #by=0 merges by rownames
@@ -538,7 +538,7 @@ plot(m[,2:5])
 
 These look quite similar, only the parameter run "20 days below 10°C" sticks out as different. But this parameter combination is really quite different from the others.
 
-### weighted standard deviation
+#### weighted standard deviation
 
 The number of days with data is likely different among years. How is the overall data quality?
 
@@ -612,6 +612,7 @@ plotting the results: mean, sd and weighted sd (all weighted). sd has to be capp
 ``` r
 input<-NA
 for (i in 1:length(weighted)){
+  subtitle<-paste(x[i],"days below ", y[i], "°C") #will be needed in figures
  # hist(weighted[[i]]$sd,breaks=100, main = paste("histogram standard deviation run ",i))
   input<-weighted[[i]]
   input$sd[input$sd>50]<-50
@@ -632,7 +633,7 @@ for (i in 1:length(weighted)){
 
 ![](var_coldsum_files/figure-markdown_github/plot_cv-1.png)![](var_coldsum_files/figure-markdown_github/plot_cv-2.png)![](var_coldsum_files/figure-markdown_github/plot_cv-3.png)![](var_coldsum_files/figure-markdown_github/plot_cv-4.png)![](var_coldsum_files/figure-markdown_github/plot_cv-5.png)![](var_coldsum_files/figure-markdown_github/plot_cv-6.png)![](var_coldsum_files/figure-markdown_github/plot_cv-7.png)![](var_coldsum_files/figure-markdown_github/plot_cv-8.png)![](var_coldsum_files/figure-markdown_github/plot_cv-9.png)![](var_coldsum_files/figure-markdown_github/plot_cv-10.png)![](var_coldsum_files/figure-markdown_github/plot_cv-11.png)![](var_coldsum_files/figure-markdown_github/plot_cv-12.png)
 
-### some extremely preliminary models:
+#### some extremely preliminary models:
 
 ``` r
 a$alt[a$alt==-999.9]<-NA
@@ -672,7 +673,7 @@ do_models(a$CV, "cv")
 
 ![](var_coldsum_files/figure-markdown_github/models-7.png)![](var_coldsum_files/figure-markdown_github/models-8.png)![](var_coldsum_files/figure-markdown_github/models-9.png)
 
-### cropping latitudes
+#### cropping latitudes
 
 latitudes &gt; 60°N are kind of special. remove
 
