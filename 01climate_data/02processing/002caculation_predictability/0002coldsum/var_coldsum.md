@@ -149,6 +149,7 @@ reg[i,2]<-temp_set[1,36]# latitude
 reg[i,3]<-parms[1] # Amplitude
 reg[i,4]<-parms[2] #phase angle
 reg[i,5]<-parms[3]#intercept
+reg[i,6]<-temp_set[1,1]#ID
 }
 reg<-reg[is.na(reg[,3])==F,]
 ```
@@ -696,4 +697,51 @@ do_models(a$CV, "cv")
 
 ![](var_coldsum_files/figure-markdown_github/crop_lats-7.png)![](var_coldsum_files/figure-markdown_github/crop_lats-8.png)![](var_coldsum_files/figure-markdown_github/crop_lats-9.png)
 
-The mean winter onset decreases (becomes earlier) at higher latitudes, is slightly higher (later) in Europe than in America (though coverage of canada is way lower than scandinavia), and decreases with altitude (earlier high up). SD is not sensible due to these patterns, better use CV = sd/mean. The CV is independent of latitude, but increases with altitude.
+The mean winter onset decreases (becomes earlier) at higher latitudes, is slightly higher (later) in Europe than in America (though coverage of canada is way lower than scandinavia), and decreases with altitude (earlier high up). SD makes no sense due to these patterns, better use CV = sd/mean. The CV is independent of latitude, but increases with altitude.
+
+One would expect that CV is only high when amplitude (difference winter-summer) is low ,because then a small drop in temperature counts as winter event. Based on amplitude patterns(pink graphics, way up), one expects CV to increase towards equator, and to increase towards oceans. Instead, high CVs appear mostly in central US. Why?
+
+\`\`\`{r}
+=========
+
+me&lt;-merge(a,reg,by.x=1,by.y=6) \#lat.y and lon.y are wrong me&lt;-me\[me$lat.x&lt;60,\] me*A*\[*m**e*A&gt;300\]&lt;-300 me*a**l**t*\[*m**e*alt==-999.9\]&lt;-NA me&lt;-me\[!is.na(me$alt),\] mod&lt;-lm(me*C**V* *m**e*A) plot(me*C**V* *m**e*A,pch=22,cex=0.3) abline(mod,col=2,lwd=2)
+
+me&lt;-me\[me$CV&gt;0.001,\] Ml&lt;-lm(log(me*C**V*) *m**e*A) plot(log(me*C**V*) *m**e*A,pch=22,cex=0.5) abline(Ml,col=2,lwd=2)
+
+So the variance occurs indeed only in low-amplitude regions (though the green graphics suggested otherwise)
+===========================================================================================================
+
+me*l**o**g**C**V* &lt; −*l**o**g*(*m**e*CV)
+
+plot(me*l**o**g**C**V* *m**e*lat.x) abline(lm(me*l**o**g**C**V* *m**e*lat.x),col=2,lwd=2) \#that is strange, Amplitude correlates with latitude, so why does CV not correlate the same way (pattern is opposite if anything)
+
+sub&lt;-me\[me$lon.x&lt;0,\] hi&lt;-sub\[sub$CV&gt;0.25,\] plot(sub*l**a**t*.*x* *s**u**b*lon.x,bg=rgb(sub*A*, 0, *s**u**b*A,maxColorValue = max(sub*A*)), *p**c**h* = 22, *c**o**l* = *N**A*, *c**e**x* = 1.5, *x**l**i**m* = *c*(−130, −50))*p**o**i**n**t**s*(*h**i*lat.x~hi$lon.x,cex=1.5,col=4,lwd=2) \#\#aah!}
+
+
+    The amplitude does not correlate strongly with latitude between 20°N and 60°N, the continentality is more important. high CVS occur rarely at really high amplitude regions (>50°N and central US), but mostly at the west coast (which has low amplitude) and the mountain ranges east to it (medium amplitude)
+
+    same graphic for all 4 scenarios
+
+    #```{r}
+    input<-NA
+    for (i in 1:length(weighted)){
+      subtitle<-paste(x[i],"days below ", y[i], "°C") #will be needed in figures
+     # hist(weighted[[i]]$sd,breaks=100, main = paste("histogram standard deviation run ",i))
+      input<-weighted[[i]]
+      input<-input[!is.na(input$m),]
+      a<-merge(input,locations,by=1)
+      a$sd[a$sd>100]<-100
+      a<-a[!is.na(a$sd),]
+      a$CV<-a$sd/a$m
+      a$alt[a$alt==-999.9]<-NA
+      a<-a[!is.na(a$alt),]
+      a<-a[a$lat<60,]
+      me<-merge(a,reg,by.x=1,by.y=6)
+      plot(me$CV~me$A,pch=22,cex=0.3,main="standard deviation vs latitude",sub=subtitle)
+      hi<-sub[sub$CV>0.25,]
+      sub<-me[me$lon.x<0,]
+      plot(sub$lat.x~sub$lon.x,bg=rgb(sub$A,0,sub$A,maxColorValue = max(sub$A)),pch=22,col=NA,cex=1.5,xlim=c(-130,-50),main="blue = high CV, pink = amplitude",sub=subtitle)
+      points(hi$lat.x~hi$lon.x,cex=1.5,col=4,lwd=2)
+    #}
+
+to do list: calculate winter like kivelä check whether CV ~ n

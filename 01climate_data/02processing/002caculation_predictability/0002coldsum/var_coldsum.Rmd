@@ -83,7 +83,7 @@ rm(newset)
 The following part will append all data from one station to a single vector and make a non-linear least square regression. The data is expected to follow a sine curve with a period of ~1 year.
 
 
-###Function for creating single vector  
+####Function for creating single vector  
 
 The function "daily_t" will use the data provided by one station. It will append all daily temperature recordings of all years (up to 145 years \* 12 months \* 31 days ) into a single vector, filling up with NAs as needed. 
 
@@ -117,7 +117,7 @@ daily_t <- function (station){
 
 
 
-###Function for nonlinear least-square regression  
+####Function for nonlinear least-square regression  
 
 The function 'get_nls' takes the daily temperatures of one station (which is supplied as single vector), and applies a non-linear least squares model which estimates intercept, phase angle and amplitude of a sine curve.
 
@@ -141,7 +141,7 @@ get_nls <- function (vals,s_A=400,s_phi=pi/2,s_c=200){#s_... are starting values
 
 
 
-###applying the functions on the dataset
+####applying the functions on the dataset
 
 The following chunk will apply a nls regression on the climate data of each station. The daily temperatures over ~20 years are expected to follow a sine-curve pattern with a period of 1 year. The curve is determined by the following parameters:  
 * a *constant c* that defines the average temperature throughout the year. It is around 20°C in temperate climates, around 30°C at the equator.  
@@ -184,12 +184,13 @@ reg[i,2]<-temp_set[1,36]# latitude
 reg[i,3]<-parms[1] # Amplitude
 reg[i,4]<-parms[2] #phase angle
 reg[i,5]<-parms[3]#intercept
+reg[i,6]<-temp_set[1,1]#ID
 }
 reg<-reg[is.na(reg[,3])==F,]
 ```
 
 
-###Plotting the results:
+####Plotting the results:
 
 1. average Temperature
 ```{r T_avg}
@@ -266,7 +267,7 @@ According to the subset, the data behaves just as expected.
 The remaining part of the script will be done on northern hemisphere only (>20°N), as there is no empirical data for southern hemisphere.
 
 
-##calculate number of cold-days
+##calculate winter variability
 
 The location metadata has been erased in the meantime, because it takes quite a bit of memory. Reload it:
 
@@ -297,7 +298,7 @@ sfile<-unique(newset$ID)
 
 
 
-###General idea
+####General idea
 
 It is inconvenient that the year ends around midwinter. To calculate winter arrival, it makes more sense to have one "year" going from june to june:
 
@@ -307,7 +308,7 @@ plot(daily_t(testset),type="l")
 points(x=165+372*(1:100),y= daily_t(testset)[165+372*(1:100)],col=2) #okay, dataset can be cut in this positiont
 ```
 
-###How this is done
+####How this is done
 
 * process data from one station to get a single temperature vector (there is already a function for that, called daily_t)
 * get rid of the first half year (which lies before the first red dot), and of the last half year (this does not contain full 12 months of information) 
@@ -321,7 +322,7 @@ points(x=165+372*(1:100),y= daily_t(testset)[165+372*(1:100)],col=2) #okay, data
 
 
 
-###Function to cut and reassemble into binomial matrix
+####Function to cut and reassemble into binomial matrix
 
 This function takes the looong temperature vector of one station (daily temperature of several years), cuts the head and tail (half a year each), puts it back into matrix format (1 row = 1 year), and transforms it into a binomial matrix
 
@@ -359,7 +360,7 @@ reassemble_cd <- function (station,degrees=50){ #method to calculate winter onse
 
 
 
-###Function to calculate number of days with data
+####Function to calculate number of days with data
 
 The script will later calculate the mean winter onset at each station. Because data quality differs among years, the mean needs to be weighted by the number of days with data per year. To do that, one needs to actually have the number of days:
 
@@ -378,7 +379,7 @@ row_na<-function (inp_matrix){
 ```
 
 
-###Function to test whether the cumulative sum of occurences of y reaches x = 10
+####Function to test whether the cumulative sum of occurences of y reaches x = 10
 
 ```{r cumulator}
 calc_cumul <- function (inp_matrix,thres=10, conv_NA =TRUE){ #takes a matrix as input, calculates rowwise cumulative sums, and returns the position on which a threshold was first reached in each row 
@@ -408,7 +409,7 @@ calc_cumul <- function (inp_matrix,thres=10, conv_NA =TRUE){ #takes a matrix as 
 ```
 
 
-###Function that puts all these functions for one station together
+####Function that puts all these functions for one station together
 
 ```{r winter_one_station}
 do_all<-function(station,x=10,y=50){
@@ -435,7 +436,7 @@ do_all<-function(station,x=10,y=50){
 
 
 
-###Function to calculate weighted means
+####Function to calculate weighted means
 
 The built-in function cannot handle NA
 
@@ -452,7 +453,7 @@ weighted_means<-function(resm,nm){ #calculate row-wise means of a matrix, weight
 }
 ``` 
 
-###function to calculate standard deviation
+####function to calculate standard deviation
 ```{r sd}
 standard_dev<-function(resm){ #calculate row-wise sd of a matrix, ignoring any NAs
   ms<-rep(NA, nrow(resm))
@@ -467,7 +468,7 @@ standard_dev<-function(resm){ #calculate row-wise sd of a matrix, ignoring any N
 ``` 
 
 
-###wrapping function to run the code for all stations
+####wrapping function to run the code for all stations
 
 
 ```{r winter_all_Stations}
@@ -500,7 +501,7 @@ return(list(final,final2))
 
 
 
-###running the actual code
+####running the actual code
 
 This chunk tries 4 different parameter combinations
 ```{r run_the_code}
@@ -515,9 +516,11 @@ final_5_0<-loop_stations(5,0)
 
 
 
-###plotting results
 
-The follwoing chunk plots mean winter onset (weighted by sample size within each year, i.e. days with data), then sd(winter onset), and lastly the coefficient of variation, sd/mean. This is done for four parameter combinations (only 1 available at github). 
+####plotting results
+
+
+The follwoing chunk plots mean winter onset (weighted by sample size within each year, i.e. days with data), then sd(winter onset), and lastly the coefficient of variation, sd/mean. This is done for four parameter combinations. 
 
 
 ```{r plot_the_results}
@@ -573,7 +576,7 @@ cropped$CV[cropped$CV>0.5]<-0.5
 
 
 
-###comparing the 4 runs
+####comparing the 4 runs
 
 ```{r comparison}
 m<-merge(CV[[1]],CV[[2]],by=0) #by=0 merges by rownames
@@ -587,7 +590,7 @@ plot(m[,2:5])
 These look quite similar, only the parameter run "20 days below 10°C" sticks out as different. But this parameter combination is really quite different from the others. 
 
 
-###weighted standard deviation  
+####weighted standard deviation  
 
 The number of days with data is likely different among years. How is the overall data quality?
 
@@ -656,6 +659,7 @@ plotting the results: mean, sd and weighted sd (all weighted). sd has to be capp
 ```{r plot_cv}
 input<-NA
 for (i in 1:length(weighted)){
+  subtitle<-paste(x[i],"days below ", y[i], "°C") #will be needed in figures
  # hist(weighted[[i]]$sd,breaks=100, main = paste("histogram standard deviation run ",i))
   input<-weighted[[i]]
   input$sd[input$sd>50]<-50
@@ -675,7 +679,7 @@ for (i in 1:length(weighted)){
 ```
 
 
-###some extremely preliminary models:
+####some extremely preliminary models:
 
 ```{r models}
 a$alt[a$alt==-999.9]<-NA
@@ -703,7 +707,7 @@ do_models(a$sd,"sd")
 do_models(a$CV, "cv")
 ```
 
-###cropping latitudes
+####cropping latitudes
 
 latitudes > 60°N are kind of special. remove
 
@@ -714,4 +718,72 @@ do_models(a$sd,"sd")
 do_models(a$CV, "cv")
 ```
 
-The mean winter onset decreases (becomes earlier) at higher latitudes, is slightly higher (later) in Europe than in America (though coverage of canada is way lower than scandinavia), and decreases with altitude (earlier high up). SD is not sensible due to these patterns, better use CV = sd/mean. The CV is independent of latitude, but increases with altitude.
+The mean winter onset decreases (becomes earlier) at higher latitudes, is slightly higher (later) in Europe than in America (though coverage of canada is way lower than scandinavia), and decreases with altitude (earlier high up). SD makes no sense due to these patterns, better use CV = sd/mean. The CV is independent of latitude, but increases with altitude.
+
+One would expect that CV is only high when amplitude (difference winter-summer) is low ,because then a small drop in temperature counts as winter event. Based on amplitude patterns(pink graphics, way up), one expects CV to increase towards equator, and to increase towards oceans. Instead, high CVs appear mostly in central US. Why?
+
+
+#```{r}
+
+me<-merge(a,reg,by.x=1,by.y=6) #lat.y and lon.y are wrong
+me<-me[me$lat.x<60,]
+me$A[me$A>300]<-300
+me$alt[me$alt==-999.9]<-NA
+me<-me[!is.na(me$alt),]
+mod<-lm(me$CV~me$A)
+plot(me$CV~me$A,pch=22,cex=0.3)
+abline(mod,col=2,lwd=2)
+
+
+me<-me[me$CV>0.001,]
+Ml<-lm(log(me$CV)~me$A)
+plot(log(me$CV)~me$A,pch=22,cex=0.5)
+abline(Ml,col=2,lwd=2)
+
+#So the variance occurs indeed only in low-amplitude regions (though the green graphics suggested otherwise)
+
+me$logCV<-log(me$CV)
+
+plot(me$logCV~me$lat.x)
+abline(lm(me$logCV~me$lat.x),col=2,lwd=2)
+#that is strange, Amplitude correlates with latitude, so why does CV not correlate the same way (pattern is opposite if anything)
+
+
+sub<-me[me$lon.x<0,]
+hi<-sub[sub$CV>0.25,]
+plot(sub$lat.x~sub$lon.x,bg=rgb(sub$A,0,sub$A,maxColorValue = max(sub$A)),pch=22,col=NA,cex=1.5,xlim=c(-130,-50))
+points(hi$lat.x~hi$lon.x,cex=1.5,col=4,lwd=2)
+##aah!}
+
+```
+
+The amplitude does not correlate strongly with latitude between 20°N and 60°N, the continentality is more important. high CVS occur rarely at really high amplitude regions (>50°N and central US), but mostly at the west coast (which has low amplitude) and the mountain ranges east to it (medium amplitude)
+
+same graphic for all 4 scenarios
+
+#```{r}
+input<-NA
+for (i in 1:length(weighted)){
+  subtitle<-paste(x[i],"days below ", y[i], "°C") #will be needed in figures
+ # hist(weighted[[i]]$sd,breaks=100, main = paste("histogram standard deviation run ",i))
+  input<-weighted[[i]]
+  input<-input[!is.na(input$m),]
+  a<-merge(input,locations,by=1)
+  a$sd[a$sd>100]<-100
+  a<-a[!is.na(a$sd),]
+  a$CV<-a$sd/a$m
+  a$alt[a$alt==-999.9]<-NA
+  a<-a[!is.na(a$alt),]
+  a<-a[a$lat<60,]
+  me<-merge(a,reg,by.x=1,by.y=6)
+  plot(me$CV~me$A,pch=22,cex=0.3,main="standard deviation vs latitude",sub=subtitle)
+  hi<-sub[sub$CV>0.25,]
+  sub<-me[me$lon.x<0,]
+  plot(sub$lat.x~sub$lon.x,bg=rgb(sub$A,0,sub$A,maxColorValue = max(sub$A)),pch=22,col=NA,cex=1.5,xlim=c(-130,-50),main="blue = high CV, pink = amplitude",sub=subtitle)
+  points(hi$lat.x~hi$lon.x,cex=1.5,col=4,lwd=2)
+#}
+```
+to do list:
+calculate winter like kivelä
+check whether CV ~ n
+
