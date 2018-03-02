@@ -20,7 +20,7 @@ library(stringr)
 library(magrittr)
 threshold<-50
 t2<-10
-load("converted.RData")
+#load("converted.RData")
 ```
 # General description  
 ## Aim  
@@ -164,7 +164,6 @@ return(station)
 
 ```
 
-
 ```{r}
 
 for (loop in 1:29){
@@ -178,6 +177,7 @@ cor_7<-rep(NA,length(unique(station$ID)))
 cor_14<-rep(NA,length(unique(station$ID)))
 cor_21<-rep(NA,length(unique(station$ID)))
 nyears<-rep(NA,length(unique(station$ID)))
+c<-rep(NA,length(unique(station$ID)))
 for (i in 1:length(unique(station$ID))){
   #make a subset with 1 station
   #remove years with <182 days of data
@@ -200,6 +200,8 @@ for (i in 1:length(unique(station$ID))){
     next  #skip stations with less than 3 years of +-complete data
   }
   
+  
+  ##calculate winter arrival
   bino<-s
   bino[bino<threshold]<-1
   bino[bino>=threshold]<-0
@@ -220,6 +222,7 @@ for (i in 1:length(unique(station$ID))){
      w_on[j]<-min(which(cumsum(as.integer(bino[j,]))==t2))
    }
 
+  ##calculate mean and sd in witner arrival
   ndays<-ndays[used]
   mean_winter[i]<-weighted.mean(w_on,ndays)
   weights<-ndays/366
@@ -232,7 +235,7 @@ for (i in 1:length(unique(station$ID))){
   rm(ndays)
   rm(bino)
 
-  #whats needed: w_on, s
+  #wcalculate correlation with x days ago
   m<-matrix(data=c(which(used==T),w_on),nrow=length(w_on),ncol=2)
   m2<-matrix(data=c(which(used==T),w_on-7),nrow=length(w_on),ncol=2)
   m2[m2<1]<-NA
@@ -245,19 +248,48 @@ for (i in 1:length(unique(station$ID))){
   w_7<-s[m2]
   w_14<-s[m3]
   w_21<-s[m4]
-  cor
+
   cor_7[i]<-cor(w[!is.na(w_7)],w_7[!is.na(w_7)])
   cor_14[i]<-cor(w[!is.na(w_14)],w_14[!is.na(w_14)])
   cor_21[i]<-cor(w[!is.na(w_21)],w_21[!is.na(w_21)])
   nyears[i] <- length(w_on)
-  rm(s)
-  rm(w_on)
   
+  ##calculate pearsons R along last 30 days before winter onset
+  rownames(s)<-1:nrow(s)
+  n<-gather(as.data.frame(t(s))) #turns into long format
+  n$xvec<-rep(1:ncol(s),length(unique(n$key))) #xvec is days after 1.july
+  n$key<-as.integer(n$key)
+  n<-filter(n,xvec<w_on[key] & xvec >= w_on[key]-31)  #now dataset contains only last 30 days before winter onset in that respective year
+  n2<-group_by(n,key)
+  n<-filter(n2,sum(!is.na(value))>10)  #removes years that have less than 10 days of data in the 30 days before winter onset
+
+  #plot(n$value~n$xvec,bg=n$key,pch=21)
+ c[i]<- cor(n$value,n$xvec,use="na.or.complete")
 }
-reslist<-data.frame(unique(station$ID),mean_winter,sd_winter,cor_7,cor_14,cor_21,nyears[i])
-names(reslist)<-c("ID","meanwinter","sd winter", "cor 1wk","cor2wk","cor3wk","nyears")
-write.table(reslist,"results.txt",append=TRUE,quote=FALSE,row.names=FALSE,col.names=TRUE)
+
+
+reslist<-data.frame(unique(station$ID),mean_winter,sd_winter,cor_7,cor_14,cor_21,nyears,c)
+
+names(reslist)<-c("ID","meanwinter","sd winter", "cor 1wk","cor2wk","cor3wk","nyears","cor")
+write.table(reslist,"results.txt",append=TRUE,quote=FALSE,row.names=FALSE,col.names=FALSE)
 }
+```
+
+
+```{r}
+reslist<-read.table("results.txt")
+r2<-merge(locations,reslist,by=1)
+r2$cor<-r2$cor+1
+r2<-r2[!is.na(r2$cor),]
+
+r2<-r2[r2$V2<60,]
+plot(r2$V2~r2$V3,bg=rgb(r2$cor,r2$cor,0,maxColorValue = 1.612),pch=22,col=NA,cex=0.4)
+plot(r2$cor~r2$meanwinter)#cor becomes weaker in warmer climates
+plot(r2$cor~r2$V4)#does not decrease with altitude
+plot(r2$cor~r2$V2)#decreases with proximity equator
+plot(r2$cor~r2$`sd winter`) #not strongly correlated to sd winter
+cor(r2$cor,r2$`sd winter`)
+plot(r2$cor~r2$nyears)
 ```
 
 dataset is now sorted jun - jun, matrix of form
