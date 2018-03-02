@@ -24,3 +24,7 @@
 *.RData
 
 01climate_data/02processing/002caculation_predictability/0002coldsum/var_coldsum_files/figure-html/
+
+01climate_data/02processing/001data_conversion/converted_min\.txt
+
+01climate_data/02processing/001data_conversion/converted_max\.txt
