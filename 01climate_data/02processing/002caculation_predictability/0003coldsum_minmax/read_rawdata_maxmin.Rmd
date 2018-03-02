@@ -1,0 +1,225 @@
+---
+title: "winter variability and predictability based on Tmin,Tmax of 30k stations"
+author: "Jens Joschinski"
+date: "February 28, 2018"
+output: 
+    md_document:
+        variant: markdown_github
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,cache=TRUE)
+#setwd(dirname(dirname(dirname(getwd()))))
+library(RCurl)
+library(readr)
+library(data.table)
+library(textreadr)
+```
+# General description  
+## Aim  
+The aim of this project is to correlate climate variability with variability in seasonal timing. Is the slope in seasonal responses a bet-hedging trait, i.e., is it adaptive to spread one's timing in more variable conditions?  
+
+
+### Overview  
+The script opens a pre-processed (with PERL) dataset, which includes daily minimum and maximum temeratures for all months, years and stations all over the world (~65million X 31 days). It converts the dataset into [5 million x 365 days] format, and splits it in smaller chunks and saves these as new files.
+Then all small files are read in subsequently to calculate winter onset in each year, mean and sd of winter onset, and correlation of winter onset to temperature 1,2 and 3 weeks before winter onset. The results are again stored in text files.
+In the end, the results are read in again, and merged with climate station metadata (needs to connects with the NOAA server to get a list of available climate stations together with their latitudes and longitudes. This is the only time a connection to the server is required).
+
+
+
+### Specific description  
+
+The data was generated with R version `r getRversion()`. It uses the GHCN-daily dataset by NOAA:
+```{r, echo =F}
+text<- read_document("01raw/ghcnd_all/ghcnd-version.txt")
+print (text[1])
+```
+
+* read all stations
+* remove unneccessary stations (<3 ys, <20°N)
+- convert to june first
+- cut into N pieces
+- save as file
+
+- for each file: 
+- get winter onset for each year
+- get sample size for each year
+- get mean onset, sd
+- save results: vector means,sds, n_years;
+
+### Script  
+
+
+#### Read climate station data and clean up 
+
+Reading data and removing stations for which only mintemp or only maxtemp exists
+```{r read_n_clean}
+converted<-fread(paste(getwd(),"/02processing/001data_conversion/converted_max.txt",sep=""), sep ="|", na.strings=c("NA","-9999"),verbose=F)
+
+length(unique(converted$V1))
+conv_table<-table(converted$V1)
+inlist<-conv_table[conv_table>=3]
+converted<-converted[converted$V1 %in% names(inlist),]
+
+
+converted2<-fread(paste(getwd(),"/02processing/001data_conversion/converted_min.txt",sep=""), sep ="|", na.strings=c("NA","-9999"),verbose=F)
+conv_table2 <- table(converted2$V1)
+inlist2<-conv_table2[conv_table2>=3]
+converted2<-converted2[converted2$V1 %in% names(inlist2),]
+
+#now in both files stations with <3 years are removed: 700 from max temps, 611 from min temps
+
+converted2<-converted2[converted2$V1 %in% names(inlist),] 
+#min temps consists now only of stations that are also in max temps
+converted<-converted[converted$V1 %in% names(inlist2)]
+#and max temps only has stations that are also in min temps
+length(unique( converted$V1))
+length(unique(converted2$V1)) #same
+```
+
+Removing climate stations below 20°N
+
+```{r remove_under20}
+url<-"ftp://ftp.ncdc.noaa.gov/pub/data/ghcn/daily/ghcnd-stations.txt"
+#this dataset is fixed-width delimited, requiring a few additional steps
+locations<-read.fwf(
+  file=url
+  ,sep="!",na.strings=c("NA","-999.9"), #sep = ! because ! does not exist in dataset - > dataset is fixed-width and should have no additional seps
+  widths=c(11, 9, 10, 7,2,35)
+)
+
+badlist <- locations[locations[,2]<20,1]
+rm(locations)
+rm(url)
+converted<-converted[!(converted$V1 %in% badlist),]
+#removed 1,163,477 lines = 3,445 stations
+converted2<-converted2[!(converted2$V1 %in% badlist),]
+#removed 1,185,911 lines = 3,445 stations
+rm(inlist)
+rm(inlist2)
+rm(conv_table)
+rm(conv_table2)
+```
+
+
+removing any month that occurs in only one of the two datasets (nrow should be the same for both)
+
+```{r remove_uniquemonths}
+
+converted$new_id<-NA
+for (i in 1:nrow(converted)){
+converted$new_id[i]<-paste(converted[i,1],converted[i,2],converted[i,3],sep="")
+}
+
+converted2$new_id<-NA
+for (i in 1:nrow(converted2)){
+converted2$new_id[i]<-paste(converted2[i,1],converted2[i,2],converted2[i,3],sep="")
+}
+
+data$x <- do.call(paste, c(data[cols], sep="-"))
+for (co in cols) data[co] <- NULL
+
+converted2<-converted2[converted2$new_id %in% converetd$new_id]
+converted<-converted[converted$new_id %in% converted2$new_id]
+
+converted<-sort(converted, converted$new_id)
+converted2<-sort(converted2,converted2$new_id)
+
+
+
+loclist<-converted$new_id
+converted2<-converted2[converted2$new_id %in% loclist,] #remove all stations from c2 that are not in c1
+
+loclist<-converted2$new_id # remove all stations from c1 that are not in c2
+converted<-converted[converted$V1 %in% loclist,]
+
+#newset<-merge.data.frame(converted,locations,by=1)
+names(newset)<-c("ID","year","month",1:31,"lat","lon","alt","name","?")
+newset<-newset[newset$lat>20,]
+
+
+#this dataset has been made with the perl script conversion.pl in subfolder 01climatedata/02processing/001data_conversion
+hist(table(converted[,1]),breaks=1000, main = "Histogram of #months per station", xlab = "no. of rows")
+length(table(converted[,1]))
+length(table(converted[,1])[table(converted[,1])<=36])#the peak of 600 stations is at 34 months
+```
+
+*this perl script takes the NOAA GHCN daily dataset (daily weather data for ~50 ys, around the whole world), and extracts
+daily average temperatures. it ignores all other data flags that are inside that dataset. The format of the old datasets is fixed-width delimited, the new one will be delimited by "|".
+the new data is sorted in the following way:  
+station1 | year 1 | month 1 | T(day1) | T(day2) |...| T(day31)  
+station1 | year 1 | month 2...  
+station1 | year 2 | month 1...  
+station2| year 1 | month 1...  
+missing data, and non-existent days (eg Feb 31) are called NA.  
+this script uses a local copy of the dataset from "ftp.ncdc.noaa.gov/pub/data/ghcn/daily/"; the .tar.gz file has to be extracted first (separate folder with 100,000 text files)*
+
+
+Merging of the dataset with location data:
+
+
+```{r}
+newset<-merge.data.frame(converted,locations,by=1)
+rm(converted)
+#now newset contains daily temps of all stations + their coordinates and names
+
+names(newset)<-c("ID","year","month",1:31,"lat","lon","alt","name","?")
+#factors to numeric etc, further cleanup
+newset<-droplevels(newset)
+newset[,2]<-(as.integer(as.character(newset[,2])))
+newset[,3]<-(as.integer(as.character(newset[,3])))
+str(newset)
+newset$alt[newset$alt==-999.9]<-NA
+nona<-newset
+nona$alt<-nona$alt+350
+nona<-nona[is.na(nona$alt)==F,]
+plot(nona$lat~nona$lon,col=rgb(nona$alt,0,0,maxColorValue = max(nona$alt)),main="location of climate stations, altitude in red",cex=0.2)
+rm(nona)
+```
+
+#### saving output  
+
+The raw data was loaded successfully, and information about coordinates and altitude was added. Now the dataset will be saved as workspace, so that it can be used by other scripts.
+
+
+
+
+####colour climate stations with <3ys of data
+```{r}
+t <- table(newset[,1])
+t<-as.data.frame(t)
+u<-merge(t,newset,by=1)
+
+u$freq2<-2
+u$freq2[u$Freq<=36]<-1
+u$freq2[u$Freq>120]<-3
+
+plot(u$lat~u$lon,bg=u$freq2,cex=0.6,main = "sample sizes", sub = "<3y: black, <10y: red,>10y green",pch=22,col=NA)
+
+```
+
+```{r}
+rm(text)
+rm(url)
+rm(locations)
+rm(slist)
+rm(t)
+save.image(paste(getwd(),"/02processing/001data_conversion/Rworkspace.RData",sep=""))
+```
+
+
+#### Read locations data  
+
+```{r}
+url<-"ftp://ftp.ncdc.noaa.gov/pub/data/ghcn/daily/ghcnd-stations.txt"
+#this dataset is fixed-width delimited, requiring a few additional steps
+locations<-read.fwf(
+  file=url
+  ,sep="!",na.strings=c("NA","-999.9"), #sep = ! because ! does not exist in dataset - > dataset is fixed-width and should have no additional seps
+  widths=c(11, 9, 10, 7,2,35)
+)
+#plot(locations[,2]~locations[,3],xlab = "longitude",ylab="latitude",pch=21, cex=0.1)
+```
+
+
+This dataset has only station ID, coordinates, altitude and name of the station, no actual data. The data was pre-processed with a PERL script, which now needs to be merged with the location data.
