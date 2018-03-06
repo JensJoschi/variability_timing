@@ -139,23 +139,36 @@ rm(mymonths)
 save.image(file = "converted.RData")
 ```
 
+Due to problems with memory allocation, the big (26 million rows) dataset needs to be processed piece-wise. I chose 30 chunks of 1000 climate stations each. 
+The following steps have to be done on that 1000 station dataset
 
+* change data structure from 
+    station 1 year 1 month 1 day 1,2,3..31
+    station 1 year 1 month 2 day 1,2,3..31  
+  to:  
+    station 1 year 1 day 1,2,3.. 365
+    station 1 year 2 day 1,2,3.. 365  
+* make subset with 1 station and
+  ** calculate winter onset in each year
+  ** calculate mean winter onset (weighted by number of days per year)
+  ** calculate weighted standard deviation in winter onset
+  ** calculate correlation of winter onset and temperature 1,2,3 weeks before winter onset
+  ** calculate predictability: pearsons R along last 30 days before winter onset
 
+changing the data structure:
 ```{r}
 turn_around <- function(station){
 station<-
   station %>% 
   gather(key="day",value="temperature",-(1:3)) %>% #makes one very long dataframe with 2 columns
-  mutate (day=str_pad(day,2,pad="0")) %>%
+  mutate (day=str_pad(day,2,pad="0")) %>%  #this makes leading zeros where they aer needed
   mutate (temperature=as.numeric(temperature)) %>%
   arrange (ID,year,month,day) %>%
-  unite_("un",c("month","day")) %>%
+  unite_("un",c("month","day")) %>%  #makes new col with new ID
   spread(key="un",value="temperature")#puts in new wide format with 365 columns (month-day)
 
 #ncol(station)
 #length(station$`08Feb_29`) #not many, due to leapyears
-#data structure
-#station[1:4,1:10]
 x<-NA
 for(i in 1:ncol(station)){x[i]<-length(unique(station[,i]))}
 station<-station[-which(x==1)]  #dates like 30 feb are erased
@@ -164,8 +177,28 @@ return(station)
 
 ```
 
-```{r}
+```{r nls_regression}
+get_nls <- function (vals,s_A=400,s_phi=pi/2,s_c=200){#s_... are starting values for nls function
+  if (length(vals)==NA || length(vals)<1000){return (NA)} else{ #when there is insufficient data, the function daily_t will return "NA", so vals gets length 1. Otherwise vals will have length of at least 2*370(many of which may be NA)
+  x<-1:length(vals)
+  data<-data.frame(x,vals)
 
+  #make nls regression for function 'y=Amplitude * cosine(period*x + phase angle) + intercept'
+  res <- nls(vals ~ A*cos(x*2*pi/372+phi)+C, data=data, start=list(A=s_A,phi=s_phi,C=s_c),
+            upper=c(500,2*pi,400),algorithm="port",lower=c(0,0,-400)) 
+  #372 and not 365.25, because a vector of 12*31 was used before 
+  #(filling up e.g. 31.feb with NA). This made coping with leap years easier
+
+  co <- coef(res)
+  return(co)
+  }
+}
+```
+
+
+
+
+```{r}
 for (loop in 1:29){
 station<-converted[converted$ID %in% unique(converted$ID)[(loop-1)*1000+1:1000*loop],]
 station<-turn_around(station)
@@ -173,42 +206,40 @@ station<-turn_around(station)
 
 mean_winter<-rep(NA,length(unique(station$ID)))
 sd_winter<- rep(NA,length(unique(station$ID)))
-cor_7<-rep(NA,length(unique(station$ID)))
-cor_14<-rep(NA,length(unique(station$ID)))
-cor_21<-rep(NA,length(unique(station$ID)))
+#cor_7<-rep(NA,length(unique(station$ID)))
+#cor_14<-rep(NA,length(unique(station$ID)))
+#cor_21<-rep(NA,length(unique(station$ID)))
 nyears<-rep(NA,length(unique(station$ID)))
 c<-rep(NA,length(unique(station$ID)))
+
+
 for (i in 1:length(unique(station$ID))){
-  #make a subset with 1 station
-  #remove years with <182 days of data
-  #skip station with <3 years, and years where winter is not reached
-  #for the rest make a binomial matrix with all Temps<threshold = 1, all others =0(including NA)
-  #calculate winter onset: point in each year where cumulative sum is reached
-  #calculate weighted mean winter (weighted by no of days/year) and sd (also weighted)
-  #calculate correlation of winter onset and temp 1,2,3 weeks ago
   
+  #read in station
   id<-unique(station$ID)[i]
   s<-filter(station,ID==id)
   
+  #remove years with <182 days of data
   ndays<-rowSums(!is.na(s))-2 #number of days with data per year, -2 because need to substract id and year
   s<-s[ndays>182,3:ncol(s)]
   ndays<-ndays[ndays>182]
   
+  #skip stations with <3 years
   if (nrow(s)<3) {
     mean_winter[i]<-NA
     sd_winter[i]<-NA
-    next  #skip stations with less than 3 years of +-complete data
+    next
   }
   
-  
-  ##calculate winter arrival
+  ##calculate winter arrival: make a binomial matrix with all Temps<threshold = 1, all others =0(including NA)
   bino<-s
   bino[bino<threshold]<-1
   bino[bino>=threshold]<-0
   bino[is.na(bino)]<-0
   rownames(bino)<-1:nrow(bino)
   
-  used<-rowSums(bino)>t2#exclude years that never reach winter (less than x days below y°C)
+  #exclude years that never reach winter (less than x days below y°C)
+  used<-rowSums(bino)>t2
   if (sum(used) <3) {
     mean_winter[i]<-NA
     sd_winter[i]<-NA
@@ -217,60 +248,77 @@ for (i in 1:length(unique(station$ID))){
   bino<-bino[used,]
   w_on<-rep(NA,nrow(bino))
    
-  #for each row calculate date when cumsum = t2
+  #for each row calculate date when cumsum = t2 (winter)
    for (j in 1:nrow(bino)){
      w_on[j]<-min(which(cumsum(as.integer(bino[j,]))==t2))
    }
 
-  ##calculate mean and sd in witner arrival
+  ##calculate mean and sd in witner arrival (both weighted)
   ndays<-ndays[used]
   mean_winter[i]<-weighted.mean(w_on,ndays)
   weights<-ndays/366
   upper <- sum(weights*(w_on-mean_winter[i])^2)
   lower <- sum(weights)-1
   sd_winter[i] <- sqrt(upper/lower)
+  
+  #clean up memory
   rm(upper)
   rm(lower)
   rm(weights)
   rm(ndays)
   rm(bino)
 
-  #wcalculate correlation with x days ago
-  m<-matrix(data=c(which(used==T),w_on),nrow=length(w_on),ncol=2)
-  m2<-matrix(data=c(which(used==T),w_on-7),nrow=length(w_on),ncol=2)
-  m2[m2<1]<-NA
-  m3<-matrix(data=c(which(used==T),w_on-14),nrow=length(w_on),ncol=2)
-  m3[m3<1]<-NA
-  m4<-matrix(data=c(which(used==T),w_on-21),nrow=length(w_on),ncol=2)
-  m4[m4<1]<-NA
+  #calculate correlation with x days ago - the mean correölation was normally distributed around 0 and hence discontinued
+  #m<-matrix(data=c(which(used==T),w_on),nrow=length(w_on),ncol=2)
+ # m2<-matrix(data=c(which(used==T),w_on-7),nrow=length(w_on),ncol=2)
+  #m2[m2<1]<-NA
+  #m3<-matrix(data=c(which(used==T),w_on-14),nrow=length(w_on),ncol=2)
+ # m3[m3<1]<-NA
+  #m4<-matrix(data=c(which(used==T),w_on-21),nrow=length(w_on),ncol=2)
+  #m4[m4<1]<-NA
   
-  w<-s[m]
-  w_7<-s[m2]
-  w_14<-s[m3]
-  w_21<-s[m4]
+ # w<-s[m]
+ # w_7<-s[m2]
+#  w_14<-s[m3]
+ # w_21<-s[m4]
 
-  cor_7[i]<-cor(w[!is.na(w_7)],w_7[!is.na(w_7)])
-  cor_14[i]<-cor(w[!is.na(w_14)],w_14[!is.na(w_14)])
-  cor_21[i]<-cor(w[!is.na(w_21)],w_21[!is.na(w_21)])
+ # cor_7[i]<-cor(w[!is.na(w_7)],w_7[!is.na(w_7)])
+ # cor_14[i]<-cor(w[!is.na(w_14)],w_14[!is.na(w_14)])
+ # cor_21[i]<-cor(w[!is.na(w_21)],w_21[!is.na(w_21)])
+  
   nyears[i] <- length(w_on)
   
   ##calculate pearsons R along last 30 days before winter onset
-  rownames(s)<-1:nrow(s)
+  #idea: transpose and use gather to make 1 long vector ("day1:day 10000" only that they are not called like that)
+        #cut at (winter onset - 30) and winter onset
+        #clean incomplete data
+        #make correlation aggregating data from all years
+  rownames(s)<-1:nrow(s) #these are years 1:x
   n<-gather(as.data.frame(t(s))) #turns into long format
   n$xvec<-rep(1:ncol(s),length(unique(n$key))) #xvec is days after 1.july
   n$key<-as.integer(n$key)
   n<-filter(n,xvec<w_on[key] & xvec >= w_on[key]-31)  #now dataset contains only last 30 days before winter onset in that respective year
   n2<-group_by(n,key)
-  n<-filter(n2,sum(!is.na(value))>10)  #removes years that have less than 10 days of data in the 30 days before winter onset
+  test<-as.data.frame(summarise(n2,n())[,2])
+  full_seq<-NULL
+  for (k in 1:nrow(test)){
+   full_seq<-c(full_seq,(1:test$`n()`[k]))
+  }
+  n2$xvec2<-full_seq
 
-  #plot(n$value~n$xvec,bg=n$key,pch=21)
- c[i]<- cor(n$value,n$xvec,use="na.or.complete")
+  
+  n<-filter(n2,sum(!is.na(value))>10)  #removes years that have less than 10 days of data in the 30 days before winter onset
+  
+  
+ c[i]<- cor(n$value,n$xvec2,use="na.or.complete") #uses xvec 2, this aligns the data from all years on the x-axis
 }
 
+#n<-gather(as.data.frame(t(s)))
+#getnls(n)
+#gather and save results
+reslist<-data.frame(unique(station$ID),mean_winter,sd_winter,nyears,c)
 
-reslist<-data.frame(unique(station$ID),mean_winter,sd_winter,cor_7,cor_14,cor_21,nyears,c)
-
-names(reslist)<-c("ID","meanwinter","sd winter", "cor 1wk","cor2wk","cor3wk","nyears","cor")
+names(reslist)<-c("ID","meanwinter","sd winter","nyears","cor")
 write.table(reslist,"results.txt",append=TRUE,quote=FALSE,row.names=FALSE,col.names=FALSE)
 }
 ```
@@ -278,19 +326,83 @@ write.table(reslist,"results.txt",append=TRUE,quote=FALSE,row.names=FALSE,col.na
 
 ```{r}
 reslist<-read.table("results.txt")
+names(reslist)<-c("ID","meanwinter","sd winter", "cor 1wk","cor2wk","cor3wk","nyears","cor")
 r2<-merge(locations,reslist,by=1)
 r2$cor<-r2$cor+1
 r2<-r2[!is.na(r2$cor),]
-
+r2$`sd winter`[r2$`sd winter`>50]<-50
+hist(r2$`sd winter`,breaks=100)
 r2<-r2[r2$V2<60,]
-plot(r2$V2~r2$V3,bg=rgb(r2$cor,r2$cor,0,maxColorValue = 1.612),pch=22,col=NA,cex=0.4)
+plot(r2$V2~r2$V3,bg=rgb(r2$cor,r2$cor,0,maxColorValue = max(r2$cor)),pch=22,col=NA,cex=0.4,main="predictability")#the darker, the higher the neg. correlation
+plot(r2$V2~r2$V3,bg=rgb(r2$`sd winter`,r2$`sd winter`,0,maxColorValue = max(r2$`sd winter`)),pch=22,col=NA,cex=1,main="sd winter")
 plot(r2$cor~r2$meanwinter)#cor becomes weaker in warmer climates
 plot(r2$cor~r2$V4)#does not decrease with altitude
 plot(r2$cor~r2$V2)#decreases with proximity equator
 plot(r2$cor~r2$`sd winter`) #not strongly correlated to sd winter
 cor(r2$cor,r2$`sd winter`)
 plot(r2$cor~r2$nyears)
+
+r2$V4[r2$V4<(-990)]<-NA
+r2$V4[r2$V4<0]<-0 #only 14 values, between 0 and -22m
+M<-lm(r2$cor~r2$V2+r2$V3+sqrt(r2$V4))
+summary(M)#r2 0.27
+plot(M)
+
+#filtering for usa only
+am<-r2[r2$V3<(-50),]
+plot(am$V2~am$V3,bg=rgb(am$cor,am$cor,0,maxColorValue = max(am$cor)),pch=22,col=NA,cex=0.4,main = "predictability")#
 ```
+
+```{r}
+
+library(geomapdata)
+data(ETOPO5)
+N<-ETOPO5[,1:1080]
+for (i in 1:nrow(N)){
+  for (j in 1:ncol(N)){
+    if (N[i,j]<0) N[i,j]<-NA
+  }
+}
+image(N)
+
+N<-N[,ncol(N):1]
+image(N)
+
+latvec<-(1:ncol(N)) * (90-20)/1080 +20
+lonvec<-(1:nrow(N)) * 360/nrow(N)
+image(lonvec,latvec,N)
+s<-rep(latvec,each=nrow(N))
+lons
+a<-as.numeric(N)
+lat<-rep(lonvec,times=ncol(N))
+lats<-lats[!is.na(a)]
+lons<-lons[!is.na(a)]
+a<-a[!is.na(a)]
+plot(lats~lons,bg=rgb(a,a,0,maxColorValue = max(a)),pch=22,cex=0.2,col=NA)
+
+da<-data.frame(lats,lons,sqrt(a))
+da<-da[da$lats<70,]
+da$lons[da$lons<180]<- da$lons[da$lons<180]+360
+da$lons<-da$lons-360
+plot(da$lats~da$lons,cex=0.1)
+names(da)=c("r2$V2","r2$V3","sqrt(r2$V4)")
+predictions<-predict(M,newdata=da)
+da$preds<-coef(M)[1] + coef(M)[2] * da[,1] + coef(M)[3]*da[,2] + coef(M)[4] * da[,3]
+plot(da[,1]~da[,2],bg=rgb(da$preds,da$preds,0,maxColorValue = max(da$preds)),pch=22,cex=0.1,col=NA)
+
+#us only
+us<-da[da$`r2$V3`<(-50),]
+plot(us[,1]~us[,2],bg=rgb(us$preds,us$preds,0,maxColorValue = max(us$preds)),pch=22,cex=0.4,col=NA)
+```
+
+
+
+
+WARNING
+everyhting below is junk (i think)
+
+
+
 
 dataset is now sorted jun - jun, matrix of form
 station1 y1 1:365
@@ -355,23 +467,6 @@ daily_t <- function (station){
 
 The function 'get_nls' takes the daily temperatures of one station (which is supplied as single vector), and applies a non-linear least squares model which estimates intercept, phase angle and amplitude of a sine curve.
 
-```{r nls_regression}
-get_nls <- function (vals,s_A=400,s_phi=pi/2,s_c=200){#s_... are starting values for nls function
-  if (length(vals)==1){return (NA)} else{ #when there is insufficient data, the function daily_t will return "NA", so vals gets length 1. Otherwise vals will have length of at least 2*370(many of which may be NA)
-  x<-1:length(vals)
-  data<-data.frame(x,vals)
-
-  #make nls regression for function 'y=Amplitude * cosine(period*x + phase angle) + intercept'
-  res <- nls(vals ~ A*cos(x*2*pi/372+phi)+C, data=data, start=list(A=s_A,phi=s_phi,C=s_c),
-            upper=c(500,2*pi,400),algorithm="port",lower=c(0,0,-400)) 
-  #372 and not 365.25, because a vector of 12*31 was used before 
-  #(filling up e.g. 31.feb with NA). This made coping with leap years easier
-
-  co <- coef(res)
-  return(co)
-  }
-}
-```
 
 
 
