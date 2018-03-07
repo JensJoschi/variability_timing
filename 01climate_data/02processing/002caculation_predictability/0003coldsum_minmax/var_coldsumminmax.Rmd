@@ -18,6 +18,7 @@ library(tidyr)
 library(dplyr)
 library(stringr)
 library(magrittr)
+library(geomapdata)
 threshold<-50
 t2<-10
 #load("converted.RData")
@@ -28,9 +29,10 @@ The aim of this project is to correlate climate variability with variability in 
 
 
 ### Overview  
-The script opens a pre-processed (with PERL) dataset, which includes daily minimum and maximum temeratures for all months, years and stations all over the world (~65million X 31 days). It converts the dataset into [5 million x 365 days] format, and splits it in smaller chunks and saves these as new files.
-Then all small files are read in subsequently to calculate winter onset in each year, mean and sd of winter onset, and correlation of winter onset to temperature 1,2 and 3 weeks before winter onset. The results are again stored in text files.
-In the end, the results are read in again, and merged with climate station metadata (needs to connects with the NOAA server to get a list of available climate stations together with their latitudes and longitudes. This is the only time a connection to the server is required).
+The script uses the daily minimum and maximum temeratures for all months, years and climate stations all over the world from the GHCN dataste (~12million X 31 days).These were pre-processed with PERL and saved as two txt files. The two datasets are now opened, cleaned, and the mean of min and max is calculated for each day. The resulting workspace with one matrix of 11milx31days is saved.  
+Further processing uses smaller chunks of data at a time (30 chunks of 1k climate stations). These are subsequently read in and transformed to differen format (so that 1 row has temperature of a whole year). Then I calculate winter onset as xth day that temperature falls below y°C. For each station I calculate mean winter onset (weighted by available data per year), standard deviation in winter onset, and winter predictability: The last 31 days before winter onset of each year are aggregated and pearsons R is calculated. The climate at one station is considered predictable (high R) if 1) temperature declines more or less linearly, 2) the slope is consistent across years, and 3) there is little day-to-day variation. Finally, all data of one station is put into a single vector, and I apply a non-linear least square regression: The data is expected to follow a sine-curve with a period of 365 days, and I record for each station amplitude (difference between summer and winter), phase angle (day of peak summer) and intercept (mean temperature). The results (mean winter onset, sd, correlation, nls-parameters) are saved in a text file. All of this is done on all chunks of data, and the results are appended in a single file.  
+
+In the end, the results are read in again, and merged with climate station metadata (needs to connects with the NOAA server to get a list of available climate stations together with their latitudes and longitudes. This is the only time a connection to the server is required).mean, predictability and standard deviation of winter onset are correlated with latitude, longitude and altitude. The model coefficients are used to also infer predictability and variability for the space between stations, using a topographic map of the world
 
 
 
@@ -42,17 +44,6 @@ text<- read_document("01raw/ghcnd_all/ghcnd-version.txt")
 print (text[1])
 ```
 
-* read all stations
-* remove unneccessary stations (<3 ys, <20°N)
-- convert to matrix [stations,1:365], june first
-- cut into N pieces
-- save as file
-
-- for each file: 
-- get winter onset for each year
-- get sample size for each year
-- get mean onset, sd
-- save results: vector means,sds, n_years;
 
 ### Script  
 
@@ -148,15 +139,17 @@ The following steps have to be done on that 1000 station dataset
   to:  
     station 1 year 1 day 1,2,3.. 365
     station 1 year 2 day 1,2,3.. 365  
+    
 * make subset with 1 station and
   ** calculate winter onset in each year
   ** calculate mean winter onset (weighted by number of days per year)
   ** calculate weighted standard deviation in winter onset
   ** calculate correlation of winter onset and temperature 1,2,3 weeks before winter onset
   ** calculate predictability: pearsons R along last 30 days before winter onset
+  ** change structure to station 1 day 1....20,000 and make nls regression
 
 changing the data structure:
-```{r}
+```{r transform_matrix}
 turn_around <- function(station){
 station<-
   station %>% 
@@ -177,9 +170,15 @@ return(station)
 
 ```
 
+
+The following chunk has the function to apply a nls regression on the climate data of each station. The daily temperatures over ~20 years are expected to follow a sine-curve pattern with a period of 1 year. The curve is determined by the following parameters:  
+* a *constant c* that defines the average temperature throughout the year. It is around 20°C in temperate climates, around 30°C at the equator.  
+* the *amplitude A*, which quantifies the difference between winter and summer temperatures. A should decrease with proximity to the poles.  
+* the *phase angle phi*. Phi defines at what time of the year maximum temperatures occur. It should be close to midsummer in all stations of the northern hemisphere. june 25 is the julian day 176/177. This corresponds to a phase angle of 170/365 \*(2\*pi) = 2.92.
+
 ```{r nls_regression}
 get_nls <- function (vals,s_A=400,s_phi=pi/2,s_c=200){#s_... are starting values for nls function
-  if (length(vals)==NA || length(vals)<1000){return (NA)} else{ #when there is insufficient data, the function daily_t will return "NA", so vals gets length 1. Otherwise vals will have length of at least 2*370(many of which may be NA)
+  if (is.na(length(vals))|| length(vals)<1000){return (NA)} else{ #when there is insufficient data, the function will return "NA"
   x<-1:length(vals)
   data<-data.frame(x,vals)
 
@@ -189,15 +188,23 @@ get_nls <- function (vals,s_A=400,s_phi=pi/2,s_c=200){#s_... are starting values
   #372 and not 365.25, because a vector of 12*31 was used before 
   #(filling up e.g. 31.feb with NA). This made coping with leap years easier
 
-  co <- coef(res)
-  return(co)
+  return(coef(res))
   }
 }
+
+
+#wrapping function that allows continuing if errors occur in one of the stations
+wrap_error = function (vals,s_A,s_phi,s_c) {
+  tryCatch(get_nls(vals,s_A,s_phi,s_c),
+                     warning = function (w)  {return(FALSE)},
+                     error   = function (e)  {return(FALSE)})
+}
+
 ```
 
 
 
-
+Do the calculations, piecewise for 30 chunks of data; save the results
 ```{r}
 for (loop in 1:29){
 station<-converted[converted$ID %in% unique(converted$ID)[(loop-1)*1000+1:1000*loop],]
@@ -211,11 +218,13 @@ sd_winter<- rep(NA,length(unique(station$ID)))
 #cor_21<-rep(NA,length(unique(station$ID)))
 nyears<-rep(NA,length(unique(station$ID)))
 c<-rep(NA,length(unique(station$ID)))
-
+A<-rep(NA,length(unique(station$ID)))
+phi<-rep(NA,length(unique(station$ID)))
+int<-rep(NA,length(unique(station$ID)))
 
 for (i in 1:length(unique(station$ID))){
   
-  #read in station
+  #read in station####
   id<-unique(station$ID)[i]
   s<-filter(station,ID==id)
   
@@ -231,7 +240,8 @@ for (i in 1:length(unique(station$ID))){
     next
   }
   
-  ##calculate winter arrival: make a binomial matrix with all Temps<threshold = 1, all others =0(including NA)
+  ####calculate winter arrival#####
+ # make a binomial matrix with all Temps<threshold = 1, all others =0(including NA)
   bino<-s
   bino[bino<threshold]<-1
   bino[bino>=threshold]<-0
@@ -253,7 +263,7 @@ for (i in 1:length(unique(station$ID))){
      w_on[j]<-min(which(cumsum(as.integer(bino[j,]))==t2))
    }
 
-  ##calculate mean and sd in witner arrival (both weighted)
+  ##calculate mean and sd in witner arrival (both weighted)####
   ndays<-ndays[used]
   mean_winter[i]<-weighted.mean(w_on,ndays)
   weights<-ndays/366
@@ -261,14 +271,15 @@ for (i in 1:length(unique(station$ID))){
   lower <- sum(weights)-1
   sd_winter[i] <- sqrt(upper/lower)
   
-  #clean up memory
+  #clean up memory####
   rm(upper)
   rm(lower)
   rm(weights)
   rm(ndays)
   rm(bino)
 
-  #calculate correlation with x days ago - the mean correölation was normally distributed around 0 and hence discontinued
+  #calculate correlation with x days ago ####
+  #- the mean correölation was normally distributed around 0 and hence discontinued
   #m<-matrix(data=c(which(used==T),w_on),nrow=length(w_on),ncol=2)
  # m2<-matrix(data=c(which(used==T),w_on-7),nrow=length(w_on),ncol=2)
   #m2[m2<1]<-NA
@@ -286,17 +297,23 @@ for (i in 1:length(unique(station$ID))){
  # cor_14[i]<-cor(w[!is.na(w_14)],w_14[!is.na(w_14)])
  # cor_21[i]<-cor(w[!is.na(w_21)],w_21[!is.na(w_21)])
   
-  nyears[i] <- length(w_on)
   
-  ##calculate pearsons R along last 30 days before winter onset
+
+  
+  ##calculate pearsons R along last 30 days before winter onset####
+ nyears[i] <- length(w_on)
   #idea: transpose and use gather to make 1 long vector ("day1:day 10000" only that they are not called like that)
         #cut at (winter onset - 30) and winter onset
         #clean incomplete data
         #make correlation aggregating data from all years
+  
+  #transpose
   rownames(s)<-1:nrow(s) #these are years 1:x
   n<-gather(as.data.frame(t(s))) #turns into long format
   n$xvec<-rep(1:ncol(s),length(unique(n$key))) #xvec is days after 1.july
   n$key<-as.integer(n$key)
+  
+  #cut
   n<-filter(n,xvec<w_on[key] & xvec >= w_on[key]-31)  #now dataset contains only last 30 days before winter onset in that respective year
   n2<-group_by(n,key)
   test<-as.data.frame(summarise(n2,n())[,2])
@@ -306,27 +323,46 @@ for (i in 1:length(unique(station$ID))){
   }
   n2$xvec2<-full_seq
 
-  
+  #clean
   n<-filter(n2,sum(!is.na(value))>10)  #removes years that have less than 10 days of data in the 30 days before winter onset
   
-  
+  #correlate
  c[i]<- cor(n$value,n$xvec2,use="na.or.complete") #uses xvec 2, this aligns the data from all years on the x-axis
-}
 
-#n<-gather(as.data.frame(t(s)))
-#getnls(n)
-#gather and save results
-reslist<-data.frame(unique(station$ID),mean_winter,sd_winter,nyears,c)
+ 
+ #make non-linear least-square regression ####
+# The function tries up to three times per climate station, with different starting parameters.
+ n<-gather(as.data.frame(t(s)))
+ parms<-wrap_error(n$value,s_A=400,s_phi=pi/2,s_c=200)
+  if (parms[1]==FALSE){parms<-wrap_error(n$value,s_A=40,s_phi=pi,s_c=200)}
+  if (parms[1]==FALSE){parms<-wrap_error(n$value,s_A=40,s_phi=2*pi,s_c=200)}
+  if (parms[1]==FALSE){print (paste("failed in ",i));parms<-c(-9999,-9999,-9999)}
 
-names(reslist)<-c("ID","meanwinter","sd winter","nyears","cor")
+ A[i]<-parms[1]
+ phi[i]<-parms[2]
+ int[i]<-parms[3]
+ } #next station
+
+
+#####gather and save results####
+reslist<-data.frame(unique(station$ID),mean_winter,sd_winter,nyears,c,A,phi,int)
+
+names(reslist)<-c("ID","meanwinter","sd winter","nyears","cor","amplitude","phase angle", "intercept")
 write.table(reslist,"results.txt",append=TRUE,quote=FALSE,row.names=FALSE,col.names=FALSE)
-}
+} #next chunk
 ```
 
+Reading the results:
+* histograms of all variables
+* truncate sd for better plotting
+* plot mean,sd,predictability vs lat+lon+alt
+* plot resids of that model
+* plot mean,sd,pred vs amplitude
+* plot coefs on real topographic map
 
 ```{r}
 reslist<-read.table("results.txt")
-names(reslist)<-c("ID","meanwinter","sd winter", "cor 1wk","cor2wk","cor3wk","nyears","cor")
+names(reslist)<-c("ID","meanwinter","sd winter", "nyears","cor","amplitude","phase angle", "intercept")
 r2<-merge(locations,reslist,by=1)
 r2$cor<-r2$cor+1
 r2<-r2[!is.na(r2$cor),]
@@ -355,7 +391,7 @@ plot(am$V2~am$V3,bg=rgb(am$cor,am$cor,0,maxColorValue = max(am$cor)),pch=22,col=
 
 ```{r}
 
-library(geomapdata)
+
 data(ETOPO5)
 N<-ETOPO5[,1:1080]
 for (i in 1:nrow(N)){
