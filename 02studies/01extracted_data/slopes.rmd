@@ -1,0 +1,140 @@
+---
+title: "read slopes"
+author: "Jens Joschinski"
+date: "March 15, 2018"
+output: 
+  md_document:
+  variant: markdown_github
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache=TRUE)
+library(tidyverse)
+library(textreadr)
+library(drc)
+library(sandwich)
+library(lmtest)
+```
+
+
+# General description  
+## Aim  
+The aim of this project is to correlate climate variability with variability in seasonal timing. Is the slope in seasonal responses a bet-hedging trait, i.e., is it adaptive to spread one's timing in more variable conditions?  
+
+
+### Overview  
+I searched in the web of Science database for studies that measure photoperiodic response curves of invertebrates (folder 02studies/00raw) and extracted the x- and y-coordinates of the points within these curves (folder 02studies/01extracted_data). After adding metadata (latitudes, longitudes,sample sizes, "extracted.xlsx"") I copied a subset of the data into a csv file. The script now calculates the slope and other parameters of the photopeirodic response curve. It uses dose-response curves analysis with package "drc".  
+
+### Specific description  
+
+The data was generated with R version `r getRversion()`. Slope estimates derived with package drc, `r citation('drc')`.
+
+
+
+###Script  
+
+Need to run a script for each group (= for each study) to calculate dose-response curves
+
+The following chunk cannot be run directly, but has to be copied to the console (otherwise some trouble in optim will occur)
+
+```{r}
+data<-read.table("forslopes.csv", header=T,sep=";")
+data<-separate(data,col=1, into = c("study","pop"), sep ="-",remove=FALSE)
+
+r<-data.frame(NA,NA,NA,NA,NA,NA,NA,NA,NA)
+names(r)<-c("name","b","b_rel","c","c_rel","d","d_rel","e","e_rel")
+for (i in 1:length(unique(data$study))){
+#for ( i in 25:40{
+#for ( i in 42:45){
+sub<-data[data$study==unique(data$study)[i],]
+sub<-droplevels(sub)
+sub$p<-sub$perc/100
+sub$p[sub$p<0]<-0
+sub$p[sub$p>1]<-1
+
+moo <- drm(p~dl2,curveid=line.ID,data=sub,fct=LL.4(),type="binomial",upperl=c(NA,NA,1,NA),lowerl=c(NA,0,NA,NA),control=drmc(method="L-BFGS-B"),weights=sub$n2/max(sub$n2))
+
+png(paste(i,"-",unique(data$study)[i],".png",sep=""))
+plot(moo, broken = TRUE, type = "all", xlab = "Day length", ylab = "percentage diapause",main = sub$study[1],sub = "dose response curve estimates",log="",col=TRUE)
+dev.off()
+
+coffs<-coeftest(moo,vcov = sandwich)[,1:2]
+coffs[,2]<-1/coffs[,2]
+npop=length(unique(sub$line.ID))
+
+for (j in 1:npop){
+  n<-unique(sub$line.ID)
+  r[nrow(r)+1,]<-c(as.character(n[j]),coffs[j,],coffs[j+npop,],coffs[j+2*npop,],coffs[j+3*npop,])
+}
+}
+
+r$degN<-NA
+r$degE<-NA
+
+for(i in 1:nrow(r)){
+  r[i,10]<-as.character(data[data$line.ID == r[i,1],6][1])
+  r[i,11]<-as.character(data[data$line.ID == r[i,1],7][1])
+}
+
+write.table(r, "slopes.txt")
+
+#testing
+npop=length(unique(sub$line.ID))
+#predict curves by hand
+b<-coef(moo)[1:npop] # there are three parameters per pop - the first third are the b estimates, the second third the d estimates (upper bound), and the last third the e estimate (critical day length)
+c<- coef(moo)[(npop+1):(2*npop)]
+d<- coef(moo)[(npop*2+1):(3*npop)]
+e<- coef(moo)[(npop*3+1):length(coef(moo))]
+
+lin <- function(x,b,c,d,e){
+  upper<-d-c
+  lower <-1 + exp(b*(log(x)-log(e)))
+  c+ (upper/lower)
+}
+
+bm<-b-coffs[1:npop,2]
+cm<-c-coffs[(npop+1):(npop*2),2]
+dm<-d-coffs[(npop*2+1):(npop*3),2]
+em<-e-coffs[(npop*3+1):(npop*4),2]
+plot(moo)
+lines(x=1:16,y = lin(1:16,b[i],c[i],d[i],e[i]),col=2)
+lines(x=1:16,y = lin(1:16,bm[i],cm[i],dm[i],em[i]),col=4)
+```
+
+
+
+a few very preliminary results
+```{r}
+r2<-r
+r2<-r2[-c(1),]
+r2<-separate(r2,col=1, into = c("study","pop"), sep ="-",remove=FALSE)
+r2$e<-as.numeric(r2$e)
+r2$degN<-as.numeric(r2$degN)
+r2$e[r2$e>100]<-NA
+r2$degN[r2$degN>80] <- NA
+r2$study[r2$study=="6b"]<-6
+r2$study<-as.integer(r2$study)
+plot(r2$e~r2$degN, bg = r2$study,pch=22)
+M<-lm(r2$e~r2$degN, weights = as.numeric(r2$e_rel))
+abline(M)
+coef(M)[2]*5  #0.93 hours per 5 degree latitude
+
+r2$e_rel<-as.numeric(r2$e_rel)
+r2$e_rel[r2$e_rel>3000]<-3000
+r2$e_rel2<-sqrt(r2$e_rel)/max(sqrt(r2$e_rel),na.rm=T)
+
+plot(r2$e~r2$degN, bg = "grey",pch=21,cex=r2$e_rel2+0.5, main = "delay in photoperiodic response vs latitude", xlab = "Latitude (°N)", ylab = "Critical photoperiod")
+M<-lm(r2$e~r2$degN, weights = as.numeric(r2$e_rel))
+abline(M,lty=2)
+coef(M)[2]*5  #0.93 hours per 5 degree latitude
+for( i in 2:length(unique(r2$study))){
+  a<-r2[r2$study==unique(r2$study)[i],]
+  a<-a[is.na(a$e)== FALSE,]
+  a<-a[is.na(a$degN)==FALSE,]
+  points(a$e~a$degN, pch=21, bg=i,cex=a$e_rel2+0.5)
+  M<-lm(a$e~a$degN,weights=as.numeric(a$e_rel))
+ lines(x= a$degN,y= predict(M),col="grey")
+}
+
+```
+
