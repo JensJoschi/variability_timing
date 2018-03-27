@@ -440,7 +440,179 @@ plot(am$lat~am$lon,bg=rgb(am$cor,am$cor,0,maxColorValue = max(am$cor)),pch=22,co
 
 ```
 
+
+####making model predictions based on lat,lon, alt, and interpolating using a topographic map of the world
+
+####testing the topographic map
 ```{r}
+
+r2$alt[r2$alt == - 999.9] <- NA
+r2$alt[r2$alt<0]<-0
+hist(r2$alt)
+r2<-r2[is.na(r2$alt)==FALSE,]
+plot(r2$lat~r2$lon,bg= rgb(0,r2$alt,0,maxColorValue = max(r2$alt)),cex=0.4,pch=22,col=NA)
+points (-80.224167, 25.787778 ,col=2,cex=2,xpd=T) #miami
+points (-81.784031, 24.559167 ,col=2,cex=2,xpd=T) #key west
+points (-9.166667, 38.716667 ,col=2,cex=2,xpd=T)   #lissabon
+points (141.700881, 45.39757 ,col=2,cex=2,xpd=T)  #wakkanai
+#these points seem to be correct
+
+
+
+data(ETOPO5)
+#this topographic data is a matrix with 4320 rows (longitude) and 2160 cols (latitude), so the world is split into a 5' grid. But how is the data sorted?
+
+N<-ETOPO5[,1081:2160] #second half of the dataset
+N[N<0]<-0
+N[N>1]<-1
+image(N) # northern hemisphere, sorting is from +90 downwards
+
+N<-ETOPO5[1:2160,1:1080]
+N[N<0]<-0
+N[N>1]<-1
+image(N)
+#sorting is from 0-360 ° (Erope->asia->USA)
+
+#let's try to get a map of japan
+#lat: 20.5:45.5
+#lon: 122:142
+
+#90°N should be at position 0 (column 0)
+#89°N should be at (90-89) * 12 = 12
+#0°N should be at 90*12 = 1080
+
+(90-45.5)*12 #northern limit of japan
+#this is about halfway through the norhtern hemisphere (2160/4)
+(90-20.5)*12 #southern limit of japan
+128.84*12 #goto islands, western limit
+145.582*12 #eastern limit, nemuro (hokkaido)
+
+N<-ETOPO5[1564:1747,534:834]
+N[N<0]<-0
+N[N>1]<-1
+image(N)
+
+#geting the altitude around wakkanai: 141.700881, 45.39757
+(90-45.397)*12
+141.700*12
+ETOPO5[1690:1710,530:540]
+
+#okay, seems to work
+
+
+#what about locations at <0°E (e.g. US)
+#making a map of florida
+#21:30°N, -90:-77°E
+
+12*(90-21)
+12*(90-30)
+12*(360-90)
+12*(360-77)
+t<-ETOPO5[3240:3396,720:828]
+t[t<0]<-0
+t[t>0]<-1
+image(t)
+##works
+
+#comparing altitudes stated in r2 with altitudes from ETOPO5
+r2$lon2<-r2$lon#convert negative longitudes to positives
+r2$lon2[r2$lon2<0]<-360+r2$lon2[r2$lon2<0]
+
+temp<-r2
+temp<-temp[is.na(temp$cor)==F,]
+nrow(temp)
+temp$alt2<-NA
+for(i in 1:nrow(temp)){
+  temp$alt2[i]<-ETOPO5[round(temp[i,14]*12,0),round((90-temp[i,2])*12,0)]
+}
+plot(temp$alt~temp$alt2)
+
+#the same approach can now be used to infer the altitude of the study sites (so there needs to be no station nearby)
+
+```
+
+
+```{r}
+slopes<-read.table('/media/jens/296AA37A395D5FE6/g01-metaanalysis/02studies/01extracted_data/slopes.txt' ,header=T)
+str(slopes)
+names(slopes)<-c("name", "b","b_rel", "c" ,"c_rel", "d", "d_rel", "e" ,  "e_rel" ,"lat", "lon" ) #"rel" is for reliability, 1/s.e.
+slopes<-slopes[-1,]
+plot(slopes$lat~slopes$lon)
+hist(slopes$lon,breaks=100)
+
+slopes$alt<-NA
+slopes$lon2<-slopes$lon
+slopes$lon2[slopes$lon2<0]<-360+slopes$lon2[slopes$lon2<0]
+for(i in 1:nrow(slopes)){
+  slopes$alt[i]<-ETOPO5[round(slopes[i,13]*12,0),round((90-slopes[i,10])*12,0)]
+}
+hist(slopes$alt)
+
+refmap<-r2
+refmap$alt[refmap$alt<0]<-0
+plot(refmap$lat~refmap$lon,bg = rgb(refmap$alt,0,refmap$alt,maxColorValue = max(refmap$alt)),col=NA,pch=22,cex=0.5)
+points(slopes$lon,slopes$lat,col=2,cex=1.5)
+
+N<-ETOPO5[1564:1747,534:834]
+N[N<0]<-0
+plot(NA,xlim=c(1,200),ylim = c(1,200))
+for ( i in ncol(N):1){
+  for (j in 1:nrow(N)){
+    points(j,i,bg=rgb(0,N[j,i],0,maxColorValue = max(N)),pch=22,cex=0.4,col=NA)
+  }
+}
+#make map of only amami
+
+plot(NA,xlim=c(1564,1747),ylim=c(534,834))
+points(N,bg=)
+```
+
+
+#now slopes has lat,lon and alt, and the slopes; climate data has lat,lon alt, and variability. modelling!
+
+```{r}
+r2$alt[r2$alt==-999.9]<-NA
+
+p<-r2[!is.na(r2$cor),]
+p$alt[p$alt<0]
+p$alt[p$alt<0]<-0
+p$sq_alt <-sqrt(p$alt)
+
+M<-lm(p$cor~p$lat+p$lon+p$sq_alt)
+summary(M)
+
+p$preds<-coef(M)[1] + coef(M)[2] * p[,2] + coef(M)[3]*p[,3] + coef(M)[4] * p[,14]
+
+p[is.na(p$preds),]
+
+p$preds<-p$preds+abs(min(p$preds))
+plot(p$lat~p$lon,bg=rgb(p$preds,p$preds,0,maxColorValue = max(p$preds)),pch=22,cex=0.4,col=NA,main ="predicted predictability, using lat+lon+alt")
+
+
+#now, using that on lat lon and alt of slopes
+head(slopes)
+slopes$sqalt<-slopes$alt
+slopes$sqalt[slopes$alt<0]<-0
+slopes$sqalt<-sqrt(slopes$sqalt)
+slopes$preds<-coef(M)[1] + coef(M)[2] * slopes$lat + coef(M)[3]*slopes$lon + coef(M)[4] * slopes$sqalt
+#slopes$preds<-slopes$preds+abs(min(slopes$preds))
+#plot(slopes$lat~slopes$lon,bg=rgb(slopes$preds,slopes$preds,0,maxColorValue = max(slopes$preds)),pch=22,cex=0.4,col=NA,main ="prediction based on slopes dataset, using lat+lon+alt")
+
+slopes$b2<-abs(slopes$b)
+slopes<-separate(slopes,1,into=c("study","pop"),remove=FALSE,sep="-")
+slopes$study[slopes$study=="6b"]<-6
+plot(slopes$preds,slopes$b2,main = "environmental predictability vs diapause variability",xlab = "environment", ylab = "physiology",pch=22,bg=slopes$study)
+
+plot(slopes$preds,slopes$e,main = "environmental predictability vs cdl",xlab = "environment", ylab = "cdl")
+
+
+library(lme4)
+M2<-lmer(b2~preds+(1|study),weights=sqrt(b_rel/max(b_rel)),data=slopes)
+summary(M2)
+
+
+
+
 
 data(ETOPO5)
 N<-ETOPO5[,1:1080]
@@ -500,6 +672,95 @@ us<-da[da$lon<(-50),]
 plot(us[,1]~us[,2],bg=rgb(us$preds,us$preds,0,maxColorValue = max(us$preds)),pch=22,cex=0.1,col=NA,main ="predicted predictability, using lat+lon+alt")
 ```
 
+
+correlating slpes from studies with this prediction -preliminary-
+```{r}
+names(da)
+head(da)
+slopes<-read.table(file.choose())
+str(slopes)
+da2<-da
+names(slopes)<-c("name", "b","b_rel", "c" ,"c_rel", "d", "d_rel", "e" ,  "e_rel" ,"lat", "lon" )
+slopes$lat <- round(slopes$lat,1)
+slopes$lon<-round(slopes$lon,1)
+da2$lat<-round(da2$lat,1)
+da2$lon<-round(da2$lon,1)
+da2<-unite(da2,"latlon",c("lat","lon"))
+slopes<-unite(slopes,"latlon",c("lat","lon"))
+together<-inner_join(slopes,da2)#not all found because capped at 60°N
+together<-separate(together,"latlon",c("lat","lon"),"_" )
+
+
+together<-separate(together,col=1, into = c("study","pop"), sep ="-",remove=FALSE)
+together$lat<-as.numeric(together$lat)
+
+together$study[together$study=="6b"]<-6
+together$study<-as.integer(together$study)
+together$e_rel2<-together$e_rel #backup
+together$e_rel[together$e_rel>3000]<-3000
+together$e_rel<-sqrt(together$e_rel)/max(sqrt(together$e_rel),na.rm=T)
+plot(together$e~together$lat)
+plot(da$lat~da$lon,bg=rgb(da$preds,da$preds,0,maxColorValue = max(da$preds)),pch=22,cex=0.1,col=NA,main ="predicted predictability, using lat+lon+alt")
+points(together$lat~together$lon,bg=rgb(together$preds,together$preds,0,maxColorValue = max(together$preds)),pch=21)
+plot(together$b~together$preds,cex=together$e_rel+0.5,bg=together$study,pch=21)
+M<-lm(together$b~together$preds,weights=together$e_rel2)
+summary(M)
+abline(M)
+library(lme4)
+M2<-lmer(b~preds+(1|study),weights=e_rel2,data=together)
+summary(M2)
+together$p<-predict(M2)
+plot(together$b~together$preds,cex=together$e_rel+0.5,bg=together$study,pch=21)
+
+```
+
+```{r}
+
+
+
+#making a map of the world and marking the coordinates where I have data
+plot("ETOPO5")
+
+ETOPOn<-ETOPO5
+ETOPOn[ETOPOn<0]<-0
+#plot(NA,xlim=c(0,360*12),ylim = c(0,180*12))
+#for ( i in 1:ncol(ETOPOn)){
+#  for (j in 1:nrow(ETOPOn)){
+ #   points(ETOPOn[j,i])
+  }
+}
+points(ETOPOn,col=rgb(0,ETOPOn,0,maxColorValue = max(ETOPOn)))
+
+points(slopes$lat~slopes$lon,col=2)
+
+
+
+slopes<-read.table(file.choose())
+str(slopes)
+head(slopes)
+nrow(slopes)
+names(slopes)
+slopes$lat5<-round((90+slopes$degN) * 12 ,0)
+slopes$lon5<-round((90+slopes$degE) * 12 ,0) #convert negative to positive numbers
+slopes$degE[slopes$degE<0]<-360-abs(slopes$degE[])
+
+
+#take etopo5
+#make data frame 
+rownames(ETOPO5)
+rownames(ETOPO5)<-attr(ETOPO5,"lon")
+colnames(ETOPO5)<-attr(ETOPO5,"lat")
+
+ETOPO5<-as.data.frame(ETOPO5)
+gather(ETOPO5)
+#lat lon alt
+#make pred based on climate data naalysis
+#plot data frame, colr = pred
+#add points: slopes.txt coordinates
+#merge slopes and preds (keep all)
+#plot and add points again to verify
+#plot preds vs slopes
+```
 
 
 ```{r}
