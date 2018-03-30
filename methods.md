@@ -1,12 +1,12 @@
 
-#Summary    
+# Summary    
 
 Many organisms escape the adverse conditions of winter by a diapause response, usually relying on day length as main cue for winter onset, and on autumn temperature for fine-tuning. Natural environments are stochastic,  however, and winter onset is both variable across years (i.e. correlates only weakly with day length), and difficult to predict based on preceding autumn temperatures.  Because long-term (geometric mean) fitness is maximized by performing consistently under variable conditions and avoiding extinction, it should be adaptive to spread the risk in time by investing in phenotypes with different diapause thresholds (diversified bet-hedging). With increasing cue reliability the need to rely on bet-hedging should be reduced. Hence, we expected that variability in diapause timing is determined by an interaction of environmental variability and predictability.   
 We tested this hypothesis with a meta-analysis. First, we calculated winter variability and predictability based on weather data for 30,000 locations. To correlate the environment with physiological variability, we then searched for publications that study photoperiodic response curves (PRCs) of insects at more than two sites (60 studies with 350-450 locations). We calculated the slopes of the PRCs with four-parameter dose response curves, expecting that they correlate with environmental variability and predictability.      
 As expected, populations from northern latitudes shift their timing towards earlier diapause, progressing with approximately 50 minutes per 5 degrees latitude. However, contrary to our hypothesis, we found no evidence for a more graded diapause response in less predictable climates, indicating that day length measurement is no general bet-hedging trait across insect genera. But analysis is not finished yet    
 
 
-#Methods    
+# Methods    
 
 
 To calculate winter onset and environmental predictability at various locations, I used the GHCN-Daily dataset (Menne et al., 2012), version 3.22 which includes weather station data from throughout the world (Menne et al., 2018). I interpolated between the point estimates, using a linear model (variability ~ latitude + longitude + altitude) and a topographic map of the world. I then extracted phase response curves from 60 published studies (350 populations) along with their sampling locations, and estimated the slopes of these curves. The slope estimates were then correlated to the estimated predictability and variability of winter arrival.
@@ -81,7 +81,7 @@ The critical day length ( julian date on which 50 % offspring are diapausing) in
 
 
 
-##correlation slopes~ predictability*variability
+## correlation slopes~ predictability*variability
 interaction still to do. At the moment only slopes~ predictability. This is not significant.
 Also on to -do list: using not the model predictions but nearest climate station.
 
