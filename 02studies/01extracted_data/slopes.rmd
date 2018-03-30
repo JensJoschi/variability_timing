@@ -114,15 +114,19 @@ r2$e[r2$e>100]<-NA
 r2$degN[r2$degN>80] <- NA
 r2$study[r2$study=="6b"]<-6
 r2$study<-as.integer(r2$study)
-plot(r2$e~r2$degN, bg = r2$study,pch=22)
+png("cdl_vs_lat.png")
+plot(r2$e~r2$degN, bg = r2$study,pch=22,main = "Correlation of critical day length and latitude", xlab ="latitude",ylab="critical day length")
 M<-lm(r2$e~r2$degN, weights = as.numeric(r2$e_rel))
 abline(M)
 coef(M)[2]*5  #0.93 hours per 5 degree latitude
+text(20,24, "slope = 0.93 hours/5°N\nR²=0.58")
 
+dev.off()
 r2$e_rel<-as.numeric(r2$e_rel)
 r2$e_rel[r2$e_rel>3000]<-3000
 r2$e_rel2<-sqrt(r2$e_rel)/max(sqrt(r2$e_rel),na.rm=T)
 
+png("cdl_vs_lat_weighted.png")
 plot(r2$e~r2$degN, bg = "grey",pch=21,cex=r2$e_rel2+0.5, main = "delay in photoperiodic response vs latitude", xlab = "Latitude (°N)", ylab = "Critical photoperiod")
 M<-lm(r2$e~r2$degN, weights = as.numeric(r2$e_rel))
 abline(M,lty=2)
@@ -135,6 +139,7 @@ for( i in 2:length(unique(r2$study))){
   M<-lm(a$e~a$degN,weights=as.numeric(a$e_rel))
  lines(x= a$degN,y= predict(M),col="grey")
 }
-
+text(20,24, "slope = 0.93 hours/5°N\nR²=0.39")
+dev.off()
 ```
 
