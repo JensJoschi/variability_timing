@@ -1,12 +1,12 @@
 
-#Summary
+#Summary    
 
 Many organisms escape the adverse conditions of winter by a diapause response, usually relying on day length as main cue for winter onset, and on autumn temperature for fine-tuning. Natural environments are stochastic,  however, and winter onset is both variable across years (i.e. correlates only weakly with day length), and difficult to predict based on preceding autumn temperatures.  Because long-term (geometric mean) fitness is maximized by performing consistently under variable conditions and avoiding extinction, it should be adaptive to spread the risk in time by investing in phenotypes with different diapause thresholds (diversified bet-hedging). With increasing cue reliability the need to rely on bet-hedging should be reduced. Hence, we expected that variability in diapause timing is determined by an interaction of environmental variability and predictability.   
 We tested this hypothesis with a meta-analysis. First, we calculated winter variability and predictability based on weather data for 30,000 locations. To correlate the environment with physiological variability, we then searched for publications that study photoperiodic response curves (PRCs) of insects at more than two sites (60 studies with 350-450 locations). We calculated the slopes of the PRCs with four-parameter dose response curves, expecting that they correlate with environmental variability and predictability.      
 As expected, populations from northern latitudes shift their timing towards earlier diapause, progressing with approximately 50 minutes per 5 degrees latitude. However, contrary to our hypothesis, we found no evidence for a more graded diapause response in less predictable climates, indicating that day length measurement is no general bet-hedging trait across insect genera. But analysis is not finished yet    
 
 
-#Methods
+#Methods    
 
 
 To calculate winter onset and environmental predictability at various locations, I used the GHCN-Daily dataset (Menne et al., 2012), version 3.22 which includes weather station data from throughout the world (Menne et al., 2018). I interpolated between the point estimates, using a linear model (variability ~ latitude + longitude + altitude) and a topographic map of the world. I then extracted phase response curves from 60 published studies (350 populations) along with their sampling locations, and estimated the slopes of these curves. The slope estimates were then correlated to the estimated predictability and variability of winter arrival.
@@ -38,7 +38,8 @@ Because most climate stations have temperature data for only approx. 10 years, t
 
 
 
-####The third approach uses the same idea as the second (x days below y degrees), but applies it to daily minimum/maximum temperatures, which were about 10 times more frequently recorded.    
+#### The third approach uses the same idea as the second (x days below y degrees), but applies it to daily minimum/maximum temperatures, which were about 10 times more frequently recorded.     
+
 Two new Perl scripts extracted daily minimum and maximum temperatures from all climate stations, and the daily mean was calculated in R from those values for all days and stations. This approach yielded a considerably bigger dataset (~12 million stations*months).    
 As before, I calculated Amplitude, phase angle and annual average with a non-linear least-square regression, weighted mean winter and weighted standard deviation in winter onset. In addition, I calculated the correlation of temperature at winter onset with temperature 1,2, or three weeks before winter onset. However, as the correlation was on average 0, this procedure was dropped.     
 
@@ -68,7 +69,8 @@ The dose-response curve analyses were made with the package drc (Ritz et al., 20
 
 
 
-#Results
+# Results    
+
 
 ## climate data
 Mean winter correlated with latitude and altitude. Environmental predictability was reasonably well explained by latitude,longitude and altitude (R² = 0.25). Standard deviation in winter onset was quite erratic, and not correlated with any variable (did not use for analysis yet). 
@@ -84,7 +86,8 @@ interaction still to do. At the moment only slopes~ predictability. This is not 
 Also on to -do list: using not the model predictions but nearest climate station.
 
 
-#References
+# References    
+
 
 Anderson KJ & Walter J (2005) The broad‐scale ecology of energy expenditure of endotherms. Ecology Letters 8:310–318. 
 
