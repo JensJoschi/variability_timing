@@ -30,7 +30,7 @@ The aim of this project is to correlate climate variability with variability in 
 
 ### Overview  
 The script uses the daily minimum and maximum temeratures for all months, years and climate stations all over the world from the GHCN dataste (~12million X 31 days).These were pre-processed with PERL and saved as two txt files. The two datasets are now opened, cleaned, and the mean of min and max is calculated for each day. The resulting workspace with one matrix of 11milx31days is saved.  
-Further processing uses smaller chunks of data at a time (30 chunks of 1k climate stations). These are subsequently read in and transformed to differen format (so that 1 row has temperature of a whole year). Then I calculate winter onset as xth day that temperature falls below y°C. For each station I calculate mean winter onset (weighted by available data per year), standard deviation in winter onset, and winter predictability: I make a linear regression through the last 31 days before winter onset of each year, and calculate the slope. The inverse of the standard deviation of this slope estimate across years is winter predictability. All of this is done on all chunks of data, and the results are appended in a single file.
+Further processing uses smaller chunks of data at a time (30 chunks of 1k climate stations). These are subsequently read in and transformed to differen format (so that 1 row has temperature of a whole year). Then I calculate winter onset as xth day that temperature falls below y°C. For each station I calculate mean winter onset (weighted by available data per year), standard deviation in winter onset, and winter predictability: I make a linear regression through the last 31 days before winter onset of each year, and calculate the slope. The inverse of the standard deviation of this slope estimate across years is winter predictability.Finally, all data of one station is put into a single vector, and I apply a non-linear least square regression: The data is expected to follow a sine-curve with a period of 365 days, and I record for each station amplitude (difference between summer and winter), phase angle (day of peak summer) and intercept (mean temperature). The results (mean winter onset, sd, correlation, nls-parameters) are saved in a text file. All of this is done on all chunks of data, and the results are appended in a single file.
 
 In the end, the results are read in again, and merged with climate station metadata (needs to connects with the NOAA server to get a list of available climate stations together with their latitudes and longitudes. This is the only time a connection to the server is required).mean, predictability and standard deviation of winter onset are correlated with latitude, longitude and altitude. The model coefficients are used to also infer predictability and variability for the space between stations, using a topographic map of the world. 
 
@@ -86,7 +86,7 @@ locations<-read.fwf(
   widths=c(11, 9, 10, 7,2,35)
 )
 
-badlist <- locations[locations[,2]<20,1]  #latitudes smaller 20°N
+badlist <- locations[locations[,2]<18,1]  #latitudes smaller 18°N
 rm(locations)
 rm(url)
 converted<-converted[!(converted$V1 %in% badlist),]
@@ -111,6 +111,7 @@ converted2<-unite_(converted2,"new_id",c("V1","V2","V3"),remove=FALSE)
 
 converted2<-converted2[converted2$new_id %in% converted$new_id]
 converted<-converted[converted$new_id %in% converted2$new_id]
+nrow(converted)
 #we are now down to 11.4 million rows in each dataset
 
 converted<-arrange(converted, new_id)
@@ -147,7 +148,7 @@ The following steps have to be done on that 1000 station dataset
   ** calculate mean winter onset (weighted by number of days per year)
   ** calculate weighted standard deviation in winter onset
   ** calculate standard deviation in slopes of temperature decline before winter
-
+  ** change structure to station 1 day 1....20,000 and make nls regression
 
 changing the data structure:
 ```{r transform_matrix}
@@ -170,6 +171,35 @@ return(station)
 
 ```
 
+The following chunk has the function to apply a nls regression on the climate data of each station. The daily temperatures over ~20 years are expected to follow a sine-curve pattern with a period of 1 year. The curve is determined by the following parameters:  
+* a *constant c* that defines the average temperature throughout the year. It is around 20°C in temperate climates, around 30°C at the equator.  
+* the *amplitude A*, which quantifies the difference between winter and summer temperatures. A should decrease with proximity to the poles.  
+* the *phase angle phi*. Phi defines at what time of the year maximum temperatures occur. It should be close to midsummer in all stations of the northern hemisphere. june 25 is the julian day 176/177. This corresponds to a phase angle of 170/365 \*(2\*pi) = 2.92.
+
+```{r nls_regression}
+get_nls <- function (vals,s_A=400,s_phi=pi/2,s_c=200){#s_... are starting values for nls function
+ if (is.na(length(vals))|| length(vals)<1000){return (NA)} else{ #when there is insufficient data, the function will return "NA"
+  x<-1:length(vals)
+  data<-data.frame(x,vals)
+
+  #make nls regression for function 'y=Amplitude * cosine(period*x + phase angle) + intercept'
+  res <- nls(vals ~ A*cos(x*2*pi/366+phi)+C, data=data, start=list(A=s_A,phi=s_phi,C=s_c),
+            upper=c(500,2*pi,400),algorithm="port",lower=c(0,0,-400)) 
+#366 days, non-leap-years have an NA at feb29
+
+  return(coef(res))
+  }
+}
+
+
+#wrapping function that allows continuing if errors occur in one of the stations
+wrap_error = function (vals,s_A,s_phi,s_c) {
+  tryCatch(get_nls(vals,s_A,s_phi,s_c),
+                     warning = function (w)  {return(FALSE)},
+                     error   = function (e)  {return(FALSE)})
+}
+
+```
 
 
 Do the calculations, piecewise for 30 chunks of data; save the results
@@ -183,6 +213,10 @@ mean_winter<-rep(NA,length(unique(station$ID))) #the results will be stored in  
 sd_winter<- rep(NA,length(unique(station$ID)))
 nyears<-rep(NA,length(unique(station$ID)))
 p<-rep(NA,length(unique(station$ID)))
+A<-rep(NA,length(unique(station$ID)))
+phi<-rep(NA,length(unique(station$ID)))
+int<-rep(NA,length(unique(station$ID)))
+
 
 for (i in 1:length(unique(station$ID))){ #this loop goes through each of the 1 k stations
   
@@ -280,14 +314,26 @@ for (i in 1:length(unique(station$ID))){ #this loop goes through each of the 1 k
   #translation: for each year take data of that year, save slope estimate from lm
   p[i]<-sd(slopes,na.rm=T)
 
+  
+  #make non-linear least-square regression ####
+# The function tries up to three times per climate station, with different starting parameters.
+ n<-gather(as.data.frame(t(s)))
+ parms<-wrap_error(n$value,s_A=400,s_phi=pi/2,s_c=200)
+  if (parms[1]==FALSE){parms<-wrap_error(n$value,s_A=40,s_phi=pi,s_c=200)}
+  if (parms[1]==FALSE){parms<-wrap_error(n$value,s_A=40,s_phi=2*pi,s_c=200)}
+  if (parms[1]==FALSE){print (paste("failed in ",i));parms<-c(-9999,-9999,-9999)}
+
+ A[i]<-parms[1]
+ phi[i]<-parms[2]
+ int[i]<-parms[3]
  
- } #next station
+  } #next station
 
 
 #####gather and save results####
-reslist<-data.frame(unique(station$ID),mean_winter,sd_winter,nyears,p)
+reslist<-data.frame(unique(station$ID),mean_winter,sd_winter,nyears,p,A,phi,int)
 
-names(reslist)<-c("ID","meanwinter","sd winter","nyears","predictability")
+names(reslist)<-c("ID","meanwinter","sd winter","nyears","predictability","amplitude","phase angle", "intercept")
 write.table(reslist,"results.txt",append=TRUE,quote=FALSE,row.names=FALSE,col.names=FALSE)
 } #next chunk
 ```
@@ -302,11 +348,13 @@ Reading the results:
 
 ```{r}
 reslist<-read.table("results.txt")
-names(reslist)<-c("ID","meanwinter","sd_winter","nyears","predictability")
+names(reslist)<-c("ID","meanwinter","sd_winter","nyears","predictability","amplitude","phase angle", "intercept")
 r2<-merge(locations,reslist,by=1)
 
-names(r2)<-c("ID","lat","lon","alt","no_idea","name","meanwinter","sd_winter", "nyears","unpredictability")
+names(r2)<-c("ID","lat","lon","alt","no_idea","name","meanwinter","sd_winter", "nyears","unpredictability","amplitude","phase angle", "intercept")
 
+
+#a few histograms to check that the things make sense
 hist(r2$alt)
 r2$alt[r2$alt==-999.9]<-NA
 r2$sq_alt <-sqrt(r2$alt)
@@ -325,6 +373,28 @@ sum(is.na(r2$unpredictability))
 length(r2$unpredictability[r2$unpredictability>5])-3911
 97/16923 #0.5% of all values are >5, 1.1%>4
 hist(r2$unpredictability[r2$unpredictability<5],breaks=100)
+
+
+p<-r2
+
+hist(p$amplitude)
+hist(p$`phase angle`)
+hist(p$intercept)
+
+
+
+#checking whether the nls regression makes sense
+
+p$intercept[p$intercept<(-100)]<-(-100)
+p$intercept[p$intercept>200]<-200
+p$intercept<-p$intercept+abs(min(p$intercept))
+p$amplitude[p$amplitude>250]<-250
+plot(p$lat~p$lon,bg = rgb(p$intercept,0,p$intercept,maxColorValue = max(p$intercept)),col=NA,pch=22,cex=0.3)
+plot(p$lat~p$lon,bg = rgb(p$amp,0,p$amp,maxColorValue = max(p$amp)),cex=0.3,pch=22,col=NA)
+plot(p$lat~p$lon,bg=rgb(p$`phase angle`,0,p$`phase angle`,maxColorValue = max(p$`phase angle`)),cex=0.3,pch=22,col=NA)
+
+
+#visualisation mean winter, sd(winter), predictability
 png("mean-winter.png")
 p<-r2
 p<-p[!is.na(p$meanwinter),]
@@ -353,8 +423,66 @@ plot(p$lat~p$lon,bg = rgb(p$unpredictability,p$unpredictability,0,maxColorValue 
 dev.off()
 
 
+
+#how strongly does winter decrease per ° latitude? should be around 1h per 5°N
+#though some conversion is needed
+#with migration to north both mean winter and amplitude in day length change, makkng it a bit more complicated
+
+plot(p$meanwinter~p$lat,pch=22,cex=0.1)
+abline(lm(p$meanwinter~p$lat),col=2)
+summary(lm(p$meanwinter~p$lat))
+#mean winter decreases by 2.5 days per ° latitude
+#=12.5 days per 5°. 
+#so an organism needs to react to a day length equal to 12.5 days earlier in the year. what day length is that? well, depends on time of year and latitude.
+
+#calculate day length 30° north at winter onset, then day length 35°N at winter onset - 12.5 days, and so on. this should be the critical day lenth for most organisms
+
+
+M<-lm(p$meanwinter~p$lat)
+182+coef(M)[1] + coef(M)[2]*c(30,35,40,45,50,55,60,65,70)
+#this is mean winter onset at latitudes 30 - 70°N (182 is july 1st, a year was defined to begin on this date)
+
+#it is equal to 13 sep - 23 dec 
+
+#table for different day lengths
+#30 °N, day 357(dec 23), 10:13 
+#35°N, day 345(dec 11), 9:51
+#40°N, day 332(28 nov), 9:37
+#45°N, 319(15 nov), 9:34
+#50°N, 307(3 nov), 9:41
+#55°N, 294 (21 oct), 10:06
+#60°N, 281 (8 oct), 10:50
+#65°N, 269 (26 sep),11:53
+#70°N, 256 (13 sep), 9:23
+#so day length at winter onset changes nonlinearly with latitude
+
+#actually, organisms need to prepare in advance, lets say two weeks
+#30°N, day 343 (dec 9), 10:16
+#35°N, day 331 (Nov 27), 10:03
+#40°N, day 318 (nov 14), 10:01
+#45°N, day 305 (nov 1), 10:10
+#50°N, day 293 (oct 20), 10:29
+#55°N, day 280 (oct 7), 11:07
+#60°N, day 267 (sep 24), 12:05
+#65°N, day 255 (sep 12), 13:26
+#70°N, day 242 (Aug 30), 15:46
+
+#according to literature the critical day length decreases by 1 -1.5 hours in photoperiod per 5°, but own data shows that it is more of an exponential function:
+#needs to load slopes.txt
+
+slopes$e[slopes$e>25]<-NA
+mean(slopes$e,na.rm=T)
+plot(slopes$e~slopes$lat)
+points(x= c(30,35,40,45,50,55,60,65,70),y = c(10.27,10.05,10.02,10.17,10.48,11.12,12.08,13.43,15.77),col=2,pch=22,bg=2) #winter onset 2 weeks before
+points(x= c(30,35,40,45,50,55,60,65,70),y = c(10.21,9.85,9.62,9.57,9.68,10.1,10.83,11.88,9.38),col=4,pch=22,bg=4)#winter onset
+#general shape seems okay, only shifted by 2 hours day length. but these curves shift depending on temperature, so maybe lab temperatures are generally too cold? also the winter onset is quite arbitrary (could test with different thresholds (x and y))
+
+#also test 3 weeks before just out of curiousity
+
+
 summary(lm(p$unpredictability~p$lat+p$lon+p$sq_alt))
 summary(lm(p$unpredictability~p$lat+p$lon+p$alt))
+summary(lm(p$unpredictability~p$amplitude))
 r<-resid(lm(p$unpredictability~p$sq_alt))
 
 r<-r+abs(min(r))
