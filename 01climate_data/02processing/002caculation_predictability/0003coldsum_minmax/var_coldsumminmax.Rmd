@@ -21,7 +21,6 @@ library(magrittr)
 library(geomapdata)
 threshold<-50
 t2<-10
-#load("converted.RData")
 ```
 # General description  
 ## Aim  
@@ -40,7 +39,7 @@ In the end, the results are read in again, and merged with climate station metad
 
 The data was generated with R version `r getRversion()`. It uses the GHCN-daily dataset by NOAA:
 ```{r, echo =F}
-text<- read_document("01raw/ghcnd_all/ghcnd-version.txt")
+text<- read_document("01climate_data/01raw/ghcnd_all/ghcnd-version.txt")
 print (text[1])
 ```
 
@@ -52,7 +51,7 @@ print (text[1])
 
 Reading data and removing stations for which only mintemp or only maxtemp exists
 ```{r read_n_clean}
-converted<-fread(paste(getwd(),"/02processing/001data_conversion/converted_max.txt",sep=""), sep ="|", na.strings=c("NA","-9999"),verbose=F)
+converted<-fread("01climate_data/02processing/001data_conversion/converted_max.txt", sep ="|", na.strings=c("NA","-9999"),verbose=F)
 
 length(unique(converted$V1))
 conv_table<-table(converted$V1)
@@ -60,7 +59,7 @@ inlist<-conv_table[conv_table>=3] #removes anything with less than 3 years of da
 converted<-converted[converted$V1 %in% names(inlist),]
 
 
-converted2<-fread(paste(getwd(),"/02processing/001data_conversion/converted_min.txt",sep=""), sep ="|", na.strings=c("NA","-9999"),verbose=F)
+converted2<-fread("01climate_data/02processing/001data_conversion/converted_min.txt", sep ="|", na.strings=c("NA","-9999"),verbose=F)
 conv_table2 <- table(converted2$V1)
 inlist2<-conv_table2[conv_table2>=3]
 converted2<-converted2[converted2$V1 %in% names(inlist2),]
@@ -337,6 +336,9 @@ names(reslist)<-c("ID","meanwinter","sd winter","nyears","predictability","ampli
 write.table(reslist,"results.txt",append=TRUE,quote=FALSE,row.names=FALSE,col.names=FALSE)
 } #next chunk
 ```
+Results.txt has been manually moved to the folder 01climate_data/03output.
+
+In the next step the results have to be combined with data from empirical studies. this is in another script (folder 03Analysis)
 
 Reading the results:
 * histograms of all variables
@@ -427,7 +429,7 @@ dev.off()
 #how strongly does winter decrease per ° latitude? should be around 1h per 5°N
 #though some conversion is needed
 #with migration to north both mean winter and amplitude in day length change, makkng it a bit more complicated
-
+p<-r2
 plot(p$meanwinter~p$lat,pch=22,cex=0.1)
 abline(lm(p$meanwinter~p$lat),col=2)
 summary(lm(p$meanwinter~p$lat))

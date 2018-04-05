@@ -38,7 +38,7 @@ Need to run a script for each group (= for each study) to calculate dose-respons
 The following chunk cannot be run directly, but has to be copied to the console (otherwise some trouble in optim will occur)
 
 ```{r}
-data<-read.table("forslopes.csv", header=T,sep=";")
+data<-read.table("02studies/01extracted_data/forslopes.csv", header=T,sep=";")
 data<-separate(data,col=1, into = c("study","pop"), sep ="-",remove=FALSE)
 
 r<-data.frame(NA,NA,NA,NA,NA,NA,NA,NA,NA)
@@ -54,7 +54,7 @@ sub$p[sub$p>1]<-1
 
 moo <- drm(p~dl2,curveid=line.ID,data=sub,fct=LL.4(),type="binomial",upperl=c(NA,NA,1,NA),lowerl=c(NA,0,NA,NA),control=drmc(method="L-BFGS-B"),weights=sub$n2/max(sub$n2))
 
-png(paste(i,"-",unique(data$study)[i],".png",sep=""))
+png(paste("02studies/01extracted_data/",i,"-",unique(data$study)[i],".png",sep=""))
 plot(moo, broken = TRUE, type = "all", xlab = "Day length", ylab = "percentage diapause",main = sub$study[1],sub = "dose response curve estimates",log="",col=TRUE)
 dev.off()
 
@@ -76,7 +76,7 @@ for(i in 1:nrow(r)){
   r[i,11]<-as.character(data[data$line.ID == r[i,1],7][1])
 }
 
-write.table(r, "slopes.txt")
+write.table(r, "02studies/02output/slopes.txt")
 
 #testing
 npop=length(unique(sub$line.ID))
@@ -99,47 +99,5 @@ em<-e-coffs[(npop*3+1):(npop*4),2]
 plot(moo)
 lines(x=1:16,y = lin(1:16,b[i],c[i],d[i],e[i]),col=2)
 lines(x=1:16,y = lin(1:16,bm[i],cm[i],dm[i],em[i]),col=4)
-```
-
-
-
-a few very preliminary results
-```{r}
-r2<-r
-r2<-r2[-c(1),]
-r2<-separate(r2,col=1, into = c("study","pop"), sep ="-",remove=FALSE)
-r2$e<-as.numeric(r2$e)
-r2$degN<-as.numeric(r2$degN)
-r2$e[r2$e>100]<-NA
-r2$degN[r2$degN>80] <- NA
-r2$study[r2$study=="6b"]<-6
-r2$study<-as.integer(r2$study)
-png("cdl_vs_lat.png")
-plot(r2$e~r2$degN, bg = r2$study,pch=22,main = "Correlation of critical day length and latitude", xlab ="latitude",ylab="critical day length")
-M<-lm(r2$e~r2$degN, weights = as.numeric(r2$e_rel))
-abline(M)
-coef(M)[2]*5  #0.93 hours per 5 degree latitude
-text(20,24, "slope = 0.93 hours/5°N\nR²=0.58")
-
-dev.off()
-r2$e_rel<-as.numeric(r2$e_rel)
-r2$e_rel[r2$e_rel>3000]<-3000
-r2$e_rel2<-sqrt(r2$e_rel)/max(sqrt(r2$e_rel),na.rm=T)
-
-png("cdl_vs_lat_weighted.png")
-plot(r2$e~r2$degN, bg = "grey",pch=21,cex=r2$e_rel2+0.5, main = "delay in photoperiodic response vs latitude", xlab = "Latitude (°N)", ylab = "Critical photoperiod")
-M<-lm(r2$e~r2$degN, weights = as.numeric(r2$e_rel))
-abline(M,lty=2)
-coef(M)[2]*5  #0.93 hours per 5 degree latitude
-for( i in 2:length(unique(r2$study))){
-  a<-r2[r2$study==unique(r2$study)[i],]
-  a<-a[is.na(a$e)== FALSE,]
-  a<-a[is.na(a$degN)==FALSE,]
-  points(a$e~a$degN, pch=21, bg=i,cex=a$e_rel2+0.5)
-  M<-lm(a$e~a$degN,weights=as.numeric(a$e_rel))
- lines(x= a$degN,y= predict(M),col="grey")
-}
-text(20,24, "slope = 0.93 hours/5°N\nR²=0.39")
-dev.off()
 ```
 
