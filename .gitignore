@@ -6,9 +6,11 @@
 
 *.tar.gz
 
-
 *.Rproj
 
+*.RData
+
+*.Rhistory
 
 01climate_data/\.Rhistory
 
@@ -17,11 +19,8 @@
 01climate_data/02processing/001data_conversion/converted\.txt
 .Rproj.user
 
-01climate_data/02processing/001data_conversion/Rworkspace\.RData
 
 01climate_data/02processing/002caculation_predictability/0002coldsum/var_coldsum_cache/
-
-*.RData
 
 01climate_data/02processing/002caculation_predictability/0002coldsum/var_coldsum_files/figure-html/
 
@@ -29,10 +28,10 @@
 
 01climate_data/02processing/001data_conversion/converted_max\.txt
 
-01climate_data/results\.txt
-
 02studies/00raw/~\$liste_paper-2017-09-19\.xlsx
 
 02studies/00raw/~\$filtered_lista\.xlsx
 
 02studies/00raw/filtered_lista\.xlsx
+
+01climate_data/results_old\.txt
