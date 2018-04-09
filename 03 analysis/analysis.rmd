@@ -2,7 +2,9 @@
 title: "analysis"
 author: "Jens Joschinski"
 date: "April 5, 2018"
-output: html_document
+output:     
+  md_document:
+        variant: markdown_github
 ---
 #List of issues
 check whether e_rel in slopes.rmd is se or 1/se
@@ -146,7 +148,7 @@ points(slopes$expdl14~slopes$degN,col=3)
 points(slopes$expdl21~slopes$degN,col=4)
 ```
 
-integrating this into the curve of CDL vs latitude
+integrating this into the curve of CDL vs latitude (mostly copy of above code)
 
 ```{r}
 r2<-slopes
@@ -264,11 +266,10 @@ summary(lm(p$capped_sd~p$unpredictability))
 ```
 
 correlate slopes with climate data:
-Take the 5 closest climate stations in a 5° radius, calculate sd,predictability and mean of these weighted by inverse of euclidian distance
-get for each study site the closest climate stations
+Take the 5 closest climate stations in a 5° radius, calculate sd,predictability and mean of these weighted by inverse of euclidian distance.
 
 ```{r}
-climate<-climate[!is.na(climate$meanwinter),]
+climate<-climate[!is.na(climate$meanwinter),] #because those are useless
 slopes$meanwinter<-NA
 slopes$sd_winter<-NA
 slopes$unpredictability<-NA
@@ -277,10 +278,10 @@ for ( i in 1:nrow(slopes)){
   #reduce to +-5 °
   sub<-climate[between(climate$lat,slopes[i,10]-5,slopes[i,10]+5)& between(climate$lon,slopes[i,11]-5,slopes[i,11]+5),]
   
-  sub$diffN<-sub$lat-slopes[i,10]
-  sub$diffE<-sub$lon-slopes[i,11]
-  sub$diff<-sqrt(sub$diffN^2+sub$diffE^2)
-  sub<-arrange(sub,diff)[1:5,]
+  sub$diffN<-sub$lat-slopes[i,10] #calculate distance in latitude
+  sub$diffE<-sub$lon-slopes[i,11] #same for longitude
+  sub$diff<-sqrt(sub$diffN^2+sub$diffE^2) #euclidian distance
+  sub<-arrange(sub,diff)[1:5,] #sort and take 5 lowest values
   
   slopes$meanwinter[i]<-weighted.mean(sub$meanwinter,1/sub$diff)
   slopes$sd_winter[i]<-weighted.mean(sub$sd_winter,1/sub$diff)
@@ -293,6 +294,8 @@ slopes<-slopes[!is.na(slopes$meanwinter),]
 ```
 
 
+
+Now the slopes from the studies can be plotted against climate variables (+modelling)
 ```{r}
 r2<-separate(slopes,col=1, into = c("study","pop"), sep ="-",remove=FALSE)
 r2$e<-as.numeric(r2$e)
@@ -301,16 +304,18 @@ r2$study[r2$study=="6b"]<-6
 r2$study<-as.integer(r2$study)
 
 plot(r2$e~r2$meanwinter,xlab = "mean winter",ylab="CDL",bg=palette(rainbow(42)),pch=22,sub="black line: prediction with 1|study")
-for (i in unique(r2$study)){
+for (i in unique(r2$study)){  #make grey lines for each individual study(with line thickness~no of populations)
 t<-r2[r2$study==i,]
 M<-lm(t$e~t$meanwinter)
 if (sum(is.na(coef(M)))==0){lines(x=t$meanwinter, y= predict(M),col="grey",lwd=nrow(t)/10)
-  }
+  }#if clause makes sure model worked
 }
+
 mixed<-lmer(e~meanwinter + (1|study),data=r2)
 r2$pred<-predict(mixed)
-lines(x=range(r2$meanwinter),y=summary(mixed)$coefficients[1,1]+range(r2$meanwinter)*summary(mixed)$coefficients[2,1],lwd=2)
+lines(x=range(r2$meanwinter),y=summary(mixed)$coefficients[1,1]+range(r2$meanwinter)*summary(mixed)$coefficients[2,1],lwd=2) #coef(mixed) gives many coefs for all random terms
 
+#same code for sd_winter and predictability
 plot(r2$b~r2$sd_winter,xlab = "standard deviation in winter",ylab = "slope of PRC",bg=palette(rainbow(42)),pch=22,sub="black line: prediction with 1|study")
 for (i in unique(r2$study)){
 t<-r2[r2$study==i,]
@@ -351,15 +356,13 @@ anova(mixed_comp,m2)
 anova(m2,m3)
 anova(m2,m4)
 #should exchange that with non-p statistics
-
-
-#not according to hypotheses
-#plot(slopes$b~slopes$meanwinter,xlab = "mean winter",ylab="slope of PRC")
-#plot(slopes$e~slopes$sd_winter,xlab = "standard deviation in winter",ylab = "CDL")
-#plot(slopes$e~slopes$unpredictability,xlab = "winter unpredictability",ylab = "CDL")
-
-#include weights
+#also need to correct for variance heterogeneity
+#and include weights (inverse of s.e. of b)
 ```
+
+
+The slope estimates of the individual dose-response curve vary by study (some are ~ 500, others 10). They need to be scaled on the study-level, so that they are 0-1 in each study.
+Everything else is copy of chunk above
 
 ```{r}
 #scale slope by study
