@@ -6,11 +6,11 @@ output:
   md_document:
         variant: markdown_github
 ---
-#List of issues
-check whether e_rel in slopes.rmd is se or 1/se
-some climate stations exist 2*
-is sd(winter) calculated for <20°N?
-proper statistics
+# List of issues  
+* check whether e_rel in slopes.rmd is se or 1/se  
+* some climate stations exist twice  
+* is sd(winter) calculated for <20°N?  
+* proper statistics  
 
 
 ```{r setup, include=FALSE}
@@ -45,8 +45,8 @@ The data was generated with R version `r getRversion()`. It requires the dataset
 
 ### Script  
 
-Load the datasets
-```{r}
+#### Load the datasets
+```{r loadstuff}
 url<-"ftp://ftp.ncdc.noaa.gov/pub/data/ghcn/daily/ghcnd-stations.txt"
 #this dataset is fixed-width delimited, requiring a few additional steps
 locations<-read.fwf(
@@ -66,11 +66,11 @@ slopes<-slopes[-159,]  #the drm gives a nearly entirely flat slope, so this neve
 slopes<-slopes[-1,] # a row with NA
 ```
 
-###correlation latitude - CDL
+#### correlation latitude - CDL
 
 The critical day length (day length at which 50 % of all offspring switch to diapause) should correlate with latitude. Earlier studies quote rates of 1-1.5 hours per 5°N. Let's see if that holds for the data in this meta-analysis:
 
-```{r}
+```{r corr_CDL}
 r2<-slopes
 r2<-separate(r2,col=1, into = c("study","pop"), sep ="-",remove=FALSE)
 r2$e<-as.numeric(r2$e)
@@ -121,9 +121,11 @@ summary(M2)
 The estimate of 1 h per 5° N is not too bad, overall diapause becomes 50 min earlier per 5°.
 
 
+
+#### correlation with climate data  
 One would expect that this curve fits well to mean winter onset given latitude, and the climate data allows testing that.
 
-```{r}
+```{r clim_M}
 plot(climate$meanwinter~climate$lat,pch=22,cex=0.1, main ="Mean winter onset vs. latitude")
 M<-lm(climate$meanwinter~climate$lat)
 ```
@@ -131,7 +133,7 @@ M<-lm(climate$meanwinter~climate$lat)
 Mean winter decreases by 2.5 days per ° latitude = 12.5 days per 5°, so an organism needs to react to a day length equal to 12.5 days earlier in the year per 5°N. correct calculation of day length at a given latitude for a given day: https://en.wikipedia.org/wiki/Sunrise_equation
 luckily there is a package that solves that:
 
-```{r}
+```{r climate_CDL}
 M<-lm(climate$meanwinter~climate$lat)
 #expected_dl = daylength(latitude,day)
 #with day = day from regression on M +182 days because the "year" calculated from climate data starts in july
@@ -148,6 +150,7 @@ points(slopes$expdl14~slopes$degN,col=3)
 points(slopes$expdl21~slopes$degN,col=4)
 ```
 
+#### combining these two  
 integrating this into the curve of CDL vs latitude (mostly copy of above code)
 
 ```{r}

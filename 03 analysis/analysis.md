@@ -1,7 +1,10 @@
 List of issues
 ==============
 
-check whether e\_rel in slopes.rmd is se or 1/se some climate stations exist 2\* is sd(winter) calculated for &lt;20°N? proper statistics
+-   check whether e\_rel in slopes.rmd is se or 1/se
+-   some climate stations exist twice
+-   is sd(winter) calculated for &lt;20°N?
+-   proper statistics
 
 General description
 ===================
@@ -21,7 +24,7 @@ The data was generated with R version 3.4.4. It requires the datasets "01climate
 
 ### Script
 
-Load the datasets
+#### Load the datasets
 
 ``` r
 url<-"ftp://ftp.ncdc.noaa.gov/pub/data/ghcn/daily/ghcnd-stations.txt"
@@ -43,7 +46,7 @@ slopes<-slopes[-159,]  #the drm gives a nearly entirely flat slope, so this neve
 slopes<-slopes[-1,] # a row with NA
 ```
 
-### correlation latitude - CDL
+#### correlation latitude - CDL
 
 The critical day length (day length at which 50 % of all offspring switch to diapause) should correlate with latitude. Earlier studies quote rates of 1-1.5 hours per 5°N. Let's see if that holds for the data in this meta-analysis:
 
@@ -75,7 +78,7 @@ coef(M)[2]*5  #0.93 hours per 5 degree latitude
 text(20,24, "slope = 0.93 hours/5°N\nR²=0.58")
 ```
 
-![](analysis_files/figure-markdown_github/unnamed-chunk-2-1.png)
+![](analysis_files/figure-markdown_github/corr_CDL-1.png)
 
 ``` r
 #dev.off()
@@ -105,7 +108,7 @@ for( i in 2:length(unique(r2$study))){
 text(20,24, "slope = 0.93 hours/5°N\nR²=0.39")
 ```
 
-![](analysis_files/figure-markdown_github/unnamed-chunk-2-2.png)
+![](analysis_files/figure-markdown_github/corr_CDL-2.png)
 
 ``` r
 #dev.off()
@@ -114,7 +117,7 @@ text(20,24, "slope = 0.93 hours/5°N\nR²=0.39")
 boxcox(r2$e~r2$degN)
 ```
 
-![](analysis_files/figure-markdown_github/unnamed-chunk-2-3.png)
+![](analysis_files/figure-markdown_github/corr_CDL-3.png)
 
 ``` r
 M1<-lm(r2$e~r2$degN)
@@ -172,13 +175,15 @@ summary(M2)
 
 The estimate of 1 h per 5° N is not too bad, overall diapause becomes 50 min earlier per 5°.
 
+#### correlation with climate data
+
 One would expect that this curve fits well to mean winter onset given latitude, and the climate data allows testing that.
 
 ``` r
 plot(climate$meanwinter~climate$lat,pch=22,cex=0.1, main ="Mean winter onset vs. latitude")
 ```
 
-![](analysis_files/figure-markdown_github/unnamed-chunk-3-1.png)
+![](analysis_files/figure-markdown_github/clim_M-1.png)
 
 ``` r
 M<-lm(climate$meanwinter~climate$lat)
@@ -203,7 +208,9 @@ points(slopes$expdl14~slopes$degN,col=3)
 points(slopes$expdl21~slopes$degN,col=4)
 ```
 
-![](analysis_files/figure-markdown_github/unnamed-chunk-4-1.png)
+![](analysis_files/figure-markdown_github/climate_CDL-1.png)
+
+#### combining these two
 
 integrating this into the curve of CDL vs latitude (mostly copy of above code)
 
@@ -229,14 +236,14 @@ points(x=r2$degN, y = r2$expdl,cex=0.3)
 points(r2$expdl21~r2$degN,col=4,cex=0.3)
 ```
 
-![](analysis_files/figure-markdown_github/unnamed-chunk-5-1.png)
+![](analysis_files/figure-markdown_github/unnamed-chunk-1-1.png)
 
 ``` r
 plot(r2$e~r2$expdl,main = "Correlation of Critical day length and expected CDL",xlab ="expected by climate data",ylab="CDL from studies")
 abline(lm(r2$e~r2$expdl))
 ```
 
-![](analysis_files/figure-markdown_github/unnamed-chunk-5-2.png)
+![](analysis_files/figure-markdown_github/unnamed-chunk-1-2.png)
 
 ``` r
 summary(lm(r2$e~r2$expdl))
@@ -276,7 +283,7 @@ p<-p[!is.na(p$meanwinter),]
 plot(p$lat~p$lon,bg = rgb(p$meanwinter,p$meanwinter,0,maxColorValue = max(p$meanwinter)),cex=0.3,pch=22,col=NA, main ="mean winter onset",xlab="",ylab="")
 ```
 
-![](analysis_files/figure-markdown_github/unnamed-chunk-8-1.png)
+![](analysis_files/figure-markdown_github/unnamed-chunk-4-1.png)
 
 ``` r
 #dev.off()
@@ -289,7 +296,7 @@ p<-p[p$nyears>8,]
 plot(p$lat~p$lon,bg = rgb(p$capped_sd,p$capped_sd,0,maxColorValue = max(p$capped_sd)),cex=0.3,pch=22,col=NA, main ="sd winter onset, capped at 20",xlab="",ylab="")
 ```
 
-![](analysis_files/figure-markdown_github/unnamed-chunk-8-2.png)
+![](analysis_files/figure-markdown_github/unnamed-chunk-4-2.png)
 
 ``` r
 #dev.off()
@@ -306,7 +313,7 @@ p$unpredictability[p$unpredictability>5]<-5 #0.5% of all data
 plot(p$lat~p$lon,bg = rgb(p$unpredictability,p$unpredictability,0,maxColorValue = max(p$unpredictability)),cex=0.3,pch=22,col=NA, main ="unpredictability",sub="dark low standard deviation in slopes",xlab="",ylab="")
 ```
 
-![](analysis_files/figure-markdown_github/unnamed-chunk-8-3.png)
+![](analysis_files/figure-markdown_github/unnamed-chunk-4-3.png)
 
 ``` r
 #dev.off()
@@ -319,31 +326,31 @@ p$amplitude[p$amplitude>250]<-250
 plot(p$sd_winter~p$lat,pch=22,cex=0.1)
 ```
 
-![](analysis_files/figure-markdown_github/unnamed-chunk-9-1.png)
+![](analysis_files/figure-markdown_github/unnamed-chunk-5-1.png)
 
 ``` r
 plot(p$sd_winter~p$sq_alt,pch=22,cex=0.1)
 ```
 
-![](analysis_files/figure-markdown_github/unnamed-chunk-9-2.png)
+![](analysis_files/figure-markdown_github/unnamed-chunk-5-2.png)
 
 ``` r
 plot(p$sd_winter~p$amplitude,pch=22,cex=0.1)
 ```
 
-![](analysis_files/figure-markdown_github/unnamed-chunk-9-3.png)
+![](analysis_files/figure-markdown_github/unnamed-chunk-5-3.png)
 
 ``` r
 plot(p$unpredictability~p$lat,pch=22,cex=0.1)
 ```
 
-![](analysis_files/figure-markdown_github/unnamed-chunk-9-4.png)
+![](analysis_files/figure-markdown_github/unnamed-chunk-5-4.png)
 
 ``` r
 plot(p$unpredictability~p$amplitude,pch=22,cex=0.1)
 ```
 
-![](analysis_files/figure-markdown_github/unnamed-chunk-9-5.png)
+![](analysis_files/figure-markdown_github/unnamed-chunk-5-5.png)
 
 ``` r
 #summary(lm(p$unpredictability~p$lat+p$lon+p$sq_alt))
@@ -353,7 +360,7 @@ plot(p$unpredictability~p$amplitude,pch=22,cex=0.1)
 plot(p$capped_sd~p$unpredictability,pch=22,cex=0.1)
 ```
 
-![](analysis_files/figure-markdown_github/unnamed-chunk-9-6.png)
+![](analysis_files/figure-markdown_github/unnamed-chunk-5-6.png)
 
 ``` r
 summary(lm(p$capped_sd~p$unpredictability))
@@ -436,7 +443,7 @@ r2$pred<-predict(mixed)
 lines(x=range(r2$meanwinter),y=summary(mixed)$coefficients[1,1]+range(r2$meanwinter)*summary(mixed)$coefficients[2,1],lwd=2) #coef(mixed) gives many coefs for all random terms
 ```
 
-![](analysis_files/figure-markdown_github/unnamed-chunk-11-1.png)
+![](analysis_files/figure-markdown_github/unnamed-chunk-7-1.png)
 
 ``` r
 #same code for sd_winter and predictability
@@ -452,7 +459,7 @@ r2$pred<-predict(mixed)
 lines(x=range(r2$sd_winter),y=summary(mixed)$coefficients[1,1]+ range(r2$sd_winter)*summary(mixed)$coefficients[2,1],lwd=2)
 ```
 
-![](analysis_files/figure-markdown_github/unnamed-chunk-11-2.png)
+![](analysis_files/figure-markdown_github/unnamed-chunk-7-2.png)
 
 ``` r
 #quite severe variance heterogeneity
@@ -474,7 +481,7 @@ r2$pred<-predict(mixed)
 lines(x=range(r2$unpredictability),y=summary(mixed)$coefficients[1,1]+ range(r2$unpredictability)*summary(mixed)$coefficients[2,1],lwd=2)
 ```
 
-![](analysis_files/figure-markdown_github/unnamed-chunk-11-3.png)
+![](analysis_files/figure-markdown_github/unnamed-chunk-7-3.png)
 
 ``` r
 #quite severe variance heterogeneity
@@ -550,7 +557,7 @@ r2$pred<-predict(mixed)
 lines(x=range(r2$sd_winter),y=summary(mixed)$coefficients[1,1]+ range(r2$sd_winter)*summary(mixed)$coefficients[2,1],lwd=2)
 ```
 
-![](analysis_files/figure-markdown_github/unnamed-chunk-12-1.png)
+![](analysis_files/figure-markdown_github/unnamed-chunk-8-1.png)
 
 ``` r
 #quite severe variance heterogeneity
@@ -561,7 +568,7 @@ r2$pred<-predict(mixed)
 lines(x=range(r2$unpredictability),y=summary(mixed)$coefficients[1,1]+ range(r2$unpredictability)*summary(mixed)$coefficients[2,1],lwd=2)
 ```
 
-![](analysis_files/figure-markdown_github/unnamed-chunk-12-2.png)
+![](analysis_files/figure-markdown_github/unnamed-chunk-8-2.png)
 
 ``` r
 mixed_comp<-lmer(b~sd_winter*unpredictability+(1|study),data=r2)
@@ -634,4 +641,4 @@ r2$pred<-predict(mixed)
 lines(x=range(r2$meanwinter),y=summary(mixed)$coefficients[1,1]+range(r2$meanwinter)*summary(mixed)$coefficients[2,1],lwd=2)
 ```
 
-![](analysis_files/figure-markdown_github/unnamed-chunk-12-3.png)
+![](analysis_files/figure-markdown_github/unnamed-chunk-8-3.png)
