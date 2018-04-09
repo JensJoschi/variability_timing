@@ -277,8 +277,8 @@ for ( i in 1:nrow(slopes)){
   #reduce to +-5 °
   sub<-climate[between(climate$lat,slopes[i,10]-5,slopes[i,10]+5)& between(climate$lon,slopes[i,11]-5,slopes[i,11]+5),]
   
-  sub$diffN<-sub$lat-32
-  sub$diffE<-sub$lon-(-106)
+  sub$diffN<-sub$lat-slopes[i,10]
+  sub$diffE<-sub$lon-slopes[i,11]
   sub$diff<-sqrt(sub$diffN^2+sub$diffE^2)
   sub<-arrange(sub,diff)[1:5,]
   
@@ -343,6 +343,14 @@ lines(x=range(r2$unpredictability),y=summary(mixed)$coefficients[1,1]+ range(r2$
 
 
 mixed_comp<-lmer(b~sd_winter*unpredictability+(1|study),data=r2)
+m2<-lmer(b~sd_winter+unpredictability+(1|study),data=r2)
+m3<-lmer(b~unpredictability+(1|study),data=r2)
+m4<-lmer(b~sd_winter+(1|study),data=r2)
+
+anova(mixed_comp,m2)
+anova(m2,m3)
+anova(m2,m4)
+#should exchange that with non-p statistics
 
 
 #not according to hypotheses
@@ -351,8 +359,6 @@ mixed_comp<-lmer(b~sd_winter*unpredictability+(1|study),data=r2)
 #plot(slopes$e~slopes$unpredictability,xlab = "winter unpredictability",ylab = "CDL")
 
 #include weights
-
-
 ```
 
 ```{r}
@@ -372,6 +378,15 @@ plot(r2$b~r2$unpredictability,xlab = "winter unpredictability (scaled by study)"
 mixed<-lmer(b~unpredictability + (1|study),data=r2)
 r2$pred<-predict(mixed)
 lines(x=range(r2$unpredictability),y=summary(mixed)$coefficients[1,1]+ range(r2$unpredictability)*summary(mixed)$coefficients[2,1],lwd=2)
+
+mixed_comp<-lmer(b~sd_winter*unpredictability+(1|study),data=r2)
+m2<-lmer(b~sd_winter+unpredictability+(1|study),data=r2)
+m3<-lmer(b~unpredictability+(1|study),data=r2)
+m4<-lmer(b~sd_winter+(1|study),data=r2)
+
+anova(mixed_comp,m2)
+anova(m2,m3)
+anova(m2,m4)
 
 
 #to see whether this makes sense
