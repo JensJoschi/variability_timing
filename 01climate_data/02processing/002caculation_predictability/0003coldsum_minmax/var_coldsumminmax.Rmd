@@ -18,7 +18,6 @@ library(tidyr)
 library(dplyr)
 library(stringr)
 library(magrittr)
-library(geomapdata)
 threshold<-50
 t2<-10
 ```
@@ -30,8 +29,6 @@ The aim of this project is to correlate climate variability with variability in 
 ### Overview  
 The script uses the daily minimum and maximum temeratures for all months, years and climate stations all over the world from the GHCN dataste (~12million X 31 days).These were pre-processed with PERL and saved as two txt files. The two datasets are now opened, cleaned, and the mean of min and max is calculated for each day. The resulting workspace with one matrix of 11milx31days is saved.  
 Further processing uses smaller chunks of data at a time (30 chunks of 1k climate stations). These are subsequently read in and transformed to differen format (so that 1 row has temperature of a whole year). Then I calculate winter onset as xth day that temperature falls below y°C. For each station I calculate mean winter onset (weighted by available data per year), standard deviation in winter onset, and winter predictability: I make a linear regression through the last 31 days before winter onset of each year, and calculate the slope. The inverse of the standard deviation of this slope estimate across years is winter predictability.Finally, all data of one station is put into a single vector, and I apply a non-linear least square regression: The data is expected to follow a sine-curve with a period of 365 days, and I record for each station amplitude (difference between summer and winter), phase angle (day of peak summer) and intercept (mean temperature). The results (mean winter onset, sd, correlation, nls-parameters) are saved in a text file. All of this is done on all chunks of data, and the results are appended in a single file.
-
-In the end, the results are read in again, and merged with climate station metadata (needs to connects with the NOAA server to get a list of available climate stations together with their latitudes and longitudes. This is the only time a connection to the server is required).mean, predictability and standard deviation of winter onset are correlated with latitude, longitude and altitude. The model coefficients are used to also infer predictability and variability for the space between stations, using a topographic map of the world. 
 
 
 
@@ -74,7 +71,7 @@ length(unique( converted$V1))
 length(unique(converted2$V1)) #same
 ```
 
-Removing climate stations below 20°N
+An older version of this script removed climate stations below 20°N or 18°N here. But some study sites are at ~ 18°N, and the interpolation to climate stations requires a 5° radius. to be sure, I now try at 0°N
 
 ```{r remove_under20}
 url<-"ftp://ftp.ncdc.noaa.gov/pub/data/ghcn/daily/ghcnd-stations.txt"
@@ -85,7 +82,7 @@ locations<-read.fwf(
   widths=c(11, 9, 10, 7,2,35)
 )
 
-badlist <- locations[locations[,2]<18,1]  #latitudes smaller 18°N
+badlist <- locations[locations[,2]<0,1]  #latitudes smaller 0°N
 rm(locations)
 rm(url)
 converted<-converted[!(converted$V1 %in% badlist),]
@@ -129,9 +126,14 @@ mymonths <- c("07Jan","08Feb","09Mar",
               "04Oct","05Nov","06Dec")
 converted$month<-mymonths[converted$month]  #when it is sorted alphabetically it now starts in july, and ends in jun
 rm(mymonths)
-save.image(file = "converted.RData")
+save.image(file = "converted.RData") #11754738 rows, 34 columns, 30901 stations
+#row 1         ID year month   1     2     3   4     5     6   7   8   9    10  11  12  13  14  15
+#1 ACW00011604 1949 07Jan 253 258.5 252.5 258 255.5 255.5 253 242 247 230.5 228 236 214 225 228
+#     16  17    18  19    20    21    22  23  24    25  26    27    28  29  30    31
+#1 244.5 239 241.5 233 244.5 247.5 244.5 239 239 233.5 250 244.5 241.5 247 239 244.5
 ```
 
+#### data structure  
 Due to problems with memory allocation, the big (26 million rows) dataset needs to be processed piece-wise. I chose 30 chunks of 1000 climate stations each. 
 The following steps have to be done on that 1000 station dataset
 
@@ -143,11 +145,11 @@ The following steps have to be done on that 1000 station dataset
     station 1 year 2 day 1,2,3.. 365  
     
 * make subset with 1 station and
-  ** calculate winter onset in each year
-  ** calculate mean winter onset (weighted by number of days per year)
-  ** calculate weighted standard deviation in winter onset
-  ** calculate standard deviation in slopes of temperature decline before winter
-  ** change structure to station 1 day 1....20,000 and make nls regression
+  * calculate winter onset in each year  
+  * calculate mean winter onset (weighted by number of days per year)  
+  * calculate weighted standard deviation in winter onset  
+  * calculate standard deviation in slopes of temperature decline before winter  
+  * change structure to station 1 day 1....20,000 and make nls regression  
 
 changing the data structure:
 ```{r transform_matrix}
@@ -155,7 +157,7 @@ turn_around <- function(station){
 station<-
   station %>% 
   gather(key="day",value="temperature",-(1:3)) %>% #makes one very long dataframe with 2 columns
-  mutate (day=str_pad(day,2,pad="0")) %>%  #this makes leading zeros where they aer needed
+  mutate (day=str_pad(day,2,pad="0")) %>%  #this makes leading zeros where they are needed
   mutate (temperature=as.numeric(temperature)) %>%
   arrange (ID,year,month,day) %>%
   unite_("un",c("month","day")) %>%  #makes new col with new ID
@@ -170,8 +172,11 @@ return(station)
 
 ```
 
+
+
+### nls regression  (though that part wont be needed anymore)
 The following chunk has the function to apply a nls regression on the climate data of each station. The daily temperatures over ~20 years are expected to follow a sine-curve pattern with a period of 1 year. The curve is determined by the following parameters:  
-* a *constant c* that defines the average temperature throughout the year. It is around 20°C in temperate climates, around 30°C at the equator.  
+* a *constant c* that defines the average temperature throughout the year. It is around 10°C in temperate climates, around 25°C at the equator.  
 * the *amplitude A*, which quantifies the difference between winter and summer temperatures. A should decrease with proximity to the poles.  
 * the *phase angle phi*. Phi defines at what time of the year maximum temperatures occur. It should be close to midsummer in all stations of the northern hemisphere. june 25 is the julian day 176/177. This corresponds to a phase angle of 170/365 \*(2\*pi) = 2.92.
 
@@ -200,10 +205,10 @@ wrap_error = function (vals,s_A,s_phi,s_c) {
 
 ```
 
-
+### actual calculation  
 Do the calculations, piecewise for 30 chunks of data; save the results
 ```{r}   
-for (loop in 1:29){ #this loop goes through the 30 chunks of 1k stations
+for (loop in 1:30){ #this loop goes through the 30 chunks of 1k stations
 station<-converted[converted$ID %in% unique(converted$ID)[(loop-1)*1000+1:1000*loop],]
 station<-turn_around(station)
 
@@ -336,6 +341,10 @@ names(reslist)<-c("ID","meanwinter","sd winter","nyears","predictability","ampli
 write.table(reslist,"results.txt",append=TRUE,quote=FALSE,row.names=FALSE,col.names=FALSE)
 } #next chunk
 ```
+
+
+This goes only for the first 30k climate stations! repeat loop with remaining stations!
+
 Results.txt has been manually moved to the folder 01climate_data/03output.
 
 In the next step the results have to be combined with data from empirical studies. this is in another script (folder 03Analysis)
