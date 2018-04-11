@@ -209,7 +209,7 @@ wrap_error = function (vals,s_A,s_phi,s_c) {
 Do the calculations, piecewise for 30 chunks of data; save the results
 ```{r}   
 for (loop in 1:30){ #this loop goes through the 30 chunks of 1k stations
-station<-converted[converted$ID %in% unique(converted$ID)[(loop-1)*1000+1:1000*loop],]
+station<-converted[converted$ID %in% unique(converted$ID)[((loop-1)*1000+1):(1000*loop)],]
 station<-turn_around(station)
 
 
@@ -344,7 +344,7 @@ write.table(reslist,"results.txt",append=TRUE,quote=FALSE,row.names=FALSE,col.na
 
 
 This goes only for the first 30k climate stations! repeat loop with remaining stations!
-
+(station<-converted[converted$ID %in% unique(converted$ID)[30001:30901],])
 Results.txt has been manually moved to the folder 01climate_data/03output.
 
 In the next step the results have to be combined with data from empirical studies. this is in another script (folder 03Analysis)
