@@ -8,8 +8,6 @@ output:
 ---
 # List of issues  
 * check whether e_rel in slopes.rmd is se or 1/se  
-* some climate stations exist twice  
-* is sd(winter) calculated for <20°N?  
 * proper statistics  
 
 
@@ -54,16 +52,18 @@ locations<-read.fwf(
   ,sep="!",na.strings=c("NA","-999.9"), #sep = ! because ! does not exist in dataset - > dataset is fixed-width and should have no additional separators
   widths=c(11, 9, 10, 7,2,35)
 )
-reslist<-read.table("01climate_data/03output/results.txt")
-names(reslist)<-c("ID","meanwinter","sd_winter","nyears","predictability","amplitude","phase angle", "intercept")
+reslist<-read.table("01climate_data/03output/results.txt",na.string = c("NA","-9999","-999.9"))
+names(reslist)<-c("ID","meanwinter","sd_winter","nyears","predictability","amplitude","phase angle", "intercept","beta")
 climate<-merge(locations,reslist,by=1)
 rm(locations)
 rm(reslist)
-names(climate)<-c("ID","lat","lon","alt","no_idea","name","meanwinter","sd_winter", "nyears","unpredictability","amplitude","phase angle", "intercept")
+names(climate)<-c("ID","lat","lon","alt","no_idea","name","meanwinter","sd_winter", "nyears","unpredictability","amplitude","phase angle", "intercept","beta")
 
 slopes<-read.table("02studies/02output/slopes.txt")
 slopes<-slopes[-159,]  #the drm gives a nearly entirely flat slope, so this never reaches diapause
 slopes<-slopes[-1,] # a row with NA
+climate<-climate[!is.na(climate$meanwinter),] #because these cannot be used anyway
+climate$alt[climate$alt == -999.9]<-NA #was somehow not converted to NA during read.table
 ```
 
 #### correlation latitude - CDL
@@ -123,15 +123,24 @@ The estimate of 1 h per 5° N is not too bad, overall diapause becomes 50 min ea
 
 
 #### correlation with climate data  
-One would expect that this curve fits well to mean winter onset given latitude, and the climate data allows testing that.
+One would expect that this curve fits well to mean winter onset given latitude, and the climate data allows testing that. Overview:
 
 ```{r clim_M}
+plot(climate$meanwinter~climate$lat,pch=22,cex=0.1, main ="Mean winter onset vs. latitude")
+hist(slopes$degN,breaks=100) #for comparison
+```
+
+It is possible a bad idea to use any climate above 70°N. The highest latitude in the studies was 69.05 °N. The apparent cap at ~25°N is because winter is not defined for warm climates (winter never arrives). The lowest latitude in the studies is at 18.3°N. 
+Refined overview:  
+
+```{r minus70}
+climate<-climate[climate$lat<=70,]
 plot(climate$meanwinter~climate$lat,pch=22,cex=0.1, main ="Mean winter onset vs. latitude")
 M<-lm(climate$meanwinter~climate$lat)
 ```
 
-Mean winter decreases by 2.5 days per ° latitude = 12.5 days per 5°, so an organism needs to react to a day length equal to 12.5 days earlier in the year per 5°N. correct calculation of day length at a given latitude for a given day: https://en.wikipedia.org/wiki/Sunrise_equation
-luckily there is a package that solves that:
+Mean winter decreases by 2.6 days per ° latitude = 13 days per 5°, so an organism needs to react to a day length equal to 13 days earlier in the year per 5°N. The correct calculation of day length at a given latitude for a given day is difficult: https://en.wikipedia.org/wiki/Sunrise_equation
+luckily there is a package that solves that.
 
 ```{r climate_CDL}
 M<-lm(climate$meanwinter~climate$lat)
@@ -153,7 +162,7 @@ points(slopes$expdl21~slopes$degN,col=4)
 #### combining these two  
 integrating this into the curve of CDL vs latitude (mostly copy of above code)
 
-```{r}
+```{r CDL_and_expected}
 r2<-slopes
 r2<-separate(r2,col=1, into = c("study","pop"), sep ="-",remove=FALSE)
 r2$e<-as.numeric(r2$e)
@@ -179,10 +188,9 @@ summary(lm(r2$e~r2$expdl))
 Now to the main part of this study: correlating slope of the PRC with climate data
 
 1. histograms of all variables
-```{r,include = FALSE}
+```{r hist, include = FALSE}
 hist(climate$alt)
-climate$alt[climate$alt==-999.9]<-NA
-climate$sq_alt <-sqrt(climate$alt)
+climate$sq_alt <-sqrt(climate$alt) #few NAs producded
 hist(climate$sq_alt,breaks=100)
 
 hist(climate$meanwinter,breaks=100)
@@ -195,14 +203,17 @@ hist(climate$nyears,breaks=50)
 hist(climate$unpredictability,breaks=100)
 sum(!is.na(climate$unpredictability))
 sum(is.na(climate$unpredictability))
-length(climate$unpredictability[climate$unpredictability>5])-3911
-97/16923 #0.5% of all values are >5, 1.1%>4
+length(climate$unpredictability[climate$unpredictability>5])-25 #values >5 but not NA
+159/24227 #values >5 divided by non-Nas = 0.65% of all values are >5
 hist(climate$unpredictability[climate$unpredictability<5],breaks=100)
+
+
+hist(climate$beta,breaks=100)
 ```
 
 
 checking whether the nls regression makes sense
-```{r,include =FALSE}
+```{r nls ,include =F}
 p<-climate
 hist(p$amplitude)
 hist(p$`phase angle`)
@@ -220,8 +231,8 @@ plot(p$lat~p$lon,bg = rgb(p$amp,0,p$amp,maxColorValue = max(p$amp)),cex=0.3,pch=
 plot(p$lat~p$lon,bg=rgb(p$`phase angle`,0,p$`phase angle`,maxColorValue = max(p$`phase angle`)),cex=0.3,pch=22,col=NA,main = "midsummer from nls regression (phase angle)")
 ```
 
-visualisation mean winter, sd(winter), predictability
-```{r}
+visualisation mean winter, sd(winter), predictability, beta
+```{r visualisation}
 #png("mean-winter.png")
 p<-climate
 p<-p[!is.na(p$meanwinter),]
@@ -236,21 +247,26 @@ p<-p[p$nyears>8,]
 plot(p$lat~p$lon,bg = rgb(p$capped_sd,p$capped_sd,0,maxColorValue = max(p$capped_sd)),cex=0.3,pch=22,col=NA, main ="sd winter onset, capped at 20",xlab="",ylab="")
 #dev.off()
 
-p<-p[!is.na(p$sq_alt),]
-
 
 p<-climate
 p<-p[!is.na(p$unpredictability),]
 p<-p[p$nyears>5,]
-p$unpredictability[p$unpredictability>5]<-5 #0.5% of all data
+p$unpredictability[p$unpredictability>5]<-5 #0.6% of all data
 #range(p$unpredictability)
 #png("predictability-winter.png")
 plot(p$lat~p$lon,bg = rgb(p$unpredictability,p$unpredictability,0,maxColorValue = max(p$unpredictability)),cex=0.3,pch=22,col=NA, main ="unpredictability",sub="dark low standard deviation in slopes",xlab="",ylab="")
 #dev.off()
+
+#colour of noise
+p<-climate
+p<-p[p$nyears>10,]
+p<-p[!is.na(p$beta),]
+#p[p$beta>0.6]<-0.6
+plot(p$lat~p$lon,bg=rgb(1,1-p$beta+0.0001,1-p$beta+0.0001,maxColorValue = 1.0001),cex=0.5,pch=22,col=NA)
 ```
 
 Does winter variability or predictability correlate with lat/alt or amplitude?
-```{r}
+```{r corr_climate}
 p$amplitude[p$amplitude>250]<-250
 plot(p$sd_winter~p$lat,pch=22,cex=0.1)
 plot(p$sd_winter~p$sq_alt,pch=22,cex=0.1)
@@ -267,16 +283,28 @@ plot(p$capped_sd~p$unpredictability,pch=22,cex=0.1)
 summary(lm(p$capped_sd~p$unpredictability))
 #summary(lm(p$sd_winter~p$lat+p$sq_alt)) #R²=0
 ```
+```{r beta_climate}
+plot(climate$beta~climate$lat,pch=22,cex=0.1)
+plot(climate$beta~climate$amplitude,pch=22,cex=0.1)
+plot(climate$beta~climate$lon,pch=22,cex=0.1)
+plot(climate$beta~climate$meanwinter,pch=22,cex=0.1)
+plot(climate$beta~climate$alt,pch=22,cex=0.1)
+plot(climate$beta~climate$sd_winter,pch=22,cex=0.1)
+plot(climate$beta~climate$unpredictability,pch=22,cex=0.1)
+```
+
+
 
 correlate slopes with climate data:
-Take the 5 closest climate stations in a 5° radius, calculate sd,predictability and mean of these weighted by inverse of euclidian distance.
+Take the 5 closest climate stations in a 5° radius, calculate sd,predictability,color and mean of these weighted by inverse of euclidian distance.
 
-```{r}
-climate<-climate[!is.na(climate$meanwinter),] #because those are useless
+```{r combine}
 slopes$meanwinter<-NA
 slopes$sd_winter<-NA
 slopes$unpredictability<-NA
 slopes$nyears<-NA
+slopes$beta<-NA 
+
 for ( i in 1:nrow(slopes)){
   #reduce to +-5 °
   sub<-climate[between(climate$lat,slopes[i,10]-5,slopes[i,10]+5)& between(climate$lon,slopes[i,11]-5,slopes[i,11]+5),]
@@ -290,6 +318,7 @@ for ( i in 1:nrow(slopes)){
   slopes$sd_winter[i]<-weighted.mean(sub$sd_winter,1/sub$diff)
   slopes$unpredictability[i]<-weighted.mean(sub$unpredictability,1/sub$diff)
   slopes$nyears[i]<-weighted.mean(sub$nyears,1/sub$diff)
+  slopes$beta[i]<-weighted.mean(sub$beta,1/sub$diff)
 
 }
 slopes$b<-abs(slopes$b)
@@ -299,7 +328,7 @@ slopes<-slopes[!is.na(slopes$meanwinter),]
 
 
 Now the slopes from the studies can be plotted against climate variables (+modelling)
-```{r}
+```{r resultschunk}
 r2<-separate(slopes,col=1, into = c("study","pop"), sep ="-",remove=FALSE)
 r2$e<-as.numeric(r2$e)
 r2$degN<-as.numeric(r2$degN)
@@ -332,6 +361,18 @@ lines(x=range(r2$sd_winter),y=summary(mixed)$coefficients[1,1]+ range(r2$sd_wint
 #quite severe variance heterogeneity
 
 
+plot(r2$b~r2$beta,xlab="color of noise",ylab="slope of PRC",bg=palette(rainbow(42)),pch=22)
+for (i in unique(r2$study)){
+t<-r2[r2$study==i,]
+M<-lm(t$b~t$beta)
+if (sum(is.na(coef(M)))==0){lines(x=t$beta, y= predict(M),col="grey",lwd=nrow(t)/10)
+  }
+}
+mixed<-lmer(b~beta + (1|study),data=r2)
+r2$pred<-predict(mixed)
+lines(x=range(r2$beta),y=summary(mixed)$coefficients[1,1]+ range(r2$beta)*summary(mixed)$coefficients[2,1],lwd=2)
+
+
 
 r2<-r2[!is.na(r2$unpredictability),]
 
@@ -361,13 +402,16 @@ anova(m2,m4)
 #should exchange that with non-p statistics
 #also need to correct for variance heterogeneity
 #and include weights (inverse of s.e. of b)
+
+
+
 ```
 
 
 The slope estimates of the individual dose-response curve vary by study (some are ~ 500, others 10). They need to be scaled on the study-level, so that they are 0-1 in each study.
 Everything else is copy of chunk above
 
-```{r}
+```{r scaled}
 #scale slope by study
 r2<-r2%>%
   group_by(study)%>%
@@ -379,6 +423,15 @@ mixed<-lmer(b~sd_winter + (1|study),data=r2)
 r2$pred<-predict(mixed)
 lines(x=range(r2$sd_winter),y=summary(mixed)$coefficients[1,1]+ range(r2$sd_winter)*summary(mixed)$coefficients[2,1],lwd=2)
 #quite severe variance heterogeneity
+
+backup<-r2
+r2<-r2[!is.na(r2$beta),]
+plot(r2$b~r2$beta,xlab="color of noise",ylab="slope of PRC(scaled by study",bg=palette(rainbow(42)),pch=22)
+mixed<-lmer(b~beta + (1|study),data=r2)
+#r2$pred<-predict(mixed)
+#lines(x=range(r2$beta),y=summary(mixed)$coefficients[1,1]+ range(r2$beta)*summary(mixed)$coefficients[2,1],lwd=2)
+
+r2<-backup
 
 plot(r2$b~r2$unpredictability,xlab = "winter unpredictability (scaled by study)",ylab = "slope of PRC(scaled by study)",bg=palette(rainbow(42)),pch=22)
 mixed<-lmer(b~unpredictability + (1|study),data=r2)

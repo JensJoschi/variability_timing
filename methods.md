@@ -129,7 +129,8 @@ the slopes currently correlate neither with sd of winter onset, nor with unpredi
 # To-do list  
 [x] Calculation mean winter onset, sd winter onset, predictability 
 [x] correlation of these with °N/°E/alt/amplitude from nls (no correlation found)
-[ ] it might be cool to calculate the colour of noise (spectral power analysis). Although this     only describes general precitability (not predictability of winter).
+[.]  calculate the colour of noise (spectral power analysis). Although this only describes general precitability (not predictability of winter). (not sure if correct)
+[ ] calculate color of noise also for stations without mean winter onset 
 
 [x] find studies with photoperiodic response curves
 [x] do forward-citation search to find further studies
