@@ -18,6 +18,7 @@ library(tidyr)
 library(dplyr)
 library(stringr)
 library(magrittr)
+library(imputeTS)
 threshold<-50
 t2<-10
 ```
@@ -208,8 +209,9 @@ wrap_error = function (vals,s_A,s_phi,s_c) {
 ### actual calculation  
 Do the calculations, piecewise for 30 chunks of data; save the results
 ```{r}   
+x<-unique(converted$ID)
 for (loop in 1:30){ #this loop goes through the 30 chunks of 1k stations
-station<-converted[converted$ID %in% unique(converted$ID)[((loop-1)*1000+1):(1000*loop)],]
+station<-converted[converted$ID %in% x[((loop-1)*1000+1):(1000*loop)],]
 station<-turn_around(station)
 
 
@@ -220,7 +222,7 @@ p<-rep(NA,length(unique(station$ID)))
 A<-rep(NA,length(unique(station$ID)))
 phi<-rep(NA,length(unique(station$ID)))
 int<-rep(NA,length(unique(station$ID)))
-
+beta<-rep(NA,length(unique(station$ID)))
 
 for (i in 1:length(unique(station$ID))){ #this loop goes through each of the 1 k stations
   
@@ -331,20 +333,64 @@ for (i in 1:length(unique(station$ID))){ #this loop goes through each of the 1 k
  phi[i]<-parms[2]
  int[i]<-parms[3]
  
+ 
+ #### test: spectral density estimate: beta ###
+ freqs<-n[,2]
+xvector<-1:length(freqs)
+ms<-rep(NA,366)
+for ( k in 1:366){
+  ms[k]<-mean(freqs[xvector%%366==k],na.rm=T)
+}
+
+freq2<-freqs
+for ( k in 1:366){
+  freq2[xvector%%366==k]<-freq2[xvector%%366==k]-ms[k]
+}
+
+freq2<-na.interpolation(freq2)
+spec<-spectrum(freq2[!is.na(freq2)],plot=F,method="ar")
+#missing: linear interpolation to deal with NAs
+spec$spec<-spec$spec[spec$freq>0]
+spec$freq<-spec$freq[spec$freq>0]
+beta[i]<- exp(coef(lm(log10(spec$spec)~log10(spec$freq)))[2])
+
   } #next station
 
 
 #####gather and save results####
-reslist<-data.frame(unique(station$ID),mean_winter,sd_winter,nyears,p,A,phi,int)
+reslist<-data.frame(unique(station$ID),mean_winter,sd_winter,nyears,p,A,phi,int,beta)
 
-names(reslist)<-c("ID","meanwinter","sd winter","nyears","predictability","amplitude","phase angle", "intercept")
+names(reslist)<-c("ID","meanwinter","sd winter","nyears","predictability","amplitude","phase angle", "intercept","beta")
 write.table(reslist,"results.txt",append=TRUE,quote=FALSE,row.names=FALSE,col.names=FALSE)
 } #next chunk
 ```
-
+"failed in 745"
 
 This goes only for the first 30k climate stations! repeat loop with remaining stations!
 (station<-converted[converted$ID %in% unique(converted$ID)[30001:30901],])
 Results.txt has been manually moved to the folder 01climate_data/03output.
 
 In the next step the results have to be combined with data from empirical studies. this is in another script (folder 03Analysis)
+
+```{r}
+freqs<-n[,2]
+x<-1:length(freqs)
+freqs[x%%365==1]
+ms<-rep(NA,365)
+for ( i in 1:365){
+  ms[i]<-mean(freqs[x%%366==i],na.rm=T)
+}
+plot(freqs)
+points(ms,col=2)
+freq2<-freqs
+for ( i in 1:365){
+  freq2[x%%365==i]<-freq2[x%%365==i]-ms[i]
+}
+
+
+p<-plot(spectrum(freq2[!is.na(freq2)]))
+p$pred<-predict(lm(log(p$spec)~p$freq))
+points(exp(p$pred)~p$freq)
+beta<- exp(coef(lm(log(p$spec)~p$freq))[2])
+```
+

@@ -57,11 +57,12 @@ Lastly, this approach was replaced by using the standard deviation in slopes of 
 
 ## empirical data
 
-I searched the web of science database for "(photoperiodic AND (geogr\* OR range)) OR (photoperiod\* AND latitud\*) OR(photoperiod\* AND longitud\*)" on 19.2.2018. This search yielded 1627 unique  results. The results were merged in an excel-file. I added articles to the study that I knew or which were cited in these articles but that did not match the keywords (total: 1641). Still need to do a forward citation search though.
+I searched the web of science database for "(photoperiodic AND (geogr\* OR range)) OR (photoperiod\* AND latitud\*) OR(photoperiod\* AND longitud\*)" on 19.2.2018. This search yielded 1627 unique  results. The results were merged in an excel-file. I added articles to the study that I knew or which were cited in these articles but that did not match the keywords (total: 1641). 
 I classified the studies as plant/animal, Vertebrate/invertebrate, and water/terrestrial by filtering for different keywords (e.g. plant,flower, ento*, fish, bird) in journal titles. Articles that appeared in more general journals were classified manually (according to title, abstract or full text).
 
 
-Concentrating on terrestrial invertebrates, I selected only studies that measured photoperiodic response curves of more than two populations, and over at least 3 photoperiods.  61 studies with 364-450 populations fulfilled these criteria (5 studies with a total of 90 populations did not show any PRCs but I may be able to retrieve them if I write to the authors). These 61 studies examined PRCs of 47 species (T.urticae and some Drosophila species were adressed in several studies) of 9 orders (1 species per study, except in one case). For these, I noted study species, sample sizes, coordinates and altitude (if available), and saved the PRCs as .png files. I then extracted the data from the figures using WebPlotDigitizer Version 3.12 (Rohatgi, 2017). When raw data was avaiulable (x % of all cases) I used this data to test the error rate of manual extraction (todo, but small according to initial tests). Where neccessary,  the day length was then rounded or corrected to match the description in materials and methods of the respective study. For example the points on the x-axis were in some cases not continous as the axis would suggest (e.g. x-axis in (Paolucci et al., 2013) mixes 1h intervals with 2h intervals), or points were plotted next to each other for better visibility  (Riihimaa Ari et al., 2004). Y-values that were slightly above 100% or below 0% were set to 100% and 0% respectively. in one figure of (Urbanski et al., 2012), 1 data point that appeared in the figure but did not exist in the available raw data was deleted.
+Concentrating on terrestrial invertebrates, I selected only studies that measured photoperiodic response curves of more than two populations, and over at least 3 photoperiods.  61 studies with 364-450 populations fulfilled these criteria (5 studies with a total of 90 populations did not show any PRCs but I may be able to retrieve them if I write to the authors). These 61 studies examined PRCs of 47 species (T.urticae and some Drosophila species were adressed in several studies) of 9 orders (1 species per study, except in one case). I did a forward citeation search on april 3rd 2018 on all 61 eligible studies, and found 762 further articles that cite these studies, 11 of which were suitable for inclusion. (still need to go through a few old refs). A further forward search on April 12th (121 new refs) brought X new studies.
+For all studies that were included, I noted study species, sample sizes, coordinates and altitude (if available), and saved the PRCs as .png files. I then extracted the data from the figures using WebPlotDigitizer Version 3.12 (Rohatgi, 2017). When raw data was avaiulable (x % of all cases) I used this data to test the error rate of manual extraction (todo, but small according to initial tests). Where neccessary,  the day length was then rounded or corrected to match the description in materials and methods of the respective study. For example the points on the x-axis were in some cases not continous as the axis would suggest (e.g. x-axis in (Paolucci et al., 2013) mixes 1h intervals with 2h intervals), or points were plotted next to each other for better visibility  (Riihimaa Ari et al., 2004). Y-values that were slightly above 100% or below 0% were set to 100% and 0% respectively. in one figure of (Urbanski et al., 2012), 1 data point that appeared in the figure but did not exist in the available raw data was deleted.
 
 
 To estimate the slopes I modelled diapause with four-parameter binomial dose response curves in R. This analysis provides lower and upper bounds of photoperiodic induction (I constrained these to range from 0 to 100%), the slope, and the point where 50 % of the individuals are induced (critical day length). Where detailed information on sample sizes was available (% of all cases), I weighted diapause estimates by number of trials. I also recorded the standard error, using a robust sandwich estimation method (Zeileis, 2006).
@@ -112,7 +113,7 @@ geomapdata not used anymore
 
 
 ## climate data
-Mean winter correlated with latitude and altitude. (old: Environmental predictability was reasonably well explained by latitude,longitude and altitude (R² = 0.25)) (new:) Environmental variablity did not correlate with any variable tested though it seems higher in continental climates. Standard deviation in winter onset was a bit more erratic, and not correlated with any variable. 
+Mean winter correlated with latitude and altitude. (old: Environmental predictability was reasonably well explained by latitude,longitude and altitude (R² = 0.25)) (new:) Environmental variablity did not correlate with any variable tested though it seems higher in continental climates and higher in high latitudes. Standard deviation in winter onset was a bit more erratic, and not correlated with any variable. 
 
 
 ## empirical data
@@ -121,30 +122,36 @@ The critical day length ( julian date on which 50 % offspring are diapausing) in
 ## empirical + climate data
 The critical day length was consistently earlier, but correlated to the photoperiod expected by mean winter onset from the climate data. 
 Critical day length correlates with mean winter onset
-the slopes currently correlate with sd of winter onset, and to a lesser extend with unpredictability. But many changes are not implemented yet, so things will likely change. 
+the slopes currently correlate neither with sd of winter onset, nor with unpredictability (in earlier versions a bug caused positive results). But many changes are not implemented yet, so things will likely change. 
 
 
 
 # To-do list  
-[ ] Calculation mean winter onset, sd winter onset, predictability (bug causes some stations to appear twice)
+[x] Calculation mean winter onset, sd winter onset, predictability 
 [x] correlation of these with °N/°E/alt/amplitude from nls (no correlation found)
+[ ] it might be cool to calculate the colour of noise (spectral power analysis). Although this     only describes general precitability (not predictability of winter).
 
 [x] find studies with photoperiodic response curves
-[ ] do forward-citation search to find further studies
-[ ] extract PRCs where available (forward-citations still to do)
-[ ] ask authors were no data is available
-[ ] estimate of error introduced by WebPlotDigitizer approach
-[x] get slope estimates from dose-response curve analysis on all 350 populations
-[ ] get Danilevskii
+[x] do forward-citation search to find further studies
+[ ] get Danilevskii (requested)
+[ ] get beck insect photoperiodism to check table 28 (requested)
+[ ] do 2nd level forward search
 
-[ ] correlate CDL ~ latitude, weighted by s.e. of CDL estimate (missing: study ID as random term)
+[ ] get metadata for forward-searched articles and integrate to excelfile
+[ ] kick out studies with only 3 day lengths(does not allow sensible calc of DRC)
+[.] extract PRCs where available (forward-citations and old refs still to do)
+[ ] ask authors were no data is available
+[.] get slope estimates from dose-response curve analysis on all populations (forward searched, author requests and old refs still missing)
+[ ] estimate of error introduced by WebPlotDigitizer approach
+
+[.] correlate CDL ~ latitude, weighted by s.e. of CDL estimate (missing: study ID as random term)
 [x] transformation of CDL to achieve linearity (turns out it is not needed)
-[x] geographical averaging to get climate variability estimates at location of study sites
+[.] geographical averaging to get climate variability estimates at location of study sites
 [x] calculation expected CDL shift based on climate data (winter arrival)
-[x] correlation expected and true CDL shift
-[x] slope ~ predictability * variability + (1|study)  (this is statistically not entirely correct)
+[.] correlation expected and true CDL shift
+[.] slope ~ predictability * variability + (1|study)  (this is statistically not entirely correct)
 [ ] weights = 1/s.e. of slope estimate (requires discussion whether this is the right way to do)
-[ ] scaling of slope estimates within study (not sure whether right approach)
+[.] scaling of slope estimates within study (not sure whether right approach)
 [ ] account for variance heterogeneity
 [ ] slope ~ predictability * variability + (1|study\species) (requires discussion whether this is correct final model)
 [ ] account for spatial autocorrelation of study sites (requires discussion whether this is needed)
