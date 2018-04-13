@@ -51,7 +51,10 @@ As before, I calculated Amplitude, phase angle and annual average with a non-lin
 
 I then calculated winter predictability: The last 31 days before winter onset of each year were aggregated and pearsons R was calculated. The climate at one station was considered predictable (high R) if 1) temperature declined more or less linearly, 2) the slope was consistent across years, and 3) there was little day-to-day variation.  I used only years with at least 182 days of data, and concentrated only on years that actually reach winter as defined above. I excluded all stations that reach winter less than 3 times
 
-Lastly, this approach was replaced by using the standard deviation in slopes of the same regressions. This is very likely the final version of predictability.  
+Lastly, this approach was replaced by using the standard deviation in slopes of the same regressions. This is very likely the final version of predictability. Actually, no:
+
+As alternative to the previous approach, I calculated the color of environmental noise like Vasseur & Yodzis 2004 (Ecology). Taking all temperature information (Tmax divided by Tmin) from one station, I calculated the power spectral density. First, I removed the seasonal trend by substracting from each daily temperature estimate the station-wide mean temperature of that day. Missing values were replaced by linear interpolation. I then calculated the spectral density with the function spectrum, using the method "ar", and used the negative of the slope of log10(spectral density)~log10(frequency) as estimate for beta. Because this approach does not calculate winter predictability, but general environmental predictability, I do not expect to find a pattern here. Therefore this approach is not hypothesis-testing but exploratory. 
+Not sure if possible, but limiting the time window to ~1 month around winter onset and then calculating the slope could be a better way to calculate predictability. This needs discussion and I will settle for one of the two ways to calculate predictability before conducting the real analysis on the final dataset. 
 
 
 
@@ -61,7 +64,8 @@ I searched the web of science database for "(photoperiodic AND (geogr\* OR range
 I classified the studies as plant/animal, Vertebrate/invertebrate, and water/terrestrial by filtering for different keywords (e.g. plant,flower, ento*, fish, bird) in journal titles. Articles that appeared in more general journals were classified manually (according to title, abstract or full text).
 
 
-Concentrating on terrestrial invertebrates, I selected only studies that measured photoperiodic response curves of more than two populations, and over at least 3 photoperiods.  61 studies with 364-450 populations fulfilled these criteria (5 studies with a total of 90 populations did not show any PRCs but I may be able to retrieve them if I write to the authors). These 61 studies examined PRCs of 47 species (T.urticae and some Drosophila species were adressed in several studies) of 9 orders (1 species per study, except in one case). I did a forward citeation search on april 3rd 2018 on all 61 eligible studies, and found 762 further articles that cite these studies, 11 of which were suitable for inclusion. (still need to go through a few old refs). A further forward search on April 12th (121 new refs) brought X new studies.
+Concentrating on terrestrial invertebrates, I selected only studies that measured photoperiodic response curves of more than two populations, and over at least 3 photoperiods.  61 studies with 364-450 populations fulfilled these criteria (5 studies with a total of 90 populations did not show any PRCs but I may be able to retrieve them if I write to the authors). These 61 studies examined PRCs of 47 species (T.urticae and some Drosophila species were adressed in several studies) of 9 orders (1 species per study, except in one case). I did a forward citeation search on april 3rd 2018 on all 61 eligible studies, and found 762 further articles that cite these studies, 11 of which were suitable for inclusion. (still need to go through a few old refs). A further forward search on April 12th (121 new refs) brought X new studies. In total, y studies were included.
+I removed again all studies with exactly 3 photoperiods measured, because they are not useful for DRC  analysis, but nevertheless good for the literature search(todo).
 For all studies that were included, I noted study species, sample sizes, coordinates and altitude (if available), and saved the PRCs as .png files. I then extracted the data from the figures using WebPlotDigitizer Version 3.12 (Rohatgi, 2017). When raw data was avaiulable (x % of all cases) I used this data to test the error rate of manual extraction (todo, but small according to initial tests). Where neccessary,  the day length was then rounded or corrected to match the description in materials and methods of the respective study. For example the points on the x-axis were in some cases not continous as the axis would suggest (e.g. x-axis in (Paolucci et al., 2013) mixes 1h intervals with 2h intervals), or points were plotted next to each other for better visibility  (Riihimaa Ari et al., 2004). Y-values that were slightly above 100% or below 0% were set to 100% and 0% respectively. in one figure of (Urbanski et al., 2012), 1 data point that appeared in the figure but did not exist in the available raw data was deleted.
 
 
@@ -96,6 +100,7 @@ I then made the following models (and plots):
 * lmer(CDL~meanwinter + (1|study))  
 * lmer(slope ~ sd_winter + (1|study))  
 * lmer(slope ~ unpredictablitiy + (1|study))  
+* lmer(slope ~ color + (1|study))
 
 * lmer(slope ~ unpredictability\*sd_winter + 1|study) and model reduction  
 * same models but slope and CDL scaled by study  
@@ -107,6 +112,7 @@ The dose-response curve analyses were made with the package drc (Ritz et al., 20
 
 MASS needs inclusion
 as does package for daylength
+and imputeTS
 geomapdata not used anymore
 
 # Results    
@@ -122,14 +128,14 @@ The critical day length ( julian date on which 50 % offspring are diapausing) in
 ## empirical + climate data
 The critical day length was consistently earlier, but correlated to the photoperiod expected by mean winter onset from the climate data. 
 Critical day length correlates with mean winter onset
-the slopes currently correlate neither with sd of winter onset, nor with unpredictability (in earlier versions a bug caused positive results). But many changes are not implemented yet, so things will likely change. 
+the slopes currently correlate neither with sd of winter onset, nor with unpredictability (in earlier versions a bug caused positive results) or environemntal color. But many important details are not implemented yet, so things will likely change. 
 
 
 
 # To-do list  
 [x] Calculation mean winter onset, sd winter onset, predictability 
 [x] correlation of these with °N/°E/alt/amplitude from nls (no correlation found)
-[.]  calculate the colour of noise (spectral power analysis). Although this only describes general precitability (not predictability of winter). (not sure if correct)
+[.]  calculate the colour of noise (spectral power analysis). Although this only describes general precitability (not predictability of winter). (calculation wrong! remove exp() from slope calculation)
 [ ] calculate color of noise also for stations without mean winter onset 
 
 [x] find studies with photoperiodic response curves
