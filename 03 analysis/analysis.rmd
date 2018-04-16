@@ -207,7 +207,8 @@ length(climate$unpredictability[climate$unpredictability>5])-25 #values >5 but n
 159/24227 #values >5 divided by non-Nas = 0.65% of all values are >5
 hist(climate$unpredictability[climate$unpredictability<5],breaks=100)
 
-
+climate$beta<-log(climate$beta)
+climate$beta<--1* climate$beta
 hist(climate$beta,breaks=100)
 ```
 
@@ -262,7 +263,7 @@ p<-climate
 p<-p[p$nyears>10,]
 p<-p[!is.na(p$beta),]
 #p[p$beta>0.6]<-0.6
-plot(p$lat~p$lon,bg=rgb(1,1-p$beta+0.0001,1-p$beta+0.0001,maxColorValue = 1.0001),cex=0.5,pch=22,col=NA)
+plot(p$lat~p$lon,bg=rgb(1,max(p$beta)-p$beta+0.0001,max(p$beta)-p$beta+0.0001,maxColorValue = max(p$beta+0.001)),cex=0.5,pch=22,col=NA)
 ```
 
 Does winter variability or predictability correlate with lat/alt or amplitude?
