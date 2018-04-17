@@ -64,8 +64,8 @@ I searched the web of science database for "(photoperiodic AND (geogr\* OR range
 I classified the studies as plant/animal, Vertebrate/invertebrate, and water/terrestrial by filtering for different keywords (e.g. plant,flower, ento*, fish, bird) in journal titles. Articles that appeared in more general journals were classified manually (according to title, abstract or full text).
 
 
-Concentrating on terrestrial invertebrates, I selected only studies that measured photoperiodic response curves of more than two populations, and over at least 3 photoperiods.  61 studies with 364-450 populations fulfilled these criteria (5 studies with a total of 90 populations did not show any PRCs but I may be able to retrieve them if I write to the authors). These 61 studies examined PRCs of 47 species (T.urticae and some Drosophila species were adressed in several studies) of 9 orders (1 species per study, except in one case). I did a forward citeation search on april 3rd 2018 on all 61 eligible studies, and found 762 further articles that cite these studies, 11 of which were suitable for inclusion. A forward search on these 11 articles on April 12th (94 new refs) brought 1 new study, and following its 20 citations on April 16th yielded another article. Its 14 citations (april 16th) yielded no further article. In total, y studies were included.
-I removed again all studies with exactly 3 photoperiods measured, because they are not useful for DRC  analysis, but nevertheless good for the literature search(todo).
+Concentrating on terrestrial invertebrates, I selected only studies that measured photoperiodic response curves of more than two populations, and over at least 3 photoperiods.  61 studies with 364-450 populations fulfilled these criteria (5 studies with a total of 90 populations did not show any PRCs but I may be able to retrieve them if I write to the authors). These 61 studies examined PRCs of 47 species (T.urticae and some Drosophila species were adressed in several studies) of 9 orders (1 species per study, except in one case). I did a forward citeation search on april 3rd 2018 on all 61 eligible studies, and found 762 further articles that cite these studies, 11 of which were suitable for inclusion. A forward search on these 11 articles on April 12th (94 new refs) brought 1 new study, and following its 20 citations on April 16th yielded another article. Its 14 citations (april 16th) yielded no further article. 
+I removed again all studies with exactly 3 photoperiods measured, because they are not useful for DRC  analysis, but nevertheless good for the literature search.In total, 47 studies with 364 populations (up to 57 with 446 after contacting authors) were included.
 For all studies that were included, I noted study species, sample sizes, coordinates and altitude (if available), and saved the PRCs as .png files. I then extracted the data from the figures using WebPlotDigitizer Version 3.12 (Rohatgi, 2017). When raw data was avaiulable (x % of all cases) I used this data to test the error rate of manual extraction (todo, but small according to initial tests). Where neccessary,  the day length was then rounded or corrected to match the description in materials and methods of the respective study. For example the points on the x-axis were in some cases not continous as the axis would suggest (e.g. x-axis in (Paolucci et al., 2013) mixes 1h intervals with 2h intervals), or points were plotted next to each other for better visibility  (Riihimaa Ari et al., 2004). Y-values that were slightly above 100% or below 0% were set to 100% and 0% respectively. in one figure of (Urbanski et al., 2012), 1 data point that appeared in the figure but did not exist in the available raw data was deleted.
 
 
@@ -142,10 +142,10 @@ the slopes currently correlate neither with sd of winter onset, nor with unpredi
 [x] do forward-citation search to find further studies
 [ ] get Danilevskii (requested)
 [ ] get beck insect photoperiodism to check table 28 (requested)
-[ ] do 2nd level forward search
+[x] do 2nd level forward search
 
-[ ] get metadata for forward-searched articles and integrate to excelfile
-[ ] kick out studies with only 3 day lengths(does not allow sensible calc of DRC)
+[x] get metadata for forward-searched articles and integrate to excelfile
+[x] kick out studies with only 3 day lengths(does not allow sensible calc of DRC)
 [.] extract PRCs where available (forward-citations and old refs still to do)
 [ ] ask authors were no data is available
 [.] get slope estimates from dose-response curve analysis on all populations (forward searched, author requests and old refs still missing)
