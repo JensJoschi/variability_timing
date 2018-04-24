@@ -1,5 +1,5 @@
 # Description of this file  
-This file consists of a summary and a methods section that is updated from time to time, and includes the most important methods and results. This is followed by a detailed description of all methods and models that have been used (and is hence rather long). I will also produce a shorter list with only relevant methods at some point. Then there is a short results section (only most important parts are kept). In the end there is a checklist that summarises the long methods part and is at the same time my to-do list. 
+This file consists of a summary and a methods section that is updated from time to time, and includes the most important methods and results. This is followed by a detailed description of all methods and models that have been used (and is hence rather long). Then there is a short results section (only most important parts are kept). In the end there is a checklist that summarises the long methods part and is at the same time my to-do list. 
 
 
 # Summary    
@@ -13,8 +13,33 @@ As expected, populations from northern latitudes shift their timing towards earl
 
 # Methods    
 
+## climate data  
+To calculate winter onset and environmental predictability at various locations, I used the GHCN-Daily dataset (Menne et al., 2012), version 3.22 which includes weather station data from throughout the world (Menne et al., 2018). I used the mean of daily minimum and maximum temperatures to calculate daily average temperatures of ~5-50 years for each station. I then calculated winter onset in each year as the day on which temperatures falls below x °C for the yth time (starting the "year" in midsummer), and used standard devitation among years to estimate winter variability. To calculate winter predictability, I first calculated the slope of the last 30 days before winter onset, and used the between-years standard deviation in that slope. During the analysis of the results (after seeing that predictability has likely no effect, but before final analysis), I changed the approach to calculating the "colour of noise", i.e. the slope coefficient in a power spectral density plot (not finished, but should, if possible, use only data for winter onset +- 1 month). 
 
-To calculate winter onset and environmental predictability at various locations, I used the GHCN-Daily dataset (Menne et al., 2012), version 3.22 which includes weather station data from throughout the world (Menne et al., 2018). I then extracted photoperiodic response curves from 60 published studies (350 populations) along with their sampling locations, and estimated the means (LD 50, critical day length) and slopes of these curves. The mean was correlated with latitude, whereas the slope estimates were correlated to the estimated predictability and variability of winter arrival.
+## empirical data
+I searched the web of science database for "(photoperiodic AND (geogr\* OR range)) OR (photoperiod\* AND latitud\*) OR(photoperiod\* AND longitud\*), filtered all relevant articles, and did a forward-citation search. I also checked the references of two books (todo). I then contacted some authors to obtain unpublished data (todo). Then I extracted photoperiodic response curves from ~60 published studies (~400 populations) along with their sampling locations, and estimated the means (LD 50, critical day length) and slopes of these curves with a dose-response-curve analysis. slopes were scaled by (max response - min response) (parameter d-c), because populations that achieve only 50% diapause induction have flatter slopes (todo)
+
+## correlation of phoperiodic response with latitude
+
+I correlated the critical day length (day length at which 50 % of all offspring switch to diapause) with latitude of origin. I used a linear mixed-effects model of form 
+PRC ~ latitude + 1|(study nested in species)
+ and weighted the model by the inverse of the standard error of the critical day length estimate (todo). Although the relationship appears exponential, box-cox transformation (sqrt) did not improve model fit or residual structure (box-cox gives wide range of transformations, 95% ~0.2-0.8). The effect size reported shuold be slope (measured in h/°N) +CI and Fisher's Z transform of pearson's r.
+
+## correlation of slope in photoperiodic response with variability/predictability
+
+To get estimates of predictability/variability/mean winter at the study site, I averaged the estimates from the 5 closest stations within a 5° radius (weighted by 1/euclidian distance). I then correlated winter unpredictability and variability with the slope of the PRCs using the following model:
+slope ~ variability*predictability + (1|study in species) (todo)
+where individuals slopes were weghted by the inverse of their standard error, and scaled by the study mean. (todo).
+I did the same model for parameter d, the maximum diapause incidence each population reaches (todo). 
+The preferred output is sqrt(adjusted R²) and slope +CI, though the random effects may require different approach
+The predictability estimate comes from the colour-of-noise approach, if possible only using data from winter onset +- 1 month (todo).
+
+## exploratory analyses  
+The color-of noise approach was only adopted after seeing preliminary results, so one could argue it is not strictly hypothesis-testing (though I think it is improving on the method rather than data-mining). 
+The following real exploratory analyses are planned:
+using color of noise of the whole year (instead of noise of only +- 1 month around winter onset)
+splitting data into subgroups (lepidoptera, diptera, other) and testing
+checking which species are positive, and potential bet-hedgers
 
 # details  
 
@@ -53,7 +78,8 @@ I then calculated winter predictability: The last 31 days before winter onset of
 
 Lastly, this approach was replaced by using the standard deviation in slopes of the same regressions. This is very likely the final version of predictability. Actually, no:
 
-As alternative to the previous approach, I calculated the color of environmental noise like Vasseur & Yodzis 2004 (Ecology). Taking all temperature information (Tmax divided by Tmin) from one station, I calculated the power spectral density. First, I removed the seasonal trend by substracting from each daily temperature estimate the station-wide mean temperature of that day. Missing values were replaced by linear interpolation. I then calculated the spectral density with the function spectrum, using the method "ar", and used the negative of the slope of log10(spectral density)~log10(frequency) as estimate for beta. Because this approach does not calculate winter predictability, but general environmental predictability, I do not expect to find a pattern here. Therefore this approach is not hypothesis-testing but exploratory. 
+As alternative to the previous approach, I calculated the color of environmental noise like Vasseur & Yodzis 2004 (Ecology). Taking all temperature information (Tmax divided by Tmin) from one station, I calculated the power spectral density. First, I removed the seasonal trend by substracting from each daily temperature estimate the station-wide mean temperature of that day. Missing values were replaced by linear interpolation. I then calculated the spectral density within the frequency range of 1/366 and 1/(2 months) with the function spectrum, using the method "ar", and used the negative of the slope of log10(spectral density)~log10(frequency) as estimate for beta. beta was normally distributed.
+Because this approach does not calculate winter predictability, but general environmental predictability, I do not expect to find a pattern here. Therefore this approach is not hypothesis-testing but exploratory. 
 Not sure if possible, but limiting the time window to ~1 month around winter onset and then calculating the slope could be a better way to calculate predictability. This needs discussion and I will settle for one of the two ways to calculate predictability before conducting the real analysis on the final dataset. 
 
 
@@ -65,7 +91,7 @@ I classified the studies as plant/animal, Vertebrate/invertebrate, and water/ter
 
 
 Concentrating on terrestrial invertebrates, I selected only studies that measured photoperiodic response curves of more than two populations, and over at least 3 photoperiods.  61 studies with 364-450 populations fulfilled these criteria (5 studies with a total of 90 populations did not show any PRCs but I may be able to retrieve them if I write to the authors). These 61 studies examined PRCs of 47 species (T.urticae and some Drosophila species were adressed in several studies) of 9 orders (1 species per study, except in one case). I did a forward citeation search on april 3rd 2018 on all 61 eligible studies, and found 762 further articles that cite these studies, 11 of which were suitable for inclusion. A forward search on these 11 articles on April 12th (94 new refs) brought 1 new study, and following its 20 citations on April 16th yielded another article. Its 14 citations (april 16th) yielded no further article. 
-I removed again all studies with exactly 3 photoperiods measured, because they are not useful for DRC  analysis, but nevertheless good for the literature search.In total, 47 studies with 364 populations (up to 57 with 446 after contacting authors) were included.
+I removed again all studies with exactly 3 photoperiods measured (study IDs: 3,10,16,31,36,52,69), because they are not useful for DRC  analysis, but nevertheless good for the literature search.In total, 46 studies with 358 populations (up to 57 with 440 after contacting authors) were included.
 For all studies that were included, I noted study species, sample sizes, coordinates and altitude (if available), and saved the PRCs as .png files. I then extracted the data from the figures using WebPlotDigitizer Version 3.12 (Rohatgi, 2017). When raw data was avaiulable (x % of all cases) I used this data to test the error rate of manual extraction (todo, but small according to initial tests). Where neccessary,  the day length was then rounded or corrected to match the description in materials and methods of the respective study. For example the points on the x-axis were in some cases not continous as the axis would suggest (e.g. x-axis in (Paolucci et al., 2013) mixes 1h intervals with 2h intervals), or points were plotted next to each other for better visibility  (Riihimaa Ari et al., 2004). Y-values that were slightly above 100% or below 0% were set to 100% and 0% respectively. in one figure of (Urbanski et al., 2012), 1 data point that appeared in the figure but did not exist in the available raw data was deleted.
 
 
@@ -119,24 +145,23 @@ geomapdata not used anymore
 
 
 ## climate data
-Mean winter correlated with latitude and altitude. (old: Environmental predictability was reasonably well explained by latitude,longitude and altitude (R² = 0.25)) (new:) Environmental variablity did not correlate with any variable tested though it seems higher in continental climates and higher in high latitudes. Standard deviation in winter onset was a bit more erratic, and not correlated with any variable. 
+Mean winter correlated with latitude and altitude. (old: Environmental predictability was reasonably well explained by latitude,longitude and altitude (R² = 0.25)) (new:) Environmental variablity did not correlate with any variable tested though it seems higher in continental climates and higher in high latitudes. Standard deviation in winter onset was a bit more erratic, and not correlated with any variable. (colour of noise todo)
 
 
 ## empirical data
-The critical day length ( julian date on which 50 % offspring are diapausing) increased with latitude, by about 1 hour per 5°N (Fig. 2). This is close to published values of 1h to 1.5 hours per 5 ° Latitude (Danileevski 1986).
+The critical day length ( julian date on which 50 % offspring are diapausing) increased with latitude, by about 1 hour per 5°N (Fig. 2). This is close to published values of 1h to 1.5 hours per 5 ° Latitude (Danileevski 1986). (get slope + CI)
 
 ## empirical + climate data
 The critical day length was consistently earlier, but correlated to the photoperiod expected by mean winter onset from the climate data. 
 Critical day length correlates with mean winter onset
-the slopes currently correlate neither with sd of winter onset, nor with unpredictability (in earlier versions a bug caused positive results) or environemntal color. But many important details are not implemented yet, so things will likely change. 
+the slopes currently correlate neither with sd of winter onset, nor with unpredictability (in earlier versions a bug caused positive results) or environemntal color (todo). But many important details are not implemented yet, so things will likely change. 
 
 
 
 # To-do list  
 [x] Calculation mean winter onset, sd winter onset, predictability 
-[x] correlation of these with °N/°E/alt/amplitude from nls (no correlation found)
-[.]  calculate the colour of noise (spectral power analysis). Although this only describes general precitability (not predictability of winter). (calculation wrong! remove exp() from slope calculation)
-[ ] calculate color of noise also for stations without mean winter onset 
+[.] correlation of these with °N/°E/alt/amplitude from nls (col of noise todo)
+[x]  calculate the colour of noise (spectral power analysis). Although this only describes general precitability (not predictability of winter).
 
 [x] find studies with photoperiodic response curves
 [x] do forward-citation search to find further studies
@@ -146,23 +171,22 @@ the slopes currently correlate neither with sd of winter onset, nor with unpredi
 
 [x] get metadata for forward-searched articles and integrate to excelfile
 [x] kick out studies with only 3 day lengths(does not allow sensible calc of DRC)
-[.] extract PRCs where available (forward-citations and old refs still to do)
-[ ] ask authors were no data is available
+[.] extract PRCs where available (old refs still to do)
+[ ] ask authors for missing data (N,coordinates, PRCs)
 [.] get slope estimates from dose-response curve analysis on all populations (forward searched, author requests and old refs still missing)
 [ ] estimate of error introduced by WebPlotDigitizer approach
 
-[.] correlate CDL ~ latitude, weighted by s.e. of CDL estimate (missing: study ID as random term)
+[.] correlate CDL ~ latitude, weighted by s.e. of CDL estimate (missing: study ID as random term, nestedness with species)
 [x] transformation of CDL to achieve linearity (turns out it is not needed)
-[.] geographical averaging to get climate variability estimates at location of study sites
+[x] geographical averaging to get climate variability estimates at location of study sites
 [x] calculation expected CDL shift based on climate data (winter arrival)
-[.] correlation expected and true CDL shift
-[.] slope ~ predictability * variability + (1|study)  (this is statistically not entirely correct)
-[ ] weights = 1/s.e. of slope estimate (requires discussion whether this is the right way to do)
-[.] scaling of slope estimates within study (not sure whether right approach)
+[x] correlation expected and true CDL shift
+[ ] weights = 1/s.e. of slope estimate
+[.] scaling of slope with d (not sure whether right approach)
 [ ] account for variance heterogeneity
 [ ] slope ~ predictability * variability + (1|study\species) (requires discussion whether this is correct final model)
 [ ] account for spatial autocorrelation of study sites (requires discussion whether this is needed)
-[ ] non-p statistics (also requires discussion)
+
 
 # References
 
