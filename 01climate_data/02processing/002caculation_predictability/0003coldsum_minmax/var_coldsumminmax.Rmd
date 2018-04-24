@@ -335,24 +335,41 @@ for (i in 1:length(unique(station$ID))){ #this loop goes through each of the 1 k
  
  
  #### test: spectral density estimate: beta ###
- freqs<-n[,2]
-xvector<-1:length(freqs)
-ms<-rep(NA,366)
-for ( k in 1:366){
-  ms[k]<-mean(freqs[xvector%%366==k],na.rm=T)
-}
+#by jan
+obs<-n[,2]
+obs<-as.data.frame(obs)
+n            <- nrow(obs)
 
-freq2<-freqs
-for ( k in 1:366){
-  freq2[xvector%%366==k]<-freq2[xvector%%366==k]-ms[k]
-}
+# fill in gaps by interpolation
+obs          <-na.interpolation(obs)
 
-freq2<-na.interpolation(freq2)
-spec<-spectrum(freq2[!is.na(freq2)],plot=F,method="ar")
-#missing: linear interpolation to deal with NAs
-spec$spec<-spec$spec[spec$freq>0]
-spec$freq<-spec$freq[spec$freq>0]
-beta[i]<- exp(coef(lm(log10(spec$spec)~log10(spec$freq)))[2])
+# append day
+obs           <- cbind(obs,rep(1:366,nrow(s)))
+colnames(obs) <- c("measurement","day")
+
+# extract daily mean from each observations  
+daily.average <- ave(obs$measurement,obs$day)
+obs$norm      <- obs$measurement - daily.average
+
+# spectral density
+dens          <- spectrum(obs$norm,plot=F)
+
+# select the interval [1/n,.5/month] (i.e. ignore frequencies below the resolution of the data and above a 2-month period)
+freq          <- dens$freq[dens$freq >= 1/n & dens$freq<= 0.5/(366/12)]
+spec          <-dens$spec[dens$freq >= 1/n & dens$freq<= 0.5/(366/12)]
+
+# linear regression
+reg <- lm(log10(spec)~log10(freq))
+beta[i]<--coef(reg)[2]
+#plot(log10(spec)~log10(freq),
+#     type='l',
+#     xlab=expression(paste("log"["10"],"frequency")),
+#     ylab=expression(paste("log"["10"],"spectral density"))
+#)
+
+#abline(lm(log10(dens$spec)~log10(dens$freq)))
+
+
 
   } #next station
 
