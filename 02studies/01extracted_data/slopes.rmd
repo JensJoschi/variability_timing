@@ -38,7 +38,7 @@ Need to run a script for each group (= for each study) to calculate dose-respons
 The following chunk cannot be run directly, but has to be copied to the console (otherwise some trouble in optim will occur)
 
 ```{r}
-data<-read.table("02studies/01extracted_data/forslopes.csv", header=T,sep=";")
+data<-read.table("02studies/01extracted_data/forslopes.csv", header=T,sep="\t")
 data<-separate(data,col=1, into = c("study","pop"), sep ="-",remove=FALSE)
 
 r<-data.frame(NA,NA,NA,NA,NA,NA,NA,NA,NA)
