@@ -28,15 +28,71 @@ I searched in the web of Science database for studies that measure photoperiodic
 ### Specific description  
 
 The data was generated with R version `r getRversion()`. Slope estimates derived with package drc, `r citation('drc')`.
-
+The script first fits 4-parameter dose-response curves to each population within each study. It then tries to reduce to a 3-parameter drc with lower limit fixed at 0. The 3-parameter model is preferred when either the degrees of freedom for the LL4 are smaller than 4, or when deltaAIC is >2. 
+If the model can be reduced to LL3, I try to eliminate the estimation of the upper limit as well, but not by a fixed value (LL2), but by a global estimate based on the populations within each study. See separate .r script for detailed explanation.
+If the model cannot be reduced, I compare the LL4 with models that replace the upper limit , the lower limit, or both limits by the average of all populations. The model with lowest AIC is chosen (again only if delta AIC >2).
 
 
 ###Script  
 
-Need to run a script for each group (= for each study) to calculate dose-response curves
+#### function to decide between LL.4/LL.3 and LL.3/LL.3*
+This function works on a subset of the data, that has one study with all its popultaions.
 
-The following chunk cannot be run directly, but has to be copied to the console (otherwise some trouble in optim will occur)
 
+```{r choosefun}
+choosemodel<-function(data){
+   drm_4<-drm(number/n2~dl2,curveid=line.ID,data=data,fct=LL.4(),type="binomial",upperl=c(NA,NA,1,NA),lowerl=c(NA,0,NA,NA), weights=n2)
+  #drm weighted by samplesize and ranging from 0 to 1 (the range is estimated between 0 and 1,   not fixed)
+  drm_3<-drm(number/n2~dl2,curveid=line.ID,data=data,fct=LL.3(),type="binomial",upperl=c(NA,1,NA), weights=n2) # a competing model with lower limit fixed at 0%
+
+  
+  if((drm_4$df.residual>3)&(AIC(drm_4)-AIC(drm_3)>2)){#can reduce to LL.3
+    drm_3_est<-try(drm(number/n2~dl2,curveid=line.ID,data=sub,fct=LL.3(),type="binomial",upperl=c(NA,1,NA), weights=n2,pmodels = data.frame(line.ID,1,line.ID)))#competing model with upper limit estimated as mean of all populations
+    
+    if ((class(drm_3_est)=="drc") & (AIC(drm_3)-AIC(drm_3_est)>2)){
+      final<-drm_3_est
+      choice <-0}
+    else{
+      final<-drm_3
+      choice <- 1}
+    
+  }
+  else{#in case LL.4 needs to be fitted - 3 reductions possible
+       drm_4_est_l<-drm(number/n2~dl2,curveid=line.ID,data=data,fct=LL.4(),type="binomial",upperl=c(NA,NA,1,NA),lowerl=c(NA,0,NA,NA), weights=n2, pmodels=data.frame(line.ID,1,line.ID,line.ID))#global average of lower boundary
+       drm_4_est_u<-drm(number/n2~dl2,curveid=line.ID,data=data,fct=LL.4(),type="binomial",upperl=c(NA,NA,1,NA),lowerl=c(NA,0,NA,NA),weights=n2, pmodels=data.frame(line.ID,line.ID,1,line.ID))#global average of upper boundary
+       drm_4_est_b<-drm(number/n2~dl2,curveid=line.ID,data=data,fct=LL.4(),type="binomial",upperl=c(NA,NA,1,NA),lowerl=c(NA,0,NA,NA),weights=n2, pmodels=data.frame(line.ID,1,1,line.ID))#global average of both boundaries
+       
+       
+       AIClist<-c(AIC(drm_4),AIC(drm_4_est_l),AIC(drm_4_est_u),AIC(drm_4_est_b))
+       diff<-AIClist[1]-AIClist
+       if(max(diff)>2){
+         if(which.max(diff)==2){
+           final<-drm_4_est_l
+           choice = 2}
+         else if(which.max(diff)==3){
+           final<-drm_4_est_u
+           choice = 3}
+         else{
+           final<-drm_4_est_b
+           choice = 4}
+       }
+         else{
+           final<-drm_4
+           choice = 5}
+     }
+    
+  return(final,choice)
+ #possible values of choice and their meaning
+   #0 "LL3 with upper limit replaced by average"
+  #1 "LL3"
+ # 2 "LL4 with lower limit replaced by average"
+ # 3 "LL4 with upper limit replaced by average"
+  #4 "LL4 with both limits replaced by average"
+ # 5 "LL4"
+}
+```
+
+load data
 ```{r}
 data<-read.table("02studies/01extracted_data/forslopes.csv", header=T,sep="\t")
 data<-data[data$cdl=="x",]
@@ -48,35 +104,66 @@ length(unique(data$line.ID[data$slope=="x"]))#170 populations
 
 r<-data.frame(NA,NA,NA,NA,NA,NA,NA,NA,NA)
 names(r)<-c("name","b","b_rel","c","c_rel","d","d_rel","e","e_rel") #the results will be stored in a file with these columns
+```
 
+
+```{r}
 for (i in 1:length(unique(data$study))){
-sub<-data[data$study==unique(data$study)[i],] #calculate dose response curves for each study seperately
-sub<-droplevels(sub)
-sub$perc[sub$perc<0]<-0
-sub$perc[sub$perc>100]<-100
-sub$number<-round(sub$n2 * sub$perc/100)
+  sub<-data[data$study==unique(data$study)[i],] #calculate dose response curves for each study   seperately
+  sub<-droplevels(sub)
+  sub$perc[sub$perc<0]<-0
+  sub$perc[sub$perc>100]<-100
+  sub$number<-round(sub$n2 * sub$perc/100)
+  
+  results<-choosemodel(sub)
+  final<-results[[1]]
+ #possible values of choice and their meaning
+   #0 
+  #1 "LL3"
+ # 2 "LL4 with lower limit replaced by average"
+ # 3 "LL4 with upper limit replaced by average"
+  #4 "LL4 with both limits replaced by average"
+ # 5 "LL4"
+  if (results[[2]]==0){#"LL3 with upper limit replaced by average"
+    png(paste("02studies/01extracted_data/",i,"-",unique(data$study)[i],".png",sep="")) #plot study for visual validation
+    plot(final,xlab = "Day length", ylab = "percentage diapause",main = sub$study[1],sub ="LL3 with upper limit replaced by average" ,log="",col=TRUE)
+    #dev.off()
+    coffs<-coeftest(final,vcov = sandwich)[,1:2] #provides estimate and SE
+    coffs[,2]<-1/coffs[,2] #SE becomes 1/SE, as these are later weights
 
+    #write these into results table
+    
 
-moo <- drm(number/n2~dl2,curveid=line.ID,data=sub,fct=LL.4(),type="binomial",upperl=c(NA,NA,1,NA),lowerl=c(NA,0,NA,NA),control=drmc(method="L-BFGS-B"),weights=n2)
-#drm weighted by samplesize and ranging from 0 to 1 (the range is estimated between 0 and 1, not fixed)
-moo2 <- drm(number/n2~dl2,curveid=line.ID,data=sub,fct=LL.3u(),type="binomial",control=drmc(method="L-BFGS-B"),weights=n2)
-#drm weighted by samplesize and ranging from 0 to 1 (the range is estimated between 0 and 1, not fixed)
+    nam<-rownames(coffs)[substr(rownames(coffs),1,1)=="b"]
+    b<-coffs[substr(rownames(coffs),1,1)=="b",]
+    c<-coffs[substr(rownames(coffs),1,1)=="c",]
+    d<-coffs[substr(rownames(coffs),1,1)=="d",]
+    e<-coffs[substr(rownames(coffs),1,1)=="e",]
+    
+    if (class(c) =="numeric"){
+      x<-c
+      for(i in 1:(nrow(b)-1)){
+        c<-rbind(c,x)
+      }
+    }
+    if (nrow(c)==0){c<-matrix(NA,nrow(b),2)}
 
+    if (class(d) =="numeric"){
+      x<-d
+      for(i in 1:(nrow(b)-1)){
+        d<-rbind(d,x)
+      }
+    }    
+    if (nrow(d)==0){d<-matrix(NA,nrow(b),2)}
 
-#to add here: if the 3-parameter DRC with variable upper limit (drcs go from 0-something) is better, use that. If the 2-parameter is still better, use that. though be more careful in changnig to 2-parameter curve. 
-
-
-png(paste("02studies/01extracted_data/",i,"-",unique(data$study)[i],".png",sep="")) #plot each study for visual validation
-plot(moo, broken = TRUE, type = "all", xlab = "Day length", ylab = "percentage diapause",main = sub$study[1],sub = "dose response curve estimates",log="",col=TRUE)
-dev.off()
-
-coffs<-coeftest(moo,vcov = sandwich)[,1:2] #provides estimate and SE
-coffs[,2]<-1/coffs[,2] #SE becomes 1/SE, as these are later weights
-npop=length(unique(sub$line.ID))
+    new_data<-data.frame(nam,b,c,d,e)
+    names(new_data)<-c("name","b","b-se","c","c-se",)
+    )
+  
+    npop=length(unique(sub$line.ID))
 n<-unique(sub$line.ID)
-
 for (j in 1:npop){
-  r[nrow(r)+1,]<-c(as.character(n[j]),coffs[j,],coffs[j+npop,],coffs[j+2*npop,],coffs[j+3*npop,])#writes results for each pop in this study into results: ID, b, c,d,e, and the weights of each
+  r[nrow(r)+1,]<-c(as.character(n[j]),coffs[j,],coffs[j+npop,],coffs[j+2*npop,],coffs[j+3*npop,])#writes results for each pop in this study into results: ID, b,e, and the weights of each
 }
 }#next study
 
