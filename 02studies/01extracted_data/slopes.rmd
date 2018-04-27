@@ -39,41 +39,69 @@ The following chunk cannot be run directly, but has to be copied to the console 
 
 ```{r}
 data<-read.table("02studies/01extracted_data/forslopes.csv", header=T,sep="\t")
+data<-data[data$cdl=="x",]
 data<-separate(data,col=1, into = c("study","pop"), sep ="-",remove=FALSE)
+length(unique(data$study)) #52 studies that can be used for CDL calculation
+length(unique(data$line.ID)) #353 populations
+length(unique(data$study[data$slope=="x"])) # 30 studies can be used for slope calculation
+length(unique(data$line.ID[data$slope=="x"]))#170 populations
 
 r<-data.frame(NA,NA,NA,NA,NA,NA,NA,NA,NA)
-names(r)<-c("name","b","b_rel","c","c_rel","d","d_rel","e","e_rel")
+names(r)<-c("name","b","b_rel","c","c_rel","d","d_rel","e","e_rel") #the results will be stored in a file with these columns
+
 for (i in 1:length(unique(data$study))){
-#for ( i in 25:40{
-#for ( i in 42:45){
-sub<-data[data$study==unique(data$study)[i],]
+sub<-data[data$study==unique(data$study)[i],] #calculate dose response curves for each study seperately
 sub<-droplevels(sub)
-sub$p<-sub$perc/100
-sub$p[sub$p<0]<-0
-sub$p[sub$p>1]<-1
+sub$perc[sub$perc<0]<-0
+sub$perc[sub$perc>100]<-100
+sub$number<-round(sub$n2 * sub$perc/100)
 
-moo <- drm(p~dl2,curveid=line.ID,data=sub,fct=LL.4(),type="binomial",upperl=c(NA,NA,1,NA),lowerl=c(NA,0,NA,NA),control=drmc(method="L-BFGS-B"),weights=sub$n2/max(sub$n2))
 
-png(paste("02studies/01extracted_data/",i,"-",unique(data$study)[i],".png",sep=""))
+moo <- drm(number/n2~dl2,curveid=line.ID,data=sub,fct=LL.4(),type="binomial",upperl=c(NA,NA,1,NA),lowerl=c(NA,0,NA,NA),control=drmc(method="L-BFGS-B"),weights=n2)
+#drm weighted by samplesize and ranging from 0 to 1 (the range is estimated between 0 and 1, not fixed)
+moo2 <- drm(number/n2~dl2,curveid=line.ID,data=sub,fct=LL.3u(),type="binomial",control=drmc(method="L-BFGS-B"),weights=n2)
+#drm weighted by samplesize and ranging from 0 to 1 (the range is estimated between 0 and 1, not fixed)
+
+
+#to add here: if the 3-parameter DRC with variable upper limit (drcs go from 0-something) is better, use that. If the 2-parameter is still better, use that. though be more careful in changnig to 2-parameter curve. 
+
+
+png(paste("02studies/01extracted_data/",i,"-",unique(data$study)[i],".png",sep="")) #plot each study for visual validation
 plot(moo, broken = TRUE, type = "all", xlab = "Day length", ylab = "percentage diapause",main = sub$study[1],sub = "dose response curve estimates",log="",col=TRUE)
 dev.off()
 
-coffs<-coeftest(moo,vcov = sandwich)[,1:2]
-coffs[,2]<-1/coffs[,2]
+coffs<-coeftest(moo,vcov = sandwich)[,1:2] #provides estimate and SE
+coffs[,2]<-1/coffs[,2] #SE becomes 1/SE, as these are later weights
 npop=length(unique(sub$line.ID))
+n<-unique(sub$line.ID)
 
 for (j in 1:npop){
-  n<-unique(sub$line.ID)
-  r[nrow(r)+1,]<-c(as.character(n[j]),coffs[j,],coffs[j+npop,],coffs[j+2*npop,],coffs[j+3*npop,])
+  r[nrow(r)+1,]<-c(as.character(n[j]),coffs[j,],coffs[j+npop,],coffs[j+2*npop,],coffs[j+3*npop,])#writes results for each pop in this study into results: ID, b, c,d,e, and the weights of each
 }
-}
+}#next study
 
+
+#transport all other metadata from csv file to results file
 r$degN<-NA
 r$degE<-NA
+r$order<-NA
+r$genus<-NA
+r$species<-NA
+r$pops_with_dia<-NA
+r$n_dls<-NA
+r$py<-NA
+r$slopable<-NA
 
 for(i in 1:nrow(r)){
-  r[i,10]<-as.character(data[data$line.ID == r[i,1],6][1])
-  r[i,11]<-as.character(data[data$line.ID == r[i,1],7][1])
+  r[i,10]<-as.character(data[data$line.ID == r[i,1],10][1])#degN
+  r[i,11]<-as.character(data[data$line.ID == r[i,1],11][1])#degE
+  r[i,12]<-as.character(data[data$line.ID == r[i,1],9][1])#order
+  r[i,13]<-as.character(data[data$line.ID == r[i,1],7][1])#genus
+  r[i,14]<-as.character(data[data$line.ID == r[i,1],8][1])#species
+  r[i,15]<-as.character(data[data$line.ID == r[i,1],5][1])#pops_with_dia
+  r[i,16]<-as.character(data[data$line.ID == r[i,1],6][1])#n_dls
+  r[i,17]<-as.character(data[data$line.ID == r[i,1],15][1])#py
+  r[i,18]<-as.character(data[data$line.ID == r[i,1],17][1])#slope
 }
 
 write.table(r, "02studies/02output/slopes.txt")
