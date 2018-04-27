@@ -78,7 +78,7 @@ I then calculated winter predictability: The last 31 days before winter onset of
 
 Lastly, this approach was replaced by using the standard deviation in slopes of the same regressions. This is very likely the final version of predictability. Actually, no:
 
-As alternative to the previous approach, I calculated the color of environmental noise like Vasseur & Yodzis 2004 (Ecology). Taking all temperature information (Tmax divided by Tmin) from one station, I calculated the power spectral density. First, I removed the seasonal trend by substracting from each daily temperature estimate the station-wide mean temperature of that day. Missing values were replaced by linear interpolation. I then calculated the spectral density within the frequency range of 1/366 and 1/(2 months) with the function spectrum, using the method "ar", and used the negative of the slope of log10(spectral density)~log10(frequency) as estimate for beta. beta was normally distributed.
+As alternative to the previous approach, I calculated the color of environmental noise like Vasseur & Yodzis 2004 (Ecology). Taking all temperature information (Tmax divided by Tmin) from one station, I calculated the power spectral density. First, I removed the seasonal trend by substracting from each daily temperature estimate the station-wide mean temperature of that day. Missing values were replaced by linear interpolation. I then calculated the spectral density within the frequency range of 1/366 and 1/(2 months) with the function spectrum, using the method "ar", and used the negative of the slope of log10(spectral density)~log10(frequency) as estimate for beta. beta was approx. normally distributed (mean 0.3, median 0.26, range ~ 0-0.8).
 Because this approach does not calculate winter predictability, but general environmental predictability, I do not expect to find a pattern here. Therefore this approach is not hypothesis-testing but exploratory. 
 Not sure if possible, but limiting the time window to ~1 month around winter onset and then calculating the slope could be a better way to calculate predictability. This needs discussion and I will settle for one of the two ways to calculate predictability before conducting the real analysis on the final dataset. 
 
@@ -165,7 +165,7 @@ the slopes currently correlate neither with sd of winter onset, nor with unpredi
 
 [x] find studies with photoperiodic response curves
 [x] do forward-citation search to find further studies
-[ ] get Danilevskii (requested)
+[x] get Danilevskii
 [ ] get beck insect photoperiodism to check table 28 (requested)
 [x] do 2nd level forward search
 
