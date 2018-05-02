@@ -28,67 +28,100 @@ I searched in the web of Science database for studies that measure photoperiodic
 ### Specific description  
 
 The data was generated with R version `r getRversion()`. Slope estimates derived with package drc, `r citation('drc')`.
-The script first fits 4-parameter dose-response curves to each population within each study. It then tries to reduce to a 3-parameter drc with lower limit fixed at 0. The 3-parameter model is preferred when either the degrees of freedom for the LL4 are smaller than 4, or when deltaAIC is >2. 
-If the model can be reduced to LL3, I try to eliminate the estimation of the upper limit as well, but not by a fixed value (LL2), but by a global estimate based on the populations within each study. See separate .r script for detailed explanation.
-If the model cannot be reduced, I compare the LL4 with models that replace the upper limit , the lower limit, or both limits by the average of all populations. The model with lowest AIC is chosen (again only if delta AIC >2).
+
+The script fits dose-response curves for all populations, seperately for each study. DRCs can estimate the upper and lower limit (range of diapause responses, usually from 0-100%), the inflection point (critical day length, where 50% of the population are in diapause), and the slope of the curve. I am mostly interested in slope of the curve, but also want to extract the critical day length. But the upper and lower limit have to be estimated as well. From a glimpse at the data it can be seen that the upper and lower limit are not always 0 and 100%, and there are several ways to fit the model. 
+
+Intuitively one would expect that all populations of one species (and hence also all pops that have been sampled in a study) have the same lower and upper limit. One could therefore estimate a global upper and lower limit, and then slope and inflection point for each population (requires 2 degrees of freedom + 2 df per population). As alternative one could however also imagine a conservative bet-hedging strategy, in which a population never reaches 0% diapause to ensure survival in variable climates. In this case, the lower limit varies by populations, while the upper is fixed (requires 1 df + 3 df per population). The opposite situation, in which populationsut vary in their upper limit while the lower limit is fixed (1df + 3 per pop), is counterintuitive, as it is essentially the opposite of conservative bet-hedging. This strategy could mean that some offspring never diapause, even under winter conditions, hoping that a harsh winter climate never arrives (see skewed distribution in halkett 2004, amnat). The last possible version is that both upper and lower limit vary by population. This makes four models (sorted by plausibility): 
+
+1. upper and lower parameter fixed at study mean (requires 2 df plus 2 df per population)
+2. upper parameter fixed (requires 1 df plus 3 per population)
+3. lower parameter fixed (requires 1df plus 3 per population)
+4. both limits vary (requires 4 df per population)
+
+This script first determines the available df to see if options 2-4 are available. Then it fits all models that are allowed, and compares by AIC which one is best. If there are ties (delta AIC <2), the most plausible model (sorted as above) is used. 
 
 
-###Script  
+### Script  
 
-#### function to decide between LL.4/LL.3 and LL.3/LL.3*
+This script should not be executed completely, becaues it will cause some convergence failure. Also, all models need to be examined by hand (summary may show that some values are actually NA because errors occured without warning). It is rather a description of the methods than an actual executable script.
+
+#### function to decide between models  
 This function works on a subset of the data, that has one study with all its popultaions.
 
 
 ```{r choosefun}
-choosemodel<-function(data){
-   drm_4<-drm(number/n2~dl2,curveid=line.ID,data=data,fct=LL.4(),type="binomial",upperl=c(NA,NA,1,NA),lowerl=c(NA,0,NA,NA), weights=n2)
-  #drm weighted by samplesize and ranging from 0 to 1 (the range is estimated between 0 and 1,   not fixed)
-  drm_3<-drm(number/n2~dl2,curveid=line.ID,data=data,fct=LL.3(),type="binomial",upperl=c(NA,1,NA), weights=n2) # a competing model with lower limit fixed at 0%
-
+choosemodel<-function(input){
+  aics <- c(NA,NA,NA,NA) #will store AIcs of up to four possible models 
+  #idea: 
+  #if df = enough for model 1 {
+    #do model 1
+    #if df = also enough for model2/3 {
+      #do model 2
+      #do model 3
+      # if df = also enough for model 4{
+        #do model 4
+    #}}}
+  #compare AIC of all recorded models
   
-  if((drm_4$df.residual>3)&(AIC(drm_4)-AIC(drm_3)>2)){#can reduce to LL.3
-    drm_3_est<-try(drm(number/n2~dl2,curveid=line.ID,data=sub,fct=LL.3(),type="binomial",upperl=c(NA,1,NA), weights=n2,pmodels = data.frame(line.ID,1,line.ID)))#competing model with upper limit estimated as mean of all populations
+  #is model 1 possible? (2 df + 2 per pop)
+  estimates <- nrow(input)
+  pops<-unique(input$pops_with_Dia)
+  if (length(unique(input$pops_with_Dia))>1){print(paste("something went wrong in study ",ipnut$study[1],"\n"))}
+  res_df <- estimates - (2 + 2*pops)
+
+  if (res_df>3){ #keep all aics NA if res_df are insufficient even for simplest model
+    drm1<- drm((number/n2)~dl2, curveid=line.ID, data=input, fct=LL.4(), type="binomial", upperl=c(NA,NA,1,NA), lowerl=c(NA,0,NA,NA), weights=n2,  pmodels=data.frame(line.ID,1,1,line.ID)) 
+    #this model calculates dose response curve, weighing each point by its sample size (if the information was given) and constraining the range between 0 and 1. Upper and lower limit are estimated by global mean, slope and inflection point by population. 
+    aics[1]<-AIC(drm1)
     
-    if ((class(drm_3_est)=="drc") & (AIC(drm_3)-AIC(drm_3_est)>2)){
-      final<-drm_3_est
-      choice <-0}
-    else{
-      final<-drm_3
-      choice <- 1}
     
+    #are model 2 and 3 also possible?
+    #only runs if first model was calculated, because it takes even more dfs
+    res_df<-estimates - (1+ 3* pops)
+    if (res_df >3){
+       drm2<-drm((number/n2)~dl2, curveid=line.ID, data=input, fct=LL.4(), type="binomial", upperl=c(NA,NA,1,NA), lowerl=c(NA,0,NA,NA), weights=n2, pmodels=data.frame(line.ID,line.ID,1,line.ID))        # upper limit is fixed, but lower limit varies among pops
+       aics[2]<-AIC(drm2)
+       
+       drm3<-drm((number/n2)~dl2, curveid=line.ID, data=input, fct=LL.4(), type="binomial", upperl=c(NA,NA,1,NA), lowerl=c(NA,0,NA,NA), weights=n2, pmodels=data.frame(line.ID,1,line.ID,line.ID))
+       #lower limit is fixed, but upper limit varies among pops
+       aics[3] <- AIC(drm3)
+       
+       
+       #is model 4 possible?
+       #only runs if first three models were calculated
+       res_df <- estimates - (4*pops)
+       if (res_df>3){
+          drm4<-drm((number/n2)~dl2, curveid=line.ID, data=input, fct=LL.4(), type="binomial", upperl=c(NA,NA,1,NA),lowerl=c(NA,0,NA,NA), weights=n2)
+          aics[4]<-AIC(drm4)
+       }#end model 4
+    }#end model 2,3
+  }#end model 1
+  
+  if(sum(is.na(aics))<4){
+    diff <- aics[1] - aics
+    if(max(diff,na.rm=T)<2){
+      final<-drm1
+      choice = 1
+    } else{
+      diff<-data.frame(diff,c(1:4))
+      names(diff)<-c("delta","model")
+      diff<-diff[order(diff$delta,decreasing = T),]
+      if (diff[1,1]-diff[diff$model==2,"delta"]<2){
+        final <- drm2
+        choice = 2
+      } else if (diff[1,1]-diff[diff$model ==3,"delta"]<2){
+        final<-drm3
+        choice = 3
+      } else {
+        final<-drm4
+        choice = 4
+      }
+    }
+  } else{
+      final <-NA
+      choice = NA
   }
-  else{#in case LL.4 needs to be fitted - 3 reductions possible
-       drm_4_est_l<-drm(number/n2~dl2,curveid=line.ID,data=data,fct=LL.4(),type="binomial",upperl=c(NA,NA,1,NA),lowerl=c(NA,0,NA,NA), weights=n2, pmodels=data.frame(line.ID,1,line.ID,line.ID))#global average of lower boundary
-       drm_4_est_u<-drm(number/n2~dl2,curveid=line.ID,data=data,fct=LL.4(),type="binomial",upperl=c(NA,NA,1,NA),lowerl=c(NA,0,NA,NA),weights=n2, pmodels=data.frame(line.ID,line.ID,1,line.ID))#global average of upper boundary
-       drm_4_est_b<-drm(number/n2~dl2,curveid=line.ID,data=data,fct=LL.4(),type="binomial",upperl=c(NA,NA,1,NA),lowerl=c(NA,0,NA,NA),weights=n2, pmodels=data.frame(line.ID,1,1,line.ID))#global average of both boundaries
-       
-       
-       AIClist<-c(AIC(drm_4),AIC(drm_4_est_l),AIC(drm_4_est_u),AIC(drm_4_est_b))
-       diff<-AIClist[1]-AIClist
-       if(max(diff)>2){
-         if(which.max(diff)==2){
-           final<-drm_4_est_l
-           choice = 2}
-         else if(which.max(diff)==3){
-           final<-drm_4_est_u
-           choice = 3}
-         else{
-           final<-drm_4_est_b
-           choice = 4}
-       }
-         else{
-           final<-drm_4
-           choice = 5}
-     }
-    
-  return(final,choice)
- #possible values of choice and their meaning
-   #0 "LL3 with upper limit replaced by average"
-  #1 "LL3"
- # 2 "LL4 with lower limit replaced by average"
- # 3 "LL4 with upper limit replaced by average"
-  #4 "LL4 with both limits replaced by average"
- # 5 "LL4"
+  return(list(final,choice))
 }
 ```
 
@@ -108,111 +141,80 @@ names(r)<-c("name","b","b_rel","c","c_rel","d","d_rel","e","e_rel") #the results
 
 
 ```{r}
+data<-data[!data$species=="subauraria",]
+#notes
+#i=1->model3
+#2->3
+#3->3
+#4->4, with aicdiff to model 3 of 2.03
+#5->conv failed with drm1 and drm2 (lower limits <0), could only be fixed by removing both box constraints and resulted in several NA in coef estimates; mod3 worked well and was reasonable
+#6 has wrong pops with dia (should be 4, not 7). corrected. models 1-3 have missing data in coef, #only way to rectify is removing population UW, then only possible model is drm1. works though. 
+#7->3,4,1 in this order. But only because missing value causes strange estimate of upper boundary. Used drm1 anyway.
 for (i in 1:length(unique(data$study))){
   sub<-data[data$study==unique(data$study)[i],] #calculate dose response curves for each study   seperately
   sub<-droplevels(sub)
-  sub$perc[sub$perc<0]<-0
-  sub$perc[sub$perc>100]<-100
+  sub$n2<-round(sub$n2)
+  #sub$perc[sub$perc<0]<-0
+  #sub$perc[sub$perc>100]<-100
   sub$number<-round(sub$n2 * sub$perc/100)
+  sub$number[sub$number>sub$n2]<-sub$n2[sub$number>sub$n2]
+  sub$number[sub$number<0]<-0
   
   results<-choosemodel(sub)
   final<-results[[1]]
- #possible values of choice and their meaning
-   #0 
-  #1 "LL3"
- # 2 "LL4 with lower limit replaced by average"
- # 3 "LL4 with upper limit replaced by average"
-  #4 "LL4 with both limits replaced by average"
- # 5 "LL4"
-  if (results[[2]]==0){#"LL3 with upper limit replaced by average"
-    png(paste("02studies/01extracted_data/",i,"-",unique(data$study)[i],".png",sep="")) #plot study for visual validation
-    plot(final,xlab = "Day length", ylab = "percentage diapause",main = sub$study[1],sub ="LL3 with upper limit replaced by average" ,log="",col=TRUE)
-    #dev.off()
-    coffs<-coeftest(final,vcov = sandwich)[,1:2] #provides estimate and SE
-    coffs[,2]<-1/coffs[,2] #SE becomes 1/SE, as these are later weights
+  
+
+      
+  #possible values of "choice" and their meaning
+  # NA "no model possible due to lack of df"
+  #1 upper and lower parameter fixed at study mean
+  #2 upper parameter fixed
+  #3 lower parameter fixed
+  #4 both limits vary
+  if(is.na(results[[2]])){next
+  }else if (results[[2]]==1){
+    #plot study for visual validation
+    png(paste("02studies/01extracted_data/",i,"-",unique(data$study)[i],".png",sep="")) 
+    plot(final, xlab = "Day length", ylab = "percentage diapause", main = sub$study[1], sub="upper and lower limit fixed at global mean", log="", col=TRUE)
+    dev.off()
+  }else if (results[[2]]==2){
+    png(paste("02studies/01extracted_data/",i,"-",unique(data$study)[i],".png",sep="")) 
+    plot(final, xlab = "Day length", ylab = "percentage diapause", main = sub$study[1], sub="upper limit fixed at global mean", log="", col=TRUE)
+    dev.off()
+  }else if(results[[2]]==3){
+    png(paste("02studies/01extracted_data/",i,"-",unique(data$study)[i],".png",sep=""))
+    plot(final,xlab = "Day length", ylab = "percentage diapause", main = sub$study[1], sub="lower limit fixed at global mean", log="", col=TRUE)
+    dev.off()
+  }else{
+    png(paste("02studies/01extracted_data/",i,"-",unique(data$study)[i],".png",sep=""))
+    plot(final, xlab = "Day length", ylab = "percentage diapause", main = sub$study[1], sub="upper and lower limit estimated for each pop", log="", col=TRUE)
+    dev.off()
+    }
+
 
     #write these into results table
+    coffs<-coeftest(final,vcov = sandwich)[,1:2] #provides estimate and SE
+    coffs[,2]<-1/coffs[,2] #SE becomes 1/SE, as these are later weights
+    coffs<-as.data.frame(coffs)
+    #save slope coefficients
+    coffs$group<-substr(rownames(coffs),1,1)
+    b<-coffs[coffs$group=="b",]
+    c<-coffs[coffs$group=="c",]
+    d<-coffs[coffs$group=="d",]
+    e<-coffs[coffs$group=="e",]
     
 
-    nam<-rownames(coffs)[substr(rownames(coffs),1,1)=="b"]
-    b<-coffs[substr(rownames(coffs),1,1)=="b",]
-    c<-coffs[substr(rownames(coffs),1,1)=="c",]
-    d<-coffs[substr(rownames(coffs),1,1)=="d",]
-    e<-coffs[substr(rownames(coffs),1,1)=="e",]
-    
-    if (class(c) =="numeric"){
-      x<-c
-      for(i in 1:(nrow(b)-1)){
-        c<-rbind(c,x)
-      }
-    }
-    if (nrow(c)==0){c<-matrix(NA,nrow(b),2)}
 
-    if (class(d) =="numeric"){
-      x<-d
-      for(i in 1:(nrow(b)-1)){
-        d<-rbind(d,x)
-      }
-    }    
-    if (nrow(d)==0){d<-matrix(NA,nrow(b),2)}
-
-    new_data<-data.frame(nam,b,c,d,e)
-    names(new_data)<-c("name","b","b-se","c","c-se",)
-    )
+    new_data<-data.frame(b,c,d,e)
+    new_data<-new_data[,c(1,2,4,5,7,8,10,11)]
+    names(new_data)<-c("b","b-se","c","c-se","d","d_se","e","e_se")
+    new_data<-new_data[order(rownames(new_data)),]
+    old_data<-ddply(sub, "line.ID", function(z) tail(z,1))
+    old_data<-old_data[order(old_data$line.ID),c(1:10,14)]
+    results<-cbind(new_data,old_data)
   
-    npop=length(unique(sub$line.ID))
-n<-unique(sub$line.ID)
-for (j in 1:npop){
-  r[nrow(r)+1,]<-c(as.character(n[j]),coffs[j,],coffs[j+npop,],coffs[j+2*npop,],coffs[j+3*npop,])#writes results for each pop in this study into results: ID, b,e, and the weights of each
-}
+
+write.table(results, "02studies/02output/slopes.txt",append=T,sep="\t",col.names=FALSE)
 }#next study
-
-
-#transport all other metadata from csv file to results file
-r$degN<-NA
-r$degE<-NA
-r$order<-NA
-r$genus<-NA
-r$species<-NA
-r$pops_with_dia<-NA
-r$n_dls<-NA
-r$py<-NA
-r$slopable<-NA
-
-for(i in 1:nrow(r)){
-  r[i,10]<-as.character(data[data$line.ID == r[i,1],10][1])#degN
-  r[i,11]<-as.character(data[data$line.ID == r[i,1],11][1])#degE
-  r[i,12]<-as.character(data[data$line.ID == r[i,1],9][1])#order
-  r[i,13]<-as.character(data[data$line.ID == r[i,1],7][1])#genus
-  r[i,14]<-as.character(data[data$line.ID == r[i,1],8][1])#species
-  r[i,15]<-as.character(data[data$line.ID == r[i,1],5][1])#pops_with_dia
-  r[i,16]<-as.character(data[data$line.ID == r[i,1],6][1])#n_dls
-  r[i,17]<-as.character(data[data$line.ID == r[i,1],15][1])#py
-  r[i,18]<-as.character(data[data$line.ID == r[i,1],17][1])#slope
-}
-
-write.table(r, "02studies/02output/slopes.txt")
-
-#testing
-npop=length(unique(sub$line.ID))
-#predict curves by hand
-b<-coef(moo)[1:npop] # there are three parameters per pop - the first third are the b estimates, the second third the d estimates (upper bound), and the last third the e estimate (critical day length)
-c<- coef(moo)[(npop+1):(2*npop)]
-d<- coef(moo)[(npop*2+1):(3*npop)]
-e<- coef(moo)[(npop*3+1):length(coef(moo))]
-
-lin <- function(x,b,c,d,e){
-  upper<-d-c
-  lower <-1 + exp(b*(log(x)-log(e)))
-  c+ (upper/lower)
-}
-
-bm<-b-coffs[1:npop,2]
-cm<-c-coffs[(npop+1):(npop*2),2]
-dm<-d-coffs[(npop*2+1):(npop*3),2]
-em<-e-coffs[(npop*3+1):(npop*4),2]
-plot(moo)
-lines(x=1:16,y = lin(1:16,b[i],c[i],d[i],e[i]),col=2)
-lines(x=1:16,y = lin(1:16,bm[i],cm[i],dm[i],em[i]),col=4)
 ```
 
