@@ -200,7 +200,7 @@ for (i in 1:length(unique(data$study))){
   sub$number<-round(sub$n2 * sub$perc/100)
   sub$number[sub$number>sub$n2]<-sub$n2[sub$number>sub$n2]
   sub$number[sub$number<0]<-0
-  
+  sub$pops_with_Dia<-length(levels(sub$line.ID))
   results<-choosemodel(sub)
   final<-results[[1]]
   
@@ -257,5 +257,14 @@ for (i in 1:length(unique(data$study))){
 
 write.table(results, "02studies/02output/slopes.txt",append=T,sep="\t",col.names=FALSE)
 }#next study
+
+
+
+
+
+
+#24-16->3 moscow is missing; Ticino4 is there. sth is wrong with this study. removed
+
+
 ```
 
