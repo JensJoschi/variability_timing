@@ -122,20 +122,17 @@ choosemodel<-function(input){
       final <-NA
       choice = NA
   }
-  return(list(final,choice))
+  return(list(final,choice,drm1,drm2,drm3,drm4,aics))
 }
 ```
 
 ### load data  
 
 ```{r load_data}
-data<-read.table("02studies/01extracted_data/forslopes.csv", header=T,sep="\t")
-data<-data[data$cdl=="x",]
+data<-read.table("02studies/01extracted_data/forslopes.csv", header=T,sep=";")
 data<-separate(data,col=1, into = c("study","pop"), sep ="-",remove=FALSE)
-length(unique(data$study)) #52 studies that can be used for CDL calculation
-length(unique(data$line.ID)) #353 populations
-length(unique(data$study[data$slope=="x"])) # 30 studies can be used for slope calculation
-length(unique(data$line.ID[data$slope=="x"]))#170 populations
+length(unique(data$study)) #38 studies that can be used for slope calculation
+length(unique(data$line.ID)) #203 populations
 
 r<-data.frame(NA,NA,NA,NA,NA,NA,NA,NA,NA)
 names(r)<-c("name","b","b_rel","c","c_rel","d","d_rel","e","e_rel") #the results will be stored in a file with these columns
@@ -145,7 +142,6 @@ names(r)<-c("name","b","b_rel","c","c_rel","d","d_rel","e","e_rel") #the results
 ### get slope estimates
 
 ```{r estimate_slopes}
-data<-data[!data$species=="subauraria",]
 #notes
 #study 1 - i=1->model3
 #5-2->3
@@ -203,7 +199,7 @@ for (i in 1:length(unique(data$study))){
   sub$pops_with_Dia<-length(levels(sub$line.ID))
   results<-choosemodel(sub)
   final<-results[[1]]
-  
+  sub$study[1]
 
       
   #possible values of "choice" and their meaning
@@ -261,10 +257,156 @@ write.table(results, "02studies/02output/slopes.txt",append=T,sep="\t",col.names
 
 
 
-
-
-#24-16->3 moscow is missing; Ticino4 is there. sth is wrong with this study. removed
-
-
 ```
 
+```{r singlestudy}
+sub<-data[data$study==unique(data$study)[i],] 
+sub<-droplevels(sub)
+sub$n2<-round(sub$n2)
+sub$number<-round(sub$n2 * sub$perc/100)
+sub$number[sub$number>sub$n2]<-sub$n2[sub$number>sub$n2]
+sub$number[sub$number<0]<-0
+sub$pops_with_Dia<-length(levels(sub$line.ID))
+
+aics <- c(NA,NA,NA,NA) #will store AIcs of up to four possible models 
+input<-sub
+estimates <- nrow(input)
+pops<-length(unique(input$line.ID))
+if (length(unique(input$pops_with_Dia))>1){print(paste("something went wrong in study ",ipnut$study[1],"\n"))}
+  
+#model1
+res_df1 <- estimates - (2 + 2*pops)>3
+drm1<- drm((number/n2)~dl2, curveid=line.ID, data=input, fct=LL.4(), type="binomial", upperl=c(NA,NA,1,NA), lowerl=c(NA,0,NA,NA), weights=n2,  pmodels=data.frame(line.ID,1,1,line.ID))
+
+aics[1]<-AIC(drm1)
+    
+#model2 and 3
+res_df2<-estimates - (1+ 3* pops)>3
+drm2<-drm((number/n2)~dl2, curveid=line.ID, data=input, fct=LL.4(), type="binomial", upperl=c(NA,NA,1,NA), lowerl=c(NA,0,NA,NA), weights=n2, pmodels=data.frame(line.ID,line.ID,1,line.ID))  
+
+aics[2]<-AIC(drm2)
+
+drm3<-drm((number/n2)~dl2, curveid=line.ID, data=input, fct=LL.4(), type="binomial", upperl=c(NA,NA,1,NA), lowerl=c(NA,0,NA,NA), weights=n2, pmodels=data.frame(line.ID,1,line.ID,line.ID))
+aics[3] <- AIC(drm3)
+       
+       
+#model 4
+res_df3 <- estimates - (4*pops)>3
+drm4<-drm((number/n2)~dl2, curveid=line.ID, data=input, fct=LL.4(), type="binomial", upperl=c(NA,NA,1,NA),lowerl=c(NA,0,NA,NA), weights=n2)
+ aics[4]<-AIC(drm4)
+ 
+ 
+ res_df1
+ res_df2
+ res_df3
+```
+```{r}
+plot(drm1)
+plot(drm2)
+plot(drm3)
+plot(drm4)
+aics
+summary(drm1)
+summary(drm2)
+summary(drm3)
+summary(drm4)
+```
+
+```{r}
+
+choice <-3
+final<-drm3
+results<-list(final,choice)
+```
+
+```{r}
+  #possible values of "choice" and their meaning
+  # NA "no model possible due to lack of df"
+  #1 upper and lower parameter fixed at study mean
+  #2 upper parameter fixed
+  #3 lower parameter fixed
+  #4 both limits vary
+ if (results[[2]]==1){
+    #plot study for visual validation
+    png(paste("02studies/01extracted_data/",i,"-",unique(data$study)[i],".png",sep="")) 
+    plot(final, xlab = "Day length", ylab = "percentage diapause", main = sub$study[1], sub="upper and lower limit fixed at global mean", log="", col=TRUE)
+    dev.off()
+  }else if (results[[2]]==2){
+    png(paste("02studies/01extracted_data/",i,"-",unique(data$study)[i],".png",sep="")) 
+    plot(final, xlab = "Day length", ylab = "percentage diapause", main = sub$study[1], sub="upper limit fixed at global mean", log="", col=TRUE)
+    dev.off()
+  }else if(results[[2]]==3){
+    png(paste("02studies/01extracted_data/",i,"-",unique(data$study)[i],".png",sep=""))
+    plot(final,xlab = "Day length", ylab = "percentage diapause", main = sub$study[1], sub="lower limit fixed at global mean", log="", col=TRUE)
+    dev.off()
+  }else{
+    png(paste("02studies/01extracted_data/",i,"-",unique(data$study)[i],".png",sep=""))
+    plot(final, xlab = "Day length", ylab = "percentage diapause", main = sub$study[1], sub="upper and lower limit estimated for each pop", log="", col=TRUE)
+    dev.off()
+    }
+
+
+    #write these into results table
+    coffs<-coeftest(final,vcov = sandwich)[,1:2] #provides estimate and SE
+    coffs[,2]<-1/coffs[,2] #SE becomes 1/SE, as these are later weights
+    coffs<-as.data.frame(coffs)
+    #save slope coefficients
+    coffs$group<-substr(rownames(coffs),1,1)
+    b<-coffs[coffs$group=="b",]
+    c<-coffs[coffs$group=="c",]
+    d<-coffs[coffs$group=="d",]
+    e<-coffs[coffs$group=="e",]
+    
+
+
+    new_data<-data.frame(b,c,d,e)
+    new_data<-new_data[,c(1,2,4,5,7,8,10,11)]
+    names(new_data)<-c("b","b-se","c","c-se","d","d_se","e","e_se")
+    new_data<-new_data[order(rownames(new_data)),]
+    old_data<-ddply(sub, "line.ID", function(z) tail(z,1))
+    old_data<-old_data[order(old_data$line.ID),c(1:7,11)]
+    results<-cbind(new_data,old_data)
+  
+
+write.table(results, "02studies/02output/slopes.txt",append=T,sep="\t",col.names=FALSE)
+ print(paste(i,"|",results$study[1],"||",choice,sep=""))
+```
+i|study |best models|chosen|impossible  |notes
+1|1     |3          |3      |4
+2|5     |3          |3
+3|6     |3          |3
+4|6b    |3          |3
+5|6c    |3          |3      |           |removed 6c-SM
+6|9     |1          |1      |2,3,4      |needed to remove UW and box constraints. 
+7|10    |           |       |           |1 line only, needs removal
+8|11    |3,4,1      |1      |           |missing value in 1 pop causes different upper limit
+9|17    |2,4        |2
+10|18   |2          |2
+11|20   |           |       |1-4        |removed
+12|21   |3          |3
+13|22   |3          |3
+14|23   |1,3        |1
+15|24   |3          |3      |2           |model 2 would have pops with 1 estimate on slope
+16|27   |4,4        |4
+17|29   |2          |2
+18|30   |1          |1      |3          | 3 did not converge
+19|33   |3,4        |3
+20|35   |3,4        |3                  |ishigaki removed, n set to 100
+21|37   |2,4(3)     |4                  |AICs: 107,102.5,105.5,101.3
+22|42   |           |2      |3,4        |removed lower box constraints
+23|45   |           |3
+24|46   |           |       |1-4        |exclude
+25|47   |           |       |1-4        |exclude
+26|48   |3          |3      |4          |removed lower limit constraint
+27|49   |           |       |1-4        |exclude
+28|51   |1          |1      |4
+29|53   |3          |3
+30|54   |           |1      |2-4
+31|55   |           |4                  |c estimates 0-0.06;1 pop NA in drm1/2
+32|56   |           |3      |4          |1 pop NA in drm4
+33|57   |1,3        |1
+34|60   |3,4        |3
+35|64   |           |       |1-4        |1 pop has only one point on slope, leaving 2 pops only
+36|65   |           |       |1-4        |only 2pops
+37|66   |           |       |1-4        |only 2 pops
+38|70   |1,3        |1      |           |
