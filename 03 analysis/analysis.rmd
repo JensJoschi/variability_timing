@@ -56,8 +56,7 @@ rm(reslist)
 names(climate)<-c("ID","lat","lon","alt","no_idea","name","meanwinter","sd_winter", "nyears","unpredictability","amplitude","phase angle", "intercept","beta")
 
 slopes<-read.table("02studies/02output/slopes.txt")
-slopes<-slopes[-159,]  #the drm gives a nearly entirely flat slope, so this never reaches diapause
-slopes<-slopes[-1,] # a row with NA
+names(slopes)<-c("ID","b","b_se","c","c_se","d","d_se","e","e_se","ID2","study","pop","spec","order","degN","degE","py")
 climate<-climate[!is.na(climate$meanwinter),] #because these cannot be used anyway
 climate$alt[climate$alt == -999.9]<-NA #was somehow not converted to NA during read.table
 ```
@@ -68,39 +67,43 @@ The critical day length (day length at which 50 % of all offspring switch to dia
 
 ```{r corr_CDL}
 r2<-slopes
-r2<-separate(r2,col=1, into = c("study","pop"), sep ="-",remove=FALSE)
-r2$e<-as.numeric(r2$e)
-r2$degN<-as.numeric(r2$degN)
-r2$e[r2$e>100]<-NA
-r2$degN[r2$degN>80] <- NA
 r2$study[r2$study=="6b"]<-6
-r2$study<-as.integer(r2$study)
+r2$study[r2$study=="6c"]<-6
+
 #png("cdl_vs_lat.png")
 plot(r2$e~r2$degN, bg = r2$study,pch=22,main = "Correlation of critical day length and latitude", xlab ="latitude",ylab="critical day length")
-M<-lm(r2$e~r2$degN, weights = as.numeric(r2$e_rel))
+
+M<-lm(r2$e~r2$degN)
 abline(M)
-coef(M)[2]*5  #0.93 hours per 5 degree latitude
-text(20,24, "slope = 0.93 hours/5°N\nR²=0.58")
+coef(M)[2]*5  #0.81 hours per 5 degree latitude
+text(20,18, "slope = 0.81 hours/5°N\nR²=0.69")
 
 #dev.off()
-r2$e_rel<-as.numeric(r2$e_rel)
-r2$e_rel[r2$e_rel>3000]<-3000
-r2$e_rel2<-sqrt(r2$e_rel)/max(sqrt(r2$e_rel),na.rm=T)
+hist(r2$e_se)
+r2[r2$e_se>500,]
+#this is because $e_se is actually 1/s.e.,and the curves of these pops seem on the bring of being overfitted (and hence hav low s.e.)
+r2$e_se[r2$e_se>100]<-100
+hist(r2$e_se,breaks=100)
+
+M2<-lm(r2$e~r2$degN, weights = as.numeric(r2$e_se))
+plot(r2$e~r2$degN, bg = r2$study,pch=22,main = "Correlation of critical day length and latitude (weighted)", xlab ="latitude",ylab="critical day length")
+abline(M2)
+coef(M2)[2]*5  #0.81 hours per 5 degree latitude
+text(20,18, "slope = 0.84 hours/5°N\nR²=0.66")
+
 
 #png("cdl_vs_lat_weighted.png")
-plot(r2$e~r2$degN, bg = "grey",pch=21,cex=r2$e_rel2+0.5, main = "delay in photoperiodic response vs latitude", xlab = "Latitude (°N)", ylab = "Critical photoperiod")
-M<-lm(r2$e~r2$degN, weights = as.numeric(r2$e_rel))
-abline(M,lty=2)
-coef(M)[2]*5  #0.93 hours per 5 degree latitude
+plot(r2$e~r2$degN, bg = "grey",pch=21,cex=(r2$e_se/100)+0.5, main = "delay in photoperiodic response vs latitude", xlab = "Latitude (°N)", ylab = "Critical photoperiod")
+abline(M2,lty=2)
 for( i in 2:length(unique(r2$study))){
   a<-r2[r2$study==unique(r2$study)[i],]
   a<-a[is.na(a$e)== FALSE,]
   a<-a[is.na(a$degN)==FALSE,]
-  points(a$e~a$degN, pch=21, bg=i,cex=a$e_rel2+0.5)
-  M<-lm(a$e~a$degN,weights=as.numeric(a$e_rel))
+  points(a$e~a$degN, pch=21, bg=i,cex=(a$e_se/100)+0.5)
+  M<-lm(a$e~a$degN,weights=a$e_se)
  lines(x= a$degN,y= predict(M),col="grey",xpd=T)
 }
-text(20,24, "slope = 0.93 hours/5°N\nR²=0.39")
+text(20,18, "slope = 0.93 hours/5°N\nR²=0.39")
 #dev.off()
 
 #actually the relationship does not seem to be linear
@@ -112,6 +115,44 @@ M2<-lm(r2$e^0.465 ~ r2$degN)
 summary(M1)
 summary(M2)
 #not much difference, can keep linear model
+
+mixed<-lmer(e~degN + (1|study),data=r2,weights=r2$e_se)
+r2$preds<-predict(mixed)
+plot(r2$e~r2$degN, bg = "grey",pch=21,cex=(r2$e_se/100)+0.5, main = "delay in photoperiodic response vs latitude", xlab = "Latitude (°N)", ylab = "Critical photoperiod")
+#abline(M2,lty=2)
+for( i in 2:length(unique(r2$study))){
+
+  a<-r2[r2$study==unique(r2$study)[i],]
+  a<-a[is.na(a$e)== FALSE,]
+  a<-a[is.na(a$degN)==FALSE,]
+  points(x=a$degN,y=a$e,pch=21,bg=i)
+ lines(x= a$degN,y= a$preds,col=i,xpd=T)
+}
+text(20,18, "slope = 0.93 hours/5°N\nR²=0.39")
+
+plot(r2$c~r2$degN)
+plot(r2$d~r2$degN)
+
+#studies without estimate of d
+#9,11,17,18,23, 29,30, 42,51,54,57,70
+dsub<-r2[!r2$study  %in% c(9,11,17,18,23,24,29,30,42,51,54,57,70),]
+dsub<-droplevels(dsub)
+dsub$d_se[dsub$d_se>100]<-100
+plot(dsub$d~dsub$degN,bg=dsub$study,pch=22)
+mixedd<-lmer(d~degN + (1|study),data=dsub)
+dsub$preds<-predict(mixedd)
+plot(dsub$d~dsub$degN, bg = "grey",pch=21,cex=0.5, main="upper limit vs latitude", xlab = "Latitude (°N)", ylab ="d")
+#abline(M2,lty=2)
+for( i in 2:length(unique(dsub$study))){
+
+  a<-dsub[dsub$study==unique(dsub$study)[i],]
+  a<-a[is.na(a$d)== FALSE,]
+  a<-a[is.na(a$degN)==FALSE,]
+  points(x=a$degN,y=a$d,pch=21,bg=i)
+ lines(x= a$degN,y= a$preds,col=i,xpd=T)
+}
+text(20,18, "slope = 0.93 hours/5°N\nR²=0.39")
+
 ```
 
 The estimate of 1 h per 5° N is not too bad, overall diapause becomes 50 min earlier per 5°.
@@ -203,8 +244,7 @@ length(climate$unpredictability[climate$unpredictability>5])-25 #values >5 but n
 159/24227 #values >5 divided by non-Nas = 0.65% of all values are >5
 hist(climate$unpredictability[climate$unpredictability<5],breaks=100)
 
-climate$beta<-log(climate$beta)
-climate$beta<--1* climate$beta
+
 hist(climate$beta,breaks=100)
 ```
 
@@ -258,6 +298,7 @@ plot(p$lat~p$lon,bg = rgb(p$unpredictability,p$unpredictability,0,maxColorValue 
 p<-climate
 p<-p[p$nyears>10,]
 p<-p[!is.na(p$beta),]
+p<-p[p$beta>0,]
 #p[p$beta>0.6]<-0.6
 plot(p$lat~p$lon,bg=rgb(1,max(p$beta)-p$beta+0.0001,max(p$beta)-p$beta+0.0001,maxColorValue = max(p$beta+0.001)),cex=0.5,pch=22,col=NA)
 ```
