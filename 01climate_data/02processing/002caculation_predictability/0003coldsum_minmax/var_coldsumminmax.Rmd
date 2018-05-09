@@ -195,7 +195,7 @@ The following chunk has the function to apply a nls regression on the climate da
 * the *amplitude A*, which quantifies the difference between winter and summer temperatures. A should decrease with proximity to the poles.  
 * the *phase angle phi*. Phi defines at what time of the year maximum temperatures occur. It should be close to midsummer in all stations of the northern hemisphere. june 25 is the julian day 176/177. This corresponds to a phase angle of 170/365 \*(2\*pi) = 2.92.
 
-```{r nls_regression, include=F}
+```{r nls_regression, include=T}
 get_nls <- function (vals,s_A=400,s_phi=pi/2,s_c=200){#s_... are starting values for nls function
  if (is.na(length(vals))|| length(vals)<1000){return (NA)} else{ #when there is insufficient data, the function will return "NA"
   x<-1:length(vals)
@@ -247,10 +247,10 @@ sd_winter<- rep(NA,length(unique(station$ID)))
 nyears<-rep(NA,length(unique(station$ID)))
 p<-rep(NA,length(unique(station$ID)))
 beta_y<-rep(NA,length(unique(station$ID)))
-beta_m<-rep(NA,length(unique(station$ID)))
-#A<-rep(NA,length(unique(station$ID)))
-#phi<-rep(NA,length(unique(station$ID)))
-#int<-rep(NA,length(unique(station$ID)))
+#beta_m<-rep(NA,length(unique(station$ID)))
+A<-rep(NA,length(unique(station$ID)))
+phi<-rep(NA,length(unique(station$ID)))
+int<-rep(NA,length(unique(station$ID)))
 
 
 for (i in 1:length(unique(station$ID))){ #this loop goes through each of the 1 k stations
@@ -355,7 +355,7 @@ for (i in 1:length(unique(station$ID))){ #this loop goes through each of the 1 k
 
 # The function tries up to three times per climate station, with different starting parameters.
  n<-gather(as.data.frame(t(s[3:ncol(s)])))
-notneeded2<-function(){
+
  parms<-wrap_error(n$value,s_A=400,s_phi=pi/2,s_c=200)
   if (parms[1]==FALSE){parms<-wrap_error(n$value,s_A=40,s_phi=pi,s_c=200)}
   if (parms[1]==FALSE){parms<-wrap_error(n$value,s_A=40,s_phi=2*pi,s_c=200)}
@@ -365,7 +365,6 @@ notneeded2<-function(){
  phi[i]<-parms[2]
  int[i]<-parms[3]
  
-  }
   
  ####  spectral density estimate: beta ###
 #two ways to calculate beta are tested:1. over the whole year, 2. over last 60 days before winter onset.
@@ -400,6 +399,7 @@ beta_y[i]<--coef(reg)[2]
 }
 
 #2. 2 months
+potentially_wrong<-function(){
   #idea: transpose and use gather to make 1 long vector ("day1:day 10,000" only that they are not called like that)
         #cut at (winter onset - 60) and winter onset of each year (multiple pieces)
         #clean incomplete data
@@ -456,16 +456,16 @@ beta_m[i]<--coef(reg)[2]
 }
 
 #abline(lm(log10(dens$spec)~log10(dens$freq)))
-
+}
 
 
   } #next station
 
 
 #####gather and save results####
-reslist<-data.frame(unique(station$ID),mean_winter,sd_winter,nyears,beta_y,beta_m)
+reslist<-data.frame(unique(station$ID),mean_winter,sd_winter,nyears,p,A,phi,int,beta_y)
 
-names(reslist)<-c("ID","meanwinter","sd winter","nyears","predictability_year","predictability_month" )
+names(reslist)<-c("ID","meanwinter","sd winter","nyears","predictability","Amplitude","phase_angle","intercept","beta" )
 write.table(reslist,"results.txt",append=TRUE,quote=FALSE,row.names=FALSE,col.names=FALSE)
 } #next chunk
 ```
