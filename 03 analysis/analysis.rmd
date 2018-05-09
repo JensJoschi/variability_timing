@@ -49,11 +49,11 @@ locations<-read.fwf(
   widths=c(11, 9, 10, 7,2,35)
 )
 reslist<-read.table("01climate_data/03output/results.txt",na.string = c("NA","-9999","-999.9"))
-names(reslist)<-c("ID","meanwinter","sd_winter","nyears","predictability","amplitude","phase angle", "intercept","beta")
+names(reslist)<-c("ID","meanwinter","sd_winter","nyears","beta_year","beta_month")
 climate<-merge(locations,reslist,by=1)
 rm(locations)
 rm(reslist)
-names(climate)<-c("ID","lat","lon","alt","no_idea","name","meanwinter","sd_winter", "nyears","unpredictability","amplitude","phase angle", "intercept","beta")
+names(climate)<-c("ID","lat","lon","alt","no_idea","name","meanwinter","sd_winter", "nyears","beta_year","beta_month")
 
 slopes<-read.table("02studies/02output/slopes.txt")
 names(slopes)<-c("ID","b","b_se","c","c_se","d","d_se","e","e_se","ID2","study","pop","spec","order","degN","degE","py")
@@ -167,7 +167,7 @@ plot(climate$meanwinter~climate$lat,pch=22,cex=0.1, main ="Mean winter onset vs.
 hist(slopes$degN,breaks=100) #for comparison
 ```
 
-It is possible a bad idea to use any climate above 70°N. The highest latitude in the studies was 69.05 °N. The apparent cap at ~25°N is because winter is not defined for warm climates (winter never arrives). The lowest latitude in the studies is at 18.3°N. 
+It is possibly a bad idea to use any climate above 70°N. The highest latitude in the studies was 69.05 °N. The apparent cap at ~25°N is because winter is not defined for warm climates (winter never arrives). The lowest latitude in the studies is at 18.3°N. 
 Refined overview:  
 
 ```{r minus70}
@@ -237,15 +237,7 @@ climate$capped_sd[climate$capped_sd>50]<-50
 
 hist(climate$nyears,breaks=50)
 
-hist(climate$unpredictability,breaks=100)
-sum(!is.na(climate$unpredictability))
-sum(is.na(climate$unpredictability))
-length(climate$unpredictability[climate$unpredictability>5])-25 #values >5 but not NA
-159/24227 #values >5 divided by non-Nas = 0.65% of all values are >5
-hist(climate$unpredictability[climate$unpredictability<5],breaks=100)
-
-
-hist(climate$beta,breaks=100)
+hist(climate$beta_y,breaks=100)#this is considerably less than in vasseur & Yodzis!
 ```
 
 
@@ -285,22 +277,27 @@ plot(p$lat~p$lon,bg = rgb(p$capped_sd,p$capped_sd,0,maxColorValue = max(p$capped
 #dev.off()
 
 
-p<-climate
-p<-p[!is.na(p$unpredictability),]
-p<-p[p$nyears>5,]
-p$unpredictability[p$unpredictability>5]<-5 #0.6% of all data
+p<-climate[climate$nyears>25,]
+p<-p[!is.na(p$beta_year),]
+p$beta_year[p$beta_year>1.2]<-1.2 #1.2% of all data
+p$beta_year[p$beta_year<0]<-0 #4.6%
+
 #range(p$unpredictability)
 #png("predictability-winter.png")
-plot(p$lat~p$lon,bg = rgb(p$unpredictability,p$unpredictability,0,maxColorValue = max(p$unpredictability)),cex=0.3,pch=22,col=NA, main ="unpredictability",sub="dark low standard deviation in slopes",xlab="",ylab="")
+plot(p$lat~p$lon,bg = rgb(1,max(p$beta_year)-p$beta_year+0.0001,max(p$beta_year)-p$beta_year+0.0001,maxColorValue = max(p$beta_year+0.001)),cex=0.3,pch=22,col=NA, main ="unpredictability",sub="dark low standard deviation in slopes",xlab="",ylab="")
 #dev.off()
 
-#colour of noise
-p<-climate
-p<-p[p$nyears>10,]
-p<-p[!is.na(p$beta),]
-p<-p[p$beta>0,]
-#p[p$beta>0.6]<-0.6
-plot(p$lat~p$lon,bg=rgb(1,max(p$beta)-p$beta+0.0001,max(p$beta)-p$beta+0.0001,maxColorValue = max(p$beta+0.001)),cex=0.5,pch=22,col=NA)
+
+
+p<-climate[climate$nyears>25,]
+p<-p[!is.na(p$beta_month),]
+p$beta_year[p$beta_month>1.2]<-1.2 #1.2% of all data
+p$beta_year[p$beta_year<0]<-0 #4.6%
+
+#range(p$unpredictability)
+#png("predictability-winter.png")
+plot(p$lat~p$lon,bg = rgb(1,max(p$beta_year)-p$beta_year+0.0001,max(p$beta_year)-p$beta_year+0.0001,maxColorValue = max(p$beta_year+0.001)),cex=0.3,pch=22,col=NA, main ="unpredictability",sub="dark low standard deviation in slopes",xlab="",ylab="")
+#dev.off()
 ```
 
 Does winter variability or predictability correlate with lat/alt or amplitude?
