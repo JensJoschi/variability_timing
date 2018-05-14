@@ -49,26 +49,78 @@ locations<-read.fwf(
   widths=c(11, 9, 10, 7,2,35)
 )
 reslist<-read.table("01climate_data/03output/results.txt",na.string = c("NA","-9999","-999.9"))
-names(reslist)<-c("ID","meanwinter","sd_winter","nyears","beta_year","beta_month")
+names(reslist)<-c("ID","meanwinter","sd_winter","nyears","p","A","phi","c","beta")
 climate<-merge(locations,reslist,by=1)
 rm(locations)
 rm(reslist)
-names(climate)<-c("ID","lat","lon","alt","no_idea","name","meanwinter","sd_winter", "nyears","beta_year","beta_month")
+names(climate)<-c("ID","lat","lon","alt","no_idea","name","meanwinter","sd_winter", "nyears","p","A","phi","c","beta")
 
 slopes<-read.table("02studies/02output/slopes.txt")
 names(slopes)<-c("ID","b","b_se","c","c_se","d","d_se","e","e_se","ID2","study","pop","spec","order","degN","degE","py")
+slopes$spec[slopes$spec=="Orius Sauteri"]<-"Orius sauteri"
+slopes<-droplevels(slopes)
 climate<-climate[!is.na(climate$meanwinter),] #because these cannot be used anyway
 climate$alt[climate$alt == -999.9]<-NA #was somehow not converted to NA during read.table
+slopes$spec[slopes$spec=="Orius Sauteri"]<-"Orius sauteri"
+slopes<-separate(slopes,spec,c("g","s"),sep =" ",remove=FALSE)
+#174 data points, 30 studies, 27 species and 21 genera, 10 orders
 ```
+#### statistical approaches  
+The "slopes" dataset contains different estimates (e.g. slope and inflection point) of 174 populations (population is the replicate here) in 30 studies, for 27 species, 21 genera and 10 orders. The correct statistical approach should be: 
+
+estimate ~ climate data, random = (study/species/genus/order), 
+
+with the estimate weighted by the inverse of its standard error. One could argue that study can be erased because it is almost entirely covered by species. I will keep it in though, because random effects with 0 explained variance have no effect anyway. The 2 most frequently functions to do the modelling are lme (package nlme) and lmer(package lme4). lme has the advantage that it also can model autocorrelation structures, so I will first stick to that one.  
+
+What significance tests (if any) should be reported?
+p-values become difficult to calculate in this analysis, because it is nested, unbalanced and weighted, so conditional F-tests are no option. likelihood-ratio test should work, though it might be inaccurate for small sample sizes. Using a bootstrap version that builds its own Chisquare-like distribution works only for lmer. But p should not be used anyway for that kind of analysis, so I will not report it. Instead I will report the estimate of the coefficient with confidence interval, R² (conditional and marginal, library Mumin) and a plot of prediction + confidence intervals (which ignores random terms). All models will be tested on the easier correlation of latitude and critical day length, and if working, applied to the correlation with predictability/variability.
+
 
 #### correlation latitude - CDL
 
 The critical day length (day length at which 50 % of all offspring switch to diapause) should correlate with latitude. Earlier studies quote rates of 1-1.5 hours per 5°N. Let's see if that holds for the data in this meta-analysis:
+(removed some old preliminary stuff with wrong random structure, general effect is same regradless of weighing and inclusion of random terms)
 
 ```{r corr_CDL}
 r2<-slopes
+r2<-r2[!r2$order=="",]
 r2$study[r2$study=="6b"]<-6
 r2$study[r2$study=="6c"]<-6
+hist(r2$e) #approximately normal
+
+
+#simplest possible, wrong model
+M<-lm(r2$e~r2$degN)
+#simplest mixed effects model,ignoring nestedness (several studies per species)
+M2<-lme(e~degN,random= ~1|study,data=r2) 
+#including full nested structure
+M3<-lme(e~degN ,random=~ 1|order/g/s/study,data=r2) 
+
+#removing study, because that is nearly completely included in species
+M4<-lme(e~degN, random =~1|order/g/s,data=r2)
+#removing species to test whether this is any different from study
+M5<-lme(e~degN, random =~ 1|order/g/study,data=r2)
+
+#i think i can settle with M3, the full model, and accept that one random term is nearly 0
+summary(M3)#df is 172-30-1, i.e. only accounts for "study" in df calculation, not for higher terms in nested structure-> p unreliable
+plot(M3)
+qqnorm(resid(M3))
+#getting p-values (for quick overview only)
+M3ml<-lme(e~degN ,random=~ 1|order/g/s/study,data=r2,method="ML") 
+M3r<-lme(e~1 ,random=~ 1|order/g/s/study,data=r2,method="ML") 
+anova(M3ml,M3r) 
+#unreliable for smaller sample size, better is parametric bootstrap calculation which requires no chisquare-distribution
+M3lmer<-lmer(e~degN+(1|order/g/s/study),data=r2,REML=F)
+M3r_lmer<-lmer(e~1+(1|order/g/s/study),data=r2,REML=F)
+PBmodcomp(M3lmer,M3r_lmer) #108 sec. 1000 samples, 0 extremes, 995 used samples; p = 0.001004
+
+
+
+#same models, but weighing by s.e. of e estimate 
+r2$e_se[r2$e_se>100]<-100
+Mb<-lm(r2$e~r2$degN, weights = as.numeric(r2$e_se))
+M2b<-lmer(e~degN + (1|study),data=r2,weights=r2$e_se)
+M3b#<-
 
 #png("cdl_vs_lat.png")
 plot(r2$e~r2$degN, bg = r2$study,pch=22,main = "Correlation of critical day length and latitude", xlab ="latitude",ylab="critical day length")
@@ -116,7 +168,9 @@ summary(M1)
 summary(M2)
 #not much difference, can keep linear model
 
-mixed<-lmer(e~degN + (1|study),data=r2,weights=r2$e_se)
+mixed<-lmer(e~degN + (1|study),data=r2,weights=r2$e_se) #lme4,no p
+mixed<-lmer(e~degN + (1|order/g/s/study),data=r2)
+nlme(e~degN,random = 1|order/g/s/study,data=r2) #nlme,p
 r2$preds<-predict(mixed)
 plot(r2$e~r2$degN, bg = "grey",pch=21,cex=(r2$e_se/100)+0.5, main = "delay in photoperiodic response vs latitude", xlab = "Latitude (°N)", ylab = "Critical photoperiod")
 #abline(M2,lty=2)
