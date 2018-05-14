@@ -88,7 +88,7 @@ r2$study[r2$study=="6b"]<-6
 r2$study[r2$study=="6c"]<-6
 hist(r2$e) #approximately normal
 
-
+#scaling!
 #simplest possible, wrong model
 M<-lm(r2$e~r2$degN)
 #simplest mixed effects model,ignoring nestedness (several studies per species)
@@ -120,9 +120,10 @@ PBmodcomp(M3lmer,M3r_lmer) #108 sec. 1000 samples, 0 extremes, 995 used samples;
 r2$e_se[r2$e_se>100]<-100
 Mb<-lm(r2$e~r2$degN, weights = as.numeric(r2$e_se))
 M2b<-lmer(e~degN + (1|study),data=r2,weights=r2$e_se)
-M3b#<-
 
-#png("cdl_vs_lat.png")
+M3b<-lme(e~degN ,random=~ 1|order/g/s/study,data=r2, weights = varPower(~e_se))
+#does not work, simply weights = ~e_se is wrong.
+         #png("cdl_vs_lat.png")
 plot(r2$e~r2$degN, bg = r2$study,pch=22,main = "Correlation of critical day length and latitude", xlab ="latitude",ylab="critical day length")
 
 M<-lm(r2$e~r2$degN)
