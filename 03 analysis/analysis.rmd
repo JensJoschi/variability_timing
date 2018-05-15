@@ -21,12 +21,14 @@ library(geomapdata)
 library(geosphere)
 library(MASS)
 library(lme4)
+library(metafor)
 ```
 
 # issues  
 slopes.csv has typo in orius sauteri; and one order missing
 lme and nlme do a different weighting, need metafor package
 does metafor do internal scaling?
+make forest plot of slope estimates (per population)
 
 # General description  
 ## Aim  
@@ -69,6 +71,7 @@ climate$alt[climate$alt == -999.9]<-NA #was somehow not converted to NA during r
 slopes<-separate(slopes,spec,c("g","s"),sep =" ",remove=FALSE)
 #174 data points, 30 studies, 27 species and 21 genera, 10 orders
 ```
+
 #### statistical approaches  
 The "slopes" dataset contains different estimates (e.g. slope and inflection point) of 174 populations (population is the replicate here) in 30 studies, for 27 species, 21 genera and 10 orders. The correct statistical approach should be: 
 
@@ -79,7 +82,32 @@ with the estimate weighted by the inverse of its standard error. One could argue
 What significance tests (if any) should be reported?
 p-values become difficult to calculate in this analysis, because it is nested, unbalanced and weighted, so conditional F-tests are no option. likelihood-ratio test should work, though it might be inaccurate for small sample sizes. Using a bootstrap version that builds its own Chisquare-like distribution works only for lmer. But p should not be used anyway for that kind of analysis, so I will not report it. Instead I will report the estimate of the coefficient with confidence interval, R² (conditional and marginal, library Mumin) and a plot of prediction + confidence intervals (which ignores random terms). All models will be tested on the easier correlation of latitude and critical day length, and if working, applied to the correlation with predictability/variability.
 
-addendum: the variance of each datapoint is known in meta-analyses (inverse of s.e. in my case), but the "weights"" argument in lm, lme and nlme does not simply weight each point by the weight, but by weight*sigma (a scaling factor). This gives wrong s.e. and I need to use metafor package, function rs.ml
+addendum: the variance of each datapoint is known in meta-analyses (inverse of s.e. in my case), but the "weights"" argument in lm, lme and nlme does not simply weight each point by the weight, but by weight*sigma (a scaling factor). This gives wrong s.e. and I need to use metafor package, function rs.ml.
+What should now be reported? standard output requires df and is possibly prone to the same drawbacks as in lme/lmer. The LRT test could work, though again it is not accurate for small n. A bootstrap version (like from pbkrtest) does not seem to exist. I will again ignore p-values and rather report 
+1) estimate of coefficient with confint (profile likelihood CIs, bootstrapping if possible), 
+2) I² + conf-int (complicated but possible for nested models, see metafor website), and 
+3) a plot of prediction with conf intervals (if possible, need to check). 
+4) In addition I will do a forest plot of the slope estimates + s.e. for an overview, and a funnel plot (thoguh I do not expect publication bias) 
+Generally all outcome statistics are inaccurate, because they expect that variance of each point is known, but I only provide a coarse estimate of vairance that is based on a very low within-population sample size (~4-10 points to get a slope estimate). that needs to be discussed.
+
+
+
+#### forest plots of slope and CDL
+
+```{r}
+r2<-slopes[order(slopes$e),]
+r2$real_se<-1/r2$e_se
+plot(y=1:nrow(r2),x=r2$e,xlim=c(8,21),pch=22,cex=0.4,main ="Forest plot of CDL estimates",xlab = "Critical day length",yaxt="n",ylab="")
+arrows(x0=r2$e,y0=1:nrow(r2),x1=r2$e+r2$real_se,length=0)
+arrows(x0=r2$e,y0=1:nrow(r2),x1=r2$e-r2$real_se,length=0)
+
+r2<-slopes[order(slopes$b),]
+r2$real_se<-1/r2$b_se
+plot(y=1:nrow(r2),x=r2$b,xlim=c(0,200),pch=22,cex=0.4,main ="Forest plot of slope estimates",xlab = "slope parameter",yaxt="n",ylab="")
+arrows(x0=r2$b,y0=1:nrow(r2),x1=r2$b+r2$real_se,length=0)
+arrows(x0=r2$b,y0=1:nrow(r2),x1=r2$b-r2$real_se,length=0)
+#should maybe exclude a few studies!
+```
 
 #### correlation latitude - CDL
 
