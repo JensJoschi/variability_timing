@@ -21,11 +21,12 @@ library(geomapdata)
 library(geosphere)
 library(MASS)
 library(lme4)
+library(nlme)
 library(metafor)
 ```
 
 # issues  
-slopes.csv has typo in orius sauteri; and one order missing
+slopes.csv has typo in orius sauteri; and one order and spec missing
 lme and nlme do a different weighting, need metafor package
 does metafor do internal scaling?
 make forest plot of slope estimates (per population)
@@ -88,6 +89,7 @@ What should now be reported? standard output requires df and is possibly prone t
 2) I² + conf-int (complicated but possible for nested models, see metafor website), and 
 3) a plot of prediction with conf intervals (if possible, need to check). 
 4) In addition I will do a forest plot of the slope estimates + s.e. for an overview, and a funnel plot (thoguh I do not expect publication bias) 
+5) calculate a pseudo-R²: (sum(Model1$sigma2) - sum(Model2$sigma2)) / sum(Model1$sigma2) where model 2 is full model, model 1 has no fixed effect
 Generally all outcome statistics are inaccurate, because they expect that variance of each point is known, but I only provide a coarse estimate of vairance that is based on a very low within-population sample size (~4-10 points to get a slope estimate). that needs to be discussed.
 
 
@@ -97,9 +99,12 @@ Generally all outcome statistics are inaccurate, because they expect that varian
 ```{r}
 r2<-slopes[order(slopes$e),]
 r2$real_se<-1/r2$e_se
+
 plot(y=1:nrow(r2),x=r2$e,xlim=c(8,21),pch=22,cex=0.4,main ="Forest plot of CDL estimates",xlab = "Critical day length",yaxt="n",ylab="")
 arrows(x0=r2$e,y0=1:nrow(r2),x1=r2$e+r2$real_se,length=0)
 arrows(x0=r2$e,y0=1:nrow(r2),x1=r2$e-r2$real_se,length=0)
+
+forest.default(x=r2$e,sei=r2$real_se,slab=NA,xlim=c(8,20),annotate=T)
 
 r2<-slopes[order(slopes$b),]
 r2$real_se<-1/r2$b_se
@@ -107,6 +112,7 @@ plot(y=1:nrow(r2),x=r2$b,xlim=c(0,200),pch=22,cex=0.4,main ="Forest plot of slop
 arrows(x0=r2$b,y0=1:nrow(r2),x1=r2$b+r2$real_se,length=0)
 arrows(x0=r2$b,y0=1:nrow(r2),x1=r2$b-r2$real_se,length=0)
 #should maybe exclude a few studies!
+
 ```
 
 #### correlation latitude - CDL
@@ -120,11 +126,73 @@ r2<-r2[!r2$order=="",]
 r2$study[r2$study=="6b"]<-6
 r2$study[r2$study=="6c"]<-6
 hist(r2$e) #approximately normal
+r2$e_se<-1/r2$e_se
+r2<-r2[!is.na(r2$spec),]
+r2<-droplevels(r2)
+
+#a simple (but wrong) rma model (to learn use of metafor)
+rmamod<-rma(yi=e,vi=e_se,mods = degN,data=r2,method="REML",weighted=T,test="knha")#slab=study
+summary(rmamod)
+confint(rmamod)
+ps<-predict.rma(rmamod)
+plot(x=r2$degN,y=r2$e,pch=21,cex=0.8,col=NA, bg=as.numeric(r2$spec))
+lines(x=r2$degN,y=ps$pred,lwd=2)
+lines(x=r2$degN,y=ps$ci.lb,col="darkgrey")#convert these into polygons
+lines(x=r2$degN,y=ps$ci.ub,col="darkgrey")
+lines(x=r2$degN,y=ps$cr.lb,col="lightgrey")
+lines(x=r2$degN,y=ps$cr.ub,col="lightgrey")
+#points again
+
+#comparing that to a lme
+summary(lme(e~degN,random= ~1|ID,data=r2)) #similar bot not exactly same (due to lack of weighting)
+summary(lme(e~degN,random= ~1|ID,data=r2, weights= ~e_se)) #nearly same
+
+plot(rmamod)#residuals look fine
+infl<-influence(rmamod)
+plot(infl)
+qqnorm(rmamod)#looks fine
+
+#now to the actual model with nested random terms!
+
+rmamod_nested<-rma.mv(yi = e ~ degN, V = e_se, random = ~1|order/g/s/study,data = r2)
+summary(rmamod_nested) # species has no variance explained
+
+rmamod_rednested<-rma.mv(yi = e ~ degN, V = e_se, random = ~1|order/g/study,data = r2)
+summary(rmamod_rednested)
+summary(lme(e~degN, random =~ 1|order/g/study,data=r2,weights=~e_se)) #very similar
+
+#1. estimate +ci
+confint(rmamod_nested,fixed=T,random=F)
+#2. I² + ci (todo)
+
+#3. plot prediction + credible interval
+ps<-predict.rma(rmamod_nested)
+plot(x=r2$degN,y=r2$e,pch=21,bg=r2$study,cex=0.8,col=NA)
+lines(x=r2$degN,y=ps$pred,lwd=2)
+lines(x=r2$degN,y=ps$ci.lb,col="darkgrey")#convert these into polygons
+lines(x=r2$degN,y=ps$ci.ub,col="darkgrey")
+lines(x=r2$degN,y=ps$cr.lb,col="lightgrey")
+lines(x=r2$degN,y=ps$cr.ub,col="lightgrey")
+
+#4. forest plot
+fore<-data.frame(ps$pred,ps$ci.lb,ps$ci.ub,r2$order,r2$g,r2$s,r2$study)
+fore<-fore[order(fore$r2.order,fore$r2.g,fore$r2.s,fore$r2.study),]
+
+plot(y=1:nrow(fore),x=fore$ps.pred,xlim=c(8,21),pch=22,cex=0.8,main ="Forest plot of CDL estimates",xlab = "Critical day length",yaxt="n",ylab="",bg=fore$r2.study,col=NA)
+arrows(x0=fore$ps.pred,y0=1:nrow(fore),x1=fore$ps.ci.ub,length=0,col=1,lwd=1.5)
+arrows(x0=fore$ps.pred,y0=1:nrow(fore),x1=fore$ps.ci.lb,length=0,col=1,lwd=1.5)
+points(y=1:nrow(fore),x=fore$ps.pred,pch=22,cex=0.5,bg=fore$r2.study,col=NA)
+abline(h=cumsum( as.numeric(table(fore$r2.order)))+0.5,lty=2,lwd=0.5)
+#need to play with colours so that species of same order have similar colours
 
 
+#5. pseudo-R^2
+pseudo_nested<-rma.mv(yi = e ~ 1, V = e_se, random = ~1|order/g/s/study,data = r2)
+(sum(pseudo_nested$sigma2)-sum(rmamod_nested$sigma2))/sum(pseudo_nested$sigma2)
+#0.4372
 
 
-#scaling!
+#stuff below is possib#scaling!
 #simplest possible, wrong model
 M<-lm(r2$e~r2$degN)
 #simplest mixed effects model,ignoring nestedness (several studies per species)
