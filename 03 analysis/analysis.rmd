@@ -27,9 +27,7 @@ library(metafor)
 
 # issues  
 slopes.csv has typo in orius sauteri; and one order and spec missing
-lme and nlme do a different weighting, need metafor package
-does metafor do internal scaling?
-make forest plot of slope estimates (per population)
+
 
 # General description  
 ## Aim  
@@ -78,25 +76,20 @@ The "slopes" dataset contains different estimates (e.g. slope and inflection poi
 
 estimate ~ climate data, random = (study/species/genus/order), 
 
-with the estimate weighted by the inverse of its standard error. One could argue that study can be erased because it is almost entirely covered by species. I will keep it in though, because random effects with nearly 0 explained variance have no effect anyway. The 2 most frequently functions to do the modelling are lme (package nlme) and lmer(package lme4). lme has the advantage that it also can model autocorrelation structures, so I will first stick to that one.  
+with the estimate weighted by the inverse of its standard error. One could argue that study can be erased because it is almost entirely covered by species. I will keep it in though, because random effects with nearly 0 explained variance have no effect anyway. The only package (i am aware of) that can do the correct weighting is metafor, and it now also supports nested random terms.
 
 What significance tests (if any) should be reported?
-p-values become difficult to calculate in this analysis, because it is nested, unbalanced and weighted, so conditional F-tests are no option. likelihood-ratio test should work, though it might be inaccurate for small sample sizes. Using a bootstrap version that builds its own Chisquare-like distribution works only for lmer. But p should not be used anyway for that kind of analysis, so I will not report it. Instead I will report the estimate of the coefficient with confidence interval, R² (conditional and marginal, library Mumin) and a plot of prediction + confidence intervals (which ignores random terms). All models will be tested on the easier correlation of latitude and critical day length, and if working, applied to the correlation with predictability/variability.
+p-values become difficult to calculate in this analysis, because it is nested, unbalanced and weighted, so conditional F-tests are no option (GLMM-Faq by ben bolker explains that well). likelihood-ratio test should work, though it might be inaccurate for small sample sizes. Using a bootstrap version that builds its own Chisquare-like distribution works only for lmer. P is problematic to defend for meta-analyses anyway, so I will not report it. Instead I will report the estimate of the coefficient with confidence interval (Wald-Type,because profile loglik and bootstrap are not available in metafor),I² + confidence interval, pseudo-R², a forest plot, and a plot of prediction + credible intervals. All models will be tested on the easier correlation of latitude and critical day length, and if working, applied to the correlation with predictability/variability.
 
-addendum: the variance of each datapoint is known in meta-analyses (inverse of s.e. in my case), but the "weights"" argument in lm, lme and nlme does not simply weight each point by the weight, but by weight*sigma (a scaling factor). This gives wrong s.e. and I need to use metafor package, function rs.ml.
-What should now be reported? standard output requires df and is possibly prone to the same drawbacks as in lme/lmer. The LRT test could work, though again it is not accurate for small n. A bootstrap version (like from pbkrtest) does not seem to exist. I will again ignore p-values and rather report 
-1) estimate of coefficient with confint (profile likelihood CIs, bootstrapping if possible), 
-2) I² + conf-int (complicated but possible for nested models, see metafor website), and 
-3) a plot of prediction with conf intervals (if possible, need to check). 
-4) In addition I will do a forest plot of the slope estimates + s.e. for an overview, and a funnel plot (thoguh I do not expect publication bias) 
-5) calculate a pseudo-R²: (sum(Model1$sigma2) - sum(Model2$sigma2)) / sum(Model1$sigma2) where model 2 is full model, model 1 has no fixed effect
 Generally all outcome statistics are inaccurate, because they expect that variance of each point is known, but I only provide a coarse estimate of vairance that is based on a very low within-population sample size (~4-10 points to get a slope estimate). that needs to be discussed.
 
 
 
 #### forest plots of slope and CDL
 
-```{r}
+This forest plot is just to get an overview how the dose-response curve modelling worked; it is not done on the actual meta-analytic model
+
+```{r forest_plots}
 r2<-slopes[order(slopes$e),]
 r2$real_se<-1/r2$e_se
 
@@ -104,7 +97,7 @@ plot(y=1:nrow(r2),x=r2$e,xlim=c(8,21),pch=22,cex=0.4,main ="Forest plot of CDL e
 arrows(x0=r2$e,y0=1:nrow(r2),x1=r2$e+r2$real_se,length=0)
 arrows(x0=r2$e,y0=1:nrow(r2),x1=r2$e-r2$real_se,length=0)
 
-forest.default(x=r2$e,sei=r2$real_se,slab=NA,xlim=c(8,20),annotate=T)
+forest.default(x=r2$e,sei=r2$real_se,slab=NA,xlim=c(8,20),annotate=T) #same
 
 r2<-slopes[order(slopes$b),]
 r2$real_se<-1/r2$b_se
@@ -118,7 +111,7 @@ arrows(x0=r2$b,y0=1:nrow(r2),x1=r2$b-r2$real_se,length=0)
 #### correlation latitude - CDL
 
 The critical day length (day length at which 50 % of all offspring switch to diapause) should correlate with latitude. Earlier studies quote rates of 1-1.5 hours per 5°N. Let's see if that holds for the data in this meta-analysis:
-(removed some old preliminary stuff with wrong random structure, general effect is same regradless of weighing and inclusion of random terms)
+
 
 ```{r corr_CDL}
 r2<-slopes
@@ -126,22 +119,30 @@ r2<-r2[!r2$order=="",]
 r2$study[r2$study=="6b"]<-6
 r2$study[r2$study=="6c"]<-6
 hist(r2$e) #approximately normal
-r2$e_se<-1/r2$e_se
+r2$e_se<-1/r2$e_se #that inversion was included in DRC estimation script, need to revert it here
 r2<-r2[!is.na(r2$spec),]
 r2<-droplevels(r2)
 
-#a simple (but wrong) rma model (to learn use of metafor)
-rmamod<-rma(yi=e,vi=e_se,mods = degN,data=r2,method="REML",weighted=T,test="knha")#slab=study
+#### a simple (but wrong) rma model (to test metafor)#### 
+rmamod<-rma(yi=e,vi=e_se,mods = degN,data=r2,method="REML",weighted=T,test="knha")
 summary(rmamod)
 confint(rmamod)
 ps<-predict.rma(rmamod)
+
+normal<- data.frame(r2$degN,ps$cr.lb,ps$ci.lb)
+names(normal)<-c("degN","cr","ci")
+normal<-normal[order(normal$degN),]
+reversed<-data.frame(r2$degN,ps$cr.ub,ps$ci.ub)
+names(reversed)<-c("degN","cr","ci")
+reversed<-reversed[order(reversed$degN),]
+reversed<-reversed[nrow(reversed):1,]
+combined<-rbind(normal,reversed)
+names(combined)<-c("degN","cr","ci")
+
 plot(x=r2$degN,y=r2$e,pch=21,cex=0.8,col=NA, bg=as.numeric(r2$spec))
-lines(x=r2$degN,y=ps$pred,lwd=2)
-lines(x=r2$degN,y=ps$ci.lb,col="darkgrey")#convert these into polygons
-lines(x=r2$degN,y=ps$ci.ub,col="darkgrey")
-lines(x=r2$degN,y=ps$cr.lb,col="lightgrey")
-lines(x=r2$degN,y=ps$cr.ub,col="lightgrey")
-#points again
+polygon(x=combined$degN, y=combined$cr,col="lightgrey",border=NA)
+polygon(x=combined$degN, y=combined$ci,col="darkgrey",border=NA)
+points(x=r2$degN,y=r2$e,pch=21,cex=0.8,col=NA,bg=as.numeric(r2$spec))
 
 #comparing that to a lme
 summary(lme(e~degN,random= ~1|ID,data=r2)) #similar bot not exactly same (due to lack of weighting)
@@ -152,9 +153,9 @@ infl<-influence(rmamod)
 plot(infl)
 qqnorm(rmamod)#looks fine
 
-#now to the actual model with nested random terms!
 
-rmamod_nested<-rma.mv(yi = e ~ degN, V = e_se, random = ~1|order/g/s/study,data = r2)
+####now to the actual model with nested random terms#### 
+rmamod_nested<-rma.mv(yi = e ~ degN, V = e_se, random = ~1|order/g/s/study, data = r2,test="t")
 summary(rmamod_nested) # species has no variance explained
 
 rmamod_rednested<-rma.mv(yi = e ~ degN, V = e_se, random = ~1|order/g/study,data = r2)
@@ -165,16 +166,8 @@ summary(lme(e~degN, random =~ 1|order/g/study,data=r2,weights=~e_se)) #very simi
 confint(rmamod_nested,fixed=T,random=F)
 #2. I² + ci (todo)
 
-#3. plot prediction + credible interval
-ps<-predict.rma(rmamod_nested)
-plot(x=r2$degN,y=r2$e,pch=21,bg=r2$study,cex=0.8,col=NA)
-lines(x=r2$degN,y=ps$pred,lwd=2)
-lines(x=r2$degN,y=ps$ci.lb,col="darkgrey")#convert these into polygons
-lines(x=r2$degN,y=ps$ci.ub,col="darkgrey")
-lines(x=r2$degN,y=ps$cr.lb,col="lightgrey")
-lines(x=r2$degN,y=ps$cr.ub,col="lightgrey")
 
-#4. forest plot
+#3. forest plot
 fore<-data.frame(ps$pred,ps$ci.lb,ps$ci.ub,r2$order,r2$g,r2$s,r2$study)
 fore<-fore[order(fore$r2.order,fore$r2.g,fore$r2.s,fore$r2.study),]
 
@@ -186,72 +179,45 @@ abline(h=cumsum( as.numeric(table(fore$r2.order)))+0.5,lty=2,lwd=0.5)
 #need to play with colours so that species of same order have similar colours
 
 
-#5. pseudo-R^2
-pseudo_nested<-rma.mv(yi = e ~ 1, V = e_se, random = ~1|order/g/s/study,data = r2)
-(sum(pseudo_nested$sigma2)-sum(rmamod_nested$sigma2))/sum(pseudo_nested$sigma2)
+#4. pseudo-R^2
+pseudo_nested<-rma.mv(yi = e ~ 1, V = e_se, random = ~1|order/g/s/study,data = r2,test="t")
+rsq<-(sum(pseudo_nested$sigma2)-sum(rmamod_nested$sigma2))/sum(pseudo_nested$sigma2)
 #0.4372
 
-
-#stuff below is possib#scaling!
-#simplest possible, wrong model
-M<-lm(r2$e~r2$degN)
-#simplest mixed effects model,ignoring nestedness (several studies per species)
-M2<-lme(e~degN,random= ~1|study,data=r2) 
-#including full nested structure
-M3<-lme(e~degN ,random=~ 1|order/g/s/study,data=r2) 
-
-#removing study, because that is nearly completely included in species
-M4<-lme(e~degN, random =~1|order/g/s,data=r2)
-#removing species to test whether this is any different from study
-M5<-lme(e~degN, random =~ 1|order/g/study,data=r2)
-
-#i think i can settle with M3, the full model, and accept that one random term is nearly 0
-summary(M3)#df is 172-30-1, i.e. only accounts for "study" in df calculation, not for higher terms in nested structure-> p unreliable
-plot(M3)
-qqnorm(resid(M3))
-#getting p-values (for quick overview only)
-M3ml<-lme(e~degN ,random=~ 1|order/g/s/study,data=r2,method="ML") 
-M3r<-lme(e~1 ,random=~ 1|order/g/s/study,data=r2,method="ML") 
-anova(M3ml,M3r) 
-#unreliable for smaller sample size, better is parametric bootstrap calculation which requires no chisquare-distribution
-M3lmer<-lmer(e~degN+(1|order/g/s/study),data=r2,REML=F)
-M3r_lmer<-lmer(e~1+(1|order/g/s/study),data=r2,REML=F)
-PBmodcomp(M3lmer,M3r_lmer) #108 sec. 1000 samples, 0 extremes, 995 used samples; p = 0.001004
+#5 test what lme would produce (should be consistent)
+M3<-lme(e~degN ,random=~ 1|order/g/s/study,data=r2, weights= ~e_se) 
+summary(M3)#quite similar, though some diff in estimate and s.e. exists
 
 
+#6. plot prediction + credible interval
+ps<-predict.rma(rmamod_nested)
 
-#same models, but weighing by s.e. of e estimate 
-r2$e_se[r2$e_se>100]<-100
-Mb<-lm(r2$e~r2$degN, weights = as.numeric(r2$e_se))
-M2b<-lmer(e~degN + (1|study),data=r2,weights=r2$e_se)
+normal<- data.frame(r2$degN,ps$cr.lb,ps$ci.lb)
+names(normal)<-c("degN","cr","ci")
+normal<-normal[order(normal$degN),]
+reversed<-data.frame(r2$degN,ps$cr.ub,ps$ci.ub)
+names(reversed)<-c("degN","cr","ci")
+reversed<-reversed[order(reversed$degN),]
+reversed<-reversed[nrow(reversed):1,]
+combined<-rbind(normal,reversed)
+names(combined)<-c("degN","cr","ci")
 
-M3b<-lme(e~degN ,random=~ 1|order/g/s/study,data=r2, weights = varPower(~e_se))
-#does not work, simply weights = ~e_se is wrong.
-         #png("cdl_vs_lat.png")
-plot(r2$e~r2$degN, bg = r2$study,pch=22,main = "Correlation of critical day length and latitude", xlab ="latitude",ylab="critical day length")
-
-M<-lm(r2$e~r2$degN)
-abline(M)
-coef(M)[2]*5  #0.81 hours per 5 degree latitude
-text(20,18, "slope = 0.81 hours/5°N\nR²=0.69")
-
-#dev.off()
-hist(r2$e_se)
-r2[r2$e_se>500,]
-#this is because $e_se is actually 1/s.e.,and the curves of these pops seem on the bring of being overfitted (and hence hav low s.e.)
-r2$e_se[r2$e_se>100]<-100
-hist(r2$e_se,breaks=100)
-
-M2<-lm(r2$e~r2$degN, weights = as.numeric(r2$e_se))
-plot(r2$e~r2$degN, bg = r2$study,pch=22,main = "Correlation of critical day length and latitude (weighted)", xlab ="latitude",ylab="critical day length")
-abline(M2)
-coef(M2)[2]*5  #0.81 hours per 5 degree latitude
-text(20,18, "slope = 0.84 hours/5°N\nR²=0.66")
+plot(x=r2$degN,y=r2$e,pch=21,cex=0.8,col=NA, bg=as.numeric(r2$spec),main = "Delay in photoperiodic response vs latitude", xlab = "Latitude (°N)", ylab = "Critical photoperiod")
+polygon(x=combined$degN, y=combined$cr,col="lightgrey",border=NA)
+polygon(x=combined$degN, y=combined$ci,col="darkgrey",border=NA)
+lines(x=r2$degN,y=ps$pred,lwd=2)
+points(x=r2$degN,y=r2$e,pch=21,cex=0.8,col=NA,bg=as.numeric(r2$spec))
+axis(1)
+s_est<-confint(rmamod_nested,fixed=T,random=F)$fixed[2,1]*5
+s_est<-round(s_est,2)
+rsq=round(rsq,2)
+#5 degrees latitude ~ 1 hour
+text(30,20,paste("slope = ",s_est, " hours/5°N\npseudo-R² = ",rsq),cex=0.8)
 
 
+###clean up from here downwards
 #png("cdl_vs_lat_weighted.png")
 plot(r2$e~r2$degN, bg = "grey",pch=21,cex=(r2$e_se/100)+0.5, main = "delay in photoperiodic response vs latitude", xlab = "Latitude (°N)", ylab = "Critical photoperiod")
-abline(M2,lty=2)
 for( i in 2:length(unique(r2$study))){
   a<-r2[r2$study==unique(r2$study)[i],]
   a<-a[is.na(a$e)== FALSE,]
@@ -260,8 +226,7 @@ for( i in 2:length(unique(r2$study))){
   M<-lm(a$e~a$degN,weights=a$e_se)
  lines(x= a$degN,y= predict(M),col="grey",xpd=T)
 }
-text(20,18, "slope = 0.93 hours/5°N\nR²=0.39")
-#dev.off()
+
 
 #actually the relationship does not seem to be linear
 boxcox(r2$e~r2$degN)
