@@ -23,6 +23,11 @@ library(MASS)
 library(lme4)
 ```
 
+# issues  
+slopes.csv has typo in orius sauteri; and one order missing
+lme and nlme do a different weighting, need metafor package
+does metafor do internal scaling?
+
 # General description  
 ## Aim  
 The aim of this project is to correlate climate variability with variability in seasonal timing. Is the slope in seasonal responses a bet-hedging trait, i.e., is it adaptive to spread one's timing in more variable conditions?  
@@ -61,7 +66,6 @@ slopes$spec[slopes$spec=="Orius Sauteri"]<-"Orius sauteri"
 slopes<-droplevels(slopes)
 climate<-climate[!is.na(climate$meanwinter),] #because these cannot be used anyway
 climate$alt[climate$alt == -999.9]<-NA #was somehow not converted to NA during read.table
-slopes$spec[slopes$spec=="Orius Sauteri"]<-"Orius sauteri"
 slopes<-separate(slopes,spec,c("g","s"),sep =" ",remove=FALSE)
 #174 data points, 30 studies, 27 species and 21 genera, 10 orders
 ```
@@ -70,11 +74,12 @@ The "slopes" dataset contains different estimates (e.g. slope and inflection poi
 
 estimate ~ climate data, random = (study/species/genus/order), 
 
-with the estimate weighted by the inverse of its standard error. One could argue that study can be erased because it is almost entirely covered by species. I will keep it in though, because random effects with 0 explained variance have no effect anyway. The 2 most frequently functions to do the modelling are lme (package nlme) and lmer(package lme4). lme has the advantage that it also can model autocorrelation structures, so I will first stick to that one.  
+with the estimate weighted by the inverse of its standard error. One could argue that study can be erased because it is almost entirely covered by species. I will keep it in though, because random effects with nearly 0 explained variance have no effect anyway. The 2 most frequently functions to do the modelling are lme (package nlme) and lmer(package lme4). lme has the advantage that it also can model autocorrelation structures, so I will first stick to that one.  
 
 What significance tests (if any) should be reported?
 p-values become difficult to calculate in this analysis, because it is nested, unbalanced and weighted, so conditional F-tests are no option. likelihood-ratio test should work, though it might be inaccurate for small sample sizes. Using a bootstrap version that builds its own Chisquare-like distribution works only for lmer. But p should not be used anyway for that kind of analysis, so I will not report it. Instead I will report the estimate of the coefficient with confidence interval, R² (conditional and marginal, library Mumin) and a plot of prediction + confidence intervals (which ignores random terms). All models will be tested on the easier correlation of latitude and critical day length, and if working, applied to the correlation with predictability/variability.
 
+addendum: the variance of each datapoint is known in meta-analyses (inverse of s.e. in my case), but the "weights"" argument in lm, lme and nlme does not simply weight each point by the weight, but by weight*sigma (a scaling factor). This gives wrong s.e. and I need to use metafor package, function rs.ml
 
 #### correlation latitude - CDL
 
@@ -87,6 +92,9 @@ r2<-r2[!r2$order=="",]
 r2$study[r2$study=="6b"]<-6
 r2$study[r2$study=="6c"]<-6
 hist(r2$e) #approximately normal
+
+
+
 
 #scaling!
 #simplest possible, wrong model

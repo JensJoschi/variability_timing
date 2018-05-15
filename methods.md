@@ -74,7 +74,7 @@ Two new Perl scripts extracted daily minimum and maximum temperatures from all c
 As before, I calculated Amplitude, phase angle and annual average with a non-linear least-square regression, weighted mean winter and weighted standard deviation in winter onset. In addition, I calculated the correlation of temperature at winter onset with temperature 1,2, or three weeks before winter onset. However, as the correlation was on average 0, this procedure was dropped.     
 I then calculated winter predictability: In a first attempt the last 31 days before winter onset of each year were aggregated and pearsons R was calculated. The climate at one station was considered predictable (high R) if 1) temperature declined more or less linearly, 2) the slope was consistent across years, and 3) there was little day-to-day variation.  I used only years with at least 182 days of data, and concentrated only on years that actually reach winter as defined above. I excluded all stations that reach winter less than 3 times. This approach was replaced before doing the real analyses by using the standard deviation in slopes of the same regressions, as this seems statistically more sound. During analysis (after seeing that there seems to be no effect, but before including right random terms), I decided to replace this again, by a calculation of environmental noise like Vasseur & Yodzis 2004 (Ecology).  
 
-Not sure if possible, but limiting the time window to ~1 month around winter onset and then calculating the slope could be a better way to calculate predictability. This needs discussion and I will settle for one of the two ways to calculate predictability before conducting the real analysis on the final dataset. 
+I tried limiting the time window to ~1 month around winter onset and then calculated environmental noise. But this did not work so I use only sd(slopes) and full-year environmental noise (exploratory).
 
 
 
@@ -112,6 +112,7 @@ A The effect size reported shuold be slope (measured in h/°N) +CI and Fisher's 
 #### physiology: correlation diapause with latitude  
 I correlated the critical day length (day length at which 50 % of all offspring switch to diapause; parameter e in dose-response curves) with latitude of origin. I used various preliminary models with known deficiencies (lm ignoring all random terms, lme ignoring nestedness or weighting) before settling for the following model:
 cdl~latitude + (1|order/g/s/study) , weights = 1/s.e (of cdl estimate)
+The weighting proved problematic (lme and lmer do not do the correct weighting), so I need to switch to metafor package. 
   
   Although the relationship appears exponential, box-cox transformation (sqrt) did not improve model fit or residual structure (box-cox gives wide range of transformations, 95% ~0.2-0.8)  
 
@@ -137,7 +138,7 @@ I then made the following models (and plots):
 * lmer(slope ~ unpredictability\*sd_winter + 1|study) and model reduction  
 * same models but slope and CDL scaled by study  
 
-For the "real" modelling I first tested the model of correlation CDL~latitude, and once it was working, used the same approach for unpredictability*variability. 
+For the "real" modelling I first tested the model of correlation CDL~latitude, and once that is working, I will use the same approach for unpredictability*variability. 
 
 [The preferred output is sqrt(adjusted R²) and slope +CI, though the random effects may require different approach.]
 
@@ -151,7 +152,7 @@ and imputeTS
 geomapdata not used anymore
 
 What significance tests (if any) should be reported?
-p-values become difficult to calculate in this analysis, because it is nested, unbalanced and weighted, so conditional F-tests are no option. likelihood-ratio test should work, though it might be inaccurate for small sample sizes. Using a bootstrap version that builds its own Chisquare-like distribution works only for lmer. But p should not be used anyway for that kind of analysis, so I will not report it. Instead I will report the estimate of the coefficient with confidence interval, R² (conditional and marginal, library Mumin) and a plot of prediction + confidence intervals (which ignores random terms). All models will be tested on the easier correlation of latitude and critical day length, and if working, applied to the correlation with predictability/variability.
+p-values become difficult to calculate in this analysis, because it is nested, unbalanced and weighted, so conditional F-tests are no option. likelihood-ratio test should work, though it might be inaccurate for small sample sizes. Using a bootstrap version that builds its own Chisquare-like distribution works only for lmer. But p should not be used anyway for that kind of analysis, so I will not report it. Instead I will report the estimate of the coefficient with confidence interval, R² (conditional and marginal, library Mumin) and a plot of prediction + confidence intervals (which ignores random terms). I do not know which of these can be provided by metafor. All models will be tested on the easier correlation of latitude and critical day length, and if working, applied to the correlation with predictability/variability.
 # Results    
 
 
@@ -191,9 +192,9 @@ studies
 [ ] estimate of error introduced by WebPlotDigitizer approach
 
 analysis
-[x] settle for modelling approach
+[ ] settle for modelling approach (test metafor)
 [ ] decide which statistics to report
-[.] correlate CDL ~ latitude, weighted and with appropriate random structure
+[ ] correlate CDL ~ latitude, weighted and with appropriate random structure
 [x] transformation of CDL to achieve linearity (turns out it is not needed)
 [x] geographical averaging to get climate variability estimates at location of study sites
 [x] calculation expected CDL shift based on climate data (winter arrival)
