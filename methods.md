@@ -174,11 +174,11 @@ Instead I decided to report:
 2) R² (conditional and marginal, library Mumin) and 
 3) a plot of prediction + confidence intervals (which ignores random terms). 
 
-I first tried with lme and lmer, but as the weighting proved problematic (lme and lmer do not do the correct weighting), I switched to the metafor package. This changed the reporting options, so I made a new list:
-0) a forest plot of the dose-response curve estimates (slope and mean timing), 
-1) the estimate of the latitude coefficient with confidence interval (Wald-Type, because profile loglik and bootstrap are not available in metafor),
-2) I² + confidence interval, 
-3) pseudo-R², 
+I first tried with lme and lmer, but as the weighting proved problematic (lme and lmer do not do the correct weighting), I switched to the metafor package. This changed the reporting options, so I made a new list:  
+0) a forest plot of the dose-response curve estimates (slope and mean timing)   
+1) the estimate of the latitude coefficient with confidence interval (Wald-Type, because profile loglik and bootstrap are not available in metafor)  
+2) I² + confidence interval   
+3) pseudo-R²  
 4) and a plot of prediction + confidence intervals + credible intervals.
 
 In addition I did the same model with lme() to see if the results are similar.
@@ -189,7 +189,7 @@ Generally all outcome statistics are inaccurate, because they expect that varian
 to-do!
 
 #### general information  
-incomplete list of packages used (needs updating!)
+incomplete list of packages used (needs updating!)  
 I used Perl version 5.22.1, and R version 3.4.4 (R Core Team, 2018). The data was manipulated with the packages textreadr, Rcurl, data.table (Dowle & Srinivasan, 2017; Rinker, 2017; Duncan Temple Lang and the CRAN team, 2018) and the tidyverse packages  (Wickham, 2017) readr, tidyr, dplyr, stringr and magrittr (Wickahm; Bache & Wickham, 2014; Wickham, Francois, et al., 2017; Wickham, Hester, et al., 2017; Wickham & Henry, 2018). To interpolate between climate stations I used the package geomapdata (Lees, 2012).  The data from the empirical studies was extracted with WebPlotDigitizer version 3.12 (Rohatgi, 2017).
 The dose-response curve analyses were made with the package drc (Ritz et al., 2015) , its standard errors were computed with the packages sandwich (Zeileis, 2006) and lmtest (Zeileis & Hothorn, 2002), and the correlation of variability and slope estimates was computed with package lme4 (Bates et al., 2007).
 
@@ -204,37 +204,37 @@ geomapdata not used anymore
 
 
 # To-do list  
-climate data
-[x] Calculation mean winter onset, sd winter onset
-[x] calculation predictability: sd (slopes)
-[x] calculation predictability: colour of noise
+climate data  
+[x] Calculation mean winter onset, sd winter onset  
+[x] calculation predictability: sd (slopes)  
+[x] calculation predictability: colour of noise  
 
-studies
-[x] find studies with photoperiodic response curves
-[x] kick out unsuitable articles
-[x] get metadata for all remaining articles
-[x] extract rawdata
-[x] do forward-citation search to find further studies
-[x] get Danilevskii
-[ ] get beck insect photoperiodism to check table 28
-[x] kick out studies with only 3 datapoints/only 1 point on slope
-[x] get metadata
-[ ] extract rawdata (danilevski missing)
-[ ] ask authors for missing data (N,coordinates, PRCs)
-[.] get slope estimates from dose-response curve analysis on all populations (danilevskii missing)
-[ ] estimate of error introduced by WebPlotDigitizer approach
+studies  
+[x] find studies with photoperiodic response curves  
+[x] kick out unsuitable articles  
+[x] get metadata for all remaining articles  
+[x] extract rawdata  
+[x] do forward-citation search to find further studies  
+[x] get Danilevskii   
+[ ] get beck insect photoperiodism to check table 28  
+[x] kick out studies with only 3 datapoints/only 1 point on slope  
+[x] get metadata  
+[ ] extract rawdata (danilevski missing)  
+[ ] ask authors for missing data (N,coordinates, PRCs)  
+[.] get slope estimates from dose-response curve analysis on all populations (danilevskii missing)  
+[ ] estimate of error introduced by WebPlotDigitizer approach  
 
-analysis
-[x] settle for modelling approach
-[x] decide which statistics to report
-[x] correlate CDL ~ latitude, weighted and with appropriate random structure
-[x] transformation of CDL to achieve linearity (turns out it is not needed)
-[x] geographical averaging to get climate variability estimates at location of study sites
-[x] calculation expected CDL shift based on climate data (winter arrival)
-[x] correlation expected and true CDL shift
-[ ] do same model on slope ~ climate
-[.] scaling of slope with d (not sure whether right approach)
-[ ] account for spatial autocorrelation of study sites (requires discussion whether this is needed)
+analysis   
+[x] settle for modelling approach  
+[x] decide which statistics to report  
+[x] correlate CDL ~ latitude, weighted and with appropriate random structure  
+[x] transformation of CDL to achieve linearity (turns out it is not needed)  
+[x] geographical averaging to get climate variability estimates at location of study sites  
+[x] calculation expected CDL shift based on climate data (winter arrival)  
+[x] correlation expected and true CDL shift  
+[ ] do same model on slope ~ climate  
+[.] scaling of slope with d (not sure whether right approach)  
+[ ] account for spatial autocorrelation of study sites (requires discussion whether this is needed)  
 
 
 # References
