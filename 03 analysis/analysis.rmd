@@ -1996,19 +1996,53 @@ s_est<-round(s_est,2)
 rsq=round(rsq,2)
 #5 degrees latitude ~ 1 hour
 text(50,20,paste("slope = ",s_est, " hours/5°N\npseudo-R² = ",rsq),cex=0.8)
-points(slopes$expdl~slopes$meanwinter,col=2)
-points(slopes$expdl7~slopes$meanwinter,col=3)
-points(slopes$expdl14~slopes$meanwinter,col=4)
-points(slopes$expdl21~slopes$meanwinter,col=5)
+#points(slopes$expdl~slopes$meanwinter,col=2)
+#points(slopes$expdl7~slopes$meanwinter,col=3)
+#points(slopes$expdl14~slopes$meanwinter,col=4)
+#points(slopes$expdl21~slopes$meanwinter,col=5)
 
+points(slopes$expdl14~slopes$meanwinter,col=4,pch=21,cex=0.2)
+#testing how that relates with expected day length (need to check formula, is it correctly calculated?)
+cdl_cor<-rma.mv(yi = e ~ expdl14, V = expse, random = ~1|order/g/study,data = slopes)
+summary(cdl_cor)
+#r2 can re-use pseudonested (e~1,random = order/g/study)
+rsq<-(sum(pseudo_nested$sigma2)-sum(cdl_cor$sigma2))/sum(pseudo_nested$sigma2)
+
+ps<-predict.rma(cdl_cor)
+normal<- data.frame(slopes$expdl14,ps$cr.lb,ps$ci.lb)
+names(normal)<-c("expdl14","cr","ci")
+normal<-normal[order(normal$expdl14),]
+reversed<-data.frame(slopes$expdl14,ps$cr.ub,ps$ci.ub)
+names(reversed)<-c("expdl14","cr","ci")
+reversed<-reversed[order(reversed$expdl14),]
+reversed<-reversed[nrow(reversed):1,]
+combined<-rbind(normal,reversed)
+names(combined)<-c("expdl14","cr","ci")
+
+s_est<-confint(cdl_cor,fixed=T,random=F)$fixed[2,1]
+s_est<-round(s_est,2)
+rsq=round(rsq,2)
+
+plot(slopes$e~slopes$expdl14,pch=21,cex=1.2,bg=1,xlab = "Expected day length", ylab = "Empirical day length",cex.axis=1.2,main = "Empirical vs. expected day length",cex.lab=1.2)
+polygon(x=combined$expdl14, y=combined$cr,col="lightgrey",border=NA)
+polygon(x=combined$expdl14, y=combined$ci,col="darkgrey",border=NA)
+points(slopes$e~slopes$expdl14,pch=21,cex=1.2,bg=1)
+lines(x=slopes$expdl14,y=ps$pred,lwd=2)
+diff_from_pred<-confint(cdl_cor,fixed=T,random=F)$fixed[1,1]+10*0.8381538-10 #prediction on x=10 minus 10
+#text(14,12,paste("slope = ",s_est, "\ndifference= ",diff_from_pred,"\npseudo-R² = ",rsq),cex=0.8,pos=4)
+text(13.5,10,paste("Pseudo-R² = ",rsq),cex=1.2,pos=4)
+#this plot could be used as inlay for preceding plot
 ```
 
-###forest plot of slopes estimates
-```{r}
 
-#alternative using the slopes.default(or rather my slightly modified version of that)
+## slope and winter variability/predictability
+This is the main part of the study. slopes is expected to correlate with variability and predictability. predictability is here defined as sd(slopes) of temperature right before winter onset. The colour of noise approach is considered exploratory and in a different section.
 
-x<-mydeffor(x=slopes$e,sei=slopes$real_se,annotate=F,pch=22,col=1,bg=1:3,xlim=c(10,20),slab=NA,cex=1,rows=nrow(slopes):1, main = "Forest plot of CDL estimates (from DRC)",xlab="Critical day length") #rows=nrow:1 because it plots the data in reverse order
+
+### forest plot of slopes estimates
+```{r forest_slopes}
+slopes$real_ses<-1/slopes$b_se
+x<-mydeffor(x=slopes$b,sei=slopes$real_ses,annotate=F,pch=22,col=1,xlim=c(-100,500),alim=c(-80,500),bg=1:3,slab=NA,cex=1,rows=nrow(slopes):1, main = "Forest plot of slope estimates (from DRC)",xlab="Slopes") #rows=nrow:1 because it plots the data in reverse order
 points(x=x[[9]],y=1:nrow(slopes),col=1,bg=slopes$col[nrow(slopes):1],pch=22,cex=x[[10]]+0.1)
 #draw line for diff orders
 cums<-cumsum(as.numeric(n))
@@ -2021,23 +2055,59 @@ c2<-NA
 for(i in 1:(length(cums)-1)){
   c2[i]<-mean(c(cums[i],cums[i+1]))
 }
-text(x=5,y=c2,labels=names(n),pos=4,cex=0.8)
-#text(x=5.5,y=cumsum(as.numeric(table(forest$order))),labels=c(1:7))
-#need to play with colours so that each order has diff colour, but species within order also differ slightly
-#also consider relevel orders so that large groups (diptera) are at bottom
+text(x=-75,y=c2,labels=names(n),pos=4,cex=0.8)
+hist(slopes$real_ses,breaks=100)
+```
 
+```{r inversify}
+
+
+#plot inverse of untransformed s.e.
+plot(NA,xlim=c(0,nrow(slopes)),ylim=c(0,3),main = "influence of data points with untransformed s.e.")
+segments(x0=1:nrow(slopes),y0=rep(0,nrow(slopes)),x1=1:nrow(slopes),y1=1/slopes$real_ses,col=slopes$col,lwd=1.5)
+abline(h=0.15,lty=3)
+abline(h=1.5)
+abline(h=0.015)
+#there are 3 studies that have less than 1/10th of the median influence, nad thre are 6 studies that are more than 10 times as influential as the median. both are okay I think
+
+#alternative: sqrt-transformed ses
+slopes$expses<-sqrt(slopes$real_ses) # nope that does not make sense
+#keeps the name because easier coding
+
+#plot exp(s.e)
+plot(NA,xlim=c(0,nrow(slopes)),ylim=c(0,1),main = "influence of data points with exp(s.e.)",xaxt="n",xlab="",ylab = "Influence")
+segments(x0=1:nrow(slopes),y0=rep(0,nrow(slopes)),x1=1:nrow(slopes),y1=1/slopes$expse,col=slopes$col,lwd=1.5)
+#this weighs the studies with nearly infinte s.e. way too strongly (40%!)
 
 ```
 
-correlate slopes with climate data:
-Take the 5 closest climate stations in a 5° radius, calculate sd,predictability,color and mean of these weighted by inverse of euclidian distance.
+The standard errors are fine as they are. 
 
+### model slopes ~ variability * predictability
+```{r slopemodels}
+slopes_vp.f<-rma.mv(yi = b ~ capped_sd * p, V = real_ses, random = ~1|order/g/s/study, data = slopes,test="t")
 
+summary(slopes_vp.f) # species has no variance explained
+profile(slopes_vp.f, sigma2=1)#order
+profile(slopes_vp.f, sigma2=2)#order/g
+profile(slopes_vp.f, sigma2=3)#order/g/s #reaches maximum when set to 0
+profile(slopes_vp.f, sigma2=4)#order/g/s/study
+
+slopes_vp.s<-rma.mv(yi = b ~ capped_sd * p, V = real_ses, random = ~1|order/g/study, data = slopes,test="t")
+
+summary(slopes_vp.s) # species has no variance explained
+profile(slopes_vp.s, sigma2=1)#order
+profile(slopes_vp.s, sigma2=2)#order/g
+profile(slopes_vp.s, sigma2=3)#order/g/s #reaches maximum when set to 0
+profile(slopes_vp.s, sigma2=4)#order/g/s/study
+```
+
+The same model as for CDL can be used
 
 
 
 Now the slopes from the studies can be plotted against climate variables (+modelling)
-```{r resultschunk}
+```{r hunk}
 r2<-separate(slopes,col=1, into = c("study","pop"), sep ="-",remove=FALSE)
 r2$e<-as.numeric(r2$e)
 r2$degN<-as.numeric(r2$degN)
