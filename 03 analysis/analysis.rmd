@@ -1895,6 +1895,9 @@ slopes$temp[slopes$temp<0]<-0
 plot(p$lat~p$lon,bg = rgb(0.8,0.8,0.8),cex=0.3,pch=22,col=NA, main ="predictability (beta)",xlab="",ylab="")
 points(slopes$degN~slopes$degE,pch=22,bg=rgb(slopes$temp,slopes$temp,0,maxColorValue = max(slopes$temp)),cex=0.5,col=NA)
 
+slopes$temp<-slopes$b
+plot(p$lat~p$lon,bg = rgb(0.8,0.8,0.8),cex=0.3,pch=22,col=NA, main ="b",xlab="",ylab="")
+points(slopes$degN~slopes$degE,pch=22,bg=rgb(slopes$temp,slopes$temp,0,maxColorValue = max(slopes$temp)),cex=0.8,col=NA)
 ```
 
 
@@ -2060,8 +2063,6 @@ hist(slopes$real_ses,breaks=100)
 ```
 
 ```{r inversify}
-
-
 #plot inverse of untransformed s.e.
 plot(NA,xlim=c(0,nrow(slopes)),ylim=c(0,3),main = "influence of data points with untransformed s.e.")
 segments(x0=1:nrow(slopes),y0=rep(0,nrow(slopes)),x1=1:nrow(slopes),y1=1/slopes$real_ses,col=slopes$col,lwd=1.5)
@@ -2085,7 +2086,7 @@ The standard errors are fine as they are.
 
 ### model slopes ~ variability * predictability
 ```{r slopemodels}
-slopes_vp.f<-rma.mv(yi = b ~ capped_sd * p, V = real_ses, random = ~1|order/g/s/study, data = slopes,test="t")
+slopes_vp.f<-rma.mv(yi = b ~ sd_winter * p, V = real_ses, random = ~1|order/g/s/study, data = slopes,test="t")
 
 summary(slopes_vp.f) # species has no variance explained
 profile(slopes_vp.f, sigma2=1)#order
@@ -2093,7 +2094,7 @@ profile(slopes_vp.f, sigma2=2)#order/g
 profile(slopes_vp.f, sigma2=3)#order/g/s #reaches maximum when set to 0
 profile(slopes_vp.f, sigma2=4)#order/g/s/study
 
-slopes_vp.s<-rma.mv(yi = b ~ capped_sd * p, V = real_ses, random = ~1|order/g/study, data = slopes,test="t")
+slopes_vp.s<-rma.mv(yi = b ~ sd_winter * p, V = real_ses, random = ~1|order/g/study, data = slopes,test="t")
 
 summary(slopes_vp.s) # species has no variance explained
 profile(slopes_vp.s, sigma2=1)#order
@@ -2102,139 +2103,180 @@ profile(slopes_vp.s, sigma2=3)#order/g/s #reaches maximum when set to 0
 profile(slopes_vp.s, sigma2=4)#order/g/s/study
 ```
 
+
+### results (without plotting)
 The same model as for CDL can be used
+```{r slope_results}
+rmamod_nested<-slopes_vp.s
+summary(rmamod_nested)
+#comparing to lmes
+summary(lme(b~sd_winter*p, random =~ 1|order/g/study,data=slopes,weights=~real_ses))#different (better) df estimate, different coefs but same direction
+
+#1. estimate +ci
+confint(rmamod_nested,fixed=T,random=F)
+#2. I² 
+W <- diag(1/slopes$real_ses)
+X <- model.matrix(rmamod_nested)
+P <- W - W %*% X %*% solve(t(X) %*% W %*% X) %*% t(X) %*% W #generalized calculation of I² as described in http://www.metafor-project.org/doku.php/tips:i2_multilevel_multivariate
+#overall I² (using sum of sigmas)
+
+100 * sum(rmamod_nested$sigma2) / (sum(rmamod_nested$sigma2) + (rmamod_nested$k-rmamod_nested$p)/sum(diag(P)))
+#I² of each level
+round(100 * rmamod_nested$sigma2 / (sum(rmamod_nested$sigma2) + (rmamod_nested$k-rmamod_nested$p)/sum(diag(P))),4)
+#99% heterogeneity, 79% due to genus. though not sure whehter calculation works for interaction
 
 
+#3. forest plot #this version plots predictions + CI as whiskers
+#forest plot sorted by order 
+yi<-rmamod_nested$yi
+vicorr<-slopes[nrow(slopes):1,"real_ses"]
 
-Now the slopes from the studies can be plotted against climate variables (+modelling)
-```{r hunk}
-r2<-separate(slopes,col=1, into = c("study","pop"), sep ="-",remove=FALSE)
-r2$e<-as.numeric(r2$e)
-r2$degN<-as.numeric(r2$degN)
-r2$study[r2$study=="6b"]<-6
-r2$study<-as.integer(r2$study)
+ci.ub<-yi + qnorm(0.05/2, lower.tail = FALSE) * sqrt(vicorr)
+ci.lb<-yi - qnorm(0.05/2, lower.tail = FALSE) * sqrt(vicorr)
+ci.ub<-ci.ub[length(ci.ub):1]
+ci.lb<-ci.lb[length(ci.lb):1]
+#this time there was no transformation of s.e. so the normal forest plot function can be used 
 
-plot(r2$e~r2$meanwinter,xlab = "mean winter",ylab="CDL",bg=palette(rainbow(42)),pch=22,sub="black line: prediction with 1|study")
-for (i in unique(r2$study)){  #make grey lines for each individual study(with line thickness~no of populations)
-t<-r2[r2$study==i,]
-M<-lm(t$e~t$meanwinter)
-if (sum(is.na(coef(M)))==0){lines(x=t$meanwinter, y= predict(M),col="grey",lwd=nrow(t)/10)
-  }#if clause makes sure model worked
-}
+forest.rma(rmamod_nested,addcred=T,addfit=T,cex.axis=1,cex.lab=2,cex=1,slab=NA,annotate=F,order=1:170, xlim=c(-90,300),main = "Forest plot, sorted by phylogeny",xlab = "slope",alim=c(-100,350))
 
-mixed<-lmer(e~meanwinter + (1|study),data=r2)
-r2$pred<-predict(mixed)
-lines(x=range(r2$meanwinter),y=summary(mixed)$coefficients[1,1]+range(r2$meanwinter)*summary(mixed)$coefficients[2,1],lwd=2) #coef(mixed) gives many coefs for all random terms
+#needs cex of each point
+text(x=-30,y=c2,labels=names(n),pos=4,cex=0.8)
+abline(h=cums+0.5,lty=2,lwd=0.5)#draw line for diff orders
+points(rmamod_nested$yi,170:1,bg=slopes$col,cex=1,pch=22)
 
-#same code for sd_winter and predictability
-plot(r2$b~r2$sd_winter,xlab = "standard deviation in winter",ylab = "slope of PRC",bg=palette(rainbow(42)),pch=22,sub="black line: prediction with 1|study")
-for (i in unique(r2$study)){
-t<-r2[r2$study==i,]
-M<-lm(t$b~t$sd_winter)
-if (sum(is.na(coef(M)))==0){lines(x=t$sd_winter, y= predict(M),col="grey",lwd=nrow(t)/10)
-  }
-}
-mixed<-lmer(b~sd_winter + (1|study),data=r2)
-r2$pred<-predict(mixed)
-lines(x=range(r2$sd_winter),y=summary(mixed)$coefficients[1,1]+ range(r2$sd_winter)*summary(mixed)$coefficients[2,1],lwd=2)
-#quite severe variance heterogeneity
+#4. pseudo-R^2
+pseudo_nested.s<-rma.mv(yi = b ~ 1, V = real_ses, random = ~1|order/g/study,data = slopes,test="t")
+rsq<-(sum(pseudo_nested.s$sigma2)-sum(rmamod_nested$sigma2))/sum(pseudo_nested.s$sigma2)
+#0
+```
 
+### plot result, seperately for b~v, b~p models
 
-plot(r2$b~r2$beta,xlab="color of noise",ylab="slope of PRC",bg=palette(rainbow(42)),pch=22)
-for (i in unique(r2$study)){
-t<-r2[r2$study==i,]
-M<-lm(t$b~t$beta)
-if (sum(is.na(coef(M)))==0){lines(x=t$beta, y= predict(M),col="grey",lwd=nrow(t)/10)
-  }
-}
-mixed<-lmer(b~beta + (1|study),data=r2)
-r2$pred<-predict(mixed)
-lines(x=range(r2$beta),y=summary(mixed)$coefficients[1,1]+ range(r2$beta)*summary(mixed)$coefficients[2,1],lwd=2)
+```{r}
+vmod<-rma.mv(yi = b ~ sd_winter, V = real_ses, random = ~1|order/g/study, data = slopes,test="t") #actually the full model would sort of work here, but keeping this for consistency
+summary(vmod)
 
+#6. plot prediction + credible interval
+ps<-predict.rma(vmod)
 
+normal<- data.frame(slopes$sd_winter,ps$cr.lb,ps$ci.lb)
+names(normal)<-c("sd_winter","cr","ci")
+normal<-normal[order(normal$sd_winter),]
+reversed<-data.frame(slopes$sd_winter,ps$cr.ub,ps$ci.ub)
+names(reversed)<-c("sd_winter","cr","ci")
+reversed<-reversed[order(reversed$sd_winter),]
+reversed<-reversed[nrow(reversed):1,]
+combined<-rbind(normal,reversed)
+names(combined)<-c("sd_winter","cr","ci")
 
-r2<-r2[!is.na(r2$unpredictability),]
+plot(x=slopes$sd_winter,y=slopes$b,pch=21,cex=0.8,col=NA, bg=slopes$col,main = "Physiological determination vs. winter variability", xlab = "Sd (winter onset)", ylab = "slope of diapause timing")
+legend("topleft",pch = 21, pt.bg = 1:7,legend=unique(slopes$order)[7:1],cex=0.8)
+polygon(x=combined$sd_winter, y=combined$cr,col="lightgrey",border=NA)
+polygon(x=combined$sd_winter, y=combined$ci,col="darkgrey",border=NA)
+lines(x=slopes$sd_winter,y=ps$pred,lwd=2,col="lightgray")
+points(x=slopes$sd_winter,y=slopes$b,pch=21,cex=0.8,col=NA,bg=slopes$col)
+#ci.lb<-ci.lb[length(ci.lb):1]
+#ci.ub<-ci.ub[length(ci.ub):1]
+#segments(x0=slopes$sd_winter[order(slopes$sd_winter)],x1=slopes$sd_winter[order(slopes$sd_winter)],y0=ci.lb,y1=ci.ub)
 
-plot(r2$b~r2$unpredictability,xlab = "winter unpredictability",ylab = "slope of PRC",bg=palette(rainbow(42)),pch=22)
-for (i in unique(r2$study)){
-t<-r2[r2$study==i,]
-t<-t[!is.na(t$unpredictability),]
-M<-lm(t$b~t$unpredictability)
-if (sum(is.na(coef(M)))==0){lines(x=t$unpredictability, y= predict(M),col="grey",lwd=nrow(t)/10)
-  }
-}
-mixed<-lmer(b~unpredictability + (1|study),data=r2)
-r2$pred<-predict(mixed)
-lines(x=range(r2$unpredictability),y=summary(mixed)$coefficients[1,1]+ range(r2$unpredictability)*summary(mixed)$coefficients[2,1],lwd=2)
-#quite severe variance heterogeneity
+#segments(x0=slopes$sd_winter,x1=slopes$sd_winter,y0=slopes$b+slopes$real_ses,y1=slopes$b-slopes$real_ses)
+axis(1)
+s_est<-confint(vmod,fixed=T,random=F)$fixed[2,1]
+s_est<-round(s_est,2)
+rsq<-(sum(pseudo_nested.s$sigma2)-sum(vmod$sigma2))/sum(pseudo_nested.s$sigma2)
+rsq=round(rsq,2)
+text(25,250,paste("slope = ",s_est, " \npseudo-R² = ",rsq),cex=0.8)
 
+##################
 
+pmod<-rma.mv(yi = b ~ p, V = real_ses, random = ~1|order/g/study, data = slopes,test="t") 
+summary(pmod)
 
-mixed_comp<-lmer(b~sd_winter*unpredictability+(1|study),data=r2)
-m2<-lmer(b~sd_winter+unpredictability+(1|study),data=r2)
-m3<-lmer(b~unpredictability+(1|study),data=r2)
-m4<-lmer(b~sd_winter+(1|study),data=r2)
+#6. plot prediction + credible interval
+ps<-predict.rma(pmod)
 
-anova(mixed_comp,m2)
-anova(m2,m3)
-anova(m2,m4)
-#should exchange that with non-p statistics
-#also need to correct for variance heterogeneity
-#and include weights (inverse of s.e. of b)
+normal<- data.frame(slopes$p,ps$cr.lb,ps$ci.lb)
+names(normal)<-c("p","cr","ci")
+normal<-normal[order(normal$p),]
+reversed<-data.frame(slopes$p,ps$cr.ub,ps$ci.ub)
+names(reversed)<-c("p","cr","ci")
+reversed<-reversed[order(reversed$p),]
+reversed<-reversed[nrow(reversed):1,]
+combined<-rbind(normal,reversed)
+names(combined)<-c("p","cr","ci")
 
+plot(x=slopes$p,y=slopes$b,pch=21,cex=0.8,col=NA, bg=slopes$col,main = "Physiological determination vs. winter predictability", xlab = "Unpredictability(slopes)", ylab = "slope of diapause timing")
+legend("topright",pch = 21, pt.bg = 1:7,legend=unique(slopes$order)[7:1],cex=0.8)
+polygon(x=combined$p, y=combined$cr,col="lightgrey",border=NA)
+polygon(x=combined$p, y=combined$ci,col="darkgrey",border=NA)
+lines(x=slopes$p,y=ps$pred,lwd=2,col="lightgray")
+points(x=slopes$p,y=slopes$b,pch=21,cex=0.8,col=NA,bg=slopes$col)
+#ci.lb<-ci.lb[length(ci.lb):1]
+#ci.ub<-ci.ub[length(ci.ub):1]
+#segments(x0=slopes$p[order(slopes$p)],x1=slopes$p[order(slopes$p)],y0=ci.lb,y1=ci.ub)
 
+#segments(x0=slopes$p,x1=slopes$p,y0=slopes$b+slopes$real_ses,y1=slopes$b-slopes$real_ses)
+axis(1)
+s_est<-confint(vmod,fixed=T,random=F)$fixed[2,1]
+s_est<-round(s_est,2)
+rsq<-(sum(pseudo_nested.s$sigma2)-sum(pmod$sigma2))/sum(pseudo_nested.s$sigma2)
+rsq=round(rsq,2)
+text(1.2,300,paste("slope = ",s_est, " \npseudo-R² = ",rsq),cex=0.8)
+```
 
+## exploratory stuff
+### correlation of d with winter variability/predictability
+
+```{r d}
+#get studies with meaningful d estimate
+x<-slopes[slopes$study %in% c("1","5","6","6b","22","27","33","35","37","45","53","55","56","60"),]
+x<-droplevels(x)
+plot(x$d~x$sd_winter,pch=22,bg=x$study)
+plot(x$d~x$p,pch=22,bg=x$study)
+
+dmod<-rma.mv(yi = b ~ sd_winter, V = real_ses, random = ~1|order/g/study, data = slopes,test="t") 
 ```
 
 
-The slope estimates of the individual dose-response curve vary by study (some are ~ 500, others 10). They need to be scaled on the study-level, so that they are 0-1 in each study.
-Everything else is copy of chunk above
+#### forest plot and inversion  
+```{r forest}
+x$real_ses<-1/x$d_se
+dfe<-mydeffor(x=x$d,sei=x$real_ses,annotate=F,pch=22,col=1,xlim=c(0,1.2),alim=c(0,1.2),bg=1:3,slab=NA,cex=1,rows=nrow(x):1, main = "Forest plot of upper limit estimates (from DRC)",xlab="d") #rows=nrow:1 because it plots the data in reverse order
+points(x=dfe[[9]],y=1:nrow(x),col=1,bg=x$col[nrow(x):1],pch=22,cex=dfe[[10]]+0.1)
+#draw line for diff orders
 
-```{r scaled}
-#scale slope by study
-r2<-r2%>%
-  group_by(study)%>%
-  mutate(b=scale(b))%>%
-  ungroup()
+#plot inverse of untransformed s.e.
+plot(NA,xlim=c(0,nrow(x)),ylim=c(0,30000),main = "influence of data points with untransformed s.e.")
+segments(x0=1:nrow(x),y0=rep(0,nrow(x)),x1=1:nrow(x),y1=1/x$real_ses,col=x$col,lwd=1.5)
 
-plot(r2$b~r2$sd_winter,xlab = "standard deviation in winter",ylab = "slope of PRC (scaled by study)",bg=palette(rainbow(42)),pch=22)
-mixed<-lmer(b~sd_winter + (1|study),data=r2)
-r2$pred<-predict(mixed)
-lines(x=range(r2$sd_winter),y=summary(mixed)$coefficients[1,1]+ range(r2$sd_winter)*summary(mixed)$coefficients[2,1],lwd=2)
-#quite severe variance heterogeneity
-
-backup<-r2
-r2<-r2[!is.na(r2$beta),]
-plot(r2$b~r2$beta,xlab="color of noise",ylab="slope of PRC(scaled by study",bg=palette(rainbow(42)),pch=22)
-mixed<-lmer(b~beta + (1|study),data=r2)
-#r2$pred<-predict(mixed)
-#lines(x=range(r2$beta),y=summary(mixed)$coefficients[1,1]+ range(r2$beta)*summary(mixed)$coefficients[2,1],lwd=2)
-
-r2<-backup
-
-plot(r2$b~r2$unpredictability,xlab = "winter unpredictability (scaled by study)",ylab = "slope of PRC(scaled by study)",bg=palette(rainbow(42)),pch=22)
-mixed<-lmer(b~unpredictability + (1|study),data=r2)
-r2$pred<-predict(mixed)
-lines(x=range(r2$unpredictability),y=summary(mixed)$coefficients[1,1]+ range(r2$unpredictability)*summary(mixed)$coefficients[2,1],lwd=2)
-
-mixed_comp<-lmer(b~sd_winter*unpredictability+(1|study),data=r2)
-m2<-lmer(b~sd_winter+unpredictability+(1|study),data=r2)
-m3<-lmer(b~unpredictability+(1|study),data=r2)
-m4<-lmer(b~sd_winter+(1|study),data=r2)
-
-anova(mixed_comp,m2)
-anova(m2,m3)
-anova(m2,m4)
-
-
-#to see whether this makes sense
-r2<-r2%>%
-  group_by(study)%>%
-  mutate(e=scale(e))%>%
-  ungroup()
-plot(r2$e~r2$meanwinter,xlab = "mean winter (scales by study)",ylab="CDL(scaled by study)",bg=palette(rainbow(42)),pch=22)
-mixed<-lmer(e~meanwinter + (1|study),data=r2)
-r2$pred<-predict(mixed)
-lines(x=range(r2$meanwinter),y=summary(mixed)$coefficients[1,1]+range(r2$meanwinter)*summary(mixed)$coefficients[2,1],lwd=2)
+#alternative
+x$expses<-exp(x$real_ses) 
+plot(NA,xlim=c(0,nrow(x)),ylim=c(0,1.3),main = "influence of data points transformed s.e.")
+segments(x0=1:nrow(x),y0=rep(0,nrow(x)),x1=1:nrow(x),y1=1/x$expses,col=x$col,lwd=1.5)
 ```
 
+
+```{r}
+x<-x[order(x$sd_winter),]
+ plot(x$d~x$sd_winter,pch=22,bg=x$study,type="p")
+for(i in unique(x$study)){
+  a<-x[x$study==i,]
+ 
+  lines(a$sd_winter,a$d,col=a$study)
+}
+ 
+ x<-x[order(x$p),]
+ plot(x$d~x$p,pch=22,bg=x$study,type="p")
+for(i in unique(x$study)){
+  a<-x[x$study==i,]
+ 
+  lines(a$p,a$d,col=a$study)
+}
+```
+
+not much of a pattern here
+```{r}
+plot(slopes$b~slopes$beta)
+```
+
+not much of a pattern either
