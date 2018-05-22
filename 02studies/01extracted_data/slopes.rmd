@@ -15,8 +15,10 @@ library(drc)
 library(sandwich)
 library(lmtest)
 library(plyr)
+library(geosphere)
 ```
-
+# issues  
+clean up that mess!
 
 # General description  
 ## Aim  
@@ -410,3 +412,79 @@ i|study |best models|chosen|impossible  |notes
 36|65   |           |       |1-4        |only 2pops
 37|66   |           |       |1-4        |only 2 pops
 38|70   |1,3        |1      |           |
+
+
+
+Now the slope and cdl estimates are done. After combining with climate data it turned out that the CDL data is quite far away (2 months) from the mean winter onset. This chunk explains the calculation of the julian date that is most consistent with onset of diapause
+```{r}
+results <- read.table("02studies/02output/slopes.txt",sep = "\t")
+names(results)<-c("ID","b","b_se","c","c_se","d","d_se","e","e_se","ID2","study","pop","spec","order","degN","degE","py")
+results<-results[order(results$degN),]
+
+#1. Let us assume that winter onset is on day 330 (an arbitrary day). Then one can calculate the "optimal" CDL response given latitude and day 330:
+plot(results$e~results$degN,main = "CDL vs latitude, red= expectation if winter onset =180")
+dl<-daylength(results$degN,330)
+points(dl~results$degN,col=2)
+#a model of the form (expected ~ observed) should give a quite good fit, because there is a good (negative) correlation. But this is not quite what I want, as they should not only correlate but be more or less identical. An alternative model of form (expted~observed - intercept) should give, on the other hand, a really bad fit
+
+plot(dl~results$e,main = "expected(for day=180) vs observed.",sub="setting intercept to 0")
+M1<-lm(dl~results$e)
+M2<-lm(dl~results$e-1)
+abline(M1,col=1,lty=2)
+abline(M2,col=2)
+
+#bringing that back to the CDL~latitude plot:
+plot(results$e~results$degN,main = "CDL vs latitude", sub="red= expectation if winter onset =180\nblue = model predictions without intercept",ylim=c(4,22),xlab="")
+points(dl~results$degN,col=2)
+#points(predict(M)~results$degN,col="green")
+points(predict(M2)~results$degN,col=4)
+#this model is indeed a bad fit to the data. 
+
+#the same can now be done for all 365 days, and then the model with the highest log-likelihood should be selected
+
+
+```
+
+```{r}
+logliks<-rep(NA,365)
+for ( i in 1:365){
+  dl<-daylength(results$degN,i)
+  M<-lm(dl~results$e-1)
+  logliks[i]<-logLik(M)
+  #abline(M)
+}
+plot(logliks,type="l", main ="logLikelihood profile for different dates",xlab = "Julian date", ylab = "LogLikelihood")
+points(logliks,pch=22,cex=0.3,bg=1)#160-183
+order(logliks,decreasing=T)[1:10]
+#135, 211,  212,134,136
+plot(results$e~results$degN,main = "CDL vs latitude", sub="red= expectation if winter onset =135\nblue = 211\ngreen =180",ylim=c(4,22),xlab="")
+dlbest<-daylength(results$degN,135)
+dlsecond<-daylength(results$degN,211)
+dlbad=daylength(results$degN,180)
+
+points(dlbest~results$degN,col=2)
+points(dlsecond~results$degN,col=4)
+points(dlbad~results$degN,col="green")
+#best and second best are equal
+M<-lm(dlbest~results$e-1)
+M2<-lm(dlsecond~results$e-1)
+```
+The best estimates by this procedure are day 135 (may 15th) and day 211 (jul 30th), these estimates are exactly equal, as they are both 38 days away from summer solstice. 
+
+checking whether calculation is correct with https://www.esrl.noaa.gov/gmd/grad/solcalc/
+```{r}
+plot(results$e~results$degN,main = "CDL vs latitude", sub="red= expectation if winter onset =30jul\nblue = 1.dec",ylim=c(4,22),xlab="")
+dlbest<-daylength(results$degN,135)
+dlmeteorolog<-daylength(results$degN,305)
+points(dlsecond~results$degN,col=2)
+points(dlmeteorolog~results$degN,col=4)
+Nvec<-10*(1:7)
+dlvec<-c(18,18,18,19,19,20,22)+c(23,38,55,16,46,35,58)/60 - (c(5,5,5,4,4,3,1)+c(49,35,18,56,26,36,05)/60) #taken from noaa calculator for Nvec °N, 0°E
+dlvec2<-c(17,17,17,16,16,15)+c(37,19,0,35,1,3)/60 - 
+  (c(6,6,6,7,7,8)+c(1,19,38,2,37,35)/60)
+dlvec2<-c(dlvec2,0)
+
+points(dlvec~Nvec,col="green")
+points(dlvec2~Nvec,col="black",pch=22,bg=1) # NOAA uses "apparent sunrise", could be civil sunrise/sunset
+```
+
