@@ -1468,10 +1468,10 @@ infl<-influence(rmamod)
 ```{r nested_rma}
 rmamod_nested<-rma.mv(yi = e ~ degN, V = expse, random = ~1|order/g/s/study, data = slopes,test="t")
 summary(rmamod_nested) # species has no variance explained
-profile(rmamod_nested, sigma2=1)#order
-profile(rmamod_nested, sigma2=2)#order/g
-profile(rmamod_nested, sigma2=3)#order/g/s #reaches maximum when set to 0
-profile(rmamod_nested, sigma2=4)#order/g/s/study
+#profile(rmamod_nested, sigma2=1)#order
+#profile(rmamod_nested, sigma2=2)#order/g
+#profile(rmamod_nested, sigma2=3)#order/g/s #reaches maximum when set to 0
+#profile(rmamod_nested, sigma2=4)#order/g/s/study
 ```
 
 species explains nothing because in most cases each study has 1 species. Only in  4 species there are 2 studies, though in 1 study there are 3 species. removing study from the model ignores that the "2 studies of 1 species cases" should cluster (not reasonable), but also treats the 3 species within 1 study as independent (which is reasonable). Removing species rightly expects that studies of 1 species cluster (reasonable), but expects also that the 3 species of one study cluster (not reasonable). they can considered as equal, but because meta-analyses are expected to have study as random I prefer to kick out species. 
@@ -1480,15 +1480,15 @@ Profile plots of the reduced models:
 #### alternative models  
 ```{r profplots}
 rmamod_rednested<-rma.mv(yi = e ~ degN, V = expse, random = ~1|order/g/study,data = slopes)
-profile(rmamod_rednested, sigma2=1)#order
-profile(rmamod_rednested, sigma2=2)#order/g #not much but okay
-profile(rmamod_rednested, sigma2=3)#order/g/study 
+#profile(rmamod_rednested, sigma2=1)#order
+#profile(rmamod_rednested, sigma2=2)#order/g #not much but okay
+#profile(rmamod_rednested, sigma2=3)#order/g/study 
 
 #comparing to lme and model without study
 rmamod_rednested2<-rma.mv(yi = e ~ degN, V = expse, random = ~1|order/g/s,data = slopes)
-profile(rmamod_rednested2, sigma2=1)#order
-profile(rmamod_rednested2, sigma2=2)#order/g #better
-profile(rmamod_rednested2, sigma2=3)#order/g/s
+#profile(rmamod_rednested2, sigma2=1)#order
+#profile(rmamod_rednested2, sigma2=2)#order/g #better
+#profile(rmamod_rednested2, sigma2=3)#order/g/s
 ```
 
 #### results  
@@ -2103,17 +2103,17 @@ The standard errors are fine as they are.
 slopes_vp.f<-rma.mv(yi = b ~ sd_winter * p, V = real_ses, random = ~1|order/g/s/study, data = slopes,test="t")
 
 summary(slopes_vp.f) # species has no variance explained
-profile(slopes_vp.f, sigma2=1)#order
-profile(slopes_vp.f, sigma2=2)#order/g
-profile(slopes_vp.f, sigma2=3)#order/g/s #flat
-profile(slopes_vp.f, sigma2=4)#order/g/s/study
+#profile(slopes_vp.f, sigma2=1)#order
+#profile(slopes_vp.f, sigma2=2)#order/g
+#profile(slopes_vp.f, sigma2=3)#order/g/s #flat
+#profile(slopes_vp.f, sigma2=4)#order/g/s/study
 
 slopes_vp.s<-rma.mv(yi = b ~ sd_winter * p, V = real_ses, random = ~1|order/g/study, data = slopes,test="t")
 
 summary(slopes_vp.s) # species has no variance explained
-profile(slopes_vp.s, sigma2=1)#order
-profile(slopes_vp.s, sigma2=2)#order/g
-profile(slopes_vp.s, sigma2=3)#order/g/study #fine
+#profile(slopes_vp.s, sigma2=1)#order
+#profile(slopes_vp.s, sigma2=2)#order/g
+#profile(slopes_vp.s, sigma2=3)#order/g/study #fine
 ```
 
 
