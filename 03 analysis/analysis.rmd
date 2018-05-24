@@ -1515,15 +1515,6 @@ round(100 * rmamod_nested$sigma2 / (sum(rmamod_nested$sigma2) + (rmamod_nested$k
 
 
 #3. forest plot #this version plots predictions + CI as whiskers
-notneeded<-function(){
-  fore<-data.frame(ps$pred,ps$ci.lb,ps$ci.ub,r2$order,r2$g,r2$s,r2$study,r2$col,r2$degN,r2$e)
-fore<-fore[order(fore$r2.order,fore$r2.g,fore$r2.s,fore$r2.study,decreasing=F),]
-fore$ord<-1:nrow(fore)
-plot(y=1:nrow(forest), x=fore$ps.pred, xlim=c(8,21), pch=22, cex=0.8, main = "Forest plot of CDL estimates", xlab = "Critical day length", yaxt="n", ylab="", bg=fore$r2.col, col=NA)
-abline(v=0,lty=3,col="darkgrey")
-arrows(x0=fore$ps.ci.ub, y0=1:nrow(forest), x1=fore$ps.ci.lb, length=0, col=1, lwd=1.5)
-abline(h=cumsum( as.numeric(table(fore$r2.order)))+0.5,lty=2,lwd=0.5)#draw line for diff orders
-}
 
 #forest plot sorted by order 
 yi<-rmamod_nested$yi

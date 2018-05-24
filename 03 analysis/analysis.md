@@ -76,6 +76,7 @@ slopes$b<-abs(slopes$b)
 ### functions
 
 slighlity modified functions of forest.rma and forest.default (metafor). Forest.default now returns x-values and cex as well; everything is the same as the original version. Forest.rma now does not whiskers itself but lets user input whiskers size. The other two functions are hidden functions of the same package, which are required for the main function to run.
+(this chunk is not included in this md file)
 
 ### statistical approaches
 
@@ -141,7 +142,7 @@ plot(NA,xlim=c(0,nrow(slopes)),ylim=c(0,2500),main = "influence of data points w
 segments(x0=1:nrow(slopes),y0=rep(0,nrow(slopes)),x1=1:nrow(slopes),y1=1/slopes$real_se,col=slopes$col,lwd=1.5)
 ```
 
-![](analysis_files/figure-markdown_github/inverse_forest-1.png)
+(plot is not included in this md file)
 
 ``` r
 #plot exp(s.e)
@@ -149,7 +150,7 @@ plot(NA,xlim=c(0,nrow(slopes)),ylim=c(0,1),main = "influence of data points with
 segments(x0=1:nrow(slopes),y0=rep(0,nrow(slopes)),x1=1:nrow(slopes),y1=1/slopes$expse,col=slopes$col,lwd=1.5)
 ```
 
-![](analysis_files/figure-markdown_github/inverse_forest-2.png)
+(plot is not included in this md file)
 
 ``` r
 #plot truncated s.e.
@@ -157,7 +158,7 @@ plot(NA,xlim=c(0,nrow(slopes)),ylim=c(0,260),xaxt="n",xlab="",ylab = "Influence"
 segments(x0=1:nrow(slopes),y0=rep(0,nrow(slopes)),x1=1:nrow(slopes),y1=1/slopes$truncse,col=slopes$order,lwd=1.5)
 ```
 
-![](analysis_files/figure-markdown_github/inverse_forest-3.png)
+(plot is not included in this md file)
 
 The exponential transform homogenized s.e. a lot!
 
@@ -166,6 +167,7 @@ The exponential transform homogenized s.e. a lot!
 The critical day length (day length at which 50 % of all offspring switch to diapause) should correlate with latitude. Earlier studies quote rates of 1-1.5 hours per 5°N. Let's see if that holds for the data in this meta-analysis.
 
 #### a simple (but wrong) rma model (to test metafor)
+(this chunk is not included in this md file)
 
 #### the actual model
 
@@ -343,15 +345,6 @@ round(100 * rmamod_nested$sigma2 / (sum(rmamod_nested$sigma2) + (rmamod_nested$k
 
 
 #3. forest plot #this version plots predictions + CI as whiskers
-notneeded<-function(){
-  fore<-data.frame(ps$pred,ps$ci.lb,ps$ci.ub,r2$order,r2$g,r2$s,r2$study,r2$col,r2$degN,r2$e)
-fore<-fore[order(fore$r2.order,fore$r2.g,fore$r2.s,fore$r2.study,decreasing=F),]
-fore$ord<-1:nrow(fore)
-plot(y=1:nrow(forest), x=fore$ps.pred, xlim=c(8,21), pch=22, cex=0.8, main = "Forest plot of CDL estimates", xlab = "Critical day length", yaxt="n", ylab="", bg=fore$r2.col, col=NA)
-abline(v=0,lty=3,col="darkgrey")
-arrows(x0=fore$ps.ci.ub, y0=1:nrow(forest), x1=fore$ps.ci.lb, length=0, col=1, lwd=1.5)
-abline(h=cumsum( as.numeric(table(fore$r2.order)))+0.5,lty=2,lwd=0.5)#draw line for diff orders
-}
 
 #forest plot sorted by order 
 yi<-rmamod_nested$yi
@@ -432,6 +425,7 @@ text(50,20,paste("slope = ",s_est, " hours/5°N\npseudo-R² = ",rsq),cex=0.8)
 #### alternative plot of results
 
 making the same plot as last one, but with lines for each study
+(chunk is not included in this md file)
 
 The estimate of 1 h per 5° N is not too bad, overall diapause becomes 49 min earlier per 5°.
 
@@ -497,9 +491,9 @@ plot(climate$expdl~climate$lat,pch=22,cex=0.1,bg=1, main = "expected day length 
 plot(climate$expdl21~climate$lat,pch=22,cex=0.1,bg=4,main = "expected day length response\nwith 21 days delay",xlab = "Latitude",ylab = "Expected day length given latitude and winter onset")
 ```
 
-![](analysis_files/figure-markdown_github/climate_CDL-2.png)
+(plot is not included in this md file)
 
-#### some histograms
+#### some histograms ( all plots not included in this md file)
 
 ``` r
 hist(climate$alt)
@@ -558,11 +552,11 @@ hist(climate$p[climate$p<5],breaks=100) #99.99 %
 
 ![](analysis_files/figure-markdown_github/hist-8.png)
 
-#### histograms for nls regression
+#### histograms for nls regression (chunk is not included in this md file)
 
-### Visualisation
+### Visualisation(chunk is not included in this md file)
 
-#### global view of nls results
+#### global view of nls results(chunk is not included in this md file)
 
 #### mean winter, sd(winter), predictability, beta
 
@@ -631,7 +625,7 @@ plot(p$lat~p$lon,bg = rgb(p$p,p$p,0,maxColorValue = max(p$p+0.001)),cex=0.3,pch=
 #dev.off()
 ```
 
-#### correlations of sd/predictabiltiy with environmental variables
+#### correlations of sd/predictabiltiy with environmental variables (all plots not included in this md file)
 
 ``` r
 p<-climate
@@ -716,7 +710,7 @@ plot(p$beta~p$meanwinter,pch=22,cex=0.1)
 #summary(lm(p$capped_sd~p$lat+p$lon+p$sq_alt))
 ```
 
-#### correlation of variability/predictability with each other
+#### correlation of variability/predictability with each other(all plots not included in this md file)
 
 ``` r
 plot(p$capped_sd~p$p,pch=22,cex=0.1)
@@ -844,7 +838,7 @@ points(slopes$degN~slopes$degE,pch=22,bg=rgb(slopes$temp,slopes$temp,0,maxColorV
 
 ![](analysis_files/figure-markdown_github/maps-7.png)
 
-#### combining CDL curve with expectation
+#### combining CDL curve with expectation (all plots not included in this md file)
 
 CDL estimates were in a first attempt consistently earlier than day length at mean winter. When the script is run with results.txt, the following chunk shows that winter onset should be shifted to 30 aug. When run with results\_94.txt it shows that the match is reasonably accurate (though it would be beneficial to shift it by further 40 days.
 
@@ -877,1102 +871,6 @@ for ( i in 1:365){
   ks[i]<-ks.test(dl,slopes$e)$statistic
 }
 ```
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
-    ## Warning in ks.test(dl, slopes$e): p-value will be approximate in the
-    ## presence of ties
-
 ``` r
 plot(ks,type="l", main ="KS-test statistic for different dates",xlab = "days delay", ylab = "D")
 points(ks,pch=22,cex=0.3,bg=1)
@@ -2105,106 +1003,11 @@ summary(cdl_rednested2)
 #it seems again that cdl_rednested is better than full model (all estimates are same though)
 ```
 
-The following chunk is mostly a copy of the chunk "degN\_results", but correlates CDL to winter onset instead of latitude (which makes little sense). Then there is a correlation of CDL with expected day length, that could be used as inlay for CDL~latitude plot
+The following chunk is mostly a copy of the chunk "degN\_results", but correlates CDL to winter onset instead of latitude (this made little sense and was removed). Then there is a correlation of CDL with expected day length, that could be used as inlay for CDL~latitude plot
 
 ``` r
 rmamod_nested<-cdl_rednested
 
-not_needed<-function(){ ### this is a way of commenting out junk
-summary(rmamod_nested)
-#comparing to lmes
-summary(lme(e~meanwinter, random =~ 1|order/g/study,data=slopes,weights=~expse)) #very similar
-#summary(lme(e~degN ,random=~ 1|order/g/s/study,data=slopes, weights= ~expse))
-
-#1. estimate +ci
-confint(rmamod_nested,fixed=T,random=F)
-#2. I² 
-W <- diag(1/slopes$expse)
-X <- model.matrix(rmamod_nested)
-P <- W - W %*% X %*% solve(t(X) %*% W %*% X) %*% t(X) %*% W #generalized calculation of I² as described in http://www.metafor-project.org/doku.php/tips:i2_multilevel_multivariate
-#overall I² (using sum of sigmas)
-
-100 * sum(rmamod_nested$sigma2) / (sum(rmamod_nested$sigma2) + (rmamod_nested$k-rmamod_nested$p)/sum(diag(P)))
-#I² of each level
-round(100 * rmamod_nested$sigma2 / (sum(rmamod_nested$sigma2) + (rmamod_nested$k-rmamod_nested$p)/sum(diag(P))),4)
-#heterogeneity makes up 64% of overall variance, genus,study have 14 and 42%
-
-
-#3. forest plot #this version plots predictions + CI as whiskers
-
-#forest plot sorted by order 
-
-yi<-rmamod_nested$yi
-vicorr<-slopes[nrow(slopes):1,"real_se"]
-ci.ub<-yi + qnorm(0.05/2, lower.tail = FALSE) * sqrt(vicorr)
-ci.lb<-yi - qnorm(0.05/2, lower.tail = FALSE) * sqrt(vicorr)
-ci.ub<-ci.ub[length(ci.ub):1]
-ci.lb<-ci.lb[length(ci.lb):1]
-x<-myfor(rmamod_nested,addcred=T,addfit=T,cex.axis=1,cex.lab=2,cex=0.5,xlim=c(6,25),alim=c(8,23),slab=NA,annotate=F,ci.ub=ci.ub,ci.lb=ci.lb,order=1:172, main = "Forest plot, sorted by phylogeny",xlab = "mean winter")
-#this plot shows: original CDL as black square, credible interval of fitted value as grey polygon, whiskers based on original s.e. (standard function would use exp(s.e.))
-
-#needs cex of each point
-text(x=7,y=c2,labels=names(n),pos=4,cex=0.8)
-abline(h=cums+0.5,lty=2,lwd=0.5)#draw line for diff orders
-points(rmamod_nested$yi,172:1,bg=slopes$col,cex=0.8,pch=22)
-
-
-#forest plot sorted by mean winter
-yi<-rmamod_nested$yi
-yi<-yi[order(slopes$meanwinter)]
-vicorr<-slopes[nrow(slopes):1,"real_se"]
-vicorr<-vicorr[order(slopes$meanwinter)]
-ci.ub<-yi + qnorm(0.05/2, lower.tail = FALSE) * sqrt(vicorr)
-ci.lb<-yi - qnorm(0.05/2, lower.tail = FALSE) * sqrt(vicorr)
-ci.ub<-ci.ub[172:1]
-ci.lb<-ci.lb[172:1]
-x<-myfor(rmamod_nested,addcred=T, addfit=T, cex.axis=1, cex.lab=2, cex=0.5, xlim=c(6,25), alim=c(8,23), slab=NA, annotate=F, ci.ub=ci.ub, ci.lb=ci.lb, order=order(slopes$meanwinter),main = "Forest plot, sorted by mean winter",xlab = "MEan winter")
-points(yi,172:1,bg=slopes$col[order(slopes$meanwinter)],cex=0.8,pch=22)
-
-
-#4. pseudo-R^2
-pseudo_nested<-rma.mv(yi = e ~ 1, V = expse, random = ~1|order/g/study,data = slopes,test="t")
-rsq<-(sum(pseudo_nested$sigma2)-sum(rmamod_nested$sigma2))/sum(pseudo_nested$sigma2)
-#0.48
-
-
-
-#6. plot prediction + credible interval
-ps<-predict.rma(rmamod_nested)
-
-normal<- data.frame(slopes$meanwinter,ps$cr.lb,ps$ci.lb)
-names(normal)<-c("meanwinter","cr","ci")
-normal<-normal[order(normal$meanwinter),]
-reversed<-data.frame(slopes$meanwinter,ps$cr.ub,ps$ci.ub)
-names(reversed)<-c("meanwinter","cr","ci")
-reversed<-reversed[order(reversed$meanwinter),]
-reversed<-reversed[nrow(reversed):1,]
-combined<-rbind(normal,reversed)
-names(combined)<-c("meanwinter","cr","ci")
-
-plot(x=slopes$meanwinter,y=slopes$e,pch=21,cex=0.8,col=NA, bg=slopes$col,main = "Delay in photoperiodic response vs winter onset", xlab = "Mean winter onset [julian date?]", ylab = "Critical photoperiod")
-legend("topright",pch = 21, pt.bg = 1:7,legend=unique(slopes$order)[7:1],cex=0.8)
-polygon(x=combined$meanwinter, y=combined$cr,col="lightgrey",border=NA)
-polygon(x=combined$meanwinter, y=combined$ci,col="darkgrey",border=NA)
-lines(x=slopes$meanwinter,y=ps$pred,lwd=2)
-points(x=slopes$meanwinter,y=slopes$e,pch=21,cex=0.8,col=NA,bg=slopes$col)
-ci.lb<-ci.lb[length(ci.lb):1]
-ci.ub<-ci.ub[length(ci.ub):1]
-segments(x0=slopes$meanwinter[order(slopes$meanwinter)],x1=slopes$meanwinter[order(slopes$meanwinter)],y0=ci.lb,y1=ci.ub)
-#segments(x0=slopes$meanwinter,x1=slopes$meanwinter,y0=slopes$e+slopes$real_se,y1=slopes$e-slopes$real_se)
-axis(1)
-s_est<-confint(rmamod_nested,fixed=T,random=F)$fixed[2,1]*5
-s_est<-round(s_est,2)
-rsq=round(rsq,2)
-#5 degrees latitude ~ 1 hour
-text(50,20,paste("slope = ",s_est, " hours/5°N\npseudo-R² = ",rsq),cex=0.8)
-
-
-
-points(slopes$expdl14~slopes$meanwinter,col=4,pch=21,cex=0.2)
-
-
-}#up to here is junk
 slopes$expdl14<-daylength(slopes$degN,slopes$meanwinter+182-30)#assuming 1 month delay between diapause induction and diapause expression
 
 cdl_cor<-rma.mv(yi = e ~ expdl14, V = expse, random = ~1|order/g/study,data = slopes)
@@ -2304,7 +1107,7 @@ text(x=-75,y=c2,labels=names(n),pos=4,cex=0.8)
 ``` r
 hist(slopes$real_ses,breaks=100)
 ```
-
+(plot not included in this md file)
 ![](analysis_files/figure-markdown_github/forest_slopes-2.png)
 
 ``` r
@@ -2315,7 +1118,7 @@ abline(h=0.15,lty=3)
 abline(h=1.5)
 abline(h=0.015)
 ```
-
+(plot not included in this md file)
 ![](analysis_files/figure-markdown_github/inversify-1.png)
 
 ``` r
@@ -2329,7 +1132,7 @@ slopes$expses<-sqrt(slopes$real_ses) # nope that does not make sense
 plot(NA,xlim=c(0,nrow(slopes)),ylim=c(0,1),main = "influence of data points with exp(s.e.)",xaxt="n",xlab="",ylab = "Influence")
 segments(x0=1:nrow(slopes),y0=rep(0,nrow(slopes)),x1=1:nrow(slopes),y1=1/slopes$expses,col=slopes$col,lwd=1.5)
 ```
-
+(plot not included in this md file)
 ![](analysis_files/figure-markdown_github/inversify-2.png)
 
 ``` r
@@ -2726,7 +1529,7 @@ text(1.2,300,paste("slope = ",s_est, " \npseudo-R² = ",rsq),cex=0.8)
 
 ![](analysis_files/figure-markdown_github/unnamed-chunk-1-2.png)
 
-exploratory stuff
+exploratory stuff (all plots not included in this md file)
 -----------------
 
 ### correlation of d with winter variability/predictability
