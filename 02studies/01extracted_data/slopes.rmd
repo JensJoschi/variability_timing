@@ -417,9 +417,27 @@ i|study |best models|chosen|impossible  |notes
 
 Now the slope and cdl estimates are done. After combining with climate data it turned out that the CDL data is quite far away (2 months) from the mean winter onset. This chunk explains the calculation of the julian date that is most consistent with onset of diapause
 ```{r}
+
 results <- read.table("02studies/02output/slopes.txt",sep = "\t")
 names(results)<-c("ID","b","b_se","c","c_se","d","d_se","e","e_se","ID2","study","pop","spec","order","degN","degE","py")
 results<-results[order(results$degN),]
+
+url<-"ftp://ftp.ncdc.noaa.gov/pub/data/ghcn/daily/ghcnd-stations.txt"
+locations<-read.fwf(
+  file=url
+  ,sep="!",na.strings=c("NA","-999.9"), #sep = ! because ! does not exist in dataset - > dataset is fixed-width and should have no additional separators
+  widths=c(11, 9, 10, 7,2,35)
+)
+reslist<-read.table("01climate_data/03output/results.txt",na.string = c("NA","-9999","-999.9"))
+names(reslist)<-c("ID","meanwinter","sd_winter","nyears","p","A","phi","c","beta")
+climate<-merge(locations,reslist,by=1)
+rm(locations)
+rm(reslist)
+names(climate)<-c("ID","lat","lon","alt","no_idea","name","meanwinter","sd_winter", "nyears","p","A","phi","c","beta")
+climate<-climate[climate$lat<=70,]
+plot(climate$meanwinter~climate$lat,pch=22,cex=0.1, main ="Mean winter onset vs. latitude")
+M<-lm(climate$meanwinter~climate$lat)
+
 
 #1. Let us assume that winter onset is on day 330 (an arbitrary day). Then one can calculate the "optimal" CDL response given latitude and day 330:
 plot(results$e~results$degN,main = "CDL vs latitude, red= expectation if winter onset =180")
