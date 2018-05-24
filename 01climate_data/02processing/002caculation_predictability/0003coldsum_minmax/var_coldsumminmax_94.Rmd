@@ -48,7 +48,7 @@ print (text[1])
 
 
 ### Script  
-Has currently some adaptations for testing (only mean winter onset)
+
 
 #### Read climate station data and clean up 
 
@@ -373,9 +373,7 @@ for (i in 1:length(unique(station$ID))){ #this loop goes through each of the 1 k
  
   
  ####  spectral density estimate: beta ###
-#two ways to calculate beta are tested:1. over the whole year, 2. over last 60 days before winter onset.
 
-#whole year
  obs<-n[,2]
 obs<-as.data.frame(obs)
 ys           <- nrow(obs)/366
@@ -402,66 +400,6 @@ if(length(freq)<5){next
   }else{
 reg <- lm(log10(spec)~log10(freq))
 beta_y[i]<--coef(reg)[2]
-}
-
-#2. 2 months
-potentially_wrong<-function(){
-  #idea: transpose and use gather to make 1 long vector ("day1:day 10,000" only that they are not called like that)
-        #cut at (winter onset - 60) and winter onset of each year (multiple pieces)
-        #clean incomplete data
-        #calculate colour of noise on these chunks
-  s<-s[w_on>67,]
-  w_on<-w_on[w_on>67]
-  s<-droplevels(s)
-  if(length(w_on[w_on>60])==0){next}
-  #transpose
-  rownames(s)<-1:nrow(s) #these are years 1:x
-  n<-gather(as.data.frame(t(s[3:368]))) #turns into long format with 2 columns:
-  n<-droplevels(n)
-  #key = 1,1,1...(366 times), 2,2,2...(366 times),..,40,40... (assuming there are 40 years)
-  #value = temperature year 1, day 1:366, year 2, day 1.... 
-  n$xvec<-rep(1:(ncol(s)-2),length(unique(n$key))) #xvec is days after 1st july, so it repeats 1:366, 40 times
-  n$key<-as.integer(n$key)
-  
-  #cut
-  n<-filter(n,xvec<w_on[key] & xvec >= w_on[key]-60)  #now dataset contains only last 60 days before winter onset in that respective year
-  
-  #clean
-  n2<-group_by(n,key)
-  sm<-summarise(n2,sum(!is.na(value))>40) #makes a tibble with 2 cols, key and usable==T or F
-  usable<-pull(sm[sm[,2]==T,1]) #makes a vector with all years that have >10 days
-  if(length(usable)<1){next}
-  n<-n[n$key %in% usable,]
-
-  obs<-n[,2]
-obs<-as.data.frame(obs)
-ys           <- nrow(obs)/60
-
-# fill in gaps by interpolation
-obs          <-na.interpolation(obs)
-
-# append day
-obs           <- cbind(obs,rep(1:60,ys))
-colnames(obs) <- c("measurement","day")
-
-# extract daily mean from each observations  
-daily.average <- ave(obs$measurement,obs$day)
-obs$norm      <- obs$measurement - daily.average
-
-# spectral density
-dens          <- spectrum(obs$norm,plot=F,method="pgram")
-# select the interval [1/n,.5/month] (i.e. ignore frequencies below the resolution of the data and above a 2-month period)
-freq          <- dens$freq[dens$freq >= 1/(60*ys) & dens$freq<= 1/59]
-spec          <-dens$spec[dens$freq >= 1/(60*ys) & dens$freq<= 1/59]
-
-if(length(freq)<5){next
-  }else{
-# linear regression
-reg <- lm(log10(spec)~log10(freq))
-beta_m[i]<--coef(reg)[2]
-}
-
-#abline(lm(log10(dens$spec)~log10(dens$freq)))
 }
 
 

@@ -58,7 +58,7 @@ locations<-read.fwf(
   ,sep="!",na.strings=c("NA","-999.9"), #sep = ! because ! does not exist in dataset - > dataset is fixed-width and should have no additional separators
   widths=c(11, 9, 10, 7,2,35)
 )
-#reslist<-read.table("01climate_data/03output/results.txt",na.string = c("NA","-9999","-999.9"))
+#reslist<-read.table("01climate_data/03output/results.txt",na.string = c("NA","-9999","-999.9"))  <-- this is with old thres of 5°C
 reslist<-read.table("01climate_data/03output/results_94.txt",na.string = c("NA","-9999","-999.9"))
 names(reslist)<-c("ID","meanwinter","sd_winter","nyears","p","A","phi","c","beta")
 climate<-merge(locations,reslist,by=1)
@@ -1373,17 +1373,6 @@ Generally all outcome statistics are inaccurate, because they expect that varian
 This forest plot is just to get an overview how the dose-response curve modelling worked; it is not done on the actual meta-analytic model. The default option from package metafor does not allow colour-coding by order/species.
 
 ```{r forest_plots}
-notsonice<-function(){#this one can be erased
-slopes<-slopes[order(slopes$order,slopes$g,slopes$s,slopes$study),]
-slopes$real_se<-1/slopes$e_se #drc script inversed that, needs to be undone here.
-plot(y=1:nrow(slopes), x=slopes$e, xlim=c(8,21), pch=22, cex=0.8, main = "slopes plot of CDL estimates", xlab = "Critical day length", yaxt="n", ylab="", bg=slopes$col, col=NA)
-arrows(x0=slopes$e, y0=1:nrow(slopes), x1=slopes$e+slopes$real_se, length=0, col=1, lwd=1.5)
-arrows(x0=slopes$e, y0=1:nrow(slopes), x1=slopes$e-slopes$real_se, length=0, col=1, lwd=1.5)
-abline(h=cumsum( as.numeric(table(slopes$order)))+0.5,lty=2,lwd=0.5)#draw line for diff orders
-}
-
-#alternative using the slopes.default(or rather my slightly modified version of that)
-
 x<-mydeffor(x=slopes$e,sei=slopes$real_se,annotate=F,pch=22,col=1,bg=1:3,xlim=c(10,20),slab=NA,cex=1,rows=nrow(slopes):1, main = "Forest plot of CDL estimates (from DRC)",xlab="Critical day length") #rows=nrow:1 because it plots the data in reverse order
 points(x=x[[9]],y=1:nrow(slopes),col=1,bg=slopes$col[nrow(slopes):1],pch=22,cex=x[[10]]+0.1)
 #draw line for diff orders
@@ -1440,7 +1429,7 @@ The critical day length (day length at which 50 % of all offspring switch to dia
 
 
 #### a simple (but wrong) rma model (to test metafor) 
-```{r rma}
+```{r rma, include =F}
 rmamod<-rma(yi=e,vi=expse,mods = degN,data=slopes,method="REML",weighted=T,test="knha")
 summary(rmamod)
 confint(rmamod)
@@ -1608,7 +1597,7 @@ text(50,20,paste("slope = ",s_est, " hours/5°N\npseudo-R² = ",rsq),cex=0.8)
 #### alternative plot of results  
 
 making the same plot as last one, but with lines for each study
-```{r CDL_studylines}
+```{r CDL_studylines, include =F}
 plot(x=slopes$degN,y=slopes$e,pch=21,cex=0.8,col=NA, bg=slopes$col,main = "Delay in photoperiodic response vs latitude", xlab = "Latitude (°N)", ylab = "Critical photoperiod")
 legend("topleft",pch = 21, pt.bg = 1:7,legend=unique(slopes$order)[7:1],cex=0.8)
 polygon(x=combined$degN, y=combined$cr,col="lightgrey",border=NA)
@@ -1917,7 +1906,7 @@ points(dlbest~slopes$degN,col=4,pch=22,bg=4)
 ## correlation of CDL with mean winter onset
 
 This one actually makes little sense, CDL should not correlate with winter onset but with day length at winter onset!
-```{r}
+```{r wrongcorr}
 slopes<-slopes[order(slopes$order,slopes$g,slopes$s,decreasing=T),]
 cdl_nested<-rma.mv(yi = e ~ meanwinter, V = expse, random = ~1|order/g/s/study, data = slopes,test="t")
 summary(cdl_nested)
@@ -1933,6 +1922,8 @@ The following chunk is mostly a copy of the chunk "degN_results", but correlates
 
 ```{r cdl_results}
 rmamod_nested<-cdl_rednested
+
+not_needed<-function(){ ### this is a way of commenting out junk
 summary(rmamod_nested)
 #comparing to lmes
 summary(lme(e~meanwinter, random =~ 1|order/g/study,data=slopes,weights=~expse)) #very similar
@@ -2022,8 +2013,12 @@ rsq=round(rsq,2)
 text(50,20,paste("slope = ",s_est, " hours/5°N\npseudo-R² = ",rsq),cex=0.8)
 
 
-slopes$expdl14<-daylength(slopes$degN,slopes$meanwinter+182-14)#assuming a 2 weeks dealy relative to winter onset
+
 points(slopes$expdl14~slopes$meanwinter,col=4,pch=21,cex=0.2)
+
+
+}#up to here is junk
+slopes$expdl14<-daylength(slopes$degN,slopes$meanwinter+182-30)#assuming 1 month delay between diapause induction and diapause expression
 
 cdl_cor<-rma.mv(yi = e ~ expdl14, V = expse, random = ~1|order/g/study,data = slopes)
 summary(cdl_cor)
