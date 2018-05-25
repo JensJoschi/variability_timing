@@ -252,8 +252,8 @@ After fitting the models for the CDL~latitude data, I saw that the CDL from lab 
 
 #### slope vs climate data  
 I used the model 
-cdl~variability*predictability + (1|order/genus/study), but with
-weights = 1/s.e (of slope estimate), because s.e. were not close to 0. For predictability, I used the sd(slopes) estimate, not the colour of noise approach. For plotting I used 2 individual models, cdl~variability and cdl ~ predictability with same random terms and weighting. 
+cdl \~ variability*predictability + (1|order/genus/study), but with
+weights = 1/s.e (of slope estimate), because s.e. were not close to 0. For predictability, I used the sd(slopes) estimate, not the colour of noise approach. For plotting I used 2 individual models, cdl \~ variability and cdl \~ predictability with same random terms and weighting. 
 
 #### exploratory analyses  
 I plotted upper limit ~ variability (for a subset with meaningful estimates), cdl ~ variability, cdl ~ predictability, and slope ~ colour of noise, but did not do formal models. there was no meaningful effect. 
