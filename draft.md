@@ -1,13 +1,10 @@
-
-# Summary
-
-Many organisms escape the adverse conditions of winter by a diapause response. Optimizing fitness by diapause is, however, challenging in stochastic environments. When winter onset is variable across years, a simple response to mean winter onset will produce suboptimal phenotypes in most years. Predicting winter onset via a reliable cue (phenotypic plasticity) may alleviate fitness constraints, but when winter onset is both variable and unpredictable, the best strategy is possibly to decrease fitness variance by spreading the risk, and investing in phenotypes with different diapause thresholds (diversified bet-hedging). Hence we expected that variability in diapause timing is determined by an interaction of environmental variability and predictability. 
-We tested this hypothesis with a meta-analysis. First, we calculated winter variability (between-years standard deviation in winter onset) and predictability (“colour” of environmental noise, determined by power spectral density estimation) based on climate station data. To correlate environmental variability and predictability with physiological variability, we then searched for publications that study photoperiodic reaction norms of insects at more than two sites. The slopes in the reaction norms determine the temporal spread of diapause and hence provide an approximation of diapause variability. We correlated the slope estimates from 30 studies (x populations) with environmental variability and predictability.  
-As expected, populations from northern latitudes shift their timing towards earlier diapause, progressing with approximately 50 minutes per 5 degrees latitude.  This shift in diapause correlated well with the latitudinal cline in winter onset (and associated changes in photoperiod) from the climate data. The analysis of slope ~ predictability * variability is not finished yet.
+ 
+# Summary  
+see methods.md, no need to copy/paste it here
 
 
 
-# Introduction
+# Introduction  
 
 Timing is an important component of ecology. Diurnal and seasonal timing regulate individual fitness (Vaze & Sharma, 2013), interactions among individuals  (Poesel et al., 2006; Greives et al., 2015) species interactions (Wier et al., 2010; Ximenez-Embun et al., 2014; Martinez-Bakker & Helm, 2015; Mahendiran, 2016) and biogeography (Anderson & Walter, 2005; Dunbar & Shi, 2012). Being such an important trait, a whole research field (chronobiology) is dedicated to timing mechanisms. The field is traditionally multidisciplinary, and while many experiments are directed at physiology, there are close ties to ecology and evolution  (Marques & Waterhouse, 2004; Kronfeld-Schor et al., 2013). Despite being a great source of data with ecological relevance, ecolgists have been reluctant to incorporate chronobiological aspects, possibly due to the differences in terms and methodology (Visser et al., 2010). For example, many chronobiological studies envision timing as a trait that has a single optimum, and deviations from this optimum are regarded as maladaptive noise. This is in contrast to typical ecological approaches which attempt to explain individual variance by various ecological factors. The field of chronobiology has recently progressed to incorporate the adaptive value of individual heterogeneity and plasticity, and this shift in paradigms provides plenty of opportunitiest to refine the views on classically ecological questions (Helm et al., 2017). Nevertheless, the vast resources of chronobiological data remain nearly untapped.  	
 
@@ -19,90 +16,22 @@ Phenotypic plasticity and bet-hedging complement each other, because environment
 
 
 
-# Methods
+# Methods  
+see methods.md, no need to copy/paste it here
 
+# Results  
+Figures can be found in analysis.md.
 
-We used the GHCN-Daily dataset (Menne et al., 2012), version 3.22 which includes weather station data from throughout the world (Menne et al., 2018) and calculated variability and predictability of winter onset at each location. We then extracted photoperiodic response curves from 30 published studies (?~150populations) along with their sampling locations, and estimated the slopes of these curves. Winter variability/predictability and slope estimates were then correlated.
+1. climate data
+Mean winter onset decreased sharply with latitude and altitude (Fig. 1A), while winter variability was highest between approximately 30 and 40°N (Fig 1B). Predictability (Fig 1C,D) was quite homogenous and varied only in  scandinavia and the western USA. Based on the timing of winter onset and on latitude one can calculate the optimal (arithmetic mean) timing of diapause (Fig. 2). The expected day length of diapause increased roughly exponentially with latitude, but was nearly linear between 30 and 60°N. 
 
- 
-## 1. climate data
+2. Empirical data.
+We identified 30 eligible studies with PRCs of 174 populations (Fig. 3). We extracted CDL estimates (Fig. 4 A) and slope estimates (Fig. 4B) along with their standard error.
 
-### 1.1 overview
+3. Analysis
+Critical photoperiod correlated with latittude (Fig. 5). 5 ° latitude changed the photoperiod by 49  minutes (CI 40.05 – 56.97 min ;pseudo-R² = 0.60). Heterogeneity was reasonable given the phylogenetic signal (I² = 58.37; contribution of order, genus and study[species] = 20.33, 18.53, 19.51). Critical photoperiod correlated even better with day length expected by latitude and winter onset (including a 1 month time lag between induction and expression) (pseudo-R² = 0.7). The slope of the PRCs, on the other hand, correlated neither with winter variability (pseudo-R² = -0.02, fig. 6A) nor with winter predictability (pseudo-R² = 0.01, fig. 6B). 
 
-We used the mean of daily minimum and maximum temperatures to calculate daily average temperatures of ~5-50 years for each station. We then calculated winter onset in each year as the day on which temperatures falls below x °C for the yth time (starting the "year" in midsummer), and used standard devitation among years to estimate winter variability. To calculate winter predictability, we calculated the slope of temperatures of the last 30 days before winter onset, and used the between-years standard deviation in that slope. As a second estimate of predictability we then calculated the "colour of noise" according to (Vasseur), i.e. the slope coefficient in a power spectral density plot.
-
-### 1.2. data preparation
-
-We used two Perl scripts to read the GHCN daily dataset file by file and extract daily minimum and maximum temperatures from all climate stations (~12 million stations*months). The script removed all data flags, and saved the output in delimited format (using | as delimiter). All further analysis was conducted in R. We removed all incomplete cases (either minimum or maximum temperature not recorded), all stations with less than 18 months of data, and all stations from the southern hemisphere. We then calculated the average of daily maximum and daily minimum temperature to obtain an estimate of daily mean temperature. This procedure left data for 11,715,375 months in  28,963 climate stations. We removed all years in each station in which more than half of the data points was missing, and all stations that cover less than 3 years of data. 
-
-### 1.2. winter variability
-Starting from midsummer in each year and station, we counted the number of days where the temperature fell below a certain threshold x. Winter was assumed to arrive when x was reached for the yth time. We used four such parameter combinations (x=10,y=50; x=5,y=20; x=20,y=100; x= 5,y =0; all in decimal degrees) in different runs. Years in which winter did not arrive according to this definition were excluded, and stations with less than 3 occurences of winter were removed from analysis. Based on these data we calculated mean winter onset and standard deviation of winter onset for each station. Across all stations with recorded winter onsets, 80 % of the years had more than 350 days with data, and 87.5% had more than 300 days with data (check whether numbers changed)xxx. Nevertheless, we calculated a weighted mean winter onset and a frequency weighed standard deviation of winter onset to account for differences in reliability. We obtained x estimates of winter onset and y estimates of winter variability in the northern hemisphere.
-
-
-
-
-
-### 1.3 winter predictability
-
-To calculate the predictability of winter based on preceding temperatures, we used the temperature recordings of the last 30 days before winter onset of each year. Years with less than 10 temperature recordings in the month preceding winter were excluded. We regressed daily mean temperature over time with a linear model, and recorded the slope estimate of each year. The standard deviation in slopes was then used as predictability estimate. In total there were x estimates of predictability based on this method.  
-
-As another method to calculate climate predictability, we adopted the approach of Vasseur ().  Taking all temperature information from one station (daily temperatures of multiple years), we calculated the power spectral density. First, we removed the seasonal trend by substracting from each daily temperature estimate the station-wide mean temperature of that day. Missing values were replaced by linear interpolation. We then calculated the spectral density within the frequency range of 1/366 and 1/(2 months) with the function spectrum, using the method "pgram", and estimated beta as the negative of the slope of log10(spectral density)~log10(frequency). Beta was only calculated if there were at least five frequency estimates. In total there were x estimates of beta, but only y estimates were based on 25 or more years of data and subsequently used.
-
-
-## 2. empirical data
-
-We extracted photoperiodic response curves from published studies, calculated four-parameter dose-response curves (or simplified versions of this, see 2.4) to obtain estimates of lower and upper diapause limit, critical day length (inflection point of logit-curve) and slope of the curves, and correlated the slope estimates with environmental parameters. 
-
-### 2.1 Eligibility criteria
-We concentrated on studies that measure PRCs of invertebrates. We excluded marine and intertidal organisms, because the climate estimates apply only to terrestrial systems. Invertebrates with a larval stage in shallow water (e.g. mosquitoes) were nevertheless included. Studies with estimates for less than 3 populations were excluded, because the inclusion of “study” as random term in the analysis diminishes the return (in degrees of freedom) for smaller studies. We also excluded all studies that measured diapause at three or fewer photoperiods, and all studies with less than 2 estimates on the sloped part of the population’s PRC, because such studies would not allow for a meaningful slope estimate by dose-response curve analysis. 
-To maximize sample sizes, we did not restrict our analysis to any geographic location or publication language. We restricted our search, however, to publications after 1965, because earlier publications (usually in russian language) were difficult to obtain, and those which we obtained (figures in danilevskii) reported only estimates for few populations, and with too few data points to be included in analysis.  
-
-### 2.2. search method
-We searched the web of science database for "(photoperiodic AND (geogr* OR range)) OR (photoperiod* AND latitud*) OR(photoperiod* AND longitud*)" on 19.2.2018. This search yielded 1627 unique  results. We added a few further articles to the study that did not match the keywords (total: 1641). We classified the studies as plant/animal, Vertebrate/invertebrate, and water/terrestrial based on journal titles (based on journal names including e.g. “plant”, “ento*”, “fish” or “bird”), manuscript titles, abstract or full text.  (x studies) Concentrated on terrestrial invertebrates. We screened the full text to determine whether PRCs were recorded, and if so, how many photoperiods and populations were measured. We selected all studies with PRC estimates of more than 2 populations and 2 photoperiods (61 studies) for a forward-citation search on April 3rd 2018. We found 762 further articles, 11 of which were included for another forward-search. A forward search on these 11 articles on April 12th (94 new citations) brought 1 new study, and following its 20 citations on April 16th yielded another article. Its 14 citations (April 16th) yielded no further article. 
-In addition to this literature search, we contacted (x) authors for unpublished material (x studies), and reviewed the data in Danilevskii 1965 (y studies). 
-After applying the strict criteria described in 2.1 on all potentially eligible studies, 30 studies with x populations remained for inclusion.
-
-
-### 2.3 Raw data extraction
-
-For all studies that were included, we noted study species, sample sizes and coordinates (if available), and saved the PRCs as .png files. We then extracted the data from the figures using WebPlotDigitizer Version 3.12 (Rohatgi, 2017). When raw data was avaiulable (x % of all cases) we used this data to test the error rate of manual extraction (todo, but small according to initial tests). Where neccessary, the day length was then rounded or corrected to match the description in materials and methods of the respective study. For example the points on the x-axis were in some cases not continous as the axis would suggest (e.g. x-axis in (Paolucci et al., 2013) mixes 1h intervals with 2h intervals), or points were plotted next to each other for better visibility  (Riihimaa Ari et al., 2004). Y-values that were slightly above 100% or below 0% were set to 100% and 0% respectively. in one figure of (Urbanski et al., 2012), 1 data point that appeared in the figure but did not exist in the available raw data was deleted.
-
-
-### 2.4. Effect size calculation
-
-To estimate the slopes we modelled diapause with binomial dose response curves in R. This analysis provides lower and upper bounds of photoperiodic induction (we constrained these to range from 0 to 100%), the slope, and the inflection point where 50 % of the individuals are induced (critical day length), so up to four parameters per slope were estimated. We expected that all populations of one species have the same lower and upper limit, which reduces the estimation to 2 parameters per slope, plus 2 global parameters. We also applied the alternative models with only one or no fixed global parameters, so the following models were applied on each study (sorted by plausibility): 
-
-1. upper and lower parameter fixed at study mean (requires 2 df plus 2 df per population)
-2. upper parameter fixed (requires 1 df plus 3 per population)
-3. lower parameter fixed (requires 1 df plus 3 per population)
-4. both limits vary (requires 4 df per population)
-
-Model 2 may results from conservative bet-hedging (some populations have non-zero diapause regardless of season, to hedge against early winter), while model 3 is the risk-prone opposite (some non-diapausing offspring exist even late in the season to hope for late winter, see halkett et al 2004).
-
-All analyses were conducted on the 30 studies where the slopes could be reliably estimated, i.e. with at least 2 points on the slope part (this could include the highest point of one population if that was still below a study-wide upper limit). We fitted all models, provided there were at least 3 residual df left, and chose those with lowest AIC. If there were multiple models with an AIC difference less than 2, we used the most plausible model. If necessary for model convergence, we removed the box constraints (diapause ranging between 0 and 100%), provided the resulting estimates were reasonable (e.g. lower limit = -0.02%, or s.e. of estimte going slightly over the limit).
-Where detailed information on sample sizes was available (% of all cases), we weighted diapause estimates by number of trials. We also recorded the standard error, using a robust sandwich estimation method (Zeileis, 2006).
-When the coordinates were not directly provided in the study, we used the coordinates of the quoted town or area. Town and area coordinates were made available by the WikiProject Geographical coordinates and the Geohack tool (Dispenser et al., 2018). 
-
-
-
-
-## 3) Statistical analysis
-
-### 3.1. correlation of CDL and latitude/mean winter onset
-### 3.2. correlation of slope with predictability and variablity
-	slope ~ sd_slopes * sd_winter + 1|study/species, weights = 1/se
-### 3.3. exploratory analyses
-slope ~ beta * sd_winter + 1|study/species, weights = 1/se
-subsets by family
-
-## 4. Further information
-I used Perl version 5.22.1, and R version 3.4.4 (R Core Team, 2018). The data was manipulated with the packages textreadr, Rcurl, data.table (Dowle & Srinivasan, 2017; Rinker, 2017; Duncan Temple Lang and the CRAN team, 2018) and the tidyverse packages  (Wickham, 2017) readr, tidyr, dplyr, stringr and magrittr (Wickahm; Bache & Wickham, 2014; Wickham, Francois, et al., 2017; Wickham, Hester, et al., 2017; Wickham & Henry, 2018). To interpolate between climate stations I used the package geomapdata (Lees,s. 2012).  The data from the empirical studies was extracted with WebPlotDigitizer version 3.12 (Rohatgi, 2017).
-The dose-response curve analyses were made with the package drc (Ritz et al., 2015) , its standard errors were computed with the packages sandwich (Zeileis, 2006) and lmtest (Zeileis & Hothorn, 2002), and the correlation of variability and slope estimates was computed with package lme4 (Bates et al., 2007).
-The history of this research project (including a full description of all tests and approaches) can be found at github.com/Jensjoschi/variabilitytiming. 
-Results
-
-
-# Diskussion (or rather, text blocks that could be included somewhere)
+# Discussion (or rather, text blocks that could be included somewhere)
  Moreover, biological time-keeping is frequently not perfectly temperature-compensated (that is, time measuring depends partly on temperature; (Lamb & Pointing, 1972), so organisms can adapt their timing in warmer years.
 
 The arrival of winter is variable and hence difficult to predict, which should favour bet-hedging responses (Halkett et al., 2004). I thus assume that the width of the range with random offspring determination, i.e. the slope of the photoperiodic response curve, can serve as bet-hedging trait to cope with variability in winter onset. Moreover, as the timing is partially adjusted via phenotypic plasticity, organisms in relatively predictable environments should have less need to rely on bet-hedging, and are expected to have a steeper slope regardless of environmental variability.  
@@ -119,7 +48,7 @@ B) fitness of organism with steep (black) and flat (red) slope in stable and flu
 
 ### Risk of bias
 
-# References
+# References (not updated)
 
 Anderson KJ & Walter J (2005) The broad‐scale ecology of energy expenditure of endotherms. Ecology Letters 8:310–318. 
 
