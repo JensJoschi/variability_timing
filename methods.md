@@ -57,8 +57,8 @@ After applying the strict criteria described in 2.1 on all potentially eligible 
 
 
 ### new search
-We searched the web of science core collection on jun 15 with the search string
-"TS = (("day length" OR photoperiod* OR diapaus* OR hibern* OR dorman* ) AND (geogr* OR "range" OR latitud* OR longitud* OR cline$ OR clinal)) OR TI = (("day length" OR photoperiod* OR diapaus* OR hibern* OR dorman*) AND "populations")" and excluded book and article reviews, commentaries, rectration notices and retracted papers. 
+We searched the web of science core collection on jun 15 2018 with the search string
+"TS = (("day length" OR photoperiod* OR diapaus* OR hibern* OR dorman* ) AND (geogr* OR "range" OR latitud* OR longitud* OR cline$ OR clinal)) OR TI = (("day length" OR photoperiod* OR diapaus* OR hibern* OR dorman*) AND "populations")" and excluded book and article reviews, notes, rectration notices and retracted papers. 
 This search provided **7665** results. To reduce the number of hits, we subsequently searched individual research areas with different criteria:
 1. we used all **847** hits from the area "entomology". 
 2. We filtered all remaining studies for the area "zoology", and included all **458** studies which name an invertebrate taxon (85 search criteria) _or_ name no vertebrate taxon (61 criteria). In addition we included studies from invertebrate-specific journals that were not tagges as "zoology" (**14** hits). 
@@ -105,7 +105,7 @@ The exact search strings (and number of hits):
 
 \#15: #14 AND TI = (invertebrat* OR worm* OR annelid* OR platyhelminth* OR nematod* OR mollusc* OR gastropod* OR slug* OR snail* OR arthropod* OR chelicer* OR arachnid* OR aranea* OR acari OR tetranych* OR ixod* OR opilion* OR spider* OR *scorpio* OR tick$ OR mite$ OR harvestmen OR crustace* OR malostraca* OR isopod* OR woodlice OR oniscid* OR armadillium OR myriapod* OR chilopod* OR diplopod* OR pauropod* OR symphyla OR millipede* OR centipede* OR hexapod* OR collembol* OR springtail* OR insect$ OR blattodea OR *ptera OR mantodea OR odonata OR phasmatodea OR psocodea OR thysanura OR zygentoma OR psyllid* OR stenorrhyn* OR cockroach* OR beetle$ OR earwig* OR *fly OR *flies OR droso* OR mosquit* OR *bug$ OR aphid* OR adelgid* OR phyllox* OR *wasp$ OR (*bee OR *bees) OR (ant OR ants) OR mantis OR grasshopper* OR locust* OR cricket* OR louse OR lice OR flea$ OR moth$ OR thrip* OR silverfish ) NOT TI = (paleo* or $chiroptera*) (97)
 
-\#16: #14 NOT #15 NOT TI = (human OR sleep* OR disorder OR depress* OR marine* OR aquat* OR limno* OR water OR palaeo* OR $vertebra* OR *fish* OR $amphib* OR $salientia* OR $anura* OR $caudata OR $salamand* OR newt$ OR $gymnophion* OR frog$ OR tadpole$ OR toad$ OR $reptil* OR $crocodil* OR *sauria* OR $squamat* OR $lizard* OR $lacert* OR $gekko* OR $serpent* OR $snake* OR $testudin* OR $turtle* OR $tortois* OR $mammal* OR $rodent* OR $sciurid* OR $hamster* OR *mouse* OR *mice* OR $squirrel* OR $rabbit* OR $hare OR $hares OR $chiropt* OR $bat OR $bats OR $myotis OR $sorciomorpha OR $soricid* OR $talpid* OR $shrew* OR $marmot* OR $mole OR $moles OR $primat* OR $carnivora OR $ursid* OR $ursus OR $felid OR $felids OR "$sea lion" OR "$fur seal" OR "$elephant seal" OR $marsupi* OR $goat* OR $sheep* OR $deer OR $cattle OR estrus OR suprachiasm*OR microb* OR bacteria* OR fung* OR *ceae OR bloom OR yield OR germination OR molecular OR simulation OR QTL* OR arabidopsis OR spring OR cell* OR tiller OR cultivar* OR bud* OR chill* OR (tree NEAR phenology)) (321)
+\#16: #14 NOT #15 (321)
 
 \#17: #2 OR #7 OR #11 OR #12 OR #15 OR #16 (2747)
 
@@ -116,7 +116,9 @@ Noda GEOGRAPHIC-VARIATION OF NYMPHAL DIAPAUSE IN THE SMALL BROWN PLANTHOPPER IN 
 Shimizu Sexual differences in diapause induction of the cotton bollworm, Helicoverpa armigera (Hb.) (Lepidoptera : Noctuidae) <- forward-search on qureshi, refs in musolin
 takeda - PHENOLOGICAL ADAPTATIONS OF A COLONIZING INSECT - THE SOUTHWESTERN CORN-BORER, DIATRAEA-GRANDIOSELLA <- forward-search on Gomi
 
-We screened the titles of the 2747 articles to filter out articles which were clearly not suited for meta-analysis (e.g. not based on terrestrial invertebrates), which reduced the dataset to . (~500) articles. We then assessed the full text of the articles, and excluded all articles with less than 3 populations or less than 3 day lengths measured. 
+We screened the titles of the 2747 articles to filter out articles which were clearly not suited for meta-analysis (e.g. not based on terrestrial invertebrates), which reduced the dataset to 621 articles. We then assessed the full text of the articles, and excluded all articles with less than 3 populations or less than 3 day lengths measured. 74 articles remained.
+
+we did a forward citation search on these 74 articles on jul 16 2018 and found 866 articles (609 new references, 257 duplicates from earlier search). We filtered again by title, after which 197 references remained.
 
 
 
@@ -135,6 +137,9 @@ TS = ( (post-diapaus* OR (diapaus* AND ("termination" OR cessati* OR spring))) A
 TS = (( (spring and (phenolog* OR emerg*) ) ) AND (geogr* OR "range" OR latitud* OR longitud* OR cline$ OR clinal OR "populations")) NOT #1 
 
 
+TS = ( ((SPRING AND (ECLOSION OR emergence)) OR post-diapaus* OR (diapaus* AND ("termination" OR cessati* OR spring)))) (5697, 2769 after reduction -would take ~ 10 h for ~ 28 studies)
+
+mammals ~ 5500
 
 #2 AND SU = entomology 
 
@@ -165,6 +170,18 @@ TS = (( (spring and (phenolog* OR emerg*) ) ) AND (geogr* OR "range" OR latitud*
 #10 AND TI = (invertebrat* OR worm* OR annelid* OR platyhelminth* OR nematod* OR mollusc* OR gastropod* OR slug* OR snail* OR arthropod* OR chelicer* OR arachnid* OR aranea* OR acari OR tetranych* OR ixod* OR opilion* OR spider* OR *scorpio* OR tick$ OR mite$ OR harvestmen OR crustace* OR malostraca* OR isopod* OR woodlice OR oniscid* OR armadillium OR myriapod* OR chilopod* OR diplopod* OR pauropod* OR symphyla OR millipede* OR centipede* OR hexapod* OR collembol* OR springtail* OR insect$ OR blattodea OR *ptera OR mantodea OR odonata OR phasmatodea OR psocodea OR thysanura OR zygentoma OR psyllid* OR stenorrhyn* OR cockroach* OR beetle$ OR earwig* OR *fly OR *flies OR droso* OR mosquit* OR *bug$ OR aphid* OR adelgid* OR phyllox* OR *wasp$ OR (*bee OR *bees) OR (ant OR ants) OR mantis OR grasshopper* OR locust* OR cricket* OR louse OR lice OR flea$ OR moth$ OR thrip* OR silverfish ) NOT TI = (paleo* or $chiroptera*) 
 
 add eclosion
+
+
+
+#another one
+(Ts =( (photoperiodic and (response or incidence or induction)) or ((hibern* or dormanc* or diapaus*)) or ("critical day length" or "critical day lengths")))
+
+then everything as in #new
+only that 14 is 
+(#13 AND TI = (invertebrat* OR worm* OR annelid* OR platyhelminth* OR nematod* OR mollusc* OR gastropod* OR slug* OR snail* OR arthropod* OR chelicer* OR arachnid* OR aranea* OR acari OR tetranych* OR ixod* OR opilion* OR spider* OR *scorpio* OR tick$ OR mite$ OR harvestmen OR crustace* OR malostraca* OR isopod* OR woodlice OR oniscid* OR armadillium OR myriapod* OR chilopod* OR diplopod* OR pauropod* OR symphyla OR millipede* OR centipede* OR hexapod* OR collembol* OR springtail* OR insect$ OR blattodea OR *ptera OR mantodea OR odonata OR phasmatodea OR psocodea OR thysanura OR zygentoma OR psyllid* OR stenorrhyn* OR cockroach* OR beetle$ OR earwig* OR *fly OR *flies OR droso* OR mosquit* OR *bug$ OR aphid* OR adelgid* OR phyllox* OR *wasp$ OR (*bee OR *bees) OR (ant OR ants) OR mantis OR grasshopper* OR locust* OR cricket* OR louse OR lice OR flea$ OR moth$ OR thrip* OR silverfish ) NOT TI = (paleo* or $chiroptera*)) 
+and 15
+(#2 OR #7 OR #11 OR #12 OR #14) (9634, ~ 30 h, ~100 add data points)
+
 
 
 ### 2.4 Raw data extraction  
