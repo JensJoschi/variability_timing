@@ -1,0 +1,442 @@
+---
+title: "read slopes"
+author: "Jens Joschinski"
+date: "March 15, 2018"
+output: 
+  md_document:
+  variant: markdown_github
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache=TRUE)
+library(tidyverse)
+library(textreadr)
+library(drc)
+library(sandwich)
+library(lmtest)
+library(plyr)
+library(geosphere)
+```
+
+
+# General description  
+## Aim  
+The aim of this project is to correlate climate variability with variability in seasonal timing. Is the slope in seasonal responses a bet-hedging trait, i.e., is it adaptive to spread one's timing in more variable conditions?  
+
+
+### Overview  
+I searched in the web of Science database for studies that measure photoperiodic response curves of invertebrates (folder 02studies/00raw) and extracted the x- and y-coordinates of the points within these curves (folder 02studies/01extracted_data). After adding metadata (latitudes, longitudes,sample sizes) I selected populations with usable data (~200 populations, 30 species) and copied the data into a csv file. The script now calculates the slope and other parameters of the photopeirodic response curve. It uses dose-response curves analysis with package "drc".  
+
+### Specific description  
+
+The data was generated with R version `r getRversion()`. Slope estimates derived with package drc, `r citation('drc')`.
+
+The script fits dose-response curves for all populations, seperately for each study. DRCs can estimate the upper and lower limit (range of diapause responses, usually from 0-100%), the inflection point (critical day length, where 50% of the population are in diapause), and the slope of the curve. I am mostly interested in slope of the curve, but also want to extract the critical day length. But the upper and lower limit have to be estimated as well. From a glimpse at the data it can be seen that the upper and lower limit are not always 0 and 100%, and there are several ways to fit the model. 
+
+Intuitively one would expect that all populations of one species (and hence also all pops that have been sampled in a study) have the same lower and upper limit. One could therefore estimate a global upper and lower limit, and then slope and inflection point for each population (requires 2 degrees of freedom + 2 df per population). As alternative one could however also imagine a conservative bet-hedging strategy, in which a population never reaches 0% diapause to ensure survival in variable climates. In this case, the lower limit varies by populations, while the upper is fixed (requires 1 df + 3 df per population). The opposite situation, in which populationsut vary in their upper limit while the lower limit is fixed (1df + 3 per pop), is counterintuitive, as it is essentially the opposite of conservative bet-hedging. This strategy could mean that some offspring never diapause, even under winter conditions, hoping that a harsh winter climate never arrives (see skewed distribution in halkett 2004, amnat). The last possible version is that both upper and lower limit vary by population. This makes four models (sorted by plausibility): 
+
+1. upper and lower parameter fixed at study mean (requires 2 df plus 2 df per population)
+2. upper parameter fixed (requires 1 df plus 3 per population)
+3. lower parameter fixed (requires 1df plus 3 per population)
+4. both limits vary (requires 4 df per population)
+
+This script first determines the available df to see if options 2-4 are available. Then it fits all models that are allowed, and compares by AIC which one is best. If there are ties (delta AIC <2), the most plausible model (sorted as above) is used. 
+
+
+### Script  
+
+This script should not be executed completely, becaues it will cause some convergence failure. Also, all models need to be examined by hand (summary may show that some values are actually NA because errors occured without warning). It is rather a description of the methods than an actual executable script.
+
+
+### load data  
+
+```{r load_data}
+data<-read.table("02studies/01extracted_data/forslopes_new.csv", header=T,sep=",")
+length(unique(data$id)) #35 studies that can be used for slope calculation (kimura_geogr has 3 levels)
+data<-unite(data,"popid",c("id","pop","genus","spec"),sep="-",remove=F)
+length(unique(data$popid)) #204 populations (not 211 because lankinen)
+
+#summary of #pops per region and level of detail for sample sizes
+
+t<-data.frame(unique(data$popid))
+t$reg<-NA
+t$nMethod<-NA
+#each unique pop has multiple rows in dataset (1 per day length)
+#get this subset, take region and nMethod from first line (or use unique)
+for ( i in 1:nrow(t)){ 
+   t$reg[i]<-unique(data[data$popid==t[i,1],5])
+   t$nMethod[i]<-unique(data[data$popid==t[i,1],13])
+}
+table(t$reg) #unfortunately, the information was converted to values
+levels(data$region)
+#Japan: 83+3-1+10 = 95
+#Europe: 77
+#US: 7+3+11 = 21
+#China: 7
+#indonesia: 3-2=1
+#middle america + mexico: 3
+#this ignores 7 pops from Europe, where CDL and b were given directly in paper (not part of the analysis dataset)
+
+
+table(t$nMethod)
+levels(data$nmethod)
+
+#accurate: 25
+#global average: 162+7+3 =172
+#pop level: 3+4 =7
+
+data[data$n2==1,15]<-100
+#those with no described sample size (2 studies, 1 with no sample size given, 1 in japanese and sample size not found) get an arbitrary number of 100. No sample size is the same as global average anyway (means that individual-point weighing is not possible).
+
+r<-data.frame(NA,NA,NA,NA,NA,NA,NA,NA,NA)
+names(r)<-c("name","b","b_rel","c","c_rel","d","d_rel","e","e_rel") #the results will be stored in a file with these columns
+```
+
+the following hcunk cannot be executed directly (some problem with optimizer). Change i, copy to console and run
+```{r all_models}
+i<-28
+sub<-data[data$id==unique(data$id)[i],] 
+sub<-droplevels(sub)
+
+#turn percentage into no. failures, no. successes (also round N)
+sub$n2<-round(sub$n2)
+sub$number<-round(sub$n2 * sub$perc/100)
+sub$number[sub$number>sub$n2]<-sub$n2[sub$number>sub$n2]
+sub$number[sub$number<0]<-0
+
+aics <- c(NA,NA,NA,NA) #will store AIcs of up to four possible models 
+estimates <- nrow(sub)
+pops<-sub$pops_left[1]
+if(length(pops)>1){print(paste("something went wrong in study ",sub$id[1],"\n"))}
+
+
+# the four models
+
+#model1: lower and upper limit fixed at study mean
+res_df1 <- estimates - (2 + 2*pops)>3 #are there more than 3 df left?
+drm1<- drm((number/n2)~dl2, curveid=popid, data=sub, fct=LL.4(), type="binomial", upperl=c(NA,NA,1,NA), lowerl=c(NA,0,NA,NA),  #box constraints
+           weights=n2,  
+           pmodels=data.frame(popid,1,1,popid)) #this line distinguishes models 1-4 (fixing parameters at study mean)
+
+aics[1]<-AIC(drm1)
+
+#model2: upper parameter fixed
+res_df2<-estimates - (1+ 3* pops)>3
+drm2<-drm((number/n2)~dl2, curveid=popid, data=sub, fct=LL.4(), type="binomial", upperl=c(NA,NA,1,NA), lowerl=c(NA,0,NA,NA), weights=n2, pmodels=data.frame(popid,popid,1,popid))  
+aics[2]<-AIC(drm2)
+
+#model3: lower parameter fixed
+#res_df3 is same as res_df2
+drm3<-drm((number/n2)~dl2, curveid=popid, data=sub, fct=LL.4(), type="binomial", upperl=c(NA,NA,1,NA), lowerl=c(NA,0,NA,NA), weights=n2, pmodels=data.frame(popid,1,popid,popid))
+aics[3] <- AIC(drm3)
+  
+#model 4: none fixed
+res_df3 <- estimates - (4*pops)>3
+drm4<-drm((number/n2)~dl2, curveid=popid, data=sub, fct=LL.4(), type="binomial", upperl=c(NA,NA,1,NA),lowerl=c(NA,0,NA,NA), weights=n2)
+ aics[4]<-AIC(drm4)
+ 
+
+```
+
+This chunk can run
+```{r compare}
+plot(drm1)
+plot(drm2)
+plot(drm3)
+plot(drm4)
+#are all models sensible (in terms of degrees of freedom)? 
+print (paste("model 1: ", res_df1))
+print (paste("model 2/3: ", res_df2))
+print (paste("model 4: ", res_df3))
+ 
+aics
+aics[1]-min(aics)
+aics[2]-min(aics)
+aics[3]-min(aics)
+aics[4]-min(aics)
+```
+
+change the value in choice and run this chunk
+```{r choose}
+choice <-3
+final<-drm3
+summary(final)
+results<-list(final,choice)
+```
+
+run next 2 chunks, no need to edit
+```{r save_plot}
+  #possible values of "choice" and their meaning
+  # NA "no model possible due to lack of df"
+  #1 upper and lower parameter fixed at study mean
+  #2 upper parameter fixed
+  #3 lower parameter fixed
+  #4 both limits vary
+ if (results[[2]]==1){
+    #plot study for visual validation
+    png(paste("02studies/01extracted_data/",i,"-",unique(data$id)[i],".png",sep="")) 
+    plot(final, xlab = "Day length", ylab = "percentage diapause", main = "upper and lower limit fixed at global mean", log="", col=TRUE)
+    dev.off()
+  }else if (results[[2]]==2){
+    png(paste("02studies/01extracted_data/",i,"-",unique(data$id)[i],".png",sep="")) 
+    plot(final, xlab = "Day length", ylab = "percentage diapause", main = "upper limit fixed at global mean", log="", col=TRUE)
+    dev.off()
+  }else if(results[[2]]==3){
+    png(paste("02studies/01extracted_data/",i,"-",unique(data$id)[i],".png",sep=""))
+    plot(final,xlab = "Day length", ylab = "percentage diapause", main = "lower limit fixed at global mean", log="", col=TRUE)
+    dev.off()
+  }else if(results[[2]]==4){
+    png(paste("02studies/01extracted_data/",i,"-",unique(data$id)[i],".png",sep=""))
+    plot(final, xlab = "Day length", ylab = "percentage diapause", main = "upper and lower limit estimated for each pop", log="", col=TRUE)
+    dev.off()
+  }else{
+    png(paste("02studies/01extracted_data/",i,"-",unique(data$id)[i],".png",sep=""))
+    plot(final, xlab = "Day length", ylab = "percentage diapause", main = "see notes", log="", col=TRUE)
+    dev.off()
+  }
+
+```
+
+```{r save_data}
+    #write these into results table
+    coffs<-coeftest(final,vcov = sandwich)[,1:2] #provides estimate and SE
+    coffs<-as.data.frame(coffs)
+    #save slope coefficients
+    coffs$group<-substr(rownames(coffs),1,1)
+    b<-coffs[coffs$group=="b",]
+    c<-coffs[coffs$group=="c",]
+    d<-coffs[coffs$group=="d",]
+    e<-coffs[coffs$group=="e",]
+    
+    #need to bring these into sensible shape
+    new_data<-data.frame(b,c,d,e)
+    new_data<-new_data[,c(1,2,4,5,7,8,10,11)] #removes "group"
+    names(new_data)<-c("b","b-se","c","c-se","d","d_se","e","e_se")
+    new_data<-new_data[order(rownames(new_data)),]
+   
+    old_data<-ddply(sub, "popid", function(z) tail(z,1))
+    results<-cbind(old_data,new_data)
+  
+
+write.table(results, "02studies/02output/slopes.txt",append=T,sep="\t",col.names=FALSE)
+ print(paste(i,"|",results$id[1],"|",choice,sep=""))
+```
+
+i|study         |best |chosen |impossible   |notes
+1|ankersmit     |3    |3      |4            |4: too few df
+2|chen          |3,4  |3      |
+3|gomi          |LL.2 |LL.2   |all          |mod 1 would have missing data for 2 pops
+4|gotoh         |3      
+5|hashimoto     |3                          |caused by Nagaoka only
+6|ito           |2,4  |2 
+7|kimura_geogr_1|3    
+8|kimura_geogr_2|3,4  |3
+9|kimura_geogr_3|1,3,4|1      |             |evidence for 1 from 2 further pops
+10|koveos       |3
+11|kurahashi    |3,4  |3
+12|kurota       |3    
+13|lankinen     |3    |3      |             |evidence for 1/3 from 8 further pops
+14|lehmann      |2,4  |2
+15|lumme        |2,4  |2
+16|lushai       |1,3  |1
+17|murata       |4    |exclude              |9 variable pops, bad fit
+18|musolin      |3
+19|nechols      |LL.2 |LL.2                 |mod 1 would have NA for 1 pop, evidence from 7 further pops
+20|paolucci     |3,4  |3
+21|pegoraro     |1    |1
+22|pullin       |2    |2      |4            |problems estimating s.e. remove?
+23|riihima      |2    |2      |3            |removed box constraints
+24|shimizu      |3,4  |3
+25|shintani     |LL.2 |LL.2                 |mod1 would have NAs, evidence from 8 further pops
+26|shroyer      |2,4  |2
+27|so           |3
+28|suwa         |1,3  |1
+29|tyukmaeva    |3,4  |3
+30|ujiye        |1    |1      |2,3,4          |too few df for other models
+31|urbanski     |3    |3      |               |1 and 2 without box constraints
+32|vaznunes     |3
+33|wang         |1,3  |1
+34|yoshida      |3,4  |3      |               |2 without box constraints
+35|kimura_evol  |1    |1      |2,3,4          |removed KS; too few df 
+36|takeda       |1,2,3|1
+37|noda         |3    |3      |               |removed dl<9
+
+lehmann,pegoraro?
+murata raus
+
+```{r quality_control}
+
+results <- read.table("02studies/02output/slopes.txt",sep = "\t")
+#first col is rownames. check if that is same as ID
+#substr(as.character(results[,1]),start=3,stop =10000L)==as.character(results[,3])
+
+names(results)<-c("row","set","popid","ID","PY","region","pops_left","genus","spec", "order", "pop","degN","degE","nmethod","perc","n2","dl2","number","b","bse","c","cse","d","dse","e","ese")
+results<-results[-39,] #was empty
+
+hist(results$b,breaks=50)
+hist(results$cse,breaks=50)
+hist(results$dse,breaks=50)
+results$popid[results$e>50] #remove that
+
+#the following populations are clearly problematic:
+# "murata- Ogasawara-Asobara-japonica"  - bse, cse, dse
+# "murata- Tokyo-Asobara-japonica"     -cse, dse
+# "pegoraro-Sp22-Drosophila-melanogaster"  -e, ese
+#murata and pegoraro SP22 will be removed
+results$use<-"y"
+results[results$ID=="murata",27]<-"n"
+results[results$popid=="pegoraro-Sp22-Drosophila-melanogaster",27]<-"n"
+restore<-results
+results<-results[results$use=="y",]
+results$ID<-droplevels(results$ID)
+
+
+
+#checking distribution of standard errors (too small s.e. are aproblem because influence becomes infinite)
+#b(slope)
+plot(1/results$bse,log="y", main = "influnece of data points on b",ylab="1/s.e. [log]")
+med<-median(1/results$bse)
+abline(h=med)
+abline(h=med*10,col=2)
+abline(h=med/10,col=2)
+abline(h=med*5,col=4)
+abline(h=med/5,col=4)
+text(10,med*10,"median*10")
+text(10,med*5,"median*5")
+results$popid[(1/results$bse)>median(1/results$bse)*10]#populations with more than 10 times the median influence
+results$popid[(1/results$bse)<median(1/results$bse)/10]#populations with less than 1/10th the median influence
+
+points(x= rownames(results[results$ID=="tyukmaeva",]),y=1/results[results$ID=="tyukmaeva",]$bse,col=2,pch=21,bg=2)
+ points(x= rownames(results[results$ID=="suwa",]),y=1/results[results$ID=="suwa",]$bse,col=4,pch=21,bg=4)
+
+#maybe remove those two studies (likely overfitted)?
+#when suwa and tyukmaeva are removed, the influences ranges from 5 times more influential than the median to ~1/10th (skew, some points even less)
+
+#same with e (CDL)
+plot(1/results$ese,log="y", main = "influnece of data points on e",ylab="1/s.e. [log]")
+med<-median(1/results$ese)
+abline(h=med)
+abline(h=med*10,col=2)
+abline(h=med/10,col=2)
+abline(h=med*5,col=4)
+abline(h=med/5,col=4)
+abline(h=med*20,col=5)
+abline(h=med/20,col=5)
+text(180,med*10,"median*10")
+text(180,med*5,"median*5")
+text(180,med*20,"median*20")
+
+results$popid[(1/results$ese)>median(1/results$ese)*10]#populations with more than 10 times the median influence
+
+points(x= rownames(results[results$ID=="suwa",]),y=1/results[results$ID=="suwa",]$ese,col=4,pch=21,bg=4)
+
+results$popid[(1/results$ese)<median(1/results$ese)/10]#populations with less than 1/10 times the median influence
+
+#remove suwa completely, and 4 pops of tyukmaeva for b estimates
+results<-restore
+results[(1/results$bse)>median(1/results$bse)*10,27]<-"e_only"
+results[(1/results$ese)>median(1/results$ese)*10,27]<-"b_only"
+results[results$ID=="suwa",27]<-"n"
+
+write.table(results,"02studies/02output/slopes.txt",sep = "\t",row.names=F)
+```
+
+
+
+
+Now the slope and cdl estimates are done. After combining with climate data it turned out that the CDL data is quite far away (2 months) from the mean winter onset. This chunk explains the calculation of the julian date that is most consistent with onset of diapause
+```{r}
+
+results <- read.table("02studies/02output/slopes.txt",sep = "\t")
+#first col is rownames. check if that is same as ID
+substr(as.character(results[,1]),start=3,stop =10000L)==as.character(results[,3])
+
+names(results)<-c("row","set","popid","ID","PY","region","pops_left","genus","spec", "order", "pop","degN","degE","nmethod","perc","n2","dl2","number","b","bse","c","cse","d","dse","e","dse")
+results<-results[-39,] #was empty
+
+results<-results[order(results$degN),]
+
+url<-"ftp://ftp.ncdc.noaa.gov/pub/data/ghcn/daily/ghcnd-stations.txt"
+locations<-read.fwf(
+  file=url
+  ,sep="!",na.strings=c("NA","-999.9"), #sep = ! because ! does not exist in dataset - > dataset is fixed-width and should have no additional separators
+  widths=c(11, 9, 10, 7,2,35)
+)
+reslist<-read.table("01climate_data/03output/results.txt",na.string = c("NA","-9999","-999.9"))
+names(reslist)<-c("ID","meanwinter","sd_winter","nyears","p","A","phi","c","beta")
+climate<-merge(locations,reslist,by=1)
+rm(locations)
+rm(reslist)
+names(climate)<-c("ID","lat","lon","alt","no_idea","name","meanwinter","sd_winter", "nyears","p","A","phi","c","beta")
+climate<-climate[climate$lat<=70,]
+plot(climate$meanwinter~climate$lat,pch=22,cex=0.1, main ="Mean winter onset vs. latitude")
+M<-lm(climate$meanwinter~climate$lat)
+
+
+#1. Let us assume that winter onset is on day 330 (an arbitrary day). Then one can calculate the "optimal" CDL response given latitude and day 330:
+plot(results$e~results$degN,main = "CDL vs latitude, red= expectation if winter onset =180")
+dl<-daylength(results$degN,330)
+points(dl~results$degN,col=2)
+#a model of the form (expected ~ observed) should give a quite good fit, because there is a good (negative) correlation. But this is not quite what I want, as they should not only correlate but be more or less identical. An alternative model of form (expted~observed - intercept) should give, on the other hand, a really bad fit
+
+plot(dl~results$e,main = "expected(for day=180) vs observed.",sub="setting intercept to 0")
+M1<-lm(dl~results$e)
+M2<-lm(dl~results$e-1)
+abline(M1,col=1,lty=2)
+abline(M2,col=2)
+
+#bringing that back to the CDL~latitude plot:
+plot(results$e~results$degN,main = "CDL vs latitude", sub="red= expectation if winter onset =180\nblue = model predictions without intercept",ylim=c(4,22),xlab="")
+points(dl~results$degN,col=2)
+#points(predict(M)~results$degN,col="green")
+points(predict(M2)~results$degN,col=4)
+#this model is indeed a bad fit to the data. 
+
+#the same can now be done for all 365 days, and then the model with the highest log-likelihood should be selected
+
+
+```
+
+```{r}
+logliks<-rep(NA,365)
+for ( i in 1:365){
+  dl<-daylength(results$degN,i)
+  M<-lm(dl~results$e-1)
+  logliks[i]<-logLik(M)
+  #abline(M)
+}
+plot(logliks,type="l", main ="logLikelihood profile for different dates",xlab = "Julian date", ylab = "LogLikelihood")
+points(logliks,pch=22,cex=0.3,bg=1)#160-183
+order(logliks,decreasing=T)[1:10]
+#135, 211,  212,134,136
+plot(results$e~results$degN,main = "CDL vs latitude", sub="red= expectation if winter onset =135\nblue = 211\ngreen =180",ylim=c(4,22),xlab="")
+dlbest<-daylength(results$degN,144)
+dlsecond<-daylength(results$degN,202)
+dlbad=daylength(results$degN,180)
+
+points(dlbest~results$degN,col=2)
+points(dlsecond~results$degN,col=4)
+points(dlbad~results$degN,col="green")
+#best and second best are equal
+M<-lm(dlbest~results$e-1)
+M2<-lm(dlsecond~results$e-1)
+```
+The best estimates by this procedure are day 135 (may 15th) and day 211 (jul 30th), these estimates are exactly equal, as they are both 38 days away from summer solstice. 
+
+checking whether calculation is correct with https://www.esrl.noaa.gov/gmd/grad/solcalc/
+```{r}
+plot(results$e~results$degN,main = "CDL vs latitude", sub="red= expectation if winter onset =30jul\nblue = 1.dec",ylim=c(4,22),xlab="")
+dlbest<-daylength(results$degN,135)
+dlmeteorolog<-daylength(results$degN,305)
+points(dlsecond~results$degN,col=2)
+points(dlmeteorolog~results$degN,col=4)
+Nvec<-10*(1:7)
+dlvec<-c(18,18,18,19,19,20,22)+c(23,38,55,16,46,35,58)/60 - (c(5,5,5,4,4,3,1)+c(49,35,18,56,26,36,05)/60) #taken from noaa calculator for Nvec °N, 0°E
+dlvec2<-c(17,17,17,16,16,15)+c(37,19,0,35,1,3)/60 - 
+  (c(6,6,6,7,7,8)+c(1,19,38,2,37,35)/60)
+dlvec2<-c(dlvec2,0)
+
+points(dlvec~Nvec,col="green")
+points(dlvec2~Nvec,col="black",pch=22,bg=1) # NOAA uses "apparent sunrise", could be civil sunrise/sunset
+```
+

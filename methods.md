@@ -1,4 +1,4 @@
-# Description of this file  
+﻿# Description of this file  
 This file consists of a summary and a methods section that is updated from time to time, and includes the most important methods. This is followed by a detailed description of all methods and models that have been used (and is hence rather long). In the end there is a checklist that summarises the long methods part and is at the same time my to-do list. 
 
 
@@ -11,7 +11,7 @@ As expected, populations from northern latitudes shift their timing towards earl
 
 
 
-# Methods    
+# Methods (empirical part outdated)   
 
 We calculated mean, variability and predictability of winter onset at approximately 29,000 weather stations across the northern hemisphere. We then extracted photoperiodic response curves from 30 published studies (174 populations) along with their sampling locations, and estimated midpoint and slopes of these curves. The midpoints of diapause timing were then correlated with winter onset, and the slope estimates were correlated with winter variability and predictability.
 
@@ -259,20 +259,24 @@ During the comparison we found a few articles that were never followed up due to
 
 64 articles were found by both searches. Out of the 8 articles that were only found in the first search, 3 have been wrongly classified as positive, whereas the remaining five are useful references (2 were truly not found in the second search and 3 were wrongly classified as negative). The 8 unique articles of the second search were all usfeul (4 false negatives in first search, 4 missing).
 Altogether, there were 77 useful references.
+(the notes to contact the author may be dubbed false positive, or false negative, depending on whether the contacting is successful)
 
 upon closer inspection 1 article had only one population, leaving 76 references.
-#### eligibility
+
+#### eligibility/cleaning
 10 articles missed important data, 28 were removed(6 measured only 3 day lenghts, 2 did not contain useful data (1 meeting abstract, 1 irrelevant study),  17 had too few points on the sloped parts, and 3 had incomplete photoperiodic response curves), 37 were left.
 
 Two further studies were removed because the coordinates were not accurate enough.
  
 From the remaining 35 studies (312 populations), 104 individual populations had to be removed because their response curve was incomplete or did not have enough points on the sloped part.
 
-The remaining 35 studies were on 208 populations in 32 species (10 orders). The majority of the populations came from japan (93 populations, 17 studies), followed by Europe (83 populations, 12 studies), the US (21 populations, 4 studies), China (7 populations, 2 studies), Mexico and middle america (3 populations, 1 study), and indonesia (1 population in 1 study) (2 studies were over 2 regions). 
+The remaining 35 studies were on 211 populations in 31 species (8 orders). The majority of the populations came from japan (95 populations, 17 studies), followed by Europe (84 populations, 12 studies), the US (21 populations, 4 studies), China (7 populations, 2 studies), Mexico and middle america (3 populations, 1 study), and indonesia (1 population in 1 study) (2 studies were over 2 regions). 
 Contacting the 11 authors with missing dta may bring up to 172 further pops! 
 
+The required information on slopes and CDL was directly given for 1 study (7 populations). For the remaining 204 populations it had to be extracted from figures/tables.
 
- #### experimental: search for diapause termination
+
+###07.09.2018: searched in new google dataset beta search "photoperiodic response insect" - 9 results, not relevant or duplicates #### experimental: search for diapause termination
 	
 TS = ( (post-diapaus* OR (diapaus* AND ("termination" OR cessati* OR spring))) AND (geogr* OR "range" OR latitud* OR longitud* OR cline$ OR clinal OR "populations"))
 
@@ -325,13 +329,10 @@ and 15
 (#2 OR #7 OR #11 OR #12 OR #14) (9634, ~ 30 h, ~100 add data points)
 
 
-
-
-
-I removed again all studies with exactly 3 photoperiods measured, because they are not useful for DRC  analysis, but nevertheless good for the literature search.  
+ ### drc analysis(old)
 For all studies that were included, I noted study species, sample sizes, coordinates and altitude (if available), and saved the PRCs as .png files. I then extracted the data from the figures using WebPlotDigitizer Version 3.12 (Rohatgi, 2017). When raw data was avaiulable (x % of all cases) I used this data to test the error rate of manual extraction (todo, but small according to initial tests). Where neccessary,  the day length was then rounded or corrected to match the description in materials and methods of the respective study. For example the points on the x-axis were in some cases not continous as the axis would suggest (e.g. x-axis in (Paolucci et al., 2013) mixes 1h intervals with 2h intervals), or points were plotted next to each other for better visibility  (Riihimaa Ari et al., 2004). Y-values that were slightly above 100% or below 0% were set to 100% and 0% respectively. in one figure of (Urbanski et al., 2012), 1 data point that appeared in the figure but did not exist in the available raw data was deleted.
 
-To estimate the slopes I modelled diapause with four-parameter binomial dose response curves in R. This analysis provides lower and upper bounds of photoperiodic induction (I constrained these to range from 0 to 100%), the slope, and the inflection point where 50 % of the individuals are induced (critical day length), so four parameters per slope were estimated. Where detailed information on sample sizes was available (% of all cases), I weighted diapause estimates by number of trials. I also recorded the standard error, using a robust sandwich estimation method (Zeileis, 2006).
+To estimate the slopes I modelled diapause with four-parameter binomial dose response curves in R. This analysis provides lower and upper bounds of photoperiodic induction (I constrained these to range from 0 to 100%), the slope, and the inflection point where 50 % of the individuals are induced (critical day length), so four parameters per slope were estimated. Where detailed information on sample sizes was available (% of all cases), we used these numbers to weight the individual points of the PRC. We wish to emphasize that a lack of detailed information  should not be confused with a partially unweighted (“vote-count”) meta-analysis, because the sample size (populations per study) was always known. Rather, the lack of weighing in the PRC estimates lead to slightly higher standard errors in the estimates, i.e. the missing information occurred on a lower level (points within population) than the level of replication (population). I also recorded the standard error, using a robust sandwich estimation method (Zeileis, 2006).
 To get the coordinates of the study populations, I used 1) the coordinates that were quoted in the studies, or, if not available coordinates of the quoted town or area. Town and area coordinates were made available by the WikiProject Geographical coordinates and the Geohack tool (Dispenser et al., 2018) 
 
 There were 2 problems with the first attempt to calculate dose-response-curves. First, studies with only 1 point estimate on the slope part should not be included, because the slope estimate becomes unreliable. Secondly, the estimation method with 4 parameters per curve costs many degrees of freedom. Intuitively one would expect, however, that all populations of one species have the same lower and upper limit, wich would reduce the estimation to 2 parameters per slope, plus 2 global parameters. I therefore tried the following models on each study (sorted by plausibility): 
@@ -344,6 +345,31 @@ There were 2 problems with the first attempt to calculate dose-response-curves. 
 Model 2 may results from conservative bet-hedging (some populations have non-zero diapause regardless of season, to hedge against early winter), while model 3 is the risk-prone opposite (some non-diapausing offspring exist even late in the season to hope for late winter, see halkett et al 2004).
 
 All analyses were done on 30 studies where the slopes can be reliably estimated, i.e. with at least 2 points on the slope part (this could include the highest point of one population if that was still below a study-wide upper limit). I fitted all models, provided there were at least 3 residual df left, and chose those with lowest AIC. If there were multiple models with delta AIC <2, I used the most plausible model. If necessary for model convergence, I removed the box constraints (diapause ranging between 0and 100%), provided the resulting estimates were reasonable (e.g. lower limit = -0.02%, or s.e. of estimte going slightly over the limit). Model 3 was (surprisingly) most often the best suited model. 
+
+#drc analysis (after merging with new search results)  
+
+same approach as before, but on 204 populations, and with a delta-AIC of 4.0. 172 populations gave no (1 study) or only global averages of sample sizes (e.g. "there were on average 20 individuals per treatment" or "sample sizes ranged from 30-120 individuals" - in this case I used the mean,75), 7 populations (2 studies) had population-level means ("there were on average 20 individuals per treatment in Kochi and Sendai, 40 in Kyoto"), and 25 populations (7 studies) had accurate information (sample size of each treatment in each population).
+
+Three studies lacked vital data on upper or lower limits for some focal populations, but contained further populations that were excluded for lack of points on the sloped part.  These other populations showed unambigously that the lower and upper limits were 0 and 100%. In these cases we performed a 2-parameter drc (with limits from 0-100%) to allow inclusion of the incomplete populations. 
+One population (KS in Kimura_evol) had to be removed, and three studies (Lehmann, Pegoraro, Murata) were very variable.
+Murata was removed subsequently, and the line SP22 in Pegoraro(entirely flat) was removed,too.
+We then removed Suwa, because the low S.e. in both b and e suggest that it was overfitted. Three populations had very low standard errors in the b estimate, so that the influence (1/s.e.) was more than 10 times higher than the median. Similarly, 4 populations had very low s.e. in the slope estimates. These 7 populations were flagged to be removed from the respective analyses.
+In the end there were 35 studies, with 181 populations with CDL estimates, and 182 populations with slope estimates.
+
+To estimate the slopes I modelled diapause with four-parameter binomial dose response curves in R. This analysis provides lower and upper bounds of photoperiodic induction (I constrained these to range from 0 to 100%), the slope, and the inflection point where 50 % of the individuals are induced (critical day length), so four parameters per slope were estimated. Where detailed information on sample sizes was available (% of all cases), we used these numbers to weight the individual points of the PRC. We wish to emphasize that a lack of detailed information  should not be confused with a partially unweighted (“vote-count”) meta-analysis, because the sample size (populations per study) was always known. Rather, the lack of weighing in the PRC estimates lead to slightly higher standard errors in the estimates, i.e. the missing information occurred on a lower level (points within population) than the level of replication (population). I also recorded the standard error, using a robust sandwich estimation method (Zeileis, 2006).
+To get the coordinates of the study populations, I used 1) the coordinates that were quoted in the studies, or, if not available coordinates of the quoted town or area. Town and area coordinates were made available by the WikiProject Geographical coordinates and the Geohack tool (Dispenser et al., 2018) 
+
+There were 2 problems with the first attempt to calculate dose-response-curves. First, studies with only 1 point estimate on the slope part should not be included, because the slope estimate becomes unreliable. Secondly, the estimation method with 4 parameters per curve costs many degrees of freedom. Intuitively one would expect, however, that all populations of one species have the same lower and upper limit, wich would reduce the estimation to 2 parameters per slope, plus 2 global parameters. I therefore tried the following models on each study (sorted by plausibility): 
+
+1. upper and lower parameter fixed at study mean (requires 2 df plus 2 df per population)
+2. upper parameter fixed (requires 1 df plus 3 per population)
+3. lower parameter fixed (requires 1 df plus 3 per population)
+4. both limits vary (requires 4 df per population)
+
+Model 2 may results from conservative bet-hedging (some populations have non-zero diapause regardless of season, to hedge against early winter), while model 3 is the risk-prone opposite (some non-diapausing offspring exist even late in the season to hope for late winter, see halkett et al 2004).
+
+All analyses were done on 30 studies where the slopes can be reliably estimated, i.e. with at least 2 points on the slope part (this could include the highest point of one population if that was still below a study-wide upper limit). I fitted all models, provided there were at least 3 residual df left, and chose those with lowest AIC. If there were multiple models with delta AIC <2, I used the most plausible model. If necessary for model convergence, I removed the box constraints (diapause ranging between 0and 100%), provided the resulting estimates were reasonable (e.g. lower limit = -0.02%, or s.e. of estimte going slightly over the limit). Model 3 was (surprisingly) most often the best suited model. 
+
 >
 ## Statistical analysis
 
@@ -431,6 +457,16 @@ Generally all outcome statistics are inaccurate, because they expect that varian
 
 After fitting the models for the CDL~latitude data, I saw that the CDL from lab studies were consistently earlier(several months) than the day length that corresponds to winter onset. I therefore used the latitude of each study to calculate the day length on diapause onset, which I defined as {winter onset  - i=1,2...365 days}. I correlated observed CDLs with these 365 possible diapause onsets, using the model CDL~daylength - intercept, with daylength = f(latitude, diapause onset(i)). The model(i) with the lowest Komogorov-smirnov D was at meanwinter - 94 days. I ran the climate analysis again with different parameter combinations to search for a combination that is 94 days earlier. The combination x = 15, y = 7 yielded a winter onset that is still 1 month away from the best fit for physiological data, but I left it at that gap, because I think that otherwise the calculation of winter onset becomes unstable (inflates variability?). 1 month is fine anyway, because that represents a realistic gap between diapause induction and diapause expression. I used that cliamte data for the final analysis.
 
+#### new analysis after merging old and new search and proofreading script
+In the last analysis all populations were included for drc modelling, and only those with clear convergence failure removed subsequently. This way some clearly overfitted populations slipped through, with s.e. of the estimates very close to 0, so the influence (1/s.e.) was infiinte. 
+This time the populations with <2 points on sloped part were removed directly, and only 2 studies + 1 pop removed after drc modelling. The resulting data (CDL + s.e.) was much more homogenous, so the models did not need to exp-transform the s.e.).  
+It is generally agreed to use 1/variance, but squaring the s.e. would lead to a very broad range of weights (11% more than 10\* influence of median, 20% less than 0.1 \* median), so I continue with 1/s.e.
+
+new model
+cdl~latitude + (1|order/genus/study) , weights = exp(1/s.e) (of cdl estimate)
+
+cdl ~ expected_daylength + (1|order/genus/study) , weights = exp(1/s.e) with 
+expected_daylength = daylength(latitude, winter_onset -30 days) using the function from geosphere.
 #### slope vs climate data  
 I used the model 
 cdl \~ variability*predictability + (1|order/genus/study), but with

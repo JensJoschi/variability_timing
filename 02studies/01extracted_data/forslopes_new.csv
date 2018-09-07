@@ -1,0 +1,1447 @@
+set,id,PY,region,pops_left,genus,spec,order,pop,degN,degE,nmethod,perc,n2,dl2
+newsearch,ankersmit,1967,SA,3,Pectinophora,gossypiella,lepidoptera,el_paso,31.779,-106.478,pop average,96.3689097007,275,10
+newsearch,ankersmit,1967,SA,3,Pectinophora,gossypiella,lepidoptera,el_paso,31.779,-106.478,pop average,96.4612667498,275,11
+newsearch,ankersmit,1967,SA,3,Pectinophora,gossypiella,lepidoptera,el_paso,31.779,-106.478,pop average,86.7524344994,275,12
+newsearch,ankersmit,1967,SA,3,Pectinophora,gossypiella,lepidoptera,el_paso,31.779,-106.478,pop average,64.2027318243,275,12.5
+newsearch,ankersmit,1967,SA,3,Pectinophora,gossypiella,lepidoptera,el_paso,31.779,-106.478,pop average,10.6161997505,275,13
+newsearch,ankersmit,1967,SA,3,Pectinophora,gossypiella,lepidoptera,port_lavaca,28.61,-96.629,pop average,95.8181818182,275,10
+newsearch,ankersmit,1967,SA,3,Pectinophora,gossypiella,lepidoptera,port_lavaca,28.61,-96.629,pop average,95.045045045,275,11
+newsearch,ankersmit,1967,SA,3,Pectinophora,gossypiella,lepidoptera,port_lavaca,28.61,-96.629,pop average,83,275,12
+newsearch,ankersmit,1967,SA,3,Pectinophora,gossypiella,lepidoptera,port_lavaca,28.61,-96.629,pop average,81.3407043407,275,12.5
+newsearch,ankersmit,1967,SA,3,Pectinophora,gossypiella,lepidoptera,port_lavaca,28.61,-96.629,pop average,20.0458640459,275,13
+newsearch,ankersmit,1967,SA,3,Pectinophora,gossypiella,lepidoptera,port_lavaca,28.61,-96.629,pop average,4.9090909091,275,14
+newsearch,ankersmit,1967,SA,3,Pectinophora,gossypiella,lepidoptera,virgin_is,18.333,-64.75,pop average,71.9433223255,175,10
+newsearch,ankersmit,1967,SA,3,Pectinophora,gossypiella,lepidoptera,virgin_is,18.333,-64.75,pop average,79.5498809615,175,11
+newsearch,ankersmit,1967,SA,3,Pectinophora,gossypiella,lepidoptera,virgin_is,18.333,-64.75,pop average,48.2734812994,175,12.5
+newsearch,ankersmit,1967,SA,3,Pectinophora,gossypiella,lepidoptera,virgin_is,18.333,-64.75,pop average,5.4880577529,175,13
+newsearch,chen,2013,China,3,Helicoverpa,armigera,lepidoptera,Yongxiu,29.04,116.82,global average,72.4405687447,71.5,11
+newsearch,chen,2013,China,3,Helicoverpa,armigera,lepidoptera,Yongxiu,29.04,116.82,global average,43.491549514,71.5,12
+newsearch,chen,2013,China,3,Helicoverpa,armigera,lepidoptera,Yongxiu,29.04,116.82,global average,31.9938658502,71.5,13
+newsearch,chen,2013,China,3,Helicoverpa,armigera,lepidoptera,Yongxiu,29.04,116.82,global average,5.6694932914,71.5,14
+newsearch,chen,2013,China,3,Helicoverpa,armigera,lepidoptera,Yongxiu,29.04,116.82,global average,-0.1839176271,71.5,15
+newsearch,chen,2013,China,3,Helicoverpa,armigera,lepidoptera,Yongxiu,29.04,116.82,global average,0.1302705331,71.5,16
+newsearch,chen,2013,China,3,Helicoverpa,armigera,lepidoptera,Taian,36.15,116.59,global average,96.4567269929,71.5,11
+newsearch,chen,2013,China,3,Helicoverpa,armigera,lepidoptera,Taian,36.15,116.59,global average,84.828772796,71.5,12
+newsearch,chen,2013,China,3,Helicoverpa,armigera,lepidoptera,Taian,36.15,116.59,global average,80.6823440147,71.5,13
+newsearch,chen,2013,China,3,Helicoverpa,armigera,lepidoptera,Taian,36.15,116.59,global average,10.7872337015,71.5,14
+newsearch,chen,2013,China,3,Helicoverpa,armigera,lepidoptera,Taian,36.15,116.59,global average,2.1789055779,71.5,15
+newsearch,chen,2013,China,3,Helicoverpa,armigera,lepidoptera,Taian,36.15,116.59,global average,0.5258911349,71.5,16
+newsearch,chen,2013,China,3,Helicoverpa,armigera,lepidoptera,Langfang,39.31,116.42,global average,96.8497827934,71.5,11
+newsearch,chen,2013,China,3,Helicoverpa,armigera,lepidoptera,Langfang,39.31,116.42,global average,96.6400034197,71.5,12
+newsearch,chen,2013,China,3,Helicoverpa,armigera,lepidoptera,Langfang,39.31,116.42,global average,96.6914063126,71.5,13
+newsearch,chen,2013,China,3,Helicoverpa,armigera,lepidoptera,Langfang,39.31,116.42,global average,65.7732608777,71.5,14
+newsearch,chen,2013,China,3,Helicoverpa,armigera,lepidoptera,Langfang,39.31,116.42,global average,10.1840779272,71.5,15
+newsearch,chen,2013,China,3,Helicoverpa,armigera,lepidoptera,Langfang,39.31,116.42,global average,0.1305911333,71.5,16
+newsearch,gomi,1996,japan,6,Hyphantria,cunea,lepidoptera,AT,39.7,140.1,global average,100.6644518272,770,14
+newsearch,gomi,1996,japan,6,Hyphantria,cunea,lepidoptera,AT,39.7,140.1,global average,85.049833887,770,14.25
+newsearch,gomi,1996,japan,6,Hyphantria,cunea,lepidoptera,AT,39.7,140.1,global average,62.9568106312,770,14.5
+newsearch,gomi,1996,japan,6,Hyphantria,cunea,lepidoptera,AT,39.7,140.1,global average,22.9235880399,770,14.75
+newsearch,gomi,1996,japan,6,Hyphantria,cunea,lepidoptera,AT,39.7,140.1,global average,-0.8305647841,770,15
+newsearch,gomi,1996,japan,6,Hyphantria,cunea,lepidoptera,UM,36.6,139.9,global average,100.6644518272,770,14.25
+newsearch,gomi,1996,japan,6,Hyphantria,cunea,lepidoptera,UM,36.6,139.9,global average,37.3754152824,770,14.5
+newsearch,gomi,1996,japan,6,Hyphantria,cunea,lepidoptera,UM,36.6,139.9,global average,6.976744186,770,14.75
+newsearch,gomi,1996,japan,6,Hyphantria,cunea,lepidoptera,MB,36.4,139.1,global average,100.6644518272,770,14.25
+newsearch,gomi,1996,japan,6,Hyphantria,cunea,lepidoptera,MB,36.4,139.1,global average,56.3122923588,770,14.5
+newsearch,gomi,1996,japan,6,Hyphantria,cunea,lepidoptera,MB,36.4,139.1,global average,18.1063122924,770,14.75
+newsearch,gomi,1996,japan,6,Hyphantria,cunea,lepidoptera,MB,36.4,139.1,global average,-0.8305647841,770,15
+newsearch,gomi,1996,japan,6,Hyphantria,cunea,lepidoptera,FI,36.1,136.2,global average,100.8305647841,770,14.25
+newsearch,gomi,1996,japan,6,Hyphantria,cunea,lepidoptera,FI,36.1,136.2,global average,84.3853820598,770,14.5
+newsearch,gomi,1996,japan,6,Hyphantria,cunea,lepidoptera,FI,36.1,136.2,global average,12.1262458472,770,14.75
+newsearch,gomi,1996,japan,6,Hyphantria,cunea,lepidoptera,FI,36.1,136.2,global average,-0.9966777409,770,15
+newsearch,gomi,1996,japan,6,Hyphantria,cunea,lepidoptera,UW,35.9,139.7,global average,100.1661129568,770,14
+newsearch,gomi,1996,japan,6,Hyphantria,cunea,lepidoptera,UW,35.9,139.7,global average,44.1860465116,770,14.25
+newsearch,gomi,1996,japan,6,Hyphantria,cunea,lepidoptera,UW,35.9,139.7,global average,9.1362126246,770,14.5
+newsearch,gomi,1996,japan,6,Hyphantria,cunea,lepidoptera,UW,35.9,139.7,global average,-0.4983388704,770,14.75
+newsearch,gomi,1996,japan,6,Hyphantria,cunea,lepidoptera,SO,35,138.4,global average,92.6910299003,770,14.25
+newsearch,gomi,1996,japan,6,Hyphantria,cunea,lepidoptera,SO,35,138.4,global average,22.4252491694,770,14.5
+newsearch,gomi,1996,japan,6,Hyphantria,cunea,lepidoptera,SO,35,138.4,global average,0,770,14.75
+newsearch,gotoh,1981,japan,4,Tetranychus,urticae,Trombidiformes, Sapporo,43.05,141.354167,global average,100.1215479722,100,9.5
+newsearch,gotoh,1981,japan,4,Tetranychus,urticae,Trombidiformes, Sapporo,43.05,141.354167,global average,95.8556062368,100,10
+newsearch,gotoh,1981,japan,4,Tetranychus,urticae,Trombidiformes, Sapporo,43.05,141.354167,global average,92.8521950518,100,10.5
+newsearch,gotoh,1981,japan,4,Tetranychus,urticae,Trombidiformes, Sapporo,43.05,141.354167,global average,99.8823729301,100,11
+newsearch,gotoh,1981,japan,4,Tetranychus,urticae,Trombidiformes, Sapporo,43.05,141.354167,global average,92.0575588462,100,11.5
+newsearch,gotoh,1981,japan,4,Tetranychus,urticae,Trombidiformes, Sapporo,43.05,141.354167,global average,74.8068955602,100,12
+newsearch,gotoh,1981,japan,4,Tetranychus,urticae,Trombidiformes, Sapporo,43.05,141.354167,global average,80.5863055951,100,12.5
+newsearch,gotoh,1981,japan,4,Tetranychus,urticae,Trombidiformes, Sapporo,43.05,141.354167,global average,48.0192908395,100,12.75
+newsearch,gotoh,1981,japan,4,Tetranychus,urticae,Trombidiformes, Sapporo,43.05,141.354167,global average,45.1465763988,100,13
+newsearch,gotoh,1981,japan,4,Tetranychus,urticae,Trombidiformes, Sapporo,43.05,141.354167,global average,20.115535922,100,13.25
+newsearch,gotoh,1981,japan,4,Tetranychus,urticae,Trombidiformes, Sapporo,43.05,141.354167,global average,0.300602512,100,13.5
+newsearch,gotoh,1981,japan,4,Tetranychus,urticae,Trombidiformes, Morioka,39.7,141.15444,global average,93.4337955642,100,9.5
+newsearch,gotoh,1981,japan,4,Tetranychus,urticae,Trombidiformes, Morioka,39.7,141.15444,global average,97.954595951,100,10
+newsearch,gotoh,1981,japan,4,Tetranychus,urticae,Trombidiformes, Morioka,39.7,141.15444,global average,92.7567864285,100,11
+newsearch,gotoh,1981,japan,4,Tetranychus,urticae,Trombidiformes, Morioka,39.7,141.15444,global average,91.1296119614,100,12
+newsearch,gotoh,1981,japan,4,Tetranychus,urticae,Trombidiformes, Morioka,39.7,141.15444,global average,78.2860428947,100,12.5
+newsearch,gotoh,1981,japan,4,Tetranychus,urticae,Trombidiformes, Morioka,39.7,141.15444,global average,57.4333773346,100,12.75
+newsearch,gotoh,1981,japan,4,Tetranychus,urticae,Trombidiformes, Morioka,39.7,141.15444,global average,8.9501130527,100,13
+newsearch,gotoh,1981,japan,4,Tetranychus,urticae,Trombidiformes, Fukushima,37.75,140.473333,global average,65.822801354,100,9.5
+newsearch,gotoh,1981,japan,4,Tetranychus,urticae,Trombidiformes, Fukushima,37.75,140.473333,global average,69.2901859815,100,10
+newsearch,gotoh,1981,japan,4,Tetranychus,urticae,Trombidiformes, Fukushima,37.75,140.473333,global average,65.7770574935,100,11
+newsearch,gotoh,1981,japan,4,Tetranychus,urticae,Trombidiformes, Fukushima,37.75,140.473333,global average,58.914171448,100,12
+newsearch,gotoh,1981,japan,4,Tetranychus,urticae,Trombidiformes, Fukushima,37.75,140.473333,global average,31.2156104191,100,12.5
+newsearch,gotoh,1981,japan,4,Tetranychus,urticae,Trombidiformes, Fukushima,37.75,140.473333,global average,0.5972841217,100,13
+newsearch,gotoh,1981,japan,4,Tetranychus,urticae,Trombidiformes, Ishikawa,35.7166666667,139.931056,global average,75.6472756264,100,9.5
+newsearch,gotoh,1981,japan,4,Tetranychus,urticae,Trombidiformes, Ishikawa,35.7166666667,139.931056,global average,32.4075647276,100,9.75
+newsearch,gotoh,1981,japan,4,Tetranychus,urticae,Trombidiformes, Ishikawa,35.7166666667,139.931056,global average,33.3067583287,100,10
+newsearch,gotoh,1981,japan,4,Tetranychus,urticae,Trombidiformes, Ishikawa,35.7166666667,139.931056,global average,27.3678982657,100,10.5
+newsearch,gotoh,1981,japan,4,Tetranychus,urticae,Trombidiformes, Ishikawa,35.7166666667,139.931056,global average,44.8498947891,100,11
+newsearch,gotoh,1981,japan,4,Tetranychus,urticae,Trombidiformes, Ishikawa,35.7166666667,139.931056,global average,36.8238077189,100,11.5
+newsearch,gotoh,1981,japan,4,Tetranychus,urticae,Trombidiformes, Ishikawa,35.7166666667,139.931056,global average,5.5624534393,100,12
+newsearch,gotoh,1981,japan,4,Tetranychus,urticae,Trombidiformes, Ishikawa,35.7166666667,139.931056,global average,22.010638715,100,12.5
+newsearch,gotoh,1981,japan,4,Tetranychus,urticae,Trombidiformes, Ishikawa,35.7166666667,139.931056,global average,0.3842484284,100,13
+newsearch,hashimoto,2008,japan,6,Pieris,rapae,lepidoptera,Iwamizawa,43.1666666667,141.77575,global average,99.8465199524,37.5,10
+newsearch,hashimoto,2008,japan,6,Pieris,rapae,lepidoptera,Iwamizawa,43.1666666667,141.77575,global average,99.8690170278,37.5,11
+newsearch,hashimoto,2008,japan,6,Pieris,rapae,lepidoptera,Iwamizawa,43.1666666667,141.77575,global average,100.415945927,37.5,12
+newsearch,hashimoto,2008,japan,6,Pieris,rapae,lepidoptera,Iwamizawa,43.1666666667,141.77575,global average,97.2883525142,37.5,13
+newsearch,hashimoto,2008,japan,6,Pieris,rapae,lepidoptera,Iwamizawa,43.1666666667,141.77575,global average,92.3229980103,37.5,14
+newsearch,hashimoto,2008,japan,6,Pieris,rapae,lepidoptera,Iwamizawa,43.1666666667,141.77575,global average,58.2139321888,37.5,14.5
+newsearch,hashimoto,2008,japan,6,Pieris,rapae,lepidoptera,Iwamizawa,43.1666666667,141.77575,global average,13.8686970694,37.5,15
+newsearch,hashimoto,2008,japan,6,Pieris,rapae,lepidoptera,Iwamizawa,43.1666666667,141.77575,global average,0.767400238,37.5,16
+newsearch,hashimoto,2008,japan,6,Pieris,rapae,lepidoptera,Sendai,38.25,140.869444,global average,100.7180544274,37.5,10
+newsearch,hashimoto,2008,japan,6,Pieris,rapae,lepidoptera,Sendai,38.25,140.869444,global average,100.4880312886,37.5,12
+newsearch,hashimoto,2008,japan,6,Pieris,rapae,lepidoptera,Sendai,38.25,140.869444,global average,73.7937436436,37.5,13
+newsearch,hashimoto,2008,japan,6,Pieris,rapae,lepidoptera,Sendai,38.25,140.869444,global average,20.3587541892,37.5,13.5
+newsearch,hashimoto,2008,japan,6,Pieris,rapae,lepidoptera,Sendai,38.25,140.869444,global average,0.545366433,37.5,14
+newsearch,hashimoto,2008,japan,6,Pieris,rapae,lepidoptera,Nagaoka,37.3833333333,138.838889,global average,100,37.5,10
+newsearch,hashimoto,2008,japan,6,Pieris,rapae,lepidoptera,Nagaoka,37.3833333333,138.838889,global average,84.8039215686,37.5,12
+newsearch,hashimoto,2008,japan,6,Pieris,rapae,lepidoptera,Nagaoka,37.3833333333,138.838889,global average,74.5098039216,37.5,13
+newsearch,hashimoto,2008,japan,6,Pieris,rapae,lepidoptera,Nagaoka,37.3833333333,138.838889,global average,0,37.5,13.5
+newsearch,hashimoto,2008,japan,6,Pieris,rapae,lepidoptera,Nagaoka,37.3833333333,138.838889,global average,0.4901960784,37.5,14
+newsearch,hashimoto,2008,japan,6,Pieris,rapae,lepidoptera,Okayama,34.655278,133.919444,global average,99.5024875622,37.5,10
+newsearch,hashimoto,2008,japan,6,Pieris,rapae,lepidoptera,Okayama,34.655278,133.919444,global average,95.5223880597,37.5,11
+newsearch,hashimoto,2008,japan,6,Pieris,rapae,lepidoptera,Okayama,34.655278,133.919444,global average,55.7213930348,37.5,12
+newsearch,hashimoto,2008,japan,6,Pieris,rapae,lepidoptera,Okayama,34.655278,133.919444,global average,2.4875621891,37.5,13
+newsearch,hashimoto,2008,japan,6,Pieris,rapae,lepidoptera,Okayama,34.655278,133.919444,global average,0,37.5,14
+newsearch,hashimoto,2008,japan,6,Pieris,rapae,lepidoptera,Matsuyama,33.839167,132.765556,global average,100.4124594434,37.5,8
+newsearch,hashimoto,2008,japan,6,Pieris,rapae,lepidoptera,Matsuyama,33.839167,132.765556,global average,99.7359790191,37.5,10
+newsearch,hashimoto,2008,japan,6,Pieris,rapae,lepidoptera,Matsuyama,33.839167,132.765556,global average,76.0286550771,37.5,11
+newsearch,hashimoto,2008,japan,6,Pieris,rapae,lepidoptera,Matsuyama,33.839167,132.765556,global average,42.6610968018,37.5,12
+newsearch,hashimoto,2008,japan,6,Pieris,rapae,lepidoptera,Matsuyama,33.839167,132.765556,global average,0.4153930099,37.5,13
+newsearch,hashimoto,2008,japan,6,Pieris,rapae,lepidoptera,Matsuyama,33.839167,132.765556,global average,-0.3162384637,37.5,14
+newsearch,hashimoto,2008,japan,6,Pieris,rapae,lepidoptera,Naze,28.377247,129.493742,global average,99,37.5,8
+newsearch,hashimoto,2008,japan,6,Pieris,rapae,lepidoptera,Naze,28.377247,129.493742,global average,96,37.5,10
+newsearch,hashimoto,2008,japan,6,Pieris,rapae,lepidoptera,Naze,28.377247,129.493742,global average,64,37.5,11
+newsearch,hashimoto,2008,japan,6,Pieris,rapae,lepidoptera,Naze,28.377247,129.493742,global average,10,37.5,12
+newsearch,hashimoto,2008,japan,6,Pieris,rapae,lepidoptera,Naze,28.377247,129.493742,global average,0,37.5,14
+newsearch,ito,2000,japan,4,Orius,sauteri,heteroptera,WA,45.3975,141.700881,accurate,99.9970295559,32,11
+newsearch,ito,2000,japan,4,Orius,sauteri,heteroptera,WA,45.3975,141.700881,accurate,100.1128768751,32,12
+newsearch,ito,2000,japan,4,Orius,sauteri,heteroptera,WA,45.3975,141.700881,accurate,100.2227833061,34,13
+newsearch,ito,2000,japan,4,Orius,sauteri,heteroptera,WA,45.3975,141.700881,accurate,100.326748849,31,14
+newsearch,ito,2000,japan,4,Orius,sauteri,heteroptera,WA,45.3975,141.700881,accurate,95.4136343383,39,14.5
+newsearch,ito,2000,japan,4,Orius,sauteri,heteroptera,WA,45.3975,141.700881,accurate,27.5122530818,70,15
+newsearch,ito,2000,japan,4,Orius,sauteri,heteroptera,WA,45.3975,141.700881,accurate,-0.6148819248,36,15.5
+newsearch,ito,2000,japan,4,Orius,sauteri,heteroptera,WA,45.3975,141.700881,accurate,0.546561711,36,16
+newsearch,ito,2000,japan,4,Orius,sauteri,heteroptera,MO,42.1,140.583333,accurate,99.6456204595,22,12
+newsearch,ito,2000,japan,4,Orius,sauteri,heteroptera,MO,42.1,140.583333,accurate,96.0752465891,26,13
+newsearch,ito,2000,japan,4,Orius,sauteri,heteroptera,MO,42.1,140.583333,accurate,79.9982281023,55,14
+newsearch,ito,2000,japan,4,Orius,sauteri,heteroptera,MO,42.1,140.583333,accurate,11.3549111098,35,14.5
+newsearch,ito,2000,japan,4,Orius,sauteri,heteroptera,MO,42.1,140.583333,accurate,3.0447108854,29,15
+newsearch,ito,2000,japan,4,Orius,sauteri,heteroptera,MO,42.1,140.583333,accurate,3.2602917725,41,16
+newsearch,ito,2000,japan,4,Orius,sauteri,heteroptera,HA,39.388611,141.116944,accurate,99.4623346751,31,11
+newsearch,ito,2000,japan,4,Orius,sauteri,heteroptera,HA,39.388611,141.116944,accurate,99.1460609546,37,12.5
+newsearch,ito,2000,japan,4,Orius,sauteri,heteroptera,HA,39.388611,141.116944,accurate,88.4042553191,44,13
+newsearch,ito,2000,japan,4,Orius,sauteri,heteroptera,HA,39.388611,141.116944,accurate,29.7843588269,70,13.5
+newsearch,ito,2000,japan,4,Orius,sauteri,heteroptera,HA,39.388611,141.116944,accurate,8.4042553191,39,14
+newsearch,ito,2000,japan,4,Orius,sauteri,heteroptera,HA,39.388611,141.116944,accurate,0.7504312823,35,15
+newsearch,ito,2000,japan,4,Orius,sauteri,heteroptera,HA,39.388611,141.116944,accurate,4.2610695802,25,16
+newsearch,ito,2000,japan,4,Orius,sauteri,heteroptera,TU,36.080556,140.114722,accurate,100.5524861878,32,11
+newsearch,ito,2000,japan,4,Orius,sauteri,heteroptera,TU,36.080556,140.114722,accurate,95.0276243094,25,12
+newsearch,ito,2000,japan,4,Orius,sauteri,heteroptera,TU,36.080556,140.114722,accurate,81.2154696133,43,12.5
+newsearch,ito,2000,japan,4,Orius,sauteri,heteroptera,TU,36.080556,140.114722,accurate,48.0662983425,75,13
+newsearch,ito,2000,japan,4,Orius,sauteri,heteroptera,TU,36.080556,140.114722,accurate,18.2320441989,44,14
+newsearch,ito,2000,japan,4,Orius,sauteri,heteroptera,TU,36.080556,140.114722,accurate,14.364640884,34,15
+newsearch,ito,2000,japan,4,Orius,sauteri,heteroptera,TU,36.080556,140.114722,accurate,12.1546961326,50,16
+newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,diptera,KO,44.774361,142.254389,global average,-1.3441618258,110,16
+newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,diptera,KO,44.774361,142.254389,global average,-1.4578985957,110,14
+newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,diptera,KO,44.774361,142.254389,global average,11.3464177617,110,13.5
+newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,diptera,KO,44.774361,142.254389,global average,33.2186565902,110,13
+newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,diptera,KO,44.774361,142.254389,global average,44.0057902356,110,12.5
+newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,diptera,KO,44.774361,142.254389,global average,46.0793713459,110,12
+newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,diptera,KO,44.774361,142.254389,global average,51.6759724024,110,10
+newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,diptera,ON,41.972,140.6691,global average,-1.0067114094,110,16
+newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,diptera,ON,41.972,140.6691,global average,-1.4578985957,110,14
+newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,diptera,ON,41.972,140.6691,global average,2.6234654936,110,13.5
+newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,diptera,ON,41.972,140.6691,global average,11.7383866298,110,13
+newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,diptera,ON,41.972,140.6691,global average,33.267535202,110,12.5
+newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,diptera,ON,41.972,140.6691,global average,69.2356137086,110,12
+newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,diptera,ON,41.972,140.6691,global average,77.5148985769,110,10
+newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,diptera,IW,38.104278,140.87016,global average,-1.6797322956,110,16
+newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,diptera,IW,38.104278,140.87016,global average,-1.4578985957,110,14
+newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,diptera,IW,38.104278,140.87016,global average,-1.4015001974,110,13.5
+newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,diptera,IW,38.104278,140.87016,global average,1.3394619593,110,13
+newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,diptera,IW,38.104278,140.87016,global average,-1.6242738706,110,12.5
+newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,diptera,IW,38.104278,140.87016,global average,18.5663527156,110,12
+newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,diptera,IW,38.104278,140.87016,global average,31.709999436,110,11.5
+newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,diptera,IW,38.104278,140.87016,global average,54.3605361608,110,10
+newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,diptera,TS,36.321889,139.003278,global average,-1.0067114094,110,16
+newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,diptera,TS,36.321889,139.003278,global average,-1.7934690655,110,14
+newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,diptera,TS,36.321889,139.003278,global average,-1.0772094073,110,13.5
+newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,diptera,TS,36.321889,139.003278,global average,-1.0095313293,110,13
+newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,diptera,TS,36.321889,139.003278,global average,-1.2981031339,110,12.5
+newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,diptera,TS,36.321889,139.003278,global average,9.1722595078,110,12
+newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,diptera,TS,36.321889,139.003278,global average,17.2823491813,110,11.5
+newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,diptera,TS,36.321889,139.003278,global average,41.6144981483,110,10
+newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,diptera,OI,33.233333,131.606667,global average,-1.6797322956,110,16
+newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,diptera,OI,33.233333,131.606667,global average,-1.4578985957,110,14
+newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,diptera,OI,33.233333,131.606667,global average,-1.0095313293,110,13
+newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,diptera,OI,33.233333,131.606667,global average,-1.3018630271,110,12.5
+newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,diptera,OI,33.233333,131.606667,global average,2.4589701652,110,12
+newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,diptera,OI,33.233333,131.606667,global average,12.5843626041,110,11.5
+newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,diptera,OI,33.233333,131.606667,global average,19.1275167785,110,10
+newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,diptera,ON,41.972,140.6691,global average,2.5806451613,110,16
+newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,diptera,ON,41.972,140.6691,global average,1.6129032258,110,14
+newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,diptera,ON,41.972,140.6691,global average,11.2903225806,110,13.5
+newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,diptera,ON,41.972,140.6691,global average,18.064516129,110,13
+newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,diptera,ON,41.972,140.6691,global average,97.4193548387,110,12
+newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,diptera,ON,41.972,140.6691,global average,75.4838709677,110,10
+newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,diptera,IW,38.104278,140.87016,global average,2.2580645161,110,16
+newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,diptera,IW,38.104278,140.87016,global average,2.2580645161,110,14
+newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,diptera,IW,38.104278,140.87016,global average,7.7419354839,110,13.5
+newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,diptera,IW,38.104278,140.87016,global average,2.5806451613,110,13
+newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,diptera,IW,38.104278,140.87016,global average,14.1935483871,110,12.5
+newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,diptera,IW,38.104278,140.87016,global average,55.4838709677,110,12
+newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,diptera,IW,38.104278,140.87016,global average,69.3548387097,110,10
+newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,diptera,OI,33.233333,131.606667,global average,6.4516129032,110,16
+newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,diptera,OI,33.233333,131.606667,global average,6.1290322581,110,14
+newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,diptera,OI,33.233333,131.606667,global average,5.1612903226,110,13.5
+newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,diptera,OI,33.233333,131.606667,global average,3.2258064516,110,13
+newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,diptera,OI,33.233333,131.606667,global average,7.0967741935,110,12.5
+newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,diptera,OI,33.233333,131.606667,global average,42.5806451613,110,12
+newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,diptera,OI,33.233333,131.606667,global average,35.8064516129,110,11.5
+newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,diptera,OI,33.233333,131.606667,global average,62.9032258065,110,10
+newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,diptera,KG,31.6,130.55,global average,5.8064516129,110,16
+newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,diptera,KG,31.6,130.55,global average,1.935483871,110,14
+newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,diptera,KG,31.6,130.55,global average,4.1935483871,110,13.5
+newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,diptera,KG,31.6,130.55,global average,2.5806451613,110,13
+newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,diptera,KG,31.6,130.55,global average,2.5806451613,110,12.5
+newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,diptera,KG,31.6,130.55,global average,19.3548387097,110,12
+newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,diptera,KG,31.6,130.55,global average,9.6774193548,110,11.5
+newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,diptera,KG,31.6,130.55,global average,47.7419354839,110,10
+newsearch,kimura_geogr_3,1984,japan,3,Drosophila,subauraria,diptera,ON,41.972,140.6691,global average,-0.6688963211,110,16
+newsearch,kimura_geogr_3,1984,japan,3,Drosophila,subauraria,diptera,ON,41.972,140.6691,global average,33.223103228,110,14
+newsearch,kimura_geogr_3,1984,japan,3,Drosophila,subauraria,diptera,ON,41.972,140.6691,global average,44.2861974372,110,13.5
+newsearch,kimura_geogr_3,1984,japan,3,Drosophila,subauraria,diptera,ON,41.972,140.6691,global average,65.3864943069,110,13
+newsearch,kimura_geogr_3,1984,japan,3,Drosophila,subauraria,diptera,ON,41.972,140.6691,global average,93.5073841644,110,12.5
+newsearch,kimura_geogr_3,1984,japan,3,Drosophila,subauraria,diptera,ON,41.972,140.6691,global average,96.5446619819,110,12
+newsearch,kimura_geogr_3,1984,japan,3,Drosophila,subauraria,diptera,ON,41.972,140.6691,global average,99.6664913006,110,10
+newsearch,kimura_geogr_3,1984,japan,3,Drosophila,subauraria,diptera,KT,39.28675,141.113222,global average,-0.3335086994,110,16
+newsearch,kimura_geogr_3,1984,japan,3,Drosophila,subauraria,diptera,KT,39.28675,141.113222,global average,2.4538724588,110,14
+newsearch,kimura_geogr_3,1984,japan,3,Drosophila,subauraria,diptera,KT,39.28675,141.113222,global average,21.8800496035,110,13.5
+newsearch,kimura_geogr_3,1984,japan,3,Drosophila,subauraria,diptera,KT,39.28675,141.113222,global average,62.0420127015,110,13
+newsearch,kimura_geogr_3,1984,japan,3,Drosophila,subauraria,diptera,KT,39.28675,141.113222,global average,98.1915373342,110,12.5
+newsearch,kimura_geogr_3,1984,japan,3,Drosophila,subauraria,diptera,KT,39.28675,141.113222,global average,91.5270001127,110,12
+newsearch,kimura_geogr_3,1984,japan,3,Drosophila,subauraria,diptera,KT,39.28675,141.113222,global average,99.6664913006,110,10
+newsearch,kimura_geogr_3,1984,japan,3,Drosophila,subauraria,diptera,IW,38.104278,140.87016,global average,-1.0033444816,110,16
+newsearch,kimura_geogr_3,1984,japan,3,Drosophila,subauraria,diptera,IW,38.104278,140.87016,global average,-0.5571004472,110,14
+newsearch,kimura_geogr_3,1984,japan,3,Drosophila,subauraria,diptera,IW,38.104278,140.87016,global average,15.8599827139,110,13.5
+newsearch,kimura_geogr_3,1984,japan,3,Drosophila,subauraria,diptera,IW,38.104278,140.87016,global average,30.9383337717,110,13
+newsearch,kimura_geogr_3,1984,japan,3,Drosophila,subauraria,diptera,IW,38.104278,140.87016,global average,57.0544135884,110,12.5
+newsearch,kimura_geogr_3,1984,japan,3,Drosophila,subauraria,diptera,IW,38.104278,140.87016,global average,85.5088121454,110,12
+newsearch,kimura_geogr_3,1984,japan,3,Drosophila,subauraria,diptera,IW,38.104278,140.87016,global average,99.6664913006,110,10
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,leningrad,59.933333,30.266667,global average,99.3243243243,250,8
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,leningrad,59.933333,30.266667,global average,99.2549469112,250,9
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,leningrad,59.933333,30.266667,global average,99.1885859073,250,10
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,leningrad,59.933333,30.266667,global average,99.1222249035,250,11
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,leningrad,59.933333,30.266667,global average,99.0528474903,250,12
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,leningrad,59.933333,30.266667,global average,98.9834700772,250,13
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,leningrad,59.933333,30.266667,global average,98.9171090734,250,14
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,leningrad,59.933333,30.266667,global average,97.5295608108,250,14.5
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,leningrad,59.933333,30.266667,global average,96.8207046332,250,15
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,leningrad,59.933333,30.266667,global average,96.1118484556,250,15.5
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,leningrad,59.933333,30.266667,global average,98.7843870656,250,16
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,leningrad,59.933333,30.266667,global average,49.4389478764,250,16.3
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,leningrad,59.933333,30.266667,global average,18.342784749,250,16.5
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,leningrad,59.933333,30.266667,global average,5.4717664093,250,17
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,leningrad,59.933333,30.266667,global average,5.4023889961,250,18
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,padua,45.408056,11.872222,global average,100.4524886878,250,11.5
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,padua,45.408056,11.872222,global average,101.1046965205,250,12
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,padua,45.408056,11.872222,global average,67.2772663442,250,12.5
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,padua,45.408056,11.872222,global average,9.9984396942,250,13
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,padua,45.408056,11.872222,global average,5.1365267592,250,13.5
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,padua,45.408056,11.872222,global average,5.0990794196,250,14
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,padua,45.408056,11.872222,global average,4.3750975191,250,14.5
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,warsaw,52.216667,21.033333,global average,91.724137931,250,11.5
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,warsaw,52.216667,21.033333,global average,94.4827586207,250,12
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,warsaw,52.216667,21.033333,global average,97.9310344828,250,12.5
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,warsaw,52.216667,21.033333,global average,84.8275862069,250,13
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,warsaw,52.216667,21.033333,global average,81.3793103448,250,13.5
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,warsaw,52.216667,21.033333,global average,19.3103448276,250,14
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,warsaw,52.216667,21.033333,global average,4.1379310345,250,14.5
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,Aile-froide,44.885,6.356111,global average,100.4103418487,250,12
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,Aile-froide,44.885,6.356111,global average,100.3424657534,250,13
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,Aile-froide,44.885,6.356111,global average,100.2715043811,250,14
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,Aile-froide,44.885,6.356111,global average,70.788596816,250,14.5
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,Aile-froide,44.885,6.356111,global average,34.4502036283,250,15
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,Aile-froide,44.885,6.356111,global average,4.9642107861,250,15.5
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,Aile-froide,44.885,6.356111,global average,4.9302727385,250,16
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,Aile-froide,44.885,6.356111,global average,4.8623966432,250,17
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,Voorne,51.816667,4.183333,global average,99.7285313546,250,12
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,Voorne,51.816667,4.183333,global average,99.6591560341,250,13
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,Voorne,51.816667,4.183333,global average,96.9233553525,250,13.5
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,Voorne,51.816667,4.183333,global average,91.5000150816,250,13.8
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,Voorne,51.816667,4.183333,global average,52.2969263717,250,14
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,Voorne,51.816667,4.183333,global average,13.0938376618,250,14.3
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,Voorne,51.816667,4.183333,global average,4.9316803909,250,15
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,Voorne,51.816667,4.183333,global average,4.868337707,250,16
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,Voorne,51.816667,4.183333,global average,4.7989623865,250,17
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,Voorne,51.816667,4.183333,global average,4.7326033843,250,18
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,Thessaloniki1,40.647222,22.963889,global average,95.8225348636,250,9
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,Thessaloniki1,40.647222,22.963889,global average,95.7515734913,250,10
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,Thessaloniki1,40.647222,22.963889,global average,93.6690114772,250,10.5
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,Thessaloniki1,40.647222,22.963889,global average,24.4539059608,250,11
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,Thessaloniki1,40.647222,22.963889,global average,8.6696285326,250,11.5
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,Thessaloniki1,40.647222,22.963889,global average,4.5261014439,250,12
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,Thessaloniki1,40.647222,22.963889,global average,4.4520547945,250,13
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,Thessaloniki2,40.647222,22.963889,global average,78.231292517,250,8
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,Thessaloniki2,40.647222,22.963889,global average,74.8299319728,250,9
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,Thessaloniki2,40.647222,22.963889,global average,78.9115646259,250,10
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,Thessaloniki2,40.647222,22.963889,global average,70.0680272109,250,10.5
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,Thessaloniki2,40.647222,22.963889,global average,44.8979591837,250,11
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,Thessaloniki2,40.647222,22.963889,global average,6.1224489796,250,11.5
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,Thessaloniki2,40.647222,22.963889,global average,4.7619047619,250,12
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,Thessaloniki2,40.647222,22.963889,global average,5.4421768707,250,13.5
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,Thessaloniki2,40.647222,22.963889,global average,4.7619047619,250,14
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,Thessaloniki2,40.647222,22.963889,global average,4.7619047619,250,15
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,Thessaloniki2,40.647222,22.963889,global average,4.7619047619,250,16
+newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,Thessaloniki2,40.647222,22.963889,global average,4.7619047619,250,17
+newsearch,kurahashi,1989,"japan, indonesia",3,Boettcherisca,peregrina,diptera,Nagasaki,32.750278,129.877778,global average,-0.3289473684,100,16
+newsearch,kurahashi,1989,"japan, indonesia",3,Boettcherisca,peregrina,diptera,Nagasaki,32.750278,129.877778,global average,-0.1644736842,100,15
+newsearch,kurahashi,1989,"japan, indonesia",3,Boettcherisca,peregrina,diptera,Nagasaki,32.750278,129.877778,global average,20.5592105263,100,14
+newsearch,kurahashi,1989,"japan, indonesia",3,Boettcherisca,peregrina,diptera,Nagasaki,32.750278,129.877778,global average,85.3618421053,100,13
+newsearch,kurahashi,1989,"japan, indonesia",3,Boettcherisca,peregrina,diptera,Nagasaki,32.750278,129.877778,global average,99.3421052632,100,12
+newsearch,kurahashi,1989,"japan, indonesia",3,Boettcherisca,peregrina,diptera,Nagasaki,32.750278,129.877778,global average,99.3421052632,100,11
+newsearch,kurahashi,1989,"japan, indonesia",3,Boettcherisca,peregrina,diptera,Nagasaki,32.750278,129.877778,global average,98.8486842105,100,10
+newsearch,kurahashi,1989,"japan, indonesia",3,Boettcherisca,peregrina,diptera,Nagasaki,32.750278,129.877778,global average,95.8881578947,100,9
+newsearch,kurahashi,1989,"japan, indonesia",3,Boettcherisca,peregrina,diptera,Tokunoshima,27.82,128.932222,global average,-0.1644736842,100,14
+newsearch,kurahashi,1989,"japan, indonesia",3,Boettcherisca,peregrina,diptera,Tokunoshima,27.82,128.932222,global average,3.9473684211,100,13
+newsearch,kurahashi,1989,"japan, indonesia",3,Boettcherisca,peregrina,diptera,Tokunoshima,27.82,128.932222,global average,55.2631578947,100,12
+newsearch,kurahashi,1989,"japan, indonesia",3,Boettcherisca,peregrina,diptera,Tokunoshima,27.82,128.932222,global average,82.4013157895,100,11
+newsearch,kurahashi,1989,"japan, indonesia",3,Boettcherisca,peregrina,diptera,Tokunoshima,27.82,128.932222,global average,90.2960526316,100,10
+newsearch,kurahashi,1989,"japan, indonesia",3,Boettcherisca,peregrina,diptera,Tokunoshima,27.82,128.932222,global average,92.1052631579,100,9
+newsearch,kurahashi,1989,"japan, indonesia",3,Boettcherisca,peregrina,diptera, Lae,-6.5,146.990224,global average,-0.1644736842,100,14
+newsearch,kurahashi,1989,"japan, indonesia",3,Boettcherisca,peregrina,diptera, Lae,-6.5,146.990224,global average,-0.1644736842,100,13
+newsearch,kurahashi,1989,"japan, indonesia",3,Boettcherisca,peregrina,diptera, Lae,-6.5,146.990224,global average,3.2894736842,100,12
+newsearch,kurahashi,1989,"japan, indonesia",3,Boettcherisca,peregrina,diptera, Lae,-6.5,146.990224,global average,8.7171052632,100,11
+newsearch,kurahashi,1989,"japan, indonesia",3,Boettcherisca,peregrina,diptera, Lae,-6.5,146.990224,global average,6.9078947368,100,10
+newsearch,kurahashi,1989,"japan, indonesia",3,Boettcherisca,peregrina,diptera, Lae,-6.5,146.990224,global average,3.6184210526,100,9
+newsearch,kurota,2003,japan,3,Bruchidius,dorsalis,coleoptera,Sagamihara,35.571389,139.373333,accurate,86.9995764677,60,12
+newsearch,kurota,2003,japan,3,Bruchidius,dorsalis,coleoptera,Sagamihara,35.571389,139.373333,accurate,79.6432244923,60,12.5
+newsearch,kurota,2003,japan,3,Bruchidius,dorsalis,coleoptera,Sagamihara,35.571389,139.373333,accurate,9.9997310906,60,13
+newsearch,kurota,2003,japan,3,Bruchidius,dorsalis,coleoptera,Sagamihara,35.571389,139.373333,accurate,0.2137829498,60,13.5
+newsearch,kurota,2003,japan,3,Bruchidius,dorsalis,coleoptera,Sagamihara,35.571389,139.373333,accurate,0.1428581032,60,14
+newsearch,kurota,2003,japan,3,Bruchidius,dorsalis,coleoptera,Tatsuno,34.85,134.533333,accurate,99.8571418968,40,12
+newsearch,kurota,2003,japan,3,Bruchidius,dorsalis,coleoptera,Tatsuno,34.85,134.533333,accurate,77.9285911166,40,12.5
+newsearch,kurota,2003,japan,3,Bruchidius,dorsalis,coleoptera,Tatsuno,34.85,134.533333,accurate,74.2858775521,40,13
+newsearch,kurota,2003,japan,3,Bruchidius,dorsalis,coleoptera,Tatsuno,34.85,134.533333,accurate,21.6428345737,40,13.5
+newsearch,kurota,2003,japan,3,Bruchidius,dorsalis,coleoptera,Tatsuno,34.85,134.533333,accurate,0,40,14
+newsearch,kurota,2003,japan,3,Bruchidius,dorsalis,coleoptera,Ninohe,40.271111,141.305,accurate,96.8581301387,60,12
+newsearch,kurota,2003,japan,3,Bruchidius,dorsalis,coleoptera,Ninohe,40.271111,141.305,accurate,99.500164707,60,12.5
+newsearch,kurota,2003,japan,3,Bruchidius,dorsalis,coleoptera,Ninohe,40.271111,141.305,accurate,90.0009411828,60,13
+newsearch,kurota,2003,japan,3,Bruchidius,dorsalis,coleoptera,Ninohe,40.271111,141.305,accurate,37.2150401011,60,13.5
+newsearch,kurota,2003,japan,3,Bruchidius,dorsalis,coleoptera,Ninohe,40.271111,141.305,accurate,4.8578477839,60,14
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Oulu1,65,25.4166666667,global average,100.5723905724,30,9
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Oulu1,65,25.4166666667,global average,99.1750841751,30,10.5
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Oulu1,65,25.4166666667,global average,97.7777777778,30,12
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Oulu1,65,25.4166666667,global average,99.7306397306,30,13.5
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Oulu1,65,25.4166666667,global average,99.4444444444,30,15
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Oulu1,65,25.4166666667,global average,98.0471380471,30,16.5
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Oulu1,65,25.4166666667,global average,100,30,18
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Oulu1,65,25.4166666667,global average,63.063973064,30,19.5
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Oulu1,65,25.4166666667,global average,7.2222222222,30,21
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Oulu7,65,25.4166666667,global average,100.7312716311,30,9
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Oulu7,65,25.4166666667,global average,100.3628447025,30,12
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Oulu7,65,25.4166666667,global average,100.1730490119,30,13.5
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Oulu7,65,25.4166666667,global average,99.9944177738,30,15
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Oulu7,65,25.4166666667,global average,99.8157865357,30,16.5
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Oulu7,65,25.4166666667,global average,95.1825387965,30,18
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Oulu7,65,25.4166666667,global average,54.9905102155,30,19.5
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Oulu7,65,25.4166666667,global average,19.2530981355,30,21
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Oulu8,65,25.4166666667,global average,100.5805839335,30,15
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Oulu8,65,25.4166666667,global average,100.2791268911,30,16.5
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Oulu8,65,25.4166666667,global average,100.0111650756,30,18
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Oulu8,65,25.4166666667,global average,79.7298051694,30,19.5
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Oulu8,65,25.4166666667,global average,27.2483671077,30,21
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,paltamo1,64.3333333333,27.8333333333,global average,100.7508609496,30,9
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,paltamo1,64.3333333333,27.8333333333,global average,100.5476203918,30,10.5
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,paltamo1,64.3333333333,27.8333333333,global average,100.3669621182,30,12
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,paltamo1,64.3333333333,27.8333333333,global average,100.1863038446,30,13.5
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,paltamo1,64.3333333333,27.8333333333,global average,101.1178230678,30,15
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,paltamo1,64.3333333333,27.8333333333,global average,91.9381245413,30,16.5
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,paltamo1,64.3333333333,27.8333333333,global average,55.7951786823,30,18
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,paltamo1,64.3333333333,27.8333333333,global average,5.0584316604,30,19.5
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,paltamo1,64.3333333333,27.8333333333,global average,7.1247106645,30,21
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Kuoio3,62.9166666667,27.75,global average,100.9230769231,30,9
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Kuoio3,62.9166666667,27.75,global average,98.5384615385,30,12
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Kuoio3,62.9166666667,27.75,global average,100.6483516484,30,13.5
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Kuoio3,62.9166666667,27.75,global average,100.5604395604,30,15
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Kuoio3,62.9166666667,27.75,global average,89.478021978,30,16.5
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Kuoio3,62.9166666667,27.75,global average,81.6923076923,30,18
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Kuoio3,62.9166666667,27.75,global average,37.6373626374,30,19.5
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Kuoio3,62.9166666667,27.75,global average,6.7802197802,30,21
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Hollola1,61.0833333333,25.4166666667,global average,98.8888888889,30,9
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Hollola1,61.0833333333,25.4166666667,global average,100,30,12
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Hollola1,61.0833333333,25.4166666667,global average,84.4444444444,30,13.5
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Hollola1,61.0833333333,25.4166666667,global average,71.1111111111,30,15
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Hollola1,61.0833333333,25.4166666667,global average,48.8888888889,30,16.5
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Hollola1,61.0833333333,25.4166666667,global average,11.1111111111,30,18
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Hollola1,61.0833333333,25.4166666667,global average,3.3333333333,30,19.5
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Hollola1,61.0833333333,25.4166666667,global average,1.1111111111,30,21
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Dietikon1,47.4166666667,8.5,global average,97.8021978022,30,9
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Dietikon1,47.4166666667,8.5,global average,97.8021978022,30,12
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Dietikon1,47.4166666667,8.5,global average,73.6263736264,30,13.5
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Dietikon1,47.4166666667,8.5,global average,25.2747252747,30,15
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Dietikon1,47.4166666667,8.5,global average,0,30,16.5
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Dietikon1,47.4166666667,8.5,global average,0,30,18
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Dietikon1,47.4166666667,8.5,global average,1.0989010989,30,19.5
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Dietikon1,47.4166666667,8.5,global average,0,30,21
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Dietikon2,47.4166666667,8.5,global average,95.6043956044,30,9
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Dietikon2,47.4166666667,8.5,global average,84.6153846154,30,10.5
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Dietikon2,47.4166666667,8.5,global average,56.043956044,30,12
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Dietikon2,47.4166666667,8.5,global average,2.1978021978,30,13.5
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Dietikon2,47.4166666667,8.5,global average,1.0989010989,30,15
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Dietikon2,47.4166666667,8.5,global average,2.1978021978,30,16.5
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Dietikon2,47.4166666667,8.5,global average,4.3956043956,30,18
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Dietikon2,47.4166666667,8.5,global average,2.1978021978,30,19.5
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Dietikon2,47.4166666667,8.5,global average,3.2967032967,30,21
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Ticino2,46.1666666667,8.8333333333,global average,93.6444779008,30,7.5
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Ticino2,46.1666666667,8.8333333333,global average,88.3535864071,30,9
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Ticino2,46.1666666667,8.8333333333,global average,92.7519088074,30,10.5
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Ticino2,46.1666666667,8.8333333333,global average,74.5564039144,30,12
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Ticino2,46.1666666667,8.8333333333,global average,18.7278201957,30,13.5
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Ticino2,46.1666666667,8.8333333333,global average,8.0653833746,30,15
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Ticino2,46.1666666667,8.8333333333,global average,6.0060221529,30,16.5
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Ticino2,46.1666666667,8.8333333333,global average,1.7958920314,30,18
+newsearch,lankinen,1986,Europe,9,drosophila,littoralis,diptera,Ticino2,46.1666666667,8.8333333333,global average,4.027314765,30,19.5
+newsearch,lehmann,2015,Europe,3,leptinotarsa,decemlineata,coleoptera,Padua_A,45.8,12.1166666667,accurate,100,24,9
+newsearch,lehmann,2015,Europe,3,leptinotarsa,decemlineata,coleoptera,Padua_A,45.8,12.1166666667,accurate,90.7094594595,22,12
+newsearch,lehmann,2015,Europe,3,leptinotarsa,decemlineata,coleoptera,Padua_A,45.8,12.1166666667,accurate,91.5540540541,22,15
+newsearch,lehmann,2015,Europe,3,leptinotarsa,decemlineata,coleoptera,Padua_A,45.8,12.1166666667,accurate,37.6689189189,23,18
+newsearch,lehmann,2015,Europe,3,leptinotarsa,decemlineata,coleoptera,Padua_A,45.8,12.1166666667,accurate,38.5135135135,25,21
+newsearch,lehmann,2015,Europe,3,leptinotarsa,decemlineata,coleoptera,Padua_A,45.8,12.1166666667,accurate,28.2094594595,27,14
+newsearch,lehmann,2015,Europe,3,leptinotarsa,decemlineata,coleoptera,Emmen,52.9,6.85,accurate,84.6283783784,29,9
+newsearch,lehmann,2015,Europe,3,leptinotarsa,decemlineata,coleoptera,Emmen,52.9,6.85,accurate,69.2567567568,26,12
+newsearch,lehmann,2015,Europe,3,leptinotarsa,decemlineata,coleoptera,Emmen,52.9,6.85,accurate,68.0743243243,28,15
+newsearch,lehmann,2015,Europe,3,leptinotarsa,decemlineata,coleoptera,Emmen,52.9,6.85,accurate,20.777027027,29,18
+newsearch,lehmann,2015,Europe,3,leptinotarsa,decemlineata,coleoptera,Emmen,52.9,6.85,accurate,26.8581081081,28,21
+newsearch,lehmann,2015,Europe,3,leptinotarsa,decemlineata,coleoptera,Emmen,52.9,6.85,accurate,28.0405405405,29,24
+newsearch,lehmann,2015,Europe,3,leptinotarsa,decemlineata,coleoptera,padua_B,45.8,12.1166666667,accurate,97.5486926467,24,9
+newsearch,lehmann,2015,Europe,3,leptinotarsa,decemlineata,coleoptera,padua_B,45.8,12.1166666667,accurate,95.1299374807,22,12
+newsearch,lehmann,2015,Europe,3,leptinotarsa,decemlineata,coleoptera,padua_B,45.8,12.1166666667,accurate,97.4500786678,22,15
+newsearch,lehmann,2015,Europe,3,leptinotarsa,decemlineata,coleoptera,padua_B,45.8,12.1166666667,accurate,60.064210785,23,18
+newsearch,lehmann,2015,Europe,3,leptinotarsa,decemlineata,coleoptera,padua_B,45.8,12.1166666667,accurate,56.1748626904,25,21
+newsearch,lehmann,2015,Europe,3,leptinotarsa,decemlineata,coleoptera,padua_B,45.8,12.1166666667,accurate,44.6057515247,27,24
+newsearch,lumme,1977,Europe,3,drosophila,littoralis,diptera,Ku,47.37174,27.683056,global average,99.5792851878,128,6
+newsearch,lumme,1977,Europe,3,drosophila,littoralis,diptera,Ku,47.37174,27.683056,global average,99.2034861259,128,9
+newsearch,lumme,1977,Europe,3,drosophila,littoralis,diptera,Ku,47.37174,27.683056,global average,95.4811673829,128,12
+newsearch,lumme,1977,Europe,3,drosophila,littoralis,diptera,Ku,47.37174,27.683056,global average,56.9786513898,128,15
+newsearch,lumme,1977,Europe,3,drosophila,littoralis,diptera,Ku,47.37174,27.683056,global average,24.2641046122,128,16.5
+newsearch,lumme,1977,Europe,3,drosophila,littoralis,diptera,Ku,47.37174,27.683056,global average,9.4455808353,128,18
+newsearch,lumme,1977,Europe,3,drosophila,littoralis,diptera,Ku,47.37174,27.683056,global average,11.034460691,128,20
+newsearch,lumme,1977,Europe,3,drosophila,littoralis,diptera,Ku,47.37174,27.683056,global average,14.5466590503,128,24
+newsearch,lumme,1977,Europe,3,drosophila,littoralis,diptera,P,64.416667,27.833056,global average,99.7465045117,128,6
+newsearch,lumme,1977,Europe,3,drosophila,littoralis,diptera,P,64.416667,27.833056,global average,99.3692833153,128,9
+newsearch,lumme,1977,Europe,3,drosophila,littoralis,diptera,P,64.416667,27.833056,global average,99.4965643599,128,12
+newsearch,lumme,1977,Europe,3,drosophila,littoralis,diptera,P,64.416667,27.833056,global average,75.2048466346,128,15
+newsearch,lumme,1977,Europe,3,drosophila,littoralis,diptera,P,64.416667,27.833056,global average,60.2198146011,128,16.5
+newsearch,lumme,1977,Europe,3,drosophila,littoralis,diptera,P,64.416667,27.833056,global average,1.5841394071,128,18
+newsearch,lumme,1977,Europe,3,drosophila,littoralis,diptera,P,64.416667,27.833056,global average,0.3324239573,128,20
+newsearch,lumme,1977,Europe,3,drosophila,littoralis,diptera,P,64.416667,27.833056,global average,0.5037911738,128,24
+newsearch,lumme,1977,Europe,3,drosophila,littoralis,diptera,R,66.5,25.716667,global average,99.4134879984,128,6
+newsearch,lumme,1977,Europe,3,drosophila,littoralis,diptera,R,66.5,25.716667,global average,99.8723634218,128,9
+newsearch,lumme,1977,Europe,3,drosophila,littoralis,diptera,R,66.5,25.716667,global average,99.4958532926,128,12
+newsearch,lumme,1977,Europe,3,drosophila,littoralis,diptera,R,66.5,25.716667,global average,82.5632079564,128,15
+newsearch,lumme,1977,Europe,3,drosophila,littoralis,diptera,R,66.5,25.716667,global average,65.5708329679,128,16.5
+newsearch,lumme,1977,Europe,3,drosophila,littoralis,diptera,R,66.5,25.716667,global average,1.2497007592,128,18
+newsearch,lumme,1977,Europe,3,drosophila,littoralis,diptera,R,66.5,25.716667,global average,0.4996432812,128,20
+newsearch,lumme,1977,Europe,3,drosophila,littoralis,diptera,R,66.5,25.716667,global average,1.0033159438,128,24
+newsearch,lushai,1996,Europe,3,rhopalosiphum,padi,hemiptera,N,56.5,-3.1,accurate,0.3208716086,21,4
+newsearch,lushai,1996,Europe,3,rhopalosiphum,padi,hemiptera,N,56.5,-3.1,accurate,-0.3298440504,21,8
+newsearch,lushai,1996,Europe,3,rhopalosiphum,padi,hemiptera,N,56.5,-3.1,accurate,0.4772484512,21,10
+newsearch,lushai,1996,Europe,3,rhopalosiphum,padi,hemiptera,N,56.5,-3.1,accurate,0.0692159795,21,11
+newsearch,lushai,1996,Europe,3,rhopalosiphum,padi,hemiptera,N,56.5,-3.1,accurate,18.7395855586,21,11.5
+newsearch,lushai,1996,Europe,3,rhopalosiphum,padi,hemiptera,N,56.5,-3.1,accurate,57.7342448195,21,12
+newsearch,lushai,1996,Europe,3,rhopalosiphum,padi,hemiptera,N,56.5,-3.1,accurate,68.9852595599,21,12.5
+newsearch,lushai,1996,Europe,3,rhopalosiphum,padi,hemiptera,N,56.5,-3.1,accurate,67.3296304209,21,13.1
+newsearch,lushai,1996,Europe,3,rhopalosiphum,padi,hemiptera,N,56.5,-3.1,accurate,62.4071779534,21,14
+newsearch,lushai,1996,Europe,3,rhopalosiphum,padi,hemiptera,N,56.5,-3.1,accurate,71.2719504379,21,16
+newsearch,lushai,1996,Europe,3,rhopalosiphum,padi,hemiptera,N,56.5,-3.1,accurate,89.0083315531,21,20
+newsearch,lushai,1996,Europe,3,rhopalosiphum,padi,hemiptera,C,53.5,-1.4,accurate,0.3242896817,21,4
+newsearch,lushai,1996,Europe,3,rhopalosiphum,padi,hemiptera,C,53.5,-1.4,accurate,0.6378978851,21,8
+newsearch,lushai,1996,Europe,3,rhopalosiphum,padi,hemiptera,C,53.5,-1.4,accurate,0.7964110233,21,10
+newsearch,lushai,1996,Europe,3,rhopalosiphum,padi,hemiptera,C,53.5,-1.4,accurate,0.3917966247,21,11
+newsearch,lushai,1996,Europe,3,rhopalosiphum,padi,hemiptera,C,53.5,-1.4,accurate,1.3185216834,21,11.5
+newsearch,lushai,1996,Europe,3,rhopalosiphum,padi,hemiptera,C,53.5,-1.4,accurate,11.2775048067,21,12
+newsearch,lushai,1996,Europe,3,rhopalosiphum,padi,hemiptera,C,53.5,-1.4,accurate,29.2992950224,21,12.5
+newsearch,lushai,1996,Europe,3,rhopalosiphum,padi,hemiptera,C,53.5,-1.4,accurate,57.6505020295,21,13.1
+newsearch,lushai,1996,Europe,3,rhopalosiphum,padi,hemiptera,C,53.5,-1.4,accurate,67.2475966674,21,14
+newsearch,lushai,1996,Europe,3,rhopalosiphum,padi,hemiptera,C,53.5,-1.4,accurate,78.0461439863,21,16
+newsearch,lushai,1996,Europe,3,rhopalosiphum,padi,hemiptera,C,53.5,-1.4,accurate,82.5567186499,21,20
+newsearch,lushai,1996,Europe,3,rhopalosiphum,padi,hemiptera,S,50.4,-3.3,accurate,0.6434522538,21,4
+newsearch,lushai,1996,Europe,3,rhopalosiphum,padi,hemiptera,S,50.4,-3.3,accurate,-0.3298440504,21,8
+newsearch,lushai,1996,Europe,3,rhopalosiphum,padi,hemiptera,S,50.4,-3.3,accurate,-0.1713309122,21,10
+newsearch,lushai,1996,Europe,3,rhopalosiphum,padi,hemiptera,S,50.4,-3.3,accurate,-0.2533646657,21,11
+newsearch,lushai,1996,Europe,3,rhopalosiphum,padi,hemiptera,S,50.4,-3.3,accurate,1.3202307199,21,11.5
+newsearch,lushai,1996,Europe,3,rhopalosiphum,padi,hemiptera,S,50.4,-3.3,accurate,52.2469557787,21,12
+newsearch,lushai,1996,Europe,3,rhopalosiphum,padi,hemiptera,S,50.4,-3.3,accurate,81.8833582568,21,12.5
+newsearch,lushai,1996,Europe,3,rhopalosiphum,padi,hemiptera,S,50.4,-3.3,accurate,72.8152104251,21,13.1
+newsearch,lushai,1996,Europe,3,rhopalosiphum,padi,hemiptera,S,50.4,-3.3,accurate,75.3104037599,21,14
+newsearch,lushai,1996,Europe,3,rhopalosiphum,padi,hemiptera,S,50.4,-3.3,accurate,80.6284981841,21,16
+newsearch,lushai,1996,Europe,3,rhopalosiphum,padi,hemiptera,S,50.4,-3.3,accurate,95.7808160649,21,20
+newsearch,murata,2009,japan,4,Asobara,japonica,hymenoptera, Amami-Oshima,28.4,129.36944,global average,44.9904586156,100,10
+newsearch,murata,2009,japan,4,Asobara,japonica,hymenoptera, Amami-Oshima,28.4,129.36944,global average,67.2128672385,100,12
+newsearch,murata,2009,japan,4,Asobara,japonica,hymenoptera, Amami-Oshima,28.4,129.36944,global average,41.3525698828,100,13
+newsearch,murata,2009,japan,4,Asobara,japonica,hymenoptera, Amami-Oshima,28.4,129.36944,global average,17.2923438254,100,14
+newsearch,murata,2009,japan,4,Asobara,japonica,hymenoptera, Amami-Oshima,28.4,129.36944,global average,1.1730660348,100,15
+newsearch,murata,2009,japan,4,Asobara,japonica,hymenoptera, Ogasawara,27.1,142.213611,global average,100.5395683453,100,10
+newsearch,murata,2009,japan,4,Asobara,japonica,hymenoptera, Ogasawara,27.1,142.213611,global average,75.3597122302,100,12
+newsearch,murata,2009,japan,4,Asobara,japonica,hymenoptera, Ogasawara,27.1,142.213611,global average,80.5755395683,100,13
+newsearch,murata,2009,japan,4,Asobara,japonica,hymenoptera, Ogasawara,27.1,142.213611,global average,59.5323741007,100,14
+newsearch,murata,2009,japan,4,Asobara,japonica,hymenoptera, Ogasawara,27.1,142.213611,global average,64.3884892086,100,15
+newsearch,murata,2009,japan,4,Asobara,japonica,hymenoptera, Matsuyama,33.8,132.765555,global average,100.3587294127,100,10
+newsearch,murata,2009,japan,4,Asobara,japonica,hymenoptera, Matsuyama,33.8,132.765555,global average,86.0605168308,100,12
+newsearch,murata,2009,japan,4,Asobara,japonica,hymenoptera, Matsuyama,33.8,132.765555,global average,98.1457624911,100,13
+newsearch,murata,2009,japan,4,Asobara,japonica,hymenoptera, Matsuyama,33.8,132.765555,global average,21.4892225453,100,14
+newsearch,murata,2009,japan,4,Asobara,japonica,hymenoptera, Matsuyama,33.8,132.765555,global average,36.1136042538,100,15
+newsearch,murata,2009,japan,4,Asobara,japonica,hymenoptera, Tokyo,35.7,139.77444,global average,100.7104795737,100,10
+newsearch,murata,2009,japan,4,Asobara,japonica,hymenoptera, Tokyo,35.7,139.77444,global average,64.298401421,100,12
+newsearch,murata,2009,japan,4,Asobara,japonica,hymenoptera, Tokyo,35.7,139.77444,global average,68.7388987567,100,13
+newsearch,murata,2009,japan,4,Asobara,japonica,hymenoptera, Tokyo,35.7,139.77444,global average,11.5452930728,100,14
+newsearch,murata,2009,japan,4,Asobara,japonica,hymenoptera, Tokyo,35.7,139.77444,global average,48.134991119,100,15
+newsearch,musolin,2011,japan,3,Nezara,viridula,heteroptera,Okinawa,26.4,127.4,accurate,100,13,10
+newsearch,musolin,2011,japan,3,Nezara,viridula,heteroptera,Okinawa,26.4,127.4,accurate,100.086404448,27,11
+newsearch,musolin,2011,japan,3,Nezara,viridula,heteroptera,Okinawa,26.4,127.4,accurate,96.4499042038,27,12
+newsearch,musolin,2011,japan,3,Nezara,viridula,heteroptera,Okinawa,26.4,127.4,accurate,81.201397498,57,12.5
+newsearch,musolin,2011,japan,3,Nezara,viridula,heteroptera,Okinawa,26.4,127.4,accurate,48.1836282355,44,13
+newsearch,musolin,2011,japan,3,Nezara,viridula,heteroptera,Okinawa,26.4,127.4,accurate,57.7707652429,28,14
+newsearch,musolin,2011,japan,3,Nezara,viridula,heteroptera,Okinawa,26.4,127.4,accurate,1.2397159923,32,15
+newsearch,musolin,2011,japan,3,Nezara,viridula,heteroptera,Kochi,33.6,133.6,accurate,72.4279835391,51,10
+newsearch,musolin,2011,japan,3,Nezara,viridula,heteroptera,Kochi,33.6,133.6,accurate,79.4238683128,54,11
+newsearch,musolin,2011,japan,3,Nezara,viridula,heteroptera,Kochi,33.6,133.6,accurate,61.7283950617,42,11.5
+newsearch,musolin,2011,japan,3,Nezara,viridula,heteroptera,Kochi,33.6,133.6,accurate,36.2139917695,22,12
+newsearch,musolin,2011,japan,3,Nezara,viridula,heteroptera,Kochi,33.6,133.6,accurate,39.9176954733,20,12.5
+newsearch,musolin,2011,japan,3,Nezara,viridula,heteroptera,Kochi,33.6,133.6,accurate,0.4115226337,37,13
+newsearch,musolin,2011,japan,3,Nezara,viridula,heteroptera,Kochi,33.6,133.6,accurate,9.8765432099,30,14
+newsearch,musolin,2011,japan,3,Nezara,viridula,heteroptera,Kochi,33.6,133.6,accurate,0.8230452675,35,15
+newsearch,musolin,2011,japan,3,Nezara,viridula,heteroptera,Osaka,34.7,135.5,accurate,100.4130438883,34,10
+newsearch,musolin,2011,japan,3,Nezara,viridula,heteroptera,Osaka,34.7,135.5,accurate,72.861696309,109,12
+newsearch,musolin,2011,japan,3,Nezara,viridula,heteroptera,Osaka,34.7,135.5,accurate,60.3308123196,117,13
+newsearch,musolin,2011,japan,3,Nezara,viridula,heteroptera,Osaka,34.7,135.5,accurate,0.0829859867,36,14
+newsearch,musolin,2011,japan,3,Nezara,viridula,heteroptera,Osaka,34.7,135.5,accurate,-0.4149299334,33,15
+newsearch,nechols,1987,US,3,chrysopa,oculata,neuroptera,loveland,40.431269,-105.339661,accurate,100,12,10
+newsearch,nechols,1987,US,3,chrysopa,oculata,neuroptera,loveland,40.431269,-105.339661,accurate,86,14,12
+newsearch,nechols,1987,US,3,chrysopa,oculata,neuroptera,loveland,40.431269,-105.339661,accurate,93,15,13
+newsearch,nechols,1987,US,3,chrysopa,oculata,neuroptera,loveland,40.431269,-105.339661,accurate,10,10,14
+newsearch,nechols,1987,US,3,chrysopa,oculata,neuroptera,loveland,40.431269,-105.339661,accurate,0,20,15
+newsearch,nechols,1987,US,3,chrysopa,oculata,neuroptera,loveland,40.431269,-105.339661,accurate,0,20,16
+newsearch,nechols,1987,US,3,chrysopa,oculata,neuroptera,quincy,30.583333,-84.583333,accurate,100,12,10
+newsearch,nechols,1987,US,3,chrysopa,oculata,neuroptera,quincy,30.583333,-84.583333,accurate,100,11,11
+newsearch,nechols,1987,US,3,chrysopa,oculata,neuroptera,quincy,30.583333,-84.583333,accurate,92,12,12
+newsearch,nechols,1987,US,3,chrysopa,oculata,neuroptera,quincy,30.583333,-84.583333,accurate,36,11,13
+newsearch,nechols,1987,US,3,chrysopa,oculata,neuroptera,quincy,30.583333,-84.583333,accurate,0,12,14
+newsearch,nechols,1987,US,3,chrysopa,oculata,neuroptera,saltillo,25.228056,-100.721944,accurate,50,8,10
+newsearch,nechols,1987,US,3,chrysopa,oculata,neuroptera,saltillo,25.228056,-100.721944,accurate,33,6,11
+newsearch,nechols,1987,US,3,chrysopa,oculata,neuroptera,saltillo,25.228056,-100.721944,accurate,0,8,12
+newsearch,nechols,1987,US,3,chrysopa,oculata,neuroptera,saltillo,25.228056,-100.721944,accurate,0,8,13
+newsearch,nechols,1987,US,3,chrysopa,oculata,neuroptera,saltillo,25.228056,-100.721944,accurate,0,8,14
+newsearch,paolucci,2013,Europe,4,Nasonia,vitripennis,hymenoptera,TUR,61.2612583333,22.2233222222,pop level/ask,100,21,8
+newsearch,paolucci,2013,Europe,4,Nasonia,vitripennis,hymenoptera,TUR,61.2612583333,22.2233222222,pop level/ask,95.6696540079,21,10
+newsearch,paolucci,2013,Europe,4,Nasonia,vitripennis,hymenoptera,TUR,61.2612583333,22.2233222222,pop level/ask,90.7710137977,21,12
+newsearch,paolucci,2013,Europe,4,Nasonia,vitripennis,hymenoptera,TUR,61.2612583333,22.2233222222,pop level/ask,100,21,13
+newsearch,paolucci,2013,Europe,4,Nasonia,vitripennis,hymenoptera,TUR,61.2612583333,22.2233222222,pop level/ask,95.1776918542,21,14
+newsearch,paolucci,2013,Europe,4,Nasonia,vitripennis,hymenoptera,TUR,61.2612583333,22.2233222222,pop level/ask,78.94453936,21,15
+newsearch,paolucci,2013,Europe,4,Nasonia,vitripennis,hymenoptera,TUR,61.2612583333,22.2233222222,pop level/ask,27.4175983375,21,16
+newsearch,paolucci,2013,Europe,4,Nasonia,vitripennis,hymenoptera,TUR,61.2612583333,22.2233222222,pop level/ask,17.9278442186,21,18
+newsearch,paolucci,2013,Europe,4,Nasonia,vitripennis,hymenoptera,LAT,56.8562666667,25.2003833333,pop level/ask,95.5465635584,26,8
+newsearch,paolucci,2013,Europe,4,Nasonia,vitripennis,hymenoptera,LAT,56.8562666667,25.2003833333,pop level/ask,88.4960385257,26,10
+newsearch,paolucci,2013,Europe,4,Nasonia,vitripennis,hymenoptera,LAT,56.8562666667,25.2003833333,pop level/ask,84.0278152444,26,12
+newsearch,paolucci,2013,Europe,4,Nasonia,vitripennis,hymenoptera,LAT,56.8562666667,25.2003833333,pop level/ask,87.5940413032,26,13
+newsearch,paolucci,2013,Europe,4,Nasonia,vitripennis,hymenoptera,LAT,56.8562666667,25.2003833333,pop level/ask,39.940652819,26,14
+newsearch,paolucci,2013,Europe,4,Nasonia,vitripennis,hymenoptera,LAT,56.8562666667,25.2003833333,pop level/ask,27.8683971266,26,15
+newsearch,paolucci,2013,Europe,4,Nasonia,vitripennis,hymenoptera,LAT,56.8562666667,25.2003833333,pop level/ask,0,26,16
+newsearch,paolucci,2013,Europe,4,Nasonia,vitripennis,hymenoptera,LAT,56.8562666667,25.2003833333,pop level/ask,0,26,18
+newsearch,paolucci,2013,Europe,4,Nasonia,vitripennis,hymenoptera,HAM,53.6065611111,10.1715944444,pop level/ask,86.9382249798,26,8
+newsearch,paolucci,2013,Europe,4,Nasonia,vitripennis,hymenoptera,HAM,53.6065611111,10.1715944444,pop level/ask,90.7913956579,26,10
+newsearch,paolucci,2013,Europe,4,Nasonia,vitripennis,hymenoptera,HAM,53.6065611111,10.1715944444,pop level/ask,87.0405339248,26,12
+newsearch,paolucci,2013,Europe,4,Nasonia,vitripennis,hymenoptera,HAM,53.6065611111,10.1715944444,pop level/ask,94.7676567855,26,13
+newsearch,paolucci,2013,Europe,4,Nasonia,vitripennis,hymenoptera,HAM,53.6065611111,10.1715944444,pop level/ask,69.6394209154,26,14
+newsearch,paolucci,2013,Europe,4,Nasonia,vitripennis,hymenoptera,HAM,53.6065611111,10.1715944444,pop level/ask,17.2518458572,26,15
+newsearch,paolucci,2013,Europe,4,Nasonia,vitripennis,hymenoptera,HAM,53.6065611111,10.1715944444,pop level/ask,8.1923088451,26,16
+newsearch,paolucci,2013,Europe,4,Nasonia,vitripennis,hymenoptera,HAM,53.6065611111,10.1715944444,pop level/ask,0,26,18
+newsearch,paolucci,2013,Europe,4,Nasonia,vitripennis,hymenoptera,SCH,50.33225,9.5130555556,pop level/ask,66.5651570103,22,8
+newsearch,paolucci,2013,Europe,4,Nasonia,vitripennis,hymenoptera,SCH,50.33225,9.5130555556,pop level/ask,42.1544825106,22,10
+newsearch,paolucci,2013,Europe,4,Nasonia,vitripennis,hymenoptera,SCH,50.33225,9.5130555556,pop level/ask,47.4421764629,22,12
+newsearch,paolucci,2013,Europe,4,Nasonia,vitripennis,hymenoptera,SCH,50.33225,9.5130555556,pop level/ask,47.2785221153,22,13
+newsearch,paolucci,2013,Europe,4,Nasonia,vitripennis,hymenoptera,SCH,50.33225,9.5130555556,pop level/ask,15.6942321334,22,14
+newsearch,paolucci,2013,Europe,4,Nasonia,vitripennis,hymenoptera,SCH,50.33225,9.5130555556,pop level/ask,0,22,15
+newsearch,paolucci,2013,Europe,4,Nasonia,vitripennis,hymenoptera,SCH,50.33225,9.5130555556,pop level/ask,0,22,16
+newsearch,paolucci,2013,Europe,4,Nasonia,vitripennis,hymenoptera,SCH,50.33225,9.5130555556,pop level/ask,0,22,18
+newsearch,pegoraro,2017,Europe,6,Drosophila,melanogaster,diptera,Sp22,36.97,-2.12,accurate,84.0969934031,6,8
+newsearch,pegoraro,2017,Europe,6,Drosophila,melanogaster,diptera,Sp22,36.97,-2.12,accurate,49.4831312522,6,10
+newsearch,pegoraro,2017,Europe,6,Drosophila,melanogaster,diptera,Sp22,36.97,-2.12,accurate,66.7565468892,6,12
+newsearch,pegoraro,2017,Europe,6,Drosophila,melanogaster,diptera,Sp22,36.97,-2.12,accurate,51.1671785932,6,14
+newsearch,pegoraro,2017,Europe,6,Drosophila,melanogaster,diptera,Sp22,36.97,-2.12,accurate,45.1706735776,6,16
+newsearch,pegoraro,2017,Europe,6,Drosophila,melanogaster,diptera,Sp22,36.97,-2.12,accurate,64.4878413437,6,18
+newsearch,pegoraro,2017,Europe,6,Drosophila,melanogaster,diptera,MREN,39.2,16.11,accurate,46.2035835314,6,8
+newsearch,pegoraro,2017,Europe,6,Drosophila,melanogaster,diptera,MREN,39.2,16.11,accurate,60.6472203564,6,10
+newsearch,pegoraro,2017,Europe,6,Drosophila,melanogaster,diptera,MREN,39.2,16.11,accurate,23.831683537,6,12
+newsearch,pegoraro,2017,Europe,6,Drosophila,melanogaster,diptera,MREN,39.2,16.11,accurate,32.142822662,6,14
+newsearch,pegoraro,2017,Europe,6,Drosophila,melanogaster,diptera,MREN,39.2,16.11,accurate,28.346888926,6,16
+newsearch,pegoraro,2017,Europe,6,Drosophila,melanogaster,diptera,MREN,39.2,16.11,accurate,17.317827041,6,18
+newsearch,pegoraro,2017,Europe,6,Drosophila,melanogaster,diptera,SAL,40.38,17.97,accurate,43.8450897124,6,8
+newsearch,pegoraro,2017,Europe,6,Drosophila,melanogaster,diptera,SAL,40.38,17.97,accurate,51.6843921499,6,10
+newsearch,pegoraro,2017,Europe,6,Drosophila,melanogaster,diptera,SAL,40.38,17.97,accurate,31.3791396049,6,12
+newsearch,pegoraro,2017,Europe,6,Drosophila,melanogaster,diptera,SAL,40.38,17.97,accurate,25.3819449712,6,14
+newsearch,pegoraro,2017,Europe,6,Drosophila,melanogaster,diptera,SAL,40.38,17.97,accurate,9.7932662933,6,16
+newsearch,pegoraro,2017,Europe,6,Drosophila,melanogaster,diptera,SAL,40.38,17.97,accurate,17.4751978859,6,18
+newsearch,pegoraro,2017,Europe,6,Drosophila,melanogaster,diptera,BOL,46.3,11.22,accurate,45.2603239274,6,8
+newsearch,pegoraro,2017,Europe,6,Drosophila,melanogaster,diptera,BOL,46.3,11.22,accurate,58.2883127666,6,10
+newsearch,pegoraro,2017,Europe,6,Drosophila,melanogaster,diptera,BOL,46.3,11.22,accurate,44.1148683036,6,12
+newsearch,pegoraro,2017,Europe,6,Drosophila,melanogaster,diptera,BOL,46.3,11.22,accurate,55.7277608515,6,14
+newsearch,pegoraro,2017,Europe,6,Drosophila,melanogaster,diptera,BOL,46.3,11.22,accurate,22.6860899896,6,16
+newsearch,pegoraro,2017,Europe,6,Drosophila,melanogaster,diptera,BOL,46.3,11.22,accurate,36.8149851249,6,18
+newsearch,pegoraro,2017,Europe,6,Drosophila,melanogaster,diptera,HU,52.03,5.17,accurate,58.6251222348,6,8
+newsearch,pegoraro,2017,Europe,6,Drosophila,melanogaster,diptera,HU,52.03,5.17,accurate,61.275600347,6,10
+newsearch,pegoraro,2017,Europe,6,Drosophila,melanogaster,diptera,HU,52.03,5.17,accurate,44.4293341462,6,12
+newsearch,pegoraro,2017,Europe,6,Drosophila,melanogaster,diptera,HU,52.03,5.17,accurate,76.4825064583,6,14
+newsearch,pegoraro,2017,Europe,6,Drosophila,melanogaster,diptera,HU,52.03,5.17,accurate,26.6174647157,6,16
+newsearch,pegoraro,2017,Europe,6,Drosophila,melanogaster,diptera,HU,52.03,5.17,accurate,11.9721835653,6,18
+newsearch,pegoraro,2017,Europe,6,Drosophila,melanogaster,diptera,KOR,62.01,25.33,accurate,43.5308997171,6,8
+newsearch,pegoraro,2017,Europe,6,Drosophila,melanogaster,diptera,KOR,62.01,25.33,accurate,80.6152496624,6,10
+newsearch,pegoraro,2017,Europe,6,Drosophila,melanogaster,diptera,KOR,62.01,25.33,accurate,62.5109821679,6,12
+newsearch,pegoraro,2017,Europe,6,Drosophila,melanogaster,diptera,KOR,62.01,25.33,accurate,36.7027153022,6,14
+newsearch,pegoraro,2017,Europe,6,Drosophila,melanogaster,diptera,KOR,62.01,25.33,accurate,41.2399884696,6,16
+newsearch,pegoraro,2017,Europe,6,Drosophila,melanogaster,diptera,KOR,62.01,25.33,accurate,37.44391681,6,18
+newsearch,pullin,1986,Europe,3,Inachis,io,lepidoptera,oxford,51.752,-1.2578,global average,96.8808803704,94,12
+newsearch,pullin,1986,Europe,3,Inachis,io,lepidoptera,oxford,51.752,-1.2578,global average,99.8418128717,94,14
+newsearch,pullin,1986,Europe,3,Inachis,io,lepidoptera,oxford,51.752,-1.2578,global average,100.1407157141,94,15
+newsearch,pullin,1986,Europe,3,Inachis,io,lepidoptera,oxford,51.752,-1.2578,global average,100.1260775022,94,16
+newsearch,pullin,1986,Europe,3,Inachis,io,lepidoptera,oxford,51.752,-1.2578,global average,99.7950650338,94,17
+newsearch,pullin,1986,Europe,3,Inachis,io,lepidoptera,oxford,51.752,-1.2578,global average,97.8892642882,94,18
+newsearch,pullin,1986,Europe,3,Inachis,io,lepidoptera,oxford,51.752,-1.2578,global average,72.3696667918,94,18.5
+newsearch,pullin,1986,Europe,3,Inachis,io,lepidoptera,oxford,51.752,-1.2578,global average,24.4880757598,94,19
+newsearch,pullin,1986,Europe,3,Inachis,io,lepidoptera,oxford,51.752,-1.2578,global average,25.3701460752,94,23
+newsearch,pullin,1986,Europe,3,Inachis,io,lepidoptera,southampton,50.9069,-1.4047,global average,98.9276329303,94,12
+newsearch,pullin,1986,Europe,3,Inachis,io,lepidoptera,southampton,50.9069,-1.4047,global average,99.9997638998,94,14
+newsearch,pullin,1986,Europe,3,Inachis,io,lepidoptera,southampton,50.9069,-1.4047,global average,99.8262302591,94,15
+newsearch,pullin,1986,Europe,3,Inachis,io,lepidoptera,southampton,50.9069,-1.4047,global average,99.8106476464,94,16
+newsearch,pullin,1986,Europe,3,Inachis,io,lepidoptera,southampton,50.9069,-1.4047,global average,94.9127491742,94,17
+newsearch,pullin,1986,Europe,3,Inachis,io,lepidoptera,southampton,50.9069,-1.4047,global average,41.1959419099,94,18
+newsearch,pullin,1986,Europe,3,Inachis,io,lepidoptera,southampton,50.9069,-1.4047,global average,31.4251715858,94,18.5
+newsearch,pullin,1986,Europe,3,Inachis,io,lepidoptera,southampton,50.9069,-1.4047,global average,34.2517630782,94,19
+newsearch,pullin,1986,Europe,3,Inachis,io,lepidoptera,southampton,50.9069,-1.4047,global average,35.448791049,94,23
+newsearch,pullin,1986,Europe,3,Inachis,io,lepidoptera,obernai,48.462222,7.481944,global average,100.0309291251,94,12
+newsearch,pullin,1986,Europe,3,Inachis,io,lepidoptera,obernai,48.462222,7.481944,global average,100.1572427275,94,14
+newsearch,pullin,1986,Europe,3,Inachis,io,lepidoptera,obernai,48.462222,7.481944,global average,51.9517222328,94,15
+newsearch,pullin,1986,Europe,3,Inachis,io,lepidoptera,obernai,48.462222,7.481944,global average,29.4176116577,94,16
+newsearch,pullin,1986,Europe,3,Inachis,io,lepidoptera,obernai,48.462222,7.481944,global average,14.7555536668,94,17
+newsearch,pullin,1986,Europe,3,Inachis,io,lepidoptera,obernai,48.462222,7.481944,global average,4.1884173968,94,18
+newsearch,pullin,1986,Europe,3,Inachis,io,lepidoptera,obernai,48.462222,7.481944,global average,1.662145348,94,18.5
+newsearch,pullin,1986,Europe,3,Inachis,io,lepidoptera,obernai,48.462222,7.481944,global average,1.8106523684,94,19
+newsearch,pullin,1986,Europe,3,Inachis,io,lepidoptera,obernai,48.462222,7.481944,global average,16.7088105508,94,23
+newsearch,riihima,1996,Europe,6,Chymomyza,costata,diptera,Oulo1,65.013333,25.4725,global average,99.6583834588,443,12
+newsearch,riihima,1996,Europe,6,Chymomyza,costata,diptera,Oulo1,65.013333,25.4725,global average,99.8719905394,443,13.5
+newsearch,riihima,1996,Europe,6,Chymomyza,costata,diptera,Oulo1,65.013333,25.4725,global average,99.6164359813,443,15
+newsearch,riihima,1996,Europe,6,Chymomyza,costata,diptera,Oulo1,65.013333,25.4725,global average,99.3588691827,443,16.5
+newsearch,riihima,1996,Europe,6,Chymomyza,costata,diptera,Oulo1,65.013333,25.4725,global average,99.7302049699,443,18
+newsearch,riihima,1996,Europe,6,Chymomyza,costata,diptera,Oulo1,65.013333,25.4725,global average,87.3657603329,443,19.5
+newsearch,riihima,1996,Europe,6,Chymomyza,costata,diptera,Oulo1,65.013333,25.4725,global average,30.1487819753,443,22
+newsearch,riihima,1996,Europe,6,Chymomyza,costata,diptera,Oulo1,65.013333,25.4725,global average,47.476340694,443,24
+newsearch,riihima,1996,Europe,6,Chymomyza,costata,diptera,Oulo2,65.013333,25.4725,global average,99.8161121654,443,12
+newsearch,riihima,1996,Europe,6,Chymomyza,costata,diptera,Oulo2,65.013333,25.4725,global average,99.87400278,443,13.5
+newsearch,riihima,1996,Europe,6,Chymomyza,costata,diptera,Oulo2,65.013333,25.4725,global average,99.6144237407,443,15
+newsearch,riihima,1996,Europe,6,Chymomyza,costata,diptera,Oulo2,65.013333,25.4725,global average,99.6723143553,443,16.5
+newsearch,riihima,1996,Europe,6,Chymomyza,costata,diptera,Oulo2,65.013333,25.4725,global average,99.5785129851,443,18
+newsearch,riihima,1996,Europe,6,Chymomyza,costata,diptera,Oulo2,65.013333,25.4725,global average,82.6338991341,443,19.5
+newsearch,riihima,1996,Europe,6,Chymomyza,costata,diptera,Oulo2,65.013333,25.4725,global average,48.449336425,443,22
+newsearch,riihima,1996,Europe,6,Chymomyza,costata,diptera,Oulo2,65.013333,25.4725,global average,36.275590283,443,24
+newsearch,riihima,1996,Europe,6,Chymomyza,costata,diptera,Kuusamo3,65.966667,29.166667,global average,100.3058103976,221,16
+newsearch,riihima,1996,Europe,6,Chymomyza,costata,diptera,Kuusamo3,65.966667,29.166667,global average,100.3058103976,221,18
+newsearch,riihima,1996,Europe,6,Chymomyza,costata,diptera,Kuusamo3,65.966667,29.166667,global average,100.4587155963,221,19
+newsearch,riihima,1996,Europe,6,Chymomyza,costata,diptera,Kuusamo3,65.966667,29.166667,global average,96.3302752294,221,20
+newsearch,riihima,1996,Europe,6,Chymomyza,costata,diptera,Kuusamo3,65.966667,29.166667,global average,86.5443425076,221,21
+newsearch,riihima,1996,Europe,6,Chymomyza,costata,diptera,Kuusamo3,65.966667,29.166667,global average,81.9571865443,221,22
+newsearch,riihima,1996,Europe,6,Chymomyza,costata,diptera,Kuusamo3,65.966667,29.166667,global average,85.7798165138,221,24
+newsearch,riihima,1996,Europe,6,Chymomyza,costata,diptera,Kuusamo4,65.966667,29.166667,global average,99.8470948012,221,16
+newsearch,riihima,1996,Europe,6,Chymomyza,costata,diptera,Kuusamo4,65.966667,29.166667,global average,98.7767584098,221,18
+newsearch,riihima,1996,Europe,6,Chymomyza,costata,diptera,Kuusamo4,65.966667,29.166667,global average,96.3302752294,221,19
+newsearch,riihima,1996,Europe,6,Chymomyza,costata,diptera,Kuusamo4,65.966667,29.166667,global average,66.5137614679,221,20
+newsearch,riihima,1996,Europe,6,Chymomyza,costata,diptera,Kuusamo4,65.966667,29.166667,global average,55.504587156,221,21
+newsearch,riihima,1996,Europe,6,Chymomyza,costata,diptera,Kuusamo4,65.966667,29.166667,global average,57.4923547401,221,22
+newsearch,riihima,1996,Europe,6,Chymomyza,costata,diptera,Kuusamo4,65.966667,29.166667,global average,55.9633027523,221,24
+newsearch,riihima,1996,Europe,6,Chymomyza,costata,diptera,Kuusamo5,65.966667,29.166667,global average,100,221,16
+newsearch,riihima,1996,Europe,6,Chymomyza,costata,diptera,Kuusamo5,65.966667,29.166667,global average,97.4006116208,221,18
+newsearch,riihima,1996,Europe,6,Chymomyza,costata,diptera,Kuusamo5,65.966667,29.166667,global average,96.0244648318,221,19
+newsearch,riihima,1996,Europe,6,Chymomyza,costata,diptera,Kuusamo5,65.966667,29.166667,global average,91.1314984709,221,20
+newsearch,riihima,1996,Europe,6,Chymomyza,costata,diptera,Kuusamo5,65.966667,29.166667,global average,87.9204892966,221,21
+newsearch,riihima,1996,Europe,6,Chymomyza,costata,diptera,Kuusamo5,65.966667,29.166667,global average,87.003058104,221,22
+newsearch,riihima,1996,Europe,6,Chymomyza,costata,diptera,Kuusamo5,65.966667,29.166667,global average,85.9327217125,221,24
+newsearch,riihima,1996,Europe,6,Chymomyza,costata,diptera,Punkaharju,61.75,29.4,global average,100.1529051988,221,16
+newsearch,riihima,1996,Europe,6,Chymomyza,costata,diptera,Punkaharju,61.75,29.4,global average,91.8960244648,221,18
+newsearch,riihima,1996,Europe,6,Chymomyza,costata,diptera,Punkaharju,61.75,29.4,global average,23.3944954128,221,19
+newsearch,riihima,1996,Europe,6,Chymomyza,costata,diptera,Punkaharju,61.75,29.4,global average,14.0672782875,221,20
+newsearch,riihima,1996,Europe,6,Chymomyza,costata,diptera,Punkaharju,61.75,29.4,global average,17.4311926606,221,21
+newsearch,riihima,1996,Europe,6,Chymomyza,costata,diptera,Punkaharju,61.75,29.4,global average,16.5137614679,221,22
+newsearch,riihima,1996,Europe,6,Chymomyza,costata,diptera,Punkaharju,61.75,29.4,global average,17.4311926606,221,24
+newsearch,shimizu,2001,japan,4,Orius,Sauteri,hemiptera,OBH,42.923961,143.196156,global average,67.7150071793,75,10
+newsearch,shimizu,2001,japan,4,Orius,Sauteri,hemiptera,OBH,42.923961,143.196156,global average,69.6217259989,75,11
+newsearch,shimizu,2001,japan,4,Orius,Sauteri,hemiptera,OBH,42.923961,143.196156,global average,65.9087983364,75,12
+newsearch,shimizu,2001,japan,4,Orius,Sauteri,hemiptera,OBH,42.923961,143.196156,global average,53.9981185325,75,13
+newsearch,shimizu,2001,japan,4,Orius,Sauteri,hemiptera,OBH,42.923961,143.196156,global average,23.5856810417,75,14
+newsearch,shimizu,2001,japan,4,Orius,Sauteri,hemiptera,OBH,42.923961,143.196156,global average,3.9476159826,75,15
+newsearch,shimizu,2001,japan,4,Orius,Sauteri,hemiptera,OBH,42.923961,143.196156,global average,9.1340298064,75,16
+newsearch,shimizu,2001,japan,4,Orius,Sauteri,hemiptera,SPR,43.061944,141.354167,global average,91.3695103233,75,10
+newsearch,shimizu,2001,japan,4,Orius,Sauteri,hemiptera,SPR,43.061944,141.354167,global average,78.2878645343,75,11
+newsearch,shimizu,2001,japan,4,Orius,Sauteri,hemiptera,SPR,43.061944,141.354167,global average,65.9087983364,75,12
+newsearch,shimizu,2001,japan,4,Orius,Sauteri,hemiptera,SPR,43.061944,141.354167,global average,7.6615338912,75,14
+newsearch,shimizu,2001,japan,4,Orius,Sauteri,hemiptera,SPR,43.061944,141.354167,global average,3.7134227856,75,15
+newsearch,shimizu,2001,japan,4,Orius,Sauteri,hemiptera,SPR,43.061944,141.354167,global average,17.7986829727,75,16
+newsearch,shimizu,2001,japan,4,Orius,Sauteri,hemiptera,HRS,40.603153,140.463789,global average,93.7104520473,75,10
+newsearch,shimizu,2001,japan,4,Orius,Sauteri,hemiptera,HRS,40.603153,140.463789,global average,89.7628360648,75,11
+newsearch,shimizu,2001,japan,4,Orius,Sauteri,hemiptera,HRS,40.603153,140.463789,global average,70.1237807595,75,12
+newsearch,shimizu,2001,japan,4,Orius,Sauteri,hemiptera,HRS,40.603153,140.463789,global average,50.9531118483,75,13
+newsearch,shimizu,2001,japan,4,Orius,Sauteri,hemiptera,HRS,40.603153,140.463789,global average,4.14764569,75,14
+newsearch,shimizu,2001,japan,4,Orius,Sauteri,hemiptera,HRS,40.603153,140.463789,global average,7.6947071347,75,15
+newsearch,shimizu,2001,japan,4,Orius,Sauteri,hemiptera,HRS,40.603153,140.463789,global average,24.356092489,75,16
+newsearch,shimizu,2001,japan,4,Orius,Sauteri,hemiptera,TKB,36.080556,140.114722,global average,39.6713615023,75,9
+newsearch,shimizu,2001,japan,4,Orius,Sauteri,hemiptera,TKB,36.080556,140.114722,global average,69.014084507,75,10
+newsearch,shimizu,2001,japan,4,Orius,Sauteri,hemiptera,TKB,36.080556,140.114722,global average,39.6713615023,75,11
+newsearch,shimizu,2001,japan,4,Orius,Sauteri,hemiptera,TKB,36.080556,140.114722,global average,15.7276995305,75,12
+newsearch,shimizu,2001,japan,4,Orius,Sauteri,hemiptera,TKB,36.080556,140.114722,global average,15.7276995305,75,13
+newsearch,shimizu,2001,japan,4,Orius,Sauteri,hemiptera,TKB,36.080556,140.114722,global average,5.6338028169,75,14
+newsearch,shimizu,2001,japan,4,Orius,Sauteri,hemiptera,TKB,36.080556,140.114722,global average,6.8075117371,75,15
+newsearch,shintani,1999,japan,4,Psacothea,hilaris,coleoptera,Yokokawa,36.324,138.7236,global average,58.904109589,25,12
+newsearch,shintani,1999,japan,4,Psacothea,hilaris,coleoptera,Yokokawa,36.324,138.7236,global average,17.8082191781,25,13
+newsearch,shintani,1999,japan,4,Psacothea,hilaris,coleoptera,Yokokawa,36.324,138.7236,global average,4.1095890411,25,14
+newsearch,shintani,1999,japan,4,Psacothea,hilaris,coleoptera,Yokokawa,36.324,138.7236,global average,1.3698630137,25,15
+newsearch,shintani,1999,japan,4,Psacothea,hilaris,coleoptera,Hatsukari,35.610556,138.94,global average,40.2777777778,25,12
+newsearch,shintani,1999,japan,4,Psacothea,hilaris,coleoptera,Hatsukari,35.610556,138.94,global average,15.2777777778,25,13
+newsearch,shintani,1999,japan,4,Psacothea,hilaris,coleoptera,Hatsukari,35.610556,138.94,global average,0,25,14
+newsearch,shintani,1999,japan,4,Psacothea,hilaris,coleoptera,Hatsukari,35.610556,138.94,global average,1.3888888889,25,15
+newsearch,shintani,1999,japan,4,Psacothea,hilaris,coleoptera,Hatsukari2,35.610556,138.94,global average,59.7222222222,25,12
+newsearch,shintani,1999,japan,4,Psacothea,hilaris,coleoptera,Hatsukari2,35.610556,138.94,global average,36.1111111111,25,13
+newsearch,shintani,1999,japan,4,Psacothea,hilaris,coleoptera,Hatsukari2,35.610556,138.94,global average,6.9444444444,25,14
+newsearch,shintani,1999,japan,4,Psacothea,hilaris,coleoptera,Hatsukari2,35.610556,138.94,global average,0,25,15
+newsearch,shintani,1999,japan,4,Psacothea,hilaris,coleoptera,Sagamihara,35.571389,139.373333,global average,80.8219178082,25,12
+newsearch,shintani,1999,japan,4,Psacothea,hilaris,coleoptera,Sagamihara,35.571389,139.373333,global average,63.5029354207,25,13
+newsearch,shintani,1999,japan,4,Psacothea,hilaris,coleoptera,Sagamihara,35.571389,139.373333,global average,-3.1311154599,25,14
+newsearch,shintani,1999,japan,4,Psacothea,hilaris,coleoptera,Sagamihara,35.571389,139.373333,global average,-1.3209393346,25,15
+newsearch,shroyer,1983,us,4,Aedes,triseratius,diptera,UNDERCIV,46.154722,-89.385278,global average,99.0994449037,90,13
+newsearch,shroyer,1983,us,4,Aedes,triseratius,diptera,UNDERCIV,46.154722,-89.385278,global average,99.6072989252,90,14
+newsearch,shroyer,1983,us,4,Aedes,triseratius,diptera,UNDERCIV,46.154722,-89.385278,global average,99.6486358805,90,15
+newsearch,shroyer,1983,us,4,Aedes,triseratius,diptera,UNDERCIV,46.154722,-89.385278,global average,50.3927010748,90,16
+newsearch,shroyer,1983,us,4,Aedes,triseratius,diptera,UNDERCIV,46.154722,-89.385278,global average,11.4621471596,90,17
+newsearch,shroyer,1983,us,4,Aedes,triseratius,diptera,UNDERCIV,46.154722,-89.385278,global average,9.1590882249,90,18
+newsearch,shroyer,1983,us,4,Aedes,triseratius,diptera,UNDERCIV,46.154722,-89.385278,global average,8.7250501949,90,19
+newsearch,shroyer,1983,us,4,Aedes,triseratius,diptera,UNDERCIV,46.154722,-89.385278,global average,17.213889217,90,20
+newsearch,shroyer,1983,us,4,Aedes,triseratius,diptera,UNDERCIV,46.154722,-89.385278,global average,28.6406047006,90,24
+newsearch,shroyer,1983,us,4,Aedes,triseratius,diptera,ORONOIII,44.883,-68.672,global average,99.5689146097,90,13
+newsearch,shroyer,1983,us,4,Aedes,triseratius,diptera,ORONOIII,44.883,-68.672,global average,99.6072989252,90,14
+newsearch,shroyer,1983,us,4,Aedes,triseratius,diptera,ORONOIII,44.883,-68.672,global average,88.8478800047,90,15
+newsearch,shroyer,1983,us,4,Aedes,triseratius,diptera,ORONOIII,44.883,-68.672,global average,16.5879296091,90,16
+newsearch,shroyer,1983,us,4,Aedes,triseratius,diptera,ORONOIII,44.883,-68.672,global average,5.3619936223,90,17
+newsearch,shroyer,1983,us,4,Aedes,triseratius,diptera,ORONOIII,44.883,-68.672,global average,6.3393173497,90,18
+newsearch,shroyer,1983,us,4,Aedes,triseratius,diptera,ORONOIII,44.883,-68.672,global average,5.4387622535,90,19
+newsearch,shroyer,1983,us,4,Aedes,triseratius,diptera,ORONOIII,44.883,-68.672,global average,19.5612377465,90,20
+newsearch,shroyer,1983,us,4,Aedes,triseratius,diptera,ORONOIII,44.883,-68.672,global average,25.7440651943,90,22
+newsearch,shroyer,1983,us,4,Aedes,triseratius,diptera,ORONOIII,44.883,-68.672,global average,15.9619700012,90,24
+newsearch,shroyer,1983,us,4,Aedes,triseratius,diptera,KRAMERI,41.613333,-86.2475,global average,99.4508090233,90,10
+newsearch,shroyer,1983,us,4,Aedes,triseratius,diptera,KRAMERI,41.613333,-86.2475,global average,99.4891933388,90,11
+newsearch,shroyer,1983,us,4,Aedes,triseratius,diptera,KRAMERI,41.613333,-86.2475,global average,99.5305302941,90,12
+newsearch,shroyer,1983,us,4,Aedes,triseratius,diptera,KRAMERI,41.613333,-86.2475,global average,97.691035786,90,13
+newsearch,shroyer,1983,us,4,Aedes,triseratius,diptera,KRAMERI,41.613333,-86.2475,global average,75.1948742176,90,14
+newsearch,shroyer,1983,us,4,Aedes,triseratius,diptera,KRAMERI,41.613333,-86.2475,global average,35.3106176922,90,14.5
+newsearch,shroyer,1983,us,4,Aedes,triseratius,diptera,KRAMERI,41.613333,-86.2475,global average,9.5045470651,90,15
+newsearch,shroyer,1983,us,4,Aedes,triseratius,diptera,KRAMERI,41.613333,-86.2475,global average,9.0764143144,90,16
+newsearch,shroyer,1983,us,4,Aedes,triseratius,diptera,KRAMERI,41.613333,-86.2475,global average,16.1568442187,90,17
+newsearch,shroyer,1983,us,4,Aedes,triseratius,diptera,KRAMERI,41.613333,-86.2475,global average,13.6146214716,90,24
+newsearch,shroyer,1983,us,4,Aedes,triseratius,diptera,BURDETTE,41.613333,-86.2475,global average,99.5348837209,90,5
+newsearch,shroyer,1983,us,4,Aedes,triseratius,diptera,BURDETTE,41.613333,-86.2475,global average,100,90,10
+newsearch,shroyer,1983,us,4,Aedes,triseratius,diptera,BURDETTE,41.613333,-86.2475,global average,99.5348837209,90,11
+newsearch,shroyer,1983,us,4,Aedes,triseratius,diptera,BURDETTE,41.613333,-86.2475,global average,99.5348837209,90,12
+newsearch,shroyer,1983,us,4,Aedes,triseratius,diptera,BURDETTE,41.613333,-86.2475,global average,99.5348837209,90,13
+newsearch,shroyer,1983,us,4,Aedes,triseratius,diptera,BURDETTE,41.613333,-86.2475,global average,86.976744186,90,14
+newsearch,shroyer,1983,us,4,Aedes,triseratius,diptera,BURDETTE,41.613333,-86.2475,global average,6.0465116279,90,15
+newsearch,shroyer,1983,us,4,Aedes,triseratius,diptera,BURDETTE,41.613333,-86.2475,global average,0.9302325581,90,16
+newsearch,shroyer,1983,us,4,Aedes,triseratius,diptera,BURDETTE,41.613333,-86.2475,global average,0.9302325581,90,17
+newsearch,shroyer,1983,us,4,Aedes,triseratius,diptera,BURDETTE,41.613333,-86.2475,global average,0.9302325581,90,18
+newsearch,shroyer,1983,us,4,Aedes,triseratius,diptera,BURDETTE,41.613333,-86.2475,global average,2.3255813953,90,24
+newsearch,so,1992,japan,3,Tetranychus,urticae,Trombidiformes,F,34.596667,135.8375,global average,97.6658476658,40,9
+newsearch,so,1992,japan,3,Tetranychus,urticae,Trombidiformes,F,34.596667,135.8375,global average,97.076254101,40,10
+newsearch,so,1992,japan,3,Tetranychus,urticae,Trombidiformes,F,34.596667,135.8375,global average,95.7489796333,40,11
+newsearch,so,1992,japan,3,Tetranychus,urticae,Trombidiformes,F,34.596667,135.8375,global average,59.0413049091,40,12
+newsearch,so,1992,japan,3,Tetranychus,urticae,Trombidiformes,F,34.596667,135.8375,global average,62.6287605626,40,13
+newsearch,so,1992,japan,3,Tetranychus,urticae,Trombidiformes,F,34.596667,135.8375,global average,0.2452651213,40,14
+newsearch,so,1992,japan,3,Tetranychus,urticae,Trombidiformes,A,34.516667,135.85,global average,80.0979900153,40,9
+newsearch,so,1992,japan,3,Tetranychus,urticae,Trombidiformes,A,34.516667,135.85,global average,86.2651532073,40,10
+newsearch,so,1992,japan,3,Tetranychus,urticae,Trombidiformes,A,34.516667,135.85,global average,89.8526088609,40,11
+newsearch,so,1992,japan,3,Tetranychus,urticae,Trombidiformes,A,34.516667,135.85,global average,92.0884230802,40,12
+newsearch,so,1992,japan,3,Tetranychus,urticae,Trombidiformes,A,34.516667,135.85,global average,70.1101444903,40,12.5
+newsearch,so,1992,japan,3,Tetranychus,urticae,Trombidiformes,A,34.516667,135.85,global average,36.4613943126,40,13
+newsearch,so,1992,japan,3,Tetranychus,urticae,Trombidiformes,A,34.516667,135.85,global average,0.1102315152,40,13.5
+newsearch,so,1992,japan,3,Tetranychus,urticae,Trombidiformes,KY,35.011667,135.768333,global average,97.17401205,40,9
+newsearch,so,1992,japan,3,Tetranychus,urticae,Trombidiformes,KY,35.011667,135.768333,global average,75.2084971093,40,10
+newsearch,so,1992,japan,3,Tetranychus,urticae,Trombidiformes,KY,35.011667,135.768333,global average,65.6509896179,40,11
+newsearch,so,1992,japan,3,Tetranychus,urticae,Trombidiformes,KY,35.011667,135.768333,global average,-0.0494591404,40,12
+newsearch,so,1992,japan,3,Tetranychus,urticae,Trombidiformes,KY,35.011667,135.768333,global average,-0.1476522138,40,13
+newsearch,so,1992,japan,3,Tetranychus,urticae,Trombidiformes,KY,35.011667,135.768333,global average,0.3684053271,40,14
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,5,36.4,139.3166666667,global average,100,240,10
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,5,36.4,139.3166666667,global average,100,240,11
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,5,36.4,139.3166666667,global average,96.6666666667,240,11.5
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,5,36.4,139.3166666667,global average,16.6666666667,240,12
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,5,36.4,139.3166666667,global average,0,240,13
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,7,36.5333333333,140.5666666667,global average,100,240,10
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,7,36.5333333333,140.5666666667,global average,100,240,11
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,7,36.5333333333,140.5666666667,global average,91.6666666667,240,11.5
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,7,36.5333333333,140.5666666667,global average,11.6666666667,240,12
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,7,36.5333333333,140.5666666667,global average,0,240,13
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,10,34.8333333333,138.1666666667,global average,100,240,10
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,10,34.8333333333,138.1666666667,global average,100,240,11
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,10,34.8333333333,138.1666666667,global average,75,240,11.5
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,10,34.8333333333,138.1666666667,global average,5,240,12
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,10,34.8333333333,138.1666666667,global average,0,240,13
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,14,34.5166666667,133.5166666667,global average,100,240,10
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,14,34.5166666667,133.5166666667,global average,100,240,11
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,14,34.5166666667,133.5166666667,global average,98.3333333333,240,11.5
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,14,34.5166666667,133.5166666667,global average,0,240,12
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,14,34.5166666667,133.5166666667,global average,0,240,13
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,15,34.4,133.2,global average,100,240,10
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,15,34.4,133.2,global average,100,240,11
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,15,34.4,133.2,global average,98.3333333333,240,11.5
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,15,34.4,133.2,global average,20,240,12
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,15,34.4,133.2,global average,0,240,13
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,16,34.4166666667,132.7333333333,global average,100,240,10
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,16,34.4166666667,132.7333333333,global average,88.3333333333,240,11
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,16,34.4166666667,132.7333333333,global average,5,240,11.5
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,16,34.4166666667,132.7333333333,global average,0,240,12
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,16,34.4166666667,132.7333333333,global average,0,240,13
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,17,34.3666666667,132.5166666667,global average,83.3333333333,240,10
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,17,34.3666666667,132.5166666667,global average,20,240,11
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,17,34.3666666667,132.5166666667,global average,0,240,11.5
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,17,34.3666666667,132.5166666667,global average,0,240,12
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,17,34.3666666667,132.5166666667,global average,0,240,13
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,18,33.9333333333,133.2833333333,global average,100,240,10
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,18,33.9333333333,133.2833333333,global average,98.3333333333,240,11
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,18,33.9333333333,133.2833333333,global average,5,240,11.5
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,18,33.9333333333,133.2833333333,global average,0,240,12
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,18,33.9333333333,133.2833333333,global average,0,240,13
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,20,33.7,133.8833333333,global average,100,240,10
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,20,33.7,133.8833333333,global average,100,240,11
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,20,33.7,133.8833333333,global average,91.6666666667,240,11.5
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,20,33.7,133.8833333333,global average,13.3333333333,240,12
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,20,33.7,133.8833333333,global average,0,240,13
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,21,33.6333333333,133.7833333333,global average,100,240,10
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,21,33.6333333333,133.7833333333,global average,88.3333333333,240,11
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,21,33.6333333333,133.7833333333,global average,5,240,11.5
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,21,33.6333333333,133.7833333333,global average,0,240,12
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,21,33.6333333333,133.7833333333,global average,0,240,13
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,22,33.2,133.1333333333,global average,100,240,10
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,22,33.2,133.1333333333,global average,100,240,11
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,22,33.2,133.1333333333,global average,33.3333333333,240,11.5
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,22,33.2,133.1333333333,global average,5,240,12
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,22,33.2,133.1333333333,global average,0,240,13
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,23,33.9,133.05,global average,100,240,10
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,23,33.9,133.05,global average,58.3333333333,240,11
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,23,33.9,133.05,global average,1.6666666667,240,11.5
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,23,33.9,133.05,global average,0,240,12
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,23,33.9,133.05,global average,0,240,13
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,31,30.4166666667,130.5666666667,global average,100,240,10
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,31,30.4166666667,130.5666666667,global average,96.6666666667,240,11
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,31,30.4166666667,130.5666666667,global average,20,240,11.5
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,31,30.4166666667,130.5666666667,global average,0,240,12
+newsearch,suwa,2006,japan,13,Tetranychus,pueraricola,Trombidiformes,31,30.4166666667,130.5666666667,global average,0,240,13
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Pelkosenniemi1,67.1,27.5,global average,93.92712551,115,16
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Pelkosenniemi1,67.1,27.5,global average,71.38771055,115,17.5
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Pelkosenniemi1,67.1,27.5,global average,33.45262605,115,19
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Pelkosenniemi1,67.1,27.5,global average,12.109823,115,20.5
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Pelkosenniemi2,67.1,27.5,global average,96.7611336,115,16
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Pelkosenniemi2,67.1,27.5,global average,93.65491702,115,17.5
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Pelkosenniemi2,67.1,27.5,global average,64.62809689,115,19
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Pelkosenniemi2,67.1,27.5,global average,14.13411449,115,20.5
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Pelkosenniemi3,67.1,27.5,global average,98.3805668,115,16
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Pelkosenniemi3,67.1,27.5,global average,88.7979992,115,17.5
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Pelkosenniemi3,67.1,27.5,global average,42.76574871,115,19
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Pelkosenniemi3,67.1,27.5,global average,6.036948501,115,20.5
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Pelkosenniemi4,67.1,27.5,global average,97.5708502,115,16
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Pelkosenniemi4,67.1,27.5,global average,91.6320073,115,17.5
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Pelkosenniemi4,67.1,27.5,global average,51.26639123,115,19
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Pelkosenniemi4,67.1,27.5,global average,13.32439789,115,20.5
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Oulanka2,66.3666666667,29.3333333333,global average,95.16129032,115,16
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Oulanka2,66.3666666667,29.3333333333,global average,62.09677419,115,17.5
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Oulanka2,66.3666666667,29.3333333333,global average,31.85483871,115,19
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Oulanka2,66.3666666667,29.3333333333,global average,5.241935484,115,20.5
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Oulanka3,66.3666666667,29.3333333333,global average,93.5483871,115,16
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Oulanka3,66.3666666667,29.3333333333,global average,72.98387097,115,17.5
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Oulanka3,66.3666666667,29.3333333333,global average,39.11290323,115,19
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Oulanka3,66.3666666667,29.3333333333,global average,14.51612903,115,20.5
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Oulanka4,66.3666666667,29.3333333333,global average,93.14516129,115,16
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Oulanka4,66.3666666667,29.3333333333,global average,84.27419355,115,17.5
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Oulanka4,66.3666666667,29.3333333333,global average,74.19354839,115,19
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Oulanka4,66.3666666667,29.3333333333,global average,28.62903226,115,20.5
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Pudasjärvi1,65.35,26.9833333333,global average,100.8474576271,115,14
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Pudasjärvi1,65.35,26.9833333333,global average,98.3050847458,115,16
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Pudasjärvi1,65.35,26.9833333333,global average,69.0677966102,115,17.5
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Pudasjärvi1,65.35,26.9833333333,global average,21.6101694915,115,19
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Pudasjärvi1,65.35,26.9833333333,global average,6.7796610169,115,20.5
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Pudasjärvi2,65.35,26.9833333333,global average,93.6440677966,115,16
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Pudasjärvi2,65.35,26.9833333333,global average,63.5593220339,115,17.5
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Pudasjärvi2,65.35,26.9833333333,global average,6.7796610169,115,19
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Pudasjärvi2,65.35,26.9833333333,global average,2.9661016949,115,20.5
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Pudasjärvi3,65.35,26.9833333333,global average,95.7627118644,115,14
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Pudasjärvi3,65.35,26.9833333333,global average,89.8305084746,115,15
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Pudasjärvi3,65.35,26.9833333333,global average,75.4237288136,115,16
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Pudasjärvi3,65.35,26.9833333333,global average,39.8305084746,115,17.5
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Pudasjärvi3,65.35,26.9833333333,global average,4.2372881356,115,19
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Pudasjärvi3,65.35,26.9833333333,global average,11.8644067797,115,20.5
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Pudasjärvi4,65.35,26.9833333333,global average,98.3050847458,115,14
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Pudasjärvi4,65.35,26.9833333333,global average,99.1525423729,115,15
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Pudasjärvi4,65.35,26.9833333333,global average,68.2203389831,115,16
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Pudasjärvi4,65.35,26.9833333333,global average,33.0508474576,115,17.5
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Pudasjärvi4,65.35,26.9833333333,global average,2.5423728814,115,19
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Pudasjärvi4,65.35,26.9833333333,global average,5.0847457627,115,20.5
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Paltamo1,64.4,27.8333333333,global average,98.3333333333,115,16
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Paltamo1,64.4,27.8333333333,global average,83.3333333333,115,17.5
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Paltamo1,64.4,27.8333333333,global average,4.5833333333,115,19
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Paltamo1,64.4,27.8333333333,global average,3.3333333333,115,20.5
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Paltamo2,64.4,27.8333333333,global average,84.1666666667,115,16
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Paltamo2,64.4,27.8333333333,global average,41.6666666667,115,17.5
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Paltamo2,64.4,27.8333333333,global average,17.0833333333,115,19
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Paltamo2,64.4,27.8333333333,global average,8.3333333333,115,20.5
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Paltamo3,64.4,27.8333333333,global average,95,115,14
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Paltamo3,64.4,27.8333333333,global average,96.25,115,15
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Paltamo3,64.4,27.8333333333,global average,79.1666666667,115,16
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Paltamo3,64.4,27.8333333333,global average,44.1666666667,115,17.5
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Paltamo3,64.4,27.8333333333,global average,15,115,19
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Paltamo3,64.4,27.8333333333,global average,2.0833333333,115,20.5
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Paltamo4,64.4,27.8333333333,global average,91.6666666667,115,15
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Paltamo4,64.4,27.8333333333,global average,85,115,15
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Paltamo4,64.4,27.8333333333,global average,77.0833333333,115,16
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Paltamo4,64.4,27.8333333333,global average,16.6666666667,115,17.5
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Paltamo4,64.4,27.8333333333,global average,2.9166666667,115,19
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Paltamo4,64.4,27.8333333333,global average,0.4166666667,115,20.5
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Jyväskylä1,61.2333333333,25.7333333333,global average,100.4247821025,115,14
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Jyväskylä1,61.2333333333,25.7333333333,global average,99.2102199427,115,15
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Jyväskylä1,61.2333333333,25.7333333333,global average,94.1904492202,115,16
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Jyväskylä1,61.2333333333,25.7333333333,global average,40.4759657238,115,17.5
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Jyväskylä1,61.2333333333,25.7333333333,global average,4.1272038849,115,19
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Jyväskylä1,61.2333333333,25.7333333333,global average,2.0934940163,115,20.5
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Jyväskylä2,61.2333333333,25.7333333333,global average,98.7298490712,115,14
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Jyväskylä2,61.2333333333,25.7333333333,global average,85.292050806,115,16
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Jyväskylä2,61.2333333333,25.7333333333,global average,34.544748959,115,17.5
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Jyväskylä2,61.2333333333,25.7333333333,global average,15.9896374144,115,19
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Jyväskylä2,61.2333333333,25.7333333333,global average,5.906044492,115,20.5
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Jyväskylä3,61.2333333333,25.7333333333,global average,92.7975834618,115,14
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Jyväskylä3,61.2333333333,25.7333333333,global average,75.1224526184,115,16
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Jyväskylä3,61.2333333333,25.7333333333,global average,32.4260826699,115,17.5
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Jyväskylä3,61.2333333333,25.7333333333,global average,24.4653514154,115,19
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Jyväskylä3,61.2333333333,25.7333333333,global average,16.0766915243,115,20.5
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Jyväskylä4,61.2333333333,25.7333333333,global average,86.8663666971,115,14
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Jyväskylä4,61.2333333333,25.7333333333,global average,78.4472903097,115,15
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Jyväskylä4,61.2333333333,25.7333333333,global average,56.9019225323,115,16
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Jyväskylä4,61.2333333333,25.7333333333,global average,16.3231700282,115,17.5
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Jyväskylä4,61.2333333333,25.7333333333,global average,7.94185205,115,19
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Jyväskylä4,61.2333333333,25.7333333333,global average,7.602026368,115,20.5
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Lahti1,60.9833333333,25.65,global average,99.57081545,115,14
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Lahti1,60.9833333333,25.65,global average,100,115,15
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Lahti1,60.9833333333,25.65,global average,94.42060086,115,16
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Lahti1,60.9833333333,25.65,global average,39.05579399,115,17.5
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Lahti1,60.9833333333,25.65,global average,3.004291845,115,19
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Lahti2,60.9833333333,25.65,global average,97.4248927,115,14
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Lahti2,60.9833333333,25.65,global average,91.84549356,115,15
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Lahti2,60.9833333333,25.65,global average,64.80686695,115,16
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Lahti2,60.9833333333,25.65,global average,8.583690987,115,17.5
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Lahti2,60.9833333333,25.65,global average,1.716738197,115,19
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Lahti3,60.9833333333,25.65,global average,96.13733906,115,14
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Lahti3,60.9833333333,25.65,global average,86.69527897,115,16
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Lahti3,60.9833333333,25.65,global average,10.72961373,115,17.5
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Lahti3,60.9833333333,25.65,global average,0.429184549,115,19
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Lahti4,60.9833333333,25.65,global average,90.55793991,115,14
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Lahti4,60.9833333333,25.65,global average,90.12875536,115,15
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Lahti4,60.9833333333,25.65,global average,72.10300429,115,16
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Lahti4,60.9833333333,25.65,global average,11.58798283,115,17.5
+newsearch,tyukmaeva,2011,Europe,23,Drosophila,montana,diptera,Lahti4,60.9833333333,25.65,global average,5.150214592,115,19
+newsearch,ujiye,1985,japan,3,phyllonorycter,ringoniella,lepidoptera,Suzaka,36.647778,138.309722,not translated,96.1343070982,1,11
+newsearch,ujiye,1985,japan,3,phyllonorycter,ringoniella,lepidoptera,Suzaka,36.647778,138.309722,not translated,68.4865750537,1,12
+newsearch,ujiye,1985,japan,3,phyllonorycter,ringoniella,lepidoptera,Suzaka,36.647778,138.309722,not translated,56.5568573852,1,13
+newsearch,ujiye,1985,japan,3,phyllonorycter,ringoniella,lepidoptera,Suzaka,36.647778,138.309722,not translated,-0.1926671223,1,14
+newsearch,ujiye,1985,japan,3,phyllonorycter,ringoniella,lepidoptera,Hamamatsu,34.710892,137.726086,not translated,97.6954048068,1,11
+newsearch,ujiye,1985,japan,3,phyllonorycter,ringoniella,lepidoptera,Hamamatsu,34.710892,137.726086,not translated,85.2477913267,1,12
+newsearch,ujiye,1985,japan,3,phyllonorycter,ringoniella,lepidoptera,Hamamatsu,34.710892,137.726086,not translated,20.4869373338,1,13
+newsearch,ujiye,1985,japan,3,phyllonorycter,ringoniella,lepidoptera,Hamamatsu,34.710892,137.726086,not translated,-0.4577902563,1,14
+newsearch,ujiye,1985,japan,3,phyllonorycter,ringoniella,lepidoptera,Amagi,33.423411,130.665569,not translated,96.9148559525,1,11
+newsearch,ujiye,1985,japan,3,phyllonorycter,ringoniella,lepidoptera,Amagi,33.423411,130.665569,not translated,85.2379109614,1,12
+newsearch,ujiye,1985,japan,3,phyllonorycter,ringoniella,lepidoptera,Amagi,33.423411,130.665569,not translated,15.850575943,1,13
+newsearch,ujiye,1985,japan,3,phyllonorycter,ringoniella,lepidoptera,Amagi,33.423411,130.665569,not translated,-0.1951372136,1,14
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,BRU,31.1166666667,-81.4666666667,global average,81.4511512216,381,8
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,BRU,31.1166666667,-81.4666666667,global average,92.9350722845,381,12
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,BRU,31.1166666667,-81.4666666667,global average,94.1488066645,381,12.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,BRU,31.1166666667,-81.4666666667,global average,26.4695431305,381,12.75
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,BRU,31.1166666667,-81.4666666667,global average,25.0455685041,381,13
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,BRU,31.1166666667,-81.4666666667,global average,14.2568550165,381,13.25
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,BRU,31.1166666667,-81.4666666667,global average,5.4129460614,381,13.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,BRU,31.1166666667,-81.4666666667,global average,4.8723752871,381,13.75
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,BRU,31.1166666667,-81.4666666667,global average,-0.2645276339,381,14
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,BRU,31.1166666667,-81.4666666667,global average,3.081878541,381,14.25
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,BRU,31.1166666667,-81.4666666667,global average,-0.4622653304,381,14.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,BRU,31.1166666667,-81.4666666667,global average,1.7668077042,381,16
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,HIR,34.3833333333,132.4666666667,global average,99.4724377987,381,8
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,HIR,34.3833333333,132.4666666667,global average,100.0867359038,381,12
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,HIR,34.3833333333,132.4666666667,global average,72.3033092833,381,12.75
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,HIR,34.3833333333,132.4666666667,global average,65.4547462731,381,12.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,HIR,34.3833333333,132.4666666667,global average,62.1048562361,381,13
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,HIR,34.3833333333,132.4666666667,global average,40.1307860482,381,13.25
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,HIR,34.3833333333,132.4666666667,global average,26.5928382781,381,13.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,HIR,34.3833333333,132.4666666667,global average,1.6314146399,381,13.75
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,HIR,34.3833333333,132.4666666667,global average,3.2072793188,381,14
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,HIR,34.3833333333,132.4666666667,global average,2.3233527487,381,14.25
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,HIR,34.3833333333,132.4666666667,global average,0.0337847715,381,14.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,HIR,34.3833333333,132.4666666667,global average,0.0003248536,381,16
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,JACK,30.3166666667,-81.7833333333,global average,62.6865671642,381,8
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,JACK,30.3166666667,-81.7833333333,global average,54.1767614049,381,12
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,JACK,30.3166666667,-81.7833333333,global average,46.6051219569,381,12.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,JACK,30.3166666667,-81.7833333333,global average,25.7274069214,381,12.75
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,JACK,30.3166666667,-81.7833333333,global average,6.0437217367,381,13
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,JACK,30.3166666667,-81.7833333333,global average,9.0475409452,381,13.25
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,JACK,30.3166666667,-81.7833333333,global average,1.9011691933,381,13.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,JACK,30.3166666667,-81.7833333333,global average,1.9199137749,381,13.75
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,JACK,30.3166666667,-81.7833333333,global average,3.1326882073,381,14
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,JACK,30.3166666667,-81.7833333333,global average,0.3137374353,381,14.25
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,JACK,30.3166666667,-81.7833333333,global average,3.9155087982,381,14.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,JACK,30.3166666667,-81.7833333333,global average,10.1473792732,381,16
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,KHO,37.3666666667,140.3666666667,global average,84.2576028623,381,8
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,KHO,37.3666666667,140.3666666667,global average,78.7119856887,381,12
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,KHO,37.3666666667,140.3666666667,global average,81.5742397138,381,12.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,KHO,37.3666666667,140.3666666667,global average,78.5330948122,381,13
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,KHO,37.3666666667,140.3666666667,global average,69.0518783542,381,12.75
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,KHO,37.3666666667,140.3666666667,global average,68.8729874776,381,13.25
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,KHO,37.3666666667,140.3666666667,global average,27.3703041145,381,13.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,KHO,37.3666666667,140.3666666667,global average,17.8890876565,381,13.75
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,KHO,37.3666666667,140.3666666667,global average,8.0500894454,381,14
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,KHO,37.3666666667,140.3666666667,global average,5.7245080501,381,14.25
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,KHO,37.3666666667,140.3666666667,global average,7.5134168157,381,14.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,KHO,37.3666666667,140.3666666667,global average,6.0822898032,381,16
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,MAN,38.6166666667,-77.4166666667,global average,100.1620745543,381,8
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,MAN,38.6166666667,-77.4166666667,global average,99.8379254457,381,12
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,MAN,38.6166666667,-77.4166666667,global average,98.3792544571,381,12.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,MAN,38.6166666667,-77.4166666667,global average,94.8136142626,381,12.75
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,MAN,38.6166666667,-77.4166666667,global average,82.0097244733,381,13
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,MAN,38.6166666667,-77.4166666667,global average,59.6434359806,381,13.25
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,MAN,38.6166666667,-77.4166666667,global average,52.8363047002,381,13.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,MAN,38.6166666667,-77.4166666667,global average,42.1393841167,381,14
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,MAN,38.6166666667,-77.4166666667,global average,14.262560778,381,13.75
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,MAN,38.6166666667,-77.4166666667,global average,11.1831442464,381,14.25
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,MAN,38.6166666667,-77.4166666667,global average,11.6693679092,381,14.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,MAN,38.6166666667,-77.4166666667,global average,5.9967585089,381,16
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,MEL,27.5666666667,-80.3666666667,global average,12.3839009288,381,8
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,MEL,27.5666666667,-80.3666666667,global average,13.4674922601,381,12
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,MEL,27.5666666667,-80.3666666667,global average,5.572755418,381,12.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,MEL,27.5666666667,-80.3666666667,global average,2.4767801858,381,12.75
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,MEL,27.5666666667,-80.3666666667,global average,5.1083591331,381,13
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,MEL,27.5666666667,-80.3666666667,global average,3.7151702786,381,13.25
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,MEL,27.5666666667,-80.3666666667,global average,0.3095975232,381,13.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,MEL,27.5666666667,-80.3666666667,global average,0.1547987616,381,13.75
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,MEL,27.5666666667,-80.3666666667,global average,1.7027863777,381,14
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,MEL,27.5666666667,-80.3666666667,global average,1.7027863777,381,14.25
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,MEL,27.5666666667,-80.3666666667,global average,0.773993808,381,14.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,MEL,27.5666666667,-80.3666666667,global average,1.0835913313,381,16
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,NEW,40.7166666667,-74.0666666667,global average,99.2895204263,381,8
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,NEW,40.7166666667,-74.0666666667,global average,98.0461811723,381,12
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,NEW,40.7166666667,-74.0666666667,global average,98.9342806394,381,12.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,NEW,40.7166666667,-74.0666666667,global average,99.4671403197,381,12.75
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,NEW,40.7166666667,-74.0666666667,global average,96.9804618117,381,13
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,NEW,40.7166666667,-74.0666666667,global average,97.8685612789,381,13.25
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,NEW,40.7166666667,-74.0666666667,global average,79.7513321492,381,13.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,NEW,40.7166666667,-74.0666666667,global average,49.2007104796,381,14.25
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,NEW,40.7166666667,-74.0666666667,global average,44.7602131439,381,14
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,NEW,40.7166666667,-74.0666666667,global average,30.0177619893,381,13.75
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,NEW,40.7166666667,-74.0666666667,global average,8.5257548845,381,14.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,NEW,40.7166666667,-74.0666666667,global average,0,381,16
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,NVA,36.35,-78.3666666667,global average,99.1943676937,381,8
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,NVA,36.35,-78.3666666667,global average,96.0487870332,381,12
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,NVA,36.35,-78.3666666667,global average,94.1026181681,381,12.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,NVA,36.35,-78.3666666667,global average,78.6135018717,381,12.75
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,NVA,36.35,-78.3666666667,global average,66.995911594,381,13
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,NVA,36.35,-78.3666666667,global average,37.4750464841,381,13.25
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,NVA,36.35,-78.3666666667,global average,28.2762699936,381,13.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,NVA,36.35,-78.3666666667,global average,18.2713135202,381,13.75
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,NVA,36.35,-78.3666666667,global average,15.6854583643,381,14
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,NVA,36.35,-78.3666666667,global average,16.6433447706,381,14.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,NVA,36.35,-78.3666666667,global average,3.2608665887,381,14.25
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,NVA,36.35,-78.3666666667,global average,9.1932997242,381,16
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,OKI,26.2166666667,127.9166666667,global average,25.6499133449,381,8
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,OKI,26.2166666667,127.9166666667,global average,24.7833622184,381,12
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,OKI,26.2166666667,127.9166666667,global average,20.2772963605,381,12.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,OKI,26.2166666667,127.9166666667,global average,26.3431542461,381,12.75
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,OKI,26.2166666667,127.9166666667,global average,6.4124783362,381,13
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,OKI,26.2166666667,127.9166666667,global average,3.986135182,381,13.25
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,OKI,26.2166666667,127.9166666667,global average,1.733102253,381,13.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,OKI,26.2166666667,127.9166666667,global average,11.0918544194,381,13.75
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,OKI,26.2166666667,127.9166666667,global average,0,381,14
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,OKI,26.2166666667,127.9166666667,global average,0,381,14.25
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,OKI,26.2166666667,127.9166666667,global average,6.2391681109,381,14.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,OKI,26.2166666667,127.9166666667,global average,0.6932409012,381,16
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,SHI,34.0166666667,130.9333333333,global average,90.3115263908,381,8
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,SHI,34.0166666667,130.9333333333,global average,84.8937257802,381,12
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,SHI,34.0166666667,130.9333333333,global average,79.7811976161,381,12.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,SHI,34.0166666667,130.9333333333,global average,60.5598850873,381,12.75
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,SHI,34.0166666667,130.9333333333,global average,55.7883253993,381,13
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,SHI,34.0166666667,130.9333333333,global average,33.2726976775,381,13.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,SHI,34.0166666667,130.9333333333,global average,27.206942735,381,13.25
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,SHI,34.0166666667,130.9333333333,global average,26.8562649388,381,13.75
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,SHI,34.0166666667,130.9333333333,global average,7.8002964198,381,14
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,SHI,34.0166666667,130.9333333333,global average,2.8639638585,381,14.25
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,SHI,34.0166666667,130.9333333333,global average,1.8690441174,381,14.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,SHI,34.0166666667,130.9333333333,global average,3.9419839568,381,16
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,UTS,36.5333333333,139.8666666667,global average,93.3682373473,381,8
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,UTS,36.5333333333,139.8666666667,global average,99.8254799302,381,12
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,UTS,36.5333333333,139.8666666667,global average,94.9389179756,381,12.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,UTS,36.5333333333,139.8666666667,global average,98.4293193717,381,12.75
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,UTS,36.5333333333,139.8666666667,global average,93.0191972077,381,13
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,UTS,36.5333333333,139.8666666667,global average,80.2792321117,381,13.25
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,UTS,36.5333333333,139.8666666667,global average,67.8883071553,381,13.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,UTS,36.5333333333,139.8666666667,global average,21.9895287958,381,13.75
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,UTS,36.5333333333,139.8666666667,global average,1.3961605585,381,14
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,UTS,36.5333333333,139.8666666667,global average,2.0942408377,381,14.25
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,UTS,36.5333333333,139.8666666667,global average,6.1082024433,381,14.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,UTS,36.5333333333,139.8666666667,global average,8.0279232112,381,16
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,AIZ,37.4666666667,139.9333333333,global average,95.802919708,381,8
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,AIZ,37.4666666667,139.9333333333,global average,95.1645677923,381,12
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,AIZ,37.4666666667,139.9333333333,global average,93.5108686934,381,12.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,AIZ,37.4666666667,139.9333333333,global average,95.694968049,381,12.75
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,AIZ,37.4666666667,139.9333333333,global average,76.7108499773,381,13
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,AIZ,37.4666666667,139.9333333333,global average,73.4084650143,381,13.75
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,AIZ,37.4666666667,139.9333333333,global average,66.1215609208,381,13.25
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,AIZ,37.4666666667,139.9333333333,global average,60.2771316275,381,13.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,AIZ,37.4666666667,139.9333333333,global average,26.3234940242,381,14
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,AIZ,37.4666666667,139.9333333333,global average,14.6386460255,381,14.25
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,AIZ,37.4666666667,139.9333333333,global average,3.3194299618,381,14.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,AIZ,37.4666666667,139.9333333333,global average,2.1904494532,381,16
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,BER,39.7666666667,-74.9833333333,global average,97.5221238938,381,8
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,BER,39.7666666667,-74.9833333333,global average,92.6550326689,381,12
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,BER,39.7666666667,-74.9833333333,global average,91.936150856,381,12.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,BER,39.7666666667,-74.9833333333,global average,92.9914812671,381,12.75
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,BER,39.7666666667,-74.9833333333,global average,61.1281118187,381,13
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,BER,39.7666666667,-74.9833333333,global average,51.2056901828,381,13.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,BER,39.7666666667,-74.9833333333,global average,47.4948308659,381,13.25
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,BER,39.7666666667,-74.9833333333,global average,35.2705318005,381,13.75
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,BER,39.7666666667,-74.9833333333,global average,10.1324952444,381,14
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,BER,39.7666666667,-74.9833333333,global average,13.3137044082,381,14.25
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,BER,39.7666666667,-74.9833333333,global average,2.1566454388,381,14.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,BER,39.7666666667,-74.9833333333,global average,2.6555289058,381,16
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,FAY,35.0166666667,-78.0833333333,global average,94.9655951655,381,8
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,FAY,35.0166666667,-78.0833333333,global average,83.9414483039,381,12
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,FAY,35.0166666667,-78.0833333333,global average,89.1335948609,381,12.75
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,FAY,35.0166666667,-78.0833333333,global average,79.763990453,381,12.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,FAY,35.0166666667,-78.0833333333,global average,56.4886756043,381,13
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,FAY,35.0166666667,-78.0833333333,global average,28.8797481211,381,13.25
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,FAY,35.0166666667,-78.0833333333,global average,10.1246699167,381,13.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,FAY,35.0166666667,-78.0833333333,global average,12.3759013813,381,13.75
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,FAY,35.0166666667,-78.0833333333,global average,2.4740376803,381,14
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,FAY,35.0166666667,-78.0833333333,global average,-0.1352071907,381,14.25
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,FAY,35.0166666667,-78.0833333333,global average,2.9847146049,381,14.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,FAY,35.0166666667,-78.0833333333,global average,0.5214681089,381,16
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,KAG,31.55,130.55,global average,96.7093633259,381,8
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,KAG,31.55,130.55,global average,97.5543338349,381,12.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,KAG,31.55,130.55,global average,88.1569688614,381,12
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,KAG,31.55,130.55,global average,70.9288954742,381,13
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,KAG,31.55,130.55,global average,64.9980835131,381,12.75
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,KAG,31.55,130.55,global average,64.1957333852,381,13.25
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,KAG,31.55,130.55,global average,13.3827996728,381,13.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,KAG,31.55,130.55,global average,7.4737269664,381,13.75
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,KAG,31.55,130.55,global average,2.220264418,381,14
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,KAG,31.55,130.55,global average,4.038638665,381,14.25
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,KAG,31.55,130.55,global average,11.9448623848,381,14.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,KAG,31.55,130.55,global average,1.8080767052,381,16
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,OAK,28.85,-80.85,global average,52.7726612884,381,8
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,OAK,28.85,-80.85,global average,50.8241117536,381,12
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,OAK,28.85,-80.85,global average,19.0590419076,381,12.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,OAK,28.85,-80.85,global average,12.6313033959,381,13
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,OAK,28.85,-80.85,global average,5.4253825468,381,12.75
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,OAK,28.85,-80.85,global average,4.393517527,381,13.25
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,OAK,28.85,-80.85,global average,5.3030627543,381,13.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,OAK,28.85,-80.85,global average,4.8628066919,381,13.75
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,OAK,28.85,-80.85,global average,2.3231241522,381,14
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,OAK,28.85,-80.85,global average,4.5815187644,381,14.25
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,OAK,28.85,-80.85,global average,2.0418362247,381,14.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,OAK,28.85,-80.85,global average,0.9000261774,381,16
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,SAK,38.9166666667,139.0083333333,global average,99.0757855823,381,8
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,SAK,38.9166666667,139.0083333333,global average,100.0913868734,381,12
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,SAK,38.9166666667,139.0083333333,global average,99.7599801363,381,12.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,SAK,38.9166666667,139.0083333333,global average,94.9695836897,381,12.75
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,SAK,38.9166666667,139.0083333333,global average,96.4648798521,381,13
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,SAK,38.9166666667,139.0083333333,global average,79.3096670069,381,13.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,SAK,38.9166666667,139.0083333333,global average,70.2337434822,381,13.25
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,SAK,38.9166666667,139.0083333333,global average,41.9900267608,381,13.75
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,SAK,38.9166666667,139.0083333333,global average,19.1026153889,381,14.25
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,SAK,38.9166666667,139.0083333333,global average,15.3892046238,381,14
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,SAK,38.9166666667,139.0083333333,global average,4.331737799,381,14.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,SAK,38.9166666667,139.0083333333,global average,2.5878003697,381,16
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,TAN,30.7166666667,130.9666666667,global average,96.2468357991,381,8
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,TAN,30.7166666667,130.9666666667,global average,81.5649434663,381,12
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,TAN,30.7166666667,130.9666666667,global average,62.3367272318,381,12.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,TAN,30.7166666667,130.9666666667,global average,42.1179051584,381,12.75
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,TAN,30.7166666667,130.9666666667,global average,24.1834955279,381,13
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,TAN,30.7166666667,130.9666666667,global average,14.4051302244,381,13.25
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,TAN,30.7166666667,130.9666666667,global average,7.4000112505,381,13.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,TAN,30.7166666667,130.9666666667,global average,5.7793778478,381,13.75
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,TAN,30.7166666667,130.9666666667,global average,6.9325532992,381,14
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,TAN,30.7166666667,130.9666666667,global average,3.5163413399,381,14.25
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,TAN,30.7166666667,130.9666666667,global average,2.2214096867,381,14.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,TAN,30.7166666667,130.9666666667,global average,1.7933284581,381,16
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,TOK,35.6333333333,139.6333333333,global average,94.9268447837,381,8
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,TOK,35.6333333333,139.6333333333,global average,92.6626977542,381,12
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,TOK,35.6333333333,139.6333333333,global average,80.8990900542,381,12.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,TOK,35.6333333333,139.6333333333,global average,84.3459591769,381,12.75
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,TOK,35.6333333333,139.6333333333,global average,83.2655714128,381,13
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,TOK,35.6333333333,139.6333333333,global average,57.1841464764,381,13.25
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,TOK,35.6333333333,139.6333333333,global average,15.3415062507,381,13.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,TOK,35.6333333333,139.6333333333,global average,17.3401371833,381,13.75
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,TOK,35.6333333333,139.6333333333,global average,13.9036397832,381,14
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,TOK,35.6333333333,139.6333333333,global average,9.2049037504,381,14.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,TOK,35.6333333333,139.6333333333,global average,3.5834301361,381,14.25
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,TOK,35.6333333333,139.6333333333,global average,0.7246376812,381,16
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,WAV,37.0333333333,-77.1166666667,global average,97.0967741935,381,8
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,WAV,37.0333333333,-77.1166666667,global average,84.6787932077,381,12
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,WAV,37.0333333333,-77.1166666667,global average,85.9476836841,381,12.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,WAV,37.0333333333,-77.1166666667,global average,90.1313403308,381,12.75
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,WAV,37.0333333333,-77.1166666667,global average,65.4445787767,381,13
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,WAV,37.0333333333,-77.1166666667,global average,63.8212342694,381,13.25
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,WAV,37.0333333333,-77.1166666667,global average,46.8769577403,381,13.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,WAV,37.0333333333,-77.1166666667,global average,23.96219157,381,13.75
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,WAV,37.0333333333,-77.1166666667,global average,13.6297191845,381,14
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,WAV,37.0333333333,-77.1166666667,global average,6.2004726054,381,14.25
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,WAV,37.0333333333,-77.1166666667,global average,13.4486453811,381,14.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,WAV,37.0333333333,-77.1166666667,global average,0.6462603726,381,16
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,ZIO,33.75,-80.0333333333,global average,92.8819444444,381,8
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,ZIO,33.75,-80.0333333333,global average,90.7986111111,381,12
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,ZIO,33.75,-80.0333333333,global average,81.9444444444,381,12.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,ZIO,33.75,-80.0333333333,global average,65.9722222222,381,12.75
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,ZIO,33.75,-80.0333333333,global average,63.0208333333,381,13
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,ZIO,33.75,-80.0333333333,global average,25.6944444444,381,13.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,ZIO,33.75,-80.0333333333,global average,14.5833333333,381,13.25
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,ZIO,33.75,-80.0333333333,global average,12.5,381,13.75
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,ZIO,33.75,-80.0333333333,global average,4.6875,381,14
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,ZIO,33.75,-80.0333333333,global average,2.0833333333,381,14.25
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,ZIO,33.75,-80.0333333333,global average,1.3888888889,381,14.5
+newsearch,urbanski,2012,"usa,japan",21,Aedes,albopictus,diptera,ZIO,33.75,-80.0333333333,global average,1.7361111111,381,16
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,L,59.933333,30.266667,global average,99.4679122958,200,14.75
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,L,59.933333,30.266667,global average,95.418414422,200,15.5
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,L,59.933333,30.266667,global average,98.7654410119,200,16
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,L,59.933333,30.266667,global average,93.5882348694,200,16.25
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,L,59.933333,30.266667,global average,83.2251590126,200,16.5
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,L,59.933333,30.266667,global average,53.6036849059,200,16.75
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,L,59.933333,30.266667,global average,21.3896369241,200,17
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,L,59.933333,30.266667,global average,3.2488394424,200,17.25
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,L,59.933333,30.266667,global average,1.4201038185,200,18
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,W,52.23333,21.016667,global average,91.0447761194,200,11.5
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,W,52.23333,21.016667,global average,94.0298507463,200,12
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,W,52.23333,21.016667,global average,96.6417910448,200,12.5
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,W,52.23333,21.016667,global average,83.5820895522,200,13
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,W,52.23333,21.016667,global average,79.1044776119,200,13.5
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,W,52.23333,21.016667,global average,14.9253731343,200,14
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,W,52.23333,21.016667,global average,0,200,14.5
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,W,52.23333,21.016667,global average,-0.7462686567,200,18
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,V,51.866667,4.166667,global average,100.6259151856,200,13
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,V,51.866667,4.166667,global average,97.7289040742,200,13.5
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,V,51.866667,4.166667,global average,90.3442533521,200,13.75
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,V,51.866667,4.166667,global average,48.898906084,200,14
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,V,51.866667,4.166667,global average,8.9207269804,200,14.25
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,V,51.866667,4.166667,global average,0.0717792644,200,14.5
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,V,51.866667,4.166667,global average,0.1205891642,200,15
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,V,51.866667,4.166667,global average,0.2469206696,200,16
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,V,51.866667,4.166667,global average,-0.2411783284,200,18
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,K,51.103333,2.654722,global average,97.6688412728,200,12
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,K,51.103333,2.654722,global average,88.6004482449,200,13
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,K,51.103333,2.654722,global average,13.7649712352,200,13.5
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,K,51.103333,2.654722,global average,3.1384277169,200,14
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,K,51.103333,2.654722,global average,0.2648070691,200,14.5
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,K,51.103333,2.654722,global average,0.3361836376,200,15
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,K,51.103333,2.654722,global average,0.4346833022,200,18
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,S1,46.749995,10.066666,global average,99.6372644431,200,12
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,S1,46.749995,10.066666,global average,100.2064348698,200,13
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,S1,46.749995,10.066666,global average,98.140611637,200,14
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,S1,46.749995,10.066666,global average,94.5766610634,200,15
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,S1,46.749995,10.066666,global average,51.5983957062,200,15.5
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,S1,46.749995,10.066666,global average,0.0058981391,200,16
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,S1,46.749995,10.066666,global average,0.7475891356,200,18
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,S2,46.749995,10.066666,global average,97.4169741697,200,12
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,S2,46.749995,10.066666,global average,99.63099631,200,13
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,S2,46.749995,10.066666,global average,95.5719557196,200,14
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,S2,46.749995,10.066666,global average,84.1328413284,200,14.9
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,S2,46.749995,10.066666,global average,6.6420664207,200,15.5
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,S2,46.749995,10.066666,global average,0.36900369,200,16
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,S2,46.749995,10.066666,global average,0.36900369,200,18
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,P,45.408056,11.872222,global average,99.5816905822,200,11.5
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,P,45.408056,11.872222,global average,100.0029150482,200,12
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,P,45.408056,11.872222,global average,66.469657992,200,12.5
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,P,45.408056,11.872222,global average,6.0625715098,200,13
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,P,45.408056,11.872222,global average,1.6331557583,200,13.5
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,P,45.408056,11.872222,global average,1.6790677676,200,14
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,P,45.408056,11.872222,global average,0.603414979,200,14.5
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,P,45.408056,11.872222,global average,0.182919275,200,18
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,A,44.885,6.356111,global average,101.1215723707,200,12
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,A,44.885,6.356111,global average,100.4664179104,200,13
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,A,44.885,6.356111,global average,100.5575321069,200,14
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,A,44.885,6.356111,global average,69.2619750087,200,14.5
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,A,44.885,6.356111,global average,30.8725269004,200,15
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,A,44.885,6.356111,global average,-0.7961645262,200,15.5
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,A,44.885,6.356111,global average,-0.7397604998,200,16
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,A,44.885,6.356111,global average,-0.6573238459,200,17
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,A,44.885,6.356111,global average,-0.5618708782,200,18
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,T1,40.647222,22.963889,global average,76.1942212586,200,8
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,T1,40.647222,22.963889,global average,73.3466536298,200,9
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,T1,40.647222,22.963889,global average,78.2064362539,200,10
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,T1,40.647222,22.963889,global average,70.1880429084,200,10.5
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,T1,40.647222,22.963889,global average,43.4964361122,200,11
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,T1,40.647222,22.963889,global average,1.7861950715,200,11.5
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,T1,40.647222,22.963889,global average,1.0960903513,200,12
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,T1,40.647222,22.963889,global average,0.8636936899,200,13.5
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,T2,40.647222,22.963889,global average,95.1918256613,200,9
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,T2,40.647222,22.963889,global average,95.6312111114,200,10
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,T2,40.647222,22.963889,global average,92.6601987556,200,10.5
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,T2,40.647222,22.963889,global average,20.7867653564,200,11
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,T2,40.647222,22.963889,global average,4.3378254844,200,11.5
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,T2,40.647222,22.963889,global average,0.6251658754,200,12
+newsearch,vaznunes,1990,Europe,10,Tetranychus,urticae,Trombidiformes,T2,40.647222,22.963889,global average,-0.0589779128,200,13
+newsearch,wang,2012,China,4,Sericinus,montelus,lepidoptera,BJ,40.25,115.0833333333,global average,99.7187060478,75,12.5
+newsearch,wang,2012,China,4,Sericinus,montelus,lepidoptera,BJ,40.25,115.0833333333,global average,99.8593530239,75,13
+newsearch,wang,2012,China,4,Sericinus,montelus,lepidoptera,BJ,40.25,115.0833333333,global average,99.8593530239,75,13.5
+newsearch,wang,2012,China,4,Sericinus,montelus,lepidoptera,BJ,40.25,115.0833333333,global average,92.9676511955,75,14
+newsearch,wang,2012,China,4,Sericinus,montelus,lepidoptera,BJ,40.25,115.0833333333,global average,19.4092827004,75,14.5
+newsearch,wang,2012,China,4,Sericinus,montelus,lepidoptera,BJ,40.25,115.0833333333,global average,10.5485232068,75,15
+newsearch,wang,2012,China,4,Sericinus,montelus,lepidoptera,BJ,40.25,115.0833333333,global average,0.1406469761,75,15.5
+newsearch,wang,2012,China,4,Sericinus,montelus,lepidoptera,BJ,40.25,115.0833333333,global average,-0.4219409283,75,16
+newsearch,wang,2012,China,4,Sericinus,montelus,lepidoptera,ZB,36.8,118.05,global average,99.4374120956,75,12.5
+newsearch,wang,2012,China,4,Sericinus,montelus,lepidoptera,ZB,36.8,118.05,global average,99.4374120956,75,13
+newsearch,wang,2012,China,4,Sericinus,montelus,lepidoptera,ZB,36.8,118.05,global average,88.0450070323,75,13.5
+newsearch,wang,2012,China,4,Sericinus,montelus,lepidoptera,ZB,36.8,118.05,global average,81.0126582278,75,14
+newsearch,wang,2012,China,4,Sericinus,montelus,lepidoptera,ZB,36.8,118.05,global average,7.5949367089,75,14.5
+newsearch,wang,2012,China,4,Sericinus,montelus,lepidoptera,ZB,36.8,118.05,global average,-0.5625879044,75,15
+newsearch,wang,2012,China,4,Sericinus,montelus,lepidoptera,ZB,36.8,118.05,global average,-0.1406469761,75,15.5
+newsearch,wang,2012,China,4,Sericinus,montelus,lepidoptera,ZB,36.8,118.05,global average,-0.4219409283,75,16
+newsearch,wang,2012,China,4,Sericinus,montelus,lepidoptera,WH,30.55,114.3166666667,global average,99.7187060478,75,12
+newsearch,wang,2012,China,4,Sericinus,montelus,lepidoptera,WH,30.55,114.3166666667,global average,99.8593530239,75,12.5
+newsearch,wang,2012,China,4,Sericinus,montelus,lepidoptera,WH,30.55,114.3166666667,global average,66.6666666667,75,13
+newsearch,wang,2012,China,4,Sericinus,montelus,lepidoptera,WH,30.55,114.3166666667,global average,8.4388185654,75,13.5
+newsearch,wang,2012,China,4,Sericinus,montelus,lepidoptera,WH,30.55,114.3166666667,global average,0,75,14
+newsearch,wang,2012,China,4,Sericinus,montelus,lepidoptera,WH,30.55,114.3166666667,global average,-0.1406469761,75,14.5
+newsearch,wang,2012,China,4,Sericinus,montelus,lepidoptera,WH,30.55,114.3166666667,global average,-0.1406469761,75,15
+newsearch,wang,2012,China,4,Sericinus,montelus,lepidoptera,HH,27.55,109.9666666667,global average,91.4205344585,75,12
+newsearch,wang,2012,China,4,Sericinus,montelus,lepidoptera,HH,27.55,109.9666666667,global average,49.3670886076,75,12.5
+newsearch,wang,2012,China,4,Sericinus,montelus,lepidoptera,HH,27.55,109.9666666667,global average,9.8452883263,75,13
+newsearch,wang,2012,China,4,Sericinus,montelus,lepidoptera,HH,27.55,109.9666666667,global average,-0.2812939522,75,13.5
+newsearch,wang,2012,China,4,Sericinus,montelus,lepidoptera,HH,27.55,109.9666666667,global average,-0.4219409283,75,14
+newsearch,wang,2012,China,4,Sericinus,montelus,lepidoptera,HH,27.55,109.9666666667,global average,-0.1406469761,75,14.5
+newsearch,wang,2012,China,4,Sericinus,montelus,lepidoptera,HH,27.55,109.9666666667,global average,-0.2812939522,75,15
+newsearch,yoshida,1994,japan,3,Drosophila,triauraria,diptera,onuma,41.972,140.6691,global average,90.1536553057,50,1
+newsearch,yoshida,1994,japan,3,Drosophila,triauraria,diptera,onuma,41.972,140.6691,global average,97.0339293164,50,2
+newsearch,yoshida,1994,japan,3,Drosophila,triauraria,diptera,onuma,41.972,140.6691,global average,100.1820517137,50,4
+newsearch,yoshida,1994,japan,3,Drosophila,triauraria,diptera,onuma,41.972,140.6691,global average,100.2707904887,50,6
+newsearch,yoshida,1994,japan,3,Drosophila,triauraria,diptera,onuma,41.972,140.6691,global average,100.0913003067,50,10
+newsearch,yoshida,1994,japan,3,Drosophila,triauraria,diptera,onuma,41.972,140.6691,global average,96.7197757562,50,11
+newsearch,yoshida,1994,japan,3,Drosophila,triauraria,diptera,onuma,41.972,140.6691,global average,89.9291553532,50,12
+newsearch,yoshida,1994,japan,3,Drosophila,triauraria,diptera,onuma,41.972,140.6691,global average,52.3840540995,50,13
+newsearch,yoshida,1994,japan,3,Drosophila,triauraria,diptera,onuma,41.972,140.6691,global average,12.498993684,50,14
+newsearch,yoshida,1994,japan,3,Drosophila,triauraria,diptera,onuma,41.972,140.6691,global average,0.3593462971,50,16
+newsearch,yoshida,1994,japan,3,Drosophila,triauraria,diptera,onuma,41.972,140.6691,global average,0.4508295703,50,18
+newsearch,yoshida,1994,japan,3,Drosophila,triauraria,diptera,oita,33.239444,131.609167,global average,0.5413980108,50,20
+newsearch,yoshida,1994,japan,3,Drosophila,triauraria,diptera,oita,33.239444,131.609167,global average,90.28905055,50,4
+newsearch,yoshida,1994,japan,3,Drosophila,triauraria,diptera,oita,33.239444,131.609167,global average,89.3008482329,50,10
+newsearch,yoshida,1994,japan,3,Drosophila,triauraria,diptera,oita,33.239444,131.609167,global average,84.1298476986,50,11
+newsearch,yoshida,1994,japan,3,Drosophila,triauraria,diptera,oita,33.239444,131.609167,global average,57.914766864,50,12
+newsearch,yoshida,1994,japan,3,Drosophila,triauraria,diptera,oita,33.239444,131.609167,global average,19.4685553693,50,13
+newsearch,yoshida,1994,japan,3,Drosophila,triauraria,diptera,oita,33.239444,131.609167,global average,0.447719139,50,14
+newsearch,yoshida,1994,japan,3,Drosophila,triauraria,diptera,yakushima,30.340287,130.522385,global average,1.7533684141,50,15
+newsearch,yoshida,1994,japan,3,Drosophila,triauraria,diptera,yakushima,30.340287,130.522385,global average,35.7917328396,50,4
+newsearch,yoshida,1994,japan,3,Drosophila,triauraria,diptera,yakushima,30.340287,130.522385,global average,33.1844595534,50,6
+newsearch,yoshida,1994,japan,3,Drosophila,triauraria,diptera,yakushima,30.340287,130.522385,global average,35.7911839399,50,8
+newsearch,yoshida,1994,japan,3,Drosophila,triauraria,diptera,yakushima,30.340287,130.522385,global average,48.4277684668,50,9
+newsearch,yoshida,1994,japan,3,Drosophila,triauraria,diptera,yakushima,30.340287,130.522385,global average,14.4779598498,50,10
+newsearch,yoshida,1994,japan,3,Drosophila,triauraria,diptera,yakushima,30.340287,130.522385,global average,4.8114712706,50,11
+newsearch,yoshida,1994,japan,3,Drosophila,triauraria,diptera,yakushima,30.340287,130.522385,global average,0.5406661446,50,12
+newsearch,yoshida,1994,japan,3,Drosophila,triauraria,diptera,yakushima,30.340287,130.522385,global average,0.4486339718,50,14
+newforward,kimura_evol,1988,japan,4,Drosophila,auraria,diptera, KS,31.596536,130.55711,global average,79.0619154416,50,10
+newforward,kimura_evol,1988,japan,4,Drosophila,auraria,diptera, KS,31.596536,130.55711,global average,71.6740771935,50,11
+newforward,kimura_evol,1988,japan,4,Drosophila,auraria,diptera, KS,31.596536,130.55711,global average,22.5650543058,50,12
+newforward,kimura_evol,1988,japan,4,Drosophila,auraria,diptera, KS,31.596536,130.55711,global average,-1.0606520611,50,13
+newforward,kimura_evol,1988,japan,4,Drosophila,auraria,diptera, KS,31.596536,130.55711,global average,2.769398768,50,14
+newforward,kimura_evol,1988,japan,4,Drosophila,auraria,diptera, SD,38.26833,140.86944,global average,67.3668308735,50,10
+newforward,kimura_evol,1988,japan,4,Drosophila,auraria,diptera, SD,38.26833,140.86944,global average,57.7161702919,50,11
+newforward,kimura_evol,1988,japan,4,Drosophila,auraria,diptera, SD,38.26833,140.86944,global average,6.646948789,50,12
+newforward,kimura_evol,1988,japan,4,Drosophila,auraria,diptera, SD,38.26833,140.86944,global average,3.3246986005,50,13
+newforward,kimura_evol,1988,japan,4,Drosophila,auraria,diptera, SD,38.26833,140.86944,global average,-1.4658642405,50,14
+newforward,kimura_evol,1988,japan,4,Drosophila,auraria,diptera, NR,32.83975,129.060778,global average,60.5514313416,50,10
+newforward,kimura_evol,1988,japan,4,Drosophila,auraria,diptera, NR,32.83975,129.060778,global average,46.6728529876,50,11
+newforward,kimura_evol,1988,japan,4,Drosophila,auraria,diptera, NR,32.83975,129.060778,global average,3.8873436689,50,12
+newforward,kimura_evol,1988,japan,4,Drosophila,auraria,diptera, NR,32.83975,129.060778,global average,-0.0548444279,50,13
+newforward,kimura_evol,1988,japan,4,Drosophila,auraria,diptera, NR,32.83975,129.060778,global average,1.335363883,50,14
+newforward,kimura_evol,1988,japan,4,Drosophila,auraria,diptera, ST,38.26833,140.86944,global average,81.1648564741,50,10
+newforward,kimura_evol,1988,japan,4,Drosophila,auraria,diptera, ST,38.26833,140.86944,global average,62.7410461575,50,11
+newforward,kimura_evol,1988,japan,4,Drosophila,auraria,diptera, ST,38.26833,140.86944,global average,2.7853134457,50,12
+newforward,kimura_evol,1988,japan,4,Drosophila,auraria,diptera, ST,38.26833,140.86944,global average,-0.3966427375,50,13
+newforward,kimura_evol,1988,japan,4,Drosophila,auraria,diptera, ST,38.26833,140.86944,global average,-0.319762602,50,14
+newforward,takeda,1982,us,3,Diatraea,grandiosella,lepidoptera,portageville,36.3,-89.4,global average,100,50,14
+newforward,takeda,1982,us,3,Diatraea,grandiosella,lepidoptera,portageville,36.3,-89.4,global average,100,50,14.5
+newforward,takeda,1982,us,3,Diatraea,grandiosella,lepidoptera,portageville,36.3,-89.4,global average,68,50,15
+newforward,takeda,1982,us,3,Diatraea,grandiosella,lepidoptera,portageville,36.3,-89.4,global average,21.5,50,15.5
+newforward,takeda,1982,us,3,Diatraea,grandiosella,lepidoptera,portageville,36.3,-89.4,global average,0,50,16
+newforward,takeda,1982,us,3,Diatraea,grandiosella,lepidoptera,portageville,36.3,-89.4,global average,0,50,24
+newforward,takeda,1982,us,3,Diatraea,grandiosella,lepidoptera,starksville,33.3,-88.5,global average,97.6,50,14
+newforward,takeda,1982,us,3,Diatraea,grandiosella,lepidoptera,starksville,33.3,-88.5,global average,96.2,50,14.5
+newforward,takeda,1982,us,3,Diatraea,grandiosella,lepidoptera,starksville,33.3,-88.5,global average,79.5,50,15
+newforward,takeda,1982,us,3,Diatraea,grandiosella,lepidoptera,starksville,33.3,-88.5,global average,31,50,15.5
+newforward,takeda,1982,us,3,Diatraea,grandiosella,lepidoptera,starksville,33.3,-88.5,global average,4.4,50,16
+newforward,takeda,1982,us,3,Diatraea,grandiosella,lepidoptera,starksville,33.3,-88.5,global average,0,50,24
+newforward,takeda,1982,us,3,Diatraea,grandiosella,lepidoptera,stjohn,37.6,-98.5,global average,100,50,14
+newforward,takeda,1982,us,3,Diatraea,grandiosella,lepidoptera,stjohn,37.6,-98.5,global average,100,50,14.5
+newforward,takeda,1982,us,3,Diatraea,grandiosella,lepidoptera,stjohn,37.6,-98.5,global average,96,50,15
+newforward,takeda,1982,us,3,Diatraea,grandiosella,lepidoptera,stjohn,37.6,-98.5,global average,32.1,50,15.5
+newforward,takeda,1982,us,3,Diatraea,grandiosella,lepidoptera,stjohn,37.6,-98.5,global average,3.7,50,16
+newforward,takeda,1982,us,3,Diatraea,grandiosella,lepidoptera,stjohn,37.6,-98.5,global average,0,50,24
+oldsearch,noda,1992,japan,7,laodelphax,striatellus,homoptera,Kamikawa,43.847186,142.770428,not described,103.0448717949,1,12
+oldsearch,noda,1992,japan,7,laodelphax,striatellus,homoptera,Kamikawa,43.847186,142.770428,not described,100.4807692308,1,13
+oldsearch,noda,1992,japan,7,laodelphax,striatellus,homoptera,Kamikawa,43.847186,142.770428,not described,71.4743589744,1,13.5
+oldsearch,noda,1992,japan,7,laodelphax,striatellus,homoptera,Kamikawa,43.847186,142.770428,not described,25.1602564103,1,14
+oldsearch,noda,1992,japan,7,laodelphax,striatellus,homoptera,Kamikawa,43.847186,142.770428,not described,10.2564102564,1,14
+oldsearch,noda,1992,japan,7,laodelphax,striatellus,homoptera,Kamikawa,43.847186,142.770428,not described,0.8012820513,1,14.5
+oldsearch,noda,1992,japan,7,laodelphax,striatellus,homoptera,Kamikawa,43.847186,142.770428,not described,-1.4423076923,1,16
+oldsearch,noda,1992,japan,7,laodelphax,striatellus,homoptera,Sendai,38.268333,140.869444,not described,97.7564102564,1,11
+oldsearch,noda,1992,japan,7,laodelphax,striatellus,homoptera,Sendai,38.268333,140.869444,not described,100.641025641,1,12
+oldsearch,noda,1992,japan,7,laodelphax,striatellus,homoptera,Sendai,38.268333,140.869444,not described,95.9935897436,1,12.5
+oldsearch,noda,1992,japan,7,laodelphax,striatellus,homoptera,Sendai,38.268333,140.869444,not described,63.6217948718,1,13
+oldsearch,noda,1992,japan,7,laodelphax,striatellus,homoptera,Sendai,38.268333,140.869444,not described,12.3397435897,1,13.5
+oldsearch,noda,1992,japan,7,laodelphax,striatellus,homoptera,Sendai,38.268333,140.869444,not described,3.5256410256,1,14
+oldsearch,noda,1992,japan,7,laodelphax,striatellus,homoptera,Sendai,38.268333,140.869444,not described,0.641025641,1,16
+oldsearch,noda,1992,japan,7,laodelphax,striatellus,homoptera,Tsukuba,36.080556,140.114722,not described,102.0833333333,1,10
+oldsearch,noda,1992,japan,7,laodelphax,striatellus,homoptera,Tsukuba,36.080556,140.114722,not described,102.2435897436,1,11
+oldsearch,noda,1992,japan,7,laodelphax,striatellus,homoptera,Tsukuba,36.080556,140.114722,not described,99.0384615385,1,12
+oldsearch,noda,1992,japan,7,laodelphax,striatellus,homoptera,Tsukuba,36.080556,140.114722,not described,73.5576923077,1,12.5
+oldsearch,noda,1992,japan,7,laodelphax,striatellus,homoptera,Tsukuba,36.080556,140.114722,not described,33.3333333333,1,13
+oldsearch,noda,1992,japan,7,laodelphax,striatellus,homoptera,Tsukuba,36.080556,140.114722,not described,6.25,1,13.5
+oldsearch,noda,1992,japan,7,laodelphax,striatellus,homoptera,Tsukuba,36.080556,140.114722,not described,1.4423076923,1,14
+oldsearch,noda,1992,japan,7,laodelphax,striatellus,homoptera,Odawara,35.264636,139.152311,not described,100.4807692308,1,8
+oldsearch,noda,1992,japan,7,laodelphax,striatellus,homoptera,Odawara,35.264636,139.152311,not described,90.3846153846,1,9
+oldsearch,noda,1992,japan,7,laodelphax,striatellus,homoptera,Odawara,35.264636,139.152311,not described,95.1923076923,1,10
+oldsearch,noda,1992,japan,7,laodelphax,striatellus,homoptera,Odawara,35.264636,139.152311,not described,92.6282051282,1,11
+oldsearch,noda,1992,japan,7,laodelphax,striatellus,homoptera,Odawara,35.264636,139.152311,not described,74.0384615385,1,12
+oldsearch,noda,1992,japan,7,laodelphax,striatellus,homoptera,Odawara,35.264636,139.152311,not described,16.1858974359,1,12.5
+oldsearch,noda,1992,japan,7,laodelphax,striatellus,homoptera,Odawara,35.264636,139.152311,not described,3.8461538462,1,13
+oldsearch,noda,1992,japan,7,laodelphax,striatellus,homoptera,Izumu,35.368611,132.755,not described,99.6794871795,1,10
+oldsearch,noda,1992,japan,7,laodelphax,striatellus,homoptera,Izumu,35.368611,132.755,not described,100,1,11
+oldsearch,noda,1992,japan,7,laodelphax,striatellus,homoptera,Izumu,35.368611,132.755,not described,83.4935897436,1,12
+oldsearch,noda,1992,japan,7,laodelphax,striatellus,homoptera,Izumu,35.368611,132.755,not described,45.9935897436,1,12.5
+oldsearch,noda,1992,japan,7,laodelphax,striatellus,homoptera,Izumu,35.368611,132.755,not described,17.7884615385,1,13
+oldsearch,noda,1992,japan,7,laodelphax,striatellus,homoptera,Izumu,35.368611,132.755,not described,-0.8012820513,1,14
+oldsearch,noda,1992,japan,7,laodelphax,striatellus,homoptera,Kagoshima,31.596536,130.557117,not described,65.5448717949,1,7
+oldsearch,noda,1992,japan,7,laodelphax,striatellus,homoptera,Kagoshima,31.596536,130.557117,not described,75,1,8
+oldsearch,noda,1992,japan,7,laodelphax,striatellus,homoptera,Kagoshima,31.596536,130.557117,not described,60.0961538462,1,8
+oldsearch,noda,1992,japan,7,laodelphax,striatellus,homoptera,Kagoshima,31.596536,130.557117,not described,75.4807692308,1,9
+oldsearch,noda,1992,japan,7,laodelphax,striatellus,homoptera,Kagoshima,31.596536,130.557117,not described,82.8525641026,1,10
+oldsearch,noda,1992,japan,7,laodelphax,striatellus,homoptera,Kagoshima,31.596536,130.557117,not described,66.5064102564,1,11
+oldsearch,noda,1992,japan,7,laodelphax,striatellus,homoptera,Kagoshima,31.596536,130.557117,not described,22.7564102564,1,12
+oldsearch,noda,1992,japan,7,laodelphax,striatellus,homoptera,Kagoshima,31.596536,130.557117,not described,3.0448717949,1,12.5
+oldsearch,noda,1992,japan,7,laodelphax,striatellus,homoptera,Ishigaki,24.340556,124.155556,not described,22.5961538462,1,7
+oldsearch,noda,1992,japan,7,laodelphax,striatellus,homoptera,Ishigaki,24.340556,124.155556,not described,16.9871794872,1,8
+oldsearch,noda,1992,japan,7,laodelphax,striatellus,homoptera,Ishigaki,24.340556,124.155556,not described,10.4166666667,1,8
+oldsearch,noda,1992,japan,7,laodelphax,striatellus,homoptera,Ishigaki,24.340556,124.155556,not described,48.0769230769,1,9
+oldsearch,noda,1992,japan,7,laodelphax,striatellus,homoptera,Ishigaki,24.340556,124.155556,not described,33.8141025641,1,10
+oldsearch,noda,1992,japan,7,laodelphax,striatellus,homoptera,Ishigaki,24.340556,124.155556,not described,13.9423076923,1,11
+oldsearch,noda,1992,japan,7,laodelphax,striatellus,homoptera,Ishigaki,24.340556,124.155556,not described,12.5,1,12
