@@ -1,139 +1,141 @@
-﻿# Description of this file  
+# Description of this file  
 This file consists of a summary and a methods section that is updated from time to time, and includes the most important methods. This is followed by a detailed description of all methods and models that have been used (and is hence rather long). In the end there is a checklist that summarises the long methods part and is at the same time my to-do list. 
 
 
 # Summary    
 
-Many insects escape the adverse conditions of winter by diapause. Finding the optimal diapause timing is challenging as the optimal timing may be determined by mean winter onset, its variability, and predictability of the environment. Insects are known to use day length as main cue for mean winter onset, and plastic responses to temperature as secondary cue. It is, however, not known how insects deal with variable environments with little predictability. We hypothesized that 1) the timing of diapause closely tracks mean winter onset (which is different from a linear diapause-latitude relationship); and 2) that the variability in diapause timing increases with environmental variability, but decreases with environmental predictability. 
-We tested these hypotheses with a meta-analysis. First, we calculated mean winter onset, winter variability (between-years standard deviation in winter onset) and predictability (standard deviation in slopes of a temperature-time regression) for ~29,000 climate stations in the northern hemisphere. We then searched for publications that study photoperiodic reaction norms of insects at more than two sites (30 studies, 10 orders, 174 populations). We determined the inflection point and the slopes in the reaction norms, as these determine, resepectively, the mean and the temporal spread of diapause. We then correlated the inflection point with mean winter onset, and the slope estimates with variability and predictability of the environment.  
-As expected, populations from northern latitudes shift their timing towards earlier diapause, progressing with approximately 50 minutes per 5 degrees latitude.  This shift in diapause correlated well with the latitudinal cline in winter onset (and associated changes in photoperiod) from the climate data. Contrary to our hypotheses, however, the variability in diapause was neither explained by winter variability nor by winter predictability. We conclude that insect phenology can readily evolve in response to temperature across insect orders, but that it is vulnerable to changes in climatic variability. 
+Many insects escape the adverse conditions of winter by diapause. Finding the optimal diapause timing is challenging as the optimal timing may be determined by mean winter onset, its variability, and predictability of the environment. Insects are known to use day length as main cue for mean winter onset, and plastic responses to temperature as secondary cue. It is, however, not known how insects deal with variable environments with little predictability. We hypothesized that 1) the timing of diapause closely tracks mean winter onset; and 2) that the variability in diapause timing increases with environmental variability, but decreases with environmental predictability. 
+We tested these hypotheses with a meta-analysis. First, we calculated mean winter onset, winter variability and predictability for ~29,000 climate stations in the northern hemisphere. We then searched for publications that study photoperiodic reaction norms of insects at more than two sites (~30 studies, 8 orders, ~200 populations). We determined the inflection point and the slopes in the reaction norms, as these determine, resepectively, the mean and the temporal spread of diapause. We then correlated the inflection point with day length at mean winter onset, and the slope estimates with variability and predictability of the environment.  
+As expected, populations from northern latitudes shift their timing towards earlier diapause, progressing with approximately 55 minutes per 5 degrees latitude. The day length at which insects respond correlated well with the day length at winter onset. Contrary to our hypotheses, however, the variability in diapause was neither explained by winter variability nor by winter predictability. We conclude that insect phenology can readily evolve in response to temperature across insect orders, but that it is vulnerable to changes in climatic variability. 
 
 
 
 
-# Methods (empirical part outdated)   
+# Methods  
 
-We calculated mean, variability and predictability of winter onset at approximately 29,000 weather stations across the northern hemisphere. We then extracted photoperiodic response curves from 30 published studies (174 populations) along with their sampling locations, and estimated midpoint and slopes of these curves. The midpoints of diapause timing were then correlated with winter onset, and the slope estimates were correlated with winter variability and predictability.
+## 1. Overview  
+We calculated mean, variability and predictability of winter onset across the northern hemisphere and correlated these climatic variables with diapausing strategies (means and slopes) of (200?) arthropod populations. 
+We calculated winter onset in each year and climate station as the tenth day on which temperatures fall below 5 °C. We then derived mean winter onset across years for each station and used the standard deviation among years to estimate winter variability. To calculate winter predictability, we regressed temperatures of the last 30 days before winter onset for each year. The slope of this regression describes the pace of seasonal change, and the between-years standard deviation of the slope determines whether the rate of change is consistent (predictable) across years. As a second estimate of predictability we determined the "colour of environmental noise" (Vasseur & Yodzis), that is, the relative extent of long-frequency autocorrelations in temperatures.
+We then extracted photoperiodic response curves (PRCs) from 30 published studies (174 populations) along with their sampling locations. We calculated four-parameter dose-response curves to obtain estimates of lower and upper diapause limit, critical day length (inflection point of a logit-curve) and slope of the curves. Critical day lengths were then correlated with mean winter onset, and the slope estimates were correlated with winter variability and predictability.
 
- 
-## 1. climate data  
+## 2. climate data  
+### 2.1. data preparation  
 
-### 1.1 overview  
+We used land surface temperature data from the Global Historical Climatology Network (GHCN-Daily) (Menne et al., 2012), version 3.22 (Menne et al., 2018). We extracted daily minimum and maximum temperatures from all climate stations (~12 million months with data, ~29,000 stations). We removed all incomplete cases (either minimum or maximum temperature not recorded), all stations with less than 18 months of data, and all stations from the southern hemisphere. This procedure left 11,715,375 months in 28,963 climate stations.
+We then calculated the average of daily maximum and daily minimum temperature of ~5-50 years for each station to obtain an estimate of daily mean temperature. We removed all years in each station in which more than half of the data points was missing, and all stations that cover less than 3 years of data.
 
-We used the GHCN-Daily dataset (Menne et al., 2012), version 3.22 which includes weather station data from throughout the world (Menne et al., 2018). We used the mean of daily minimum and maximum temperatures to calculate daily average temperatures of ~5-50 years for each station. We then calculated winter onset in each year as the day on which temperatures falls below 15 °C for the 7th time (starting the "year" in midsummer), and used standard deviation among years to estimate winter variability. To calculate winter predictability, we calculated the slope of temperatures of the last 30 days before winter onset, and used the between-years standard deviation in that slope. As a second estimate of predictability we then calculated the "colour of noise" according to (Vasseur), i.e. the slope coefficient in a power spectral density plot.
+### 2.2. winter onset and winter variability  
 
-### 1.2. data preparation  
-
-We used two Perl scripts to read the GHCN daily dataset file by file and extract daily minimum and maximum temperatures from all climate stations (~12 million stations*months). The script removed all data flags, and saved the output in delimited format (using | as delimiter). All further analysis was conducted in R. We removed all incomplete cases (either minimum or maximum temperature not recorded), all stations with less than 18 months of data, and all stations from the southern hemisphere. We then calculated the average of daily maximum and daily minimum temperature to obtain an estimate of daily mean temperature. This procedure left data for 11,715,375 months in  28,963 climate stations. We removed all years in each station in which more than half of the data points was missing, and all stations that cover less than 3 years of data. 
-
-### 1.2. winter onset and winter variability  
-
-Starting from midsummer in each year and station, we counted the number of days when the temperature fell below a certain threshold x. Winter was assumed to arrive when x was reached for the yth time. Years in which winter did not arrive according to this definition were excluded, and stations with less than 3 occurrences of winter were removed from analysis. Based on these data we calculated mean winter onset  (Won) for each station. The parameter combination {x=5°C, y=10 days) yielded an average Won in the northern hemisphere of November 13, which is about two weeks before the meteorological winter onset (Dec 1st). A preliminary analysis showed that the empirical day lengths were much longer than the day lengths of Won at all latitudes, so the physiologically relevant temperature threshold is apparently not the same as the (arbitrarily set) meteorological winter onset. We therefore determined the day of diapause onset that explains the empirical day lengths best: First, we calculated the day lengths at day ( Won  - 1,2,…365) for each latitude for which we obtained empirical data. Secondly, we obtained 365 estimates of Kolmogorov-Smirnoff´s D for empirical vs these day lengths. The profile of D estimates showed that the optimal date of diapause onset is 94 days earlier than Won (Aug 11). Assuming a delay of one month between diapause induction and diapause expression, we therefore estimated that a physiologically relevant Won is on average around Sep 11, which we achieved by running the climate analysis with the parameter combination {x = 15 °C , y = 7 days ). Across all stations with recorded winter onsets, 80 % of the years had more than 350 days with data, and 87.5% had more than 300 days with data (check whether numbers changed). Nevertheless, we calculated a weighted mean winter onset and a frequency weighed standard deviation of winter onset to account for differences in reliability. We obtained x estimates of winter onset and y estimates of winter variability in the northern hemisphere.
+To estimate winter onset in each year and station, we identified cold days with average temperatures below 5°C. We then determined winter onset as the tenth cold day after midsummer. Years in which winter did not arrive according to this definition were excluded. Across all stations with recorded winter onsets, 80 % of the years had more than 350 days with data, and 87.5% had more than 300 days with data (check whether numbers changed). Nevertheless, we calculated a weighted mean winter onset and a frequency weighed standard deviation of winter onset to account for differences in reliability. We obtained x estimates of winter onset and y estimates of winter variability in the northern hemisphere.
 
 
-### 1.3 winter predictability  
+
+### 2.3 winter predictability  
 
 To calculate the predictability of winter based on preceding temperatures, we used the temperature recordings of the last 30 days before winter onset of each year. Years with less than 10 temperature recordings in the month preceding winter were excluded. We regressed daily mean temperature over time with a linear model, and recorded the slope estimate of each year. The standard deviation in slopes was then used as predictability estimate. In total there were x estimates of predictability based on this method.  
 
-As another method to calculate climate predictability, we adopted the approach of Vasseur ().  Taking all temperature information from one station (daily temperatures of multiple years), we calculated the power spectral density. First, we removed the seasonal trend by substracting from each daily temperature estimate the station-wide mean temperature of that day. Missing values were replaced by linear interpolation. We then calculated the spectral density within the frequency range of 1/366 and 1/(2 months) with the function spectrum, using the method "pgram", and estimated beta as the negative of the slope of log10(spectral density)~log10(frequency). Beta was only calculated if there were at least five frequency estimates. In total there were x estimates of beta, but only y estimates were based on 25 or more years of data and subsequently used.
+As another method to calculate climate predictability, we calculated the “colour of noise”, based on the degree of long-frequency autocorrelation in the temperature data (Vasseur). Randomly fluctuating (white-noise) environments can be defined as time series with no temporal autocorrelation, so preceding temperatures of any gap length (e.g. 1 day or 1 week earlier) have equally low explanatory power. In predictable (“red-noise”) environments, on the other hand, the explanatory power depends on gap lengths, and this can be demonstrated by decomposing the time series with a Fourier transform, and estimating the influence of each frequency. We hence produced power spectral density plots for all stations (daily temperatures of multiple years), closely following the approach of Vasseur & Yadzis (). First, we detrended the data by substracting from each daily temperature estimate its station-wide mean. Missing values were replaced by linear interpolation. We then calculated the spectral density within the frequency range of 1/366 and 1/(2 months) with the function spectrum, using a standard smoothing algorithm (pgram), and estimated beta as the negative of the slope of log10(spectral density)~log10(frequency). Beta was only calculated if there were at least five frequency estimates. In total there were x estimates of beta, but only y estimates were based on 25 or more years of data and subsequently used.
 
+## 3. Empirical data  
 
-## 2. empirical data  
+### 3.1 Inclusion criteria  
+
+In our literature search for diapause reaction norms we concentrated on studies that measure photoperiodic response curves (PRCs) of invertebrates. We excluded marine and intertidal organisms, because corresponding climate estimates were only available for terrestrial systems. Invertebrates with a larval stage in shallow water (e.g. mosquitoes) were nevertheless included. Studies with estimates for less than 3 populations (samples) were excluded, because in these cases the variance would be absorbed by the random term “study”, which was included in the analysis. We also excluded all studies that measured diapause at three or fewer photoperiods. To maximize sample sizes, we did not restrict our analysis to any geographic location or publication language.
+
+### 3.2 Search strategy  
+
+We conducted two independent literature searches: in a first attempt we limited the search terms and discovered further articles by following their citations. In a second attempt we used a wider range of search terms in combination with more stringent subsequent filtering. 
+
+#### 3.2.1 First search  
+We searched the Web of Science core collection for the topic 
+"(photoperiodic AND (geogr* OR range)) OR (photoperiod* AND latitud*) OR(photoperiod* AND longitud*)"
+on 19.2.2018 (1627  results) and added further relevant articles that did not match the keywords (total: 1641). Based on journal names, titles and abstracts we identified 377 studies on terrestrial invertebrates, 61 of which measured PRCs in at least 3 populations and at least 3 photoperiods. We did a full forward-citation search between April 3rd and April 16th 2018, and found 11 further articles that met all inclusion criteria.
+
+#### 3.2.2. Second search  
+
+We searched the Web of Science Core Collection on jun 15th 2018 with the search string
+
+TS = (("day length" OR photoperiod* OR diapaus* OR hibern* OR dorman*) AND (geogr* OR "range" OR latitud* OR longitud* OR cline$ OR clinal))
+OR TI = (("day length" OR photoperiod* OR diapaus* OR hibern* OR dorman*) AND "populations")
+
+and excluded book and article reviews, commentaries, rectration notices and retracted papers. This search provided 7665 results. To reduce the number of hits, we subsequently searched individual research areas with different criteria:
+
+1. We used all 847 hits from the area Entomology.
+
+2. We filtered all remaining studies for the area Zoology, and included all 458 studies which name an invertebrate taxon (85 search criteria) or name no vertebrate taxon (61 criteria) in the title. In addition we included studies from invertebrate-specific journals that were not tagged as Zoology (14 hits).
  
-### 2.1 overview  
-We extracted photoperiodic response curves from published studies, calculated four-parameter dose-response curves (or simplified versions of these) to obtain estimates of lower and upper diapause limit, critical day length (inflection point of logit-curve) and slope of the curves, and correlated these estimates with environmental parameters. 
+3. We filtered all remaining studies for the areas Ecology, Evolutionary Biology, Genetics, Biodiversity & Conservation and Soil Science. We included all 994 studies that name an invertebrate taxon (85 criteria), or name no vertebrates, no micro-organisms, no plant-specific terms, no aquatic environments and no genetic methods (83 terms).
 
-### 2.2 Eligibility criteria  
-We concentrated on studies that measure PRCs of invertebrates. We excluded marine and intertidal organisms, because the climate estimates apply only to terrestrial systems. Invertebrates with a larval stage in shallow water (e.g. mosquitoes) were nevertheless included. Studies with estimates for less than 3 populations (samples) were excluded, because the inclusion of “study” as random term in the analysis diminishes the return (in degrees of freedom) for smaller studies. We also excluded all studies that measured diapause at three or fewer photoperiods, and all studies with less than 2 estimates on the sloped part of the population’s PRC, because such studies would not allow for a meaningful slope estimate by dose-response curve analysis. 
-To maximize sample sizes, we did not restrict our analysis to any geographic location or publication language. We restricted our search, however, to publications after 1965, because earlier publications (usually in russian language) were difficult to obtain, and those which we obtained (figures in danilevskii) reported only estimates for few populations, and with too few data points to be included in analysis.  
+4. We filtered all remainings studies for the areas Agriculture, Plant Sciences, Forestry and Food Science Technology, and included all studies (50) with invertebrate taxa (85 criteria) in the titles. 
 
-### 2.3. search method  
-We searched the web of science database for "(photoperiodic AND (geogr\* OR range)) OR (photoperiod\* AND latitud\*) OR(photoperiod\* AND longitud\*)" on 19.2.2018. This search yielded 1627 unique  results. We added a few further articles to the study that did not match the keywords (total: 1641). We classified the studies as plant/animal, Vertebrate/invertebrate, and water/terrestrial based on journal titles (journal names including e.g. “plant”, “ento*”, “fish” or “bird”), manuscript titles, abstract or full text.  377 studies concentrated on terrestrial invertebrates. We screened the full text of these candidate studies to determine whether PRCs were recorded, and if so, how many photoperiods and populations were measured. We selected all studies with PRC estimates of more than 2 populations and 2 photoperiods (61 studies) for a forward-citation search on April 3rd 2018. We found 762 further articles, 11 of which were included for another forward-search. A forward search on these 11 articles on April 12th (94 new citations) brought 1 new study, and following its 20 citations on April 16th yielded another article. Its 14 citations (April 16th) yielded no further article.
-
-In addition to this literature search, we contacted (x) authors for unpublished material (x studies), and reviewed the data in Danilevskii 1965 (y studies). 
-After applying the strict criteria described in 2.1 on all potentially eligible studies, 30 studies with 174 populations remained for inclusion.
+5. We filtered all remainings studies for the areas Other topics, Physiology, Parasitology, Behavioral Sciences and Infectious diseases, thus leaving out various unrelated ares (e.g. Medicine, Engineering). Within these areas, we included all studies that name an invertebrate taxon, or name no vertebrates, no microbes, no human diseases, no aquatic environments and no plant-specific terms (8 terms) (418 studies).
 
 
+Altogether we found 2,748 studies. We screened the titles of these to filter out articles which were clearly not suited for meta-analysis (e.g. not based on terrestrial invertebrates), which reduced the dataset to 621 articles. We then assessed the full text of the articles, and excluded all articles that did not meet the inclusion criteria.  74 articles remained.
 
-###2.3 new: integration of both searches
+We did a forward citation search on these 74 articles on jul 16 2018 and found 866 articles (609 new references, 257 duplicates from earlier search). We filtered again by title. 197 references were appropriate based on their title, and 3 articles measured at least 3 populations and day lengths (based on full text). Another forward citation search on these 3 articles on July 23th 2018 revealed 73 unique articles, including 36 novel references (not duplicates of earlier search), but none of these were relevant. In total, we found 77 articles. 
 
-### 2.2 Eligibility criteria  
-We concentrated on studies that measure PRCs of invertebrates. We excluded marine and intertidal organisms, because the climate estimates apply only to terrestrial systems. Invertebrates with a larval stage in shallow water (e.g. mosquitoes) were nevertheless included. Studies with estimates for less than 3 populations (samples) were excluded, because the inclusion of “study” as random term in the analysis diminishes the return (in degrees of freedom) for smaller studies. We also excluded all studies that measured diapause at three or fewer photoperiods, and all studies with less than 2 estimates on the sloped part of the population’s PRC, because such studies would not allow for a meaningful slope estimate by dose-response curve analysis. 
-To maximize sample sizes, we did not restrict our analysis to any geographic location or publication language. 
-
-### 2.3. search method  
-We conducted two independent literature searches.
-
-#### 1st search  
-First, we searched the Web of Science database for the topic "(photoperiodic AND (geogr\* OR range)) OR (photoperiod\* AND latitud\*) OR(photoperiod\* AND longitud\*)" on 19.2.2018 (1627  results) and added further relevant articles that did not match the keywords (total: 1641). Based on journal names, titles and abstracts we identified 377 studies on terrestrial invertebrates, 61 of which measured PRCs in at least 3 populations and at least 3 photoperiods. We did a full forward-citation search between April 3rd and April 16th 2018, and found one further article that met all inclusion criteria (3 populations, at least 4 photoperiods, more than 1 point on sloped part <<- chekck if correct). 
-
-After applying the strict criteria described in 2.1 on all potentially eligible studies, 30 studies with 174 populations remained for inclusion.
-
-#### 2nd search  
-We searched the web of science core collection on jun 15 2018 with the search string
-"TS = (("day length" OR photoperiod* OR diapaus* OR hibern* OR dorman* ) AND (geogr* OR "range" OR latitud* OR longitud* OR cline$ OR clinal)) OR TI = (("day length" OR photoperiod* OR diapaus* OR hibern* OR dorman*) AND "populations")" and excluded book and article reviews, notes, rectration notices and retracted papers. 
-This search provided **7665** results. To reduce the number of hits, we subsequently searched individual research areas with different criteria:
-1. we used all **847** hits from the area "entomology". 
-2. We filtered all remaining studies for the area "zoology", and included all **458** studies which name an invertebrate taxon (85 search criteria) _or_ name no vertebrate taxon (61 criteria). In addition we included studies from invertebrate-specific journals that were not tagges as "zoology" (**14** hits). 
-3. We filtered all remainings studies for the areas Ecology, Evolutionary Biology, Genetics, Biodiversity & Conservation and Soil Science. We included all **994** studies that name an invertebrate taxon (85 criteria), _or_ name no vertebrates, no micro-organisms, no plant-specific terms, no aquatic environments and no genetic methods (83 terms).
-4. We filtered all remainings studies for the areas Agriculture, Plant Sciences, Forestry and Food Science Technology, and included all studies (**50**) with invertebrate taxa in the titles (85 criteria).
-5. We filtered all remainings studies for the areas "other topics", "physiology", "Parasitology", "behavioral Sciences" and "infectious diseases", thus leaving out various unrelated ares (e.g. medicine, engineering). within these areas, we included all studies that name an invertebrate taxon, _or_ name no vertebrates, no microbes, no human diseases, no aqutic environments and no plant-specific terms (8 terms) (**418** studies). 
-Altogether we found 2,748 studies.
-
-We screened the titles of the 2748 articles to filter out articles which were clearly not suited for meta-analysis (e.g. not based on terrestrial invertebrates), which reduced the dataset to 621 articles. We then assessed the full text of the articles, and excluded all articles with less than 3 populations or less than 3 day lengths measured. 74 articles remained.
+One article replicated data of an older article, and 4 conference abstracts were inaccessible, leaving 72 articles for further analysis.
 
 
-In addition to this literature search, we contacted (x) authors for unpublished material (x studies), and reviewed the data in Danilevskii 1965 (y studies). 
-After applying the strict criteria described in 2.1 on all potentially eligible studies, 30 studies with 174 populations remained for inclusion.
+#### 3.2.3 Integration of search results  
 
-### 2.4 Raw data extraction  
-
-For all studies that were included, we noted study species, sample sizes and coordinates (if available), and saved the PRCs as .png files. We then extracted the data from the figures using WebPlotDigitizer Version 3.12 (Rohatgi, 2017). Where neccessary, the day length was then rounded or corrected to match the description in materials and methods of the respective study. For example the points on the x-axis were in some cases not continous as the axis would suggest (e.g. the x-axis in (Paolucci et al., 2013) mixes 1 hour intervals with 2 hour intervals), or points were plotted next to each other for better visibility (Riihimaa Ari et al., 2004). Y-values that were slightly above 100% or below 0% were set to 100% and 0% respectively.
+64 articles were found by both searches. Out of the 8 articles that were only found in the first search, 3 have been wrongly classified as positive, whereas the remaining five were useful references (2 were not discovered by the second search, 3 were wrongly classified as negative). The 8 unique articles of the second search were all useful (4 false negatives in first search, 4 missing).
+Altogether, there were 77 useful references. Upon closer inspection 1 article had only one population, leaving 76 references.
 
 
-### 2.5. Effect size calculation  
+### 3.3. Eligibility/cleaning  
 
-To estimate the midpoints and slopes we modelled diapause with binomial dose response curves in R. This analysis provides lower and upper bounds of photoperiodic induction (we constrained these to range from 0 to 100%), the slope, and the inflection point where 50 % of the individuals are induced (critical day length), so up to four parameters per slope were estimated. We expected that all populations of one species have the same lower and upper limit, which reduces the estimation to 2 parameters per slope, plus 2 global parameters per study. We also applied the alternative models with only one or no fixed global parameters, so the following models were applied on each study (sorted by plausibility): 
+We considered only studies with published data (raw data or figures) for further analysis. Within each study we only selected those populations that were tested at more than three day lengths, and which had more than 2 estimates on the sloped part of the population’s PRC, because otherwise the dose-response curve analysis would not allow for a meaningful slope estimate. Some PRCs were incomplete but nevertheless eligible for analysis, because the upper and lower limits of diapause could be interpolated from the remaining populations of a study (see below). 
+
+14 articles were removed due to lack of relevant data (x missed raw data, y complete and accurate locations data, 2 false positives), and 26 articles had too few populations that met the eligibility criteria. From the remaining 36 studies (312 populations), 104 individual populations were removed, leaving 211 populations for analysis.
+
+
+### 3.4. Effect size calculation  
+The raw data of x studies was presented as figure. In these cases we saved the figure as .png file and extracted the data with WebPlotDigitizer Version 3.12 (Rohatgi, 2017). Where neccessary, the day length was then rounded or corrected to match the description in materials and methods of the respective study. Y-values that were slightly above 100% or below 0% were set to 100% and 0% respectively.
+
+To estimate the midpoints and slopes we modelled diapause with binomial dose response curves in R. This analysis provides lower and upper bounds of photoperiodic induction (we constrained these to range from 0 to 100%), the slope, and the inflection point where 50 % of the individuals are induced (critical day length), so up to four parameters per slope were estimated. We expected that all populations of one species have the same lower and upper limit, which reduces the estimation to 2 parameters per slope, plus 2 global parameters per study. We also applied the alternative models with only one or no fixed global parameters, so the following models were applied on each study (sorted by plausibility):
 
 1. upper and lower parameter fixed at study mean (requires 2 df plus 2 df per population)
 2. upper parameter fixed (requires 1 df plus 3 per population)
 3. lower parameter fixed (requires 1 df plus 3 per population)
 4. both limits vary (requires 4 df per population)
 
-Model 2 may results from conservative bet-hedging (some populations have non-zero diapause regardless of season, to hedge against early winter), while model 3 is the risk-prone opposite (some non-diapausing offspring exist even late in the season to hope for late winter, see halkett et al 2004).
+We chose the model with lowest AIC. If there were multiple models with an AIC difference less than 4, we used the most plausible model. If necessary for model convergence, we removed the box constraints (diapause ranging between 0 and 100%), provided the resulting estimates were reasonable (e.g. lower limit = -0.02%). We recorded the standard error along with the estimates of slope, inflection point and upper and lower limits, using a robust sandwich estimation method (Zeileis, 2006). 
 
-All analyses were conducted on the 30 studies where the slopes could be reliably estimated, i.e. with at least 2 points on the slope part (this could include the highest point of one population if that was still below a study-wide upper limit). We fitted all models, provided there were at least 3 residual degrees of freedom left, and chose those with lowest AIC. If there were multiple models with an AIC difference less than 2, we used the most plausible model. If necessary for model convergence, we removed the box constraints (diapause ranging between 0 and 100%), provided the resulting estimates were reasonable (e.g. lower limit = -0.02%).
-We recorded the standard error along with the estimates of slope, inflection point and upper and lower limits, using a robust sandwich estimation method (Zeileis, 2006). Where detailed information on number of individuals per point estimate was available (% of all cases), we used these numbers to weight the individual points of the PRC. We wish to emphasize that a lack of detailed information  should not be confused with a partially unweighted (“vote-count”) meta-analysis, because the sample size (populations per study) was always known. Rather, the lack of weighing in the PRC estimates lead to slightly higher standard errors in the estimates, i.e. the missing information occurred on a lower level (points within population) than the level of replication (population).
-When the coordinates were not directly provided in the study, we used the coordinates of the quoted town or area. Town and area coordinates were made available by the WikiProject Geographical coordinates and the Geohack tool (Dispenser et al., 2018). 
+Three studies lacked vital data on upper or lower limits for some focal populations, but contained further populations that were excluded for lack of points on the sloped part.  These other populations showed unambigously that the lower and upper limits were 0 and 100%. In these cases we performed a 2-parameter drc (with limits from 0-100%) to allow inclusion of the incomplete populations. 
+
+Detailed information on number of individuals per point estimate was rarely available (25 populations, 7 studies), as sample sizes were either given as population-level means (7 populations, 2 studies) or as global average or range (x populations, y studies), or missed entirely (1 study, x populations). We used all data that was provided to weigh the individual points of the PRC. We wish to emphasize that a lack of detailed information should not be confused with a partially unweighted (“vote-count”) meta-analysis, because the sample size (populations per study) was always known. Rather, the lack of weighing in the PRC estimates lead to slightly higher standard errors in the estimates, i.e. the missing information occurred on a lower level (points within population) than the level of replication (population).
+
+During analysis we removed two studies and two further populations. In addition we removed and three populations for the slope estimation, and four populations for the estimation of mean diapause. In total there were 5 studies, with 181 populations with CDL estimates, and 182 populations with slope estimates.
 
 
 ## 3. Statistical analysis  
-Our analysis is based on 174 populations from 30 studies, which covers 28 species from 24 genera and 10 orders. To obtain estimates of predictability/variability/mean winter for the study site locations, we averaged the estimates from the 5 closest stations within a 5° radius (weighted by 1/euclidian distance).
+Our analysis is based on 174 populations from 30 studies, which covers 28 species from 24 genera and 10 orders. To obtain estimates of mean winter, variability and predictability for the study site locations, we averaged the estimates from the 5 closest stations within a 5° radius (weighted by 1/euclidian distance). When the coordinates were not directly provided in the study, we used the coordinates of the quoted town or area. Town and area coordinates were made available by the WikiProject Geographical coordinates and the Geohack tool (Dispenser et al., 2018).
 
-### 3.1. correlation of  diapause timing with latitude/winter onset  
-The estimate for the inflection point of the PRCs is called the critical day length (CDL), and can be regarded as mean diapause timing. We correlated the CDL with latitude, using a random structure of “study” nested in “genus” nested in “order” (“species” explained zero variance). Because the standard errors for some CDL estimates were close to zero, the inverse of the standard errors (the typical procedure for meta-analyses) would yield nearly infinite weights for some studies. We therefore used the inverse of exponential-transformed standard errors as weight estimate. 
+### 3.1. correlation of diapause timing with latitude/winter onset  
+We correlated the inflection point (critical day length, CDL) of the PRCs with latitude, using a random structure of “study” nested in “genus” nested in “order” (“species” explained zero variance). We weighted the data points by the inverse of their standard errors instead of the inverse variance, because standard errors were small for some populations, which would give some populations 1000-fold weight. 
 
 In addition to correlating the CDL with latitude, we calculated the day length at winter onset for each location. This day length can be considered the response which maximises arithmetic mean fitness, and we correlated this expectation with the observed CDL.
 
 
 ### 3.2. correlation of slope with predictability and variablity  
-We expected that the slope of the PRCs flattens with increasing climate variability, but only in locations with unpredictable climate. We thus modelled the slope estimate as function of an interaction of variability and predictability, using the same random structure as for the correlation with latitude. In contrast to the CDL estimates, the standard error of the slope estimates was not close to zero, so we used the inverse of the untransformed  standard error to weigh the studies. 
+We modelled the slope estimate as function of an interaction of variability and predictability, using the same random structure as for the correlation with latitude. In contrast to the CDL estimates, the standard error of the slope estimates was not close to zero, so we used the inverse of the untransformed standard error to weigh the studies.
 
 
 ### 3.3. exploratory analyses  
-As alternative measure of climate predictability, we calculated the colour of environmental noise according to vasseur(). This approach does, however, calculate the predictability over the whole year, not predictability of winter alone. We used this estimate of environmental autocorrelation as alternative to model 3.2. but see this approach as exploratory. In addition, we repeated all analyses based only individually on the two most prevalent orders of our datasets (lepidoptera, diptera). 
+As alternative measure of climate predictability, we calculated the colour of environmental noise according to vasseur(). This approach does, however, calculate the predictability over the whole year, not predictability of winter alone. We used this estimate of environmental autocorrelation as alternative to model 3.2. but see this approach as exploratory. In addition, we repeated all analyses based only individually on the two most prevalent orders of our datasets (lepidoptera, diptera).
 
 ### 3.4. report of effect sizes  
-For all analyses we decided to report 1) estimates of the fixed effects along with their Wald-Type confidence intervals; 2) a generalized I² value and I² values for each nesting level of the random terms, as described on the metafor homepage (http://www.metafor-project.org/doku.php/tips:i2_multilevel_multivariate ); and 3) pseudo-R² values, defined by (Raudenbush 2009) as (sigma²random-effects model – sigma²mixed-effects model)/sigma²random-effects model. 
+For all analyses we decided to report 1) estimates of the fixed effects along with their Wald-Type confidence intervals; 2) a generalized I² value and I² values for each nesting level of the random terms, as described on the metafor homepage (http://www.metafor-project.org/doku.php/tips:i2_multilevel_multivariate ); and 3) pseudo-R² values, defined by (Raudenbush 2009) as (sigma²random-effects model – sigma²mixed-effects model)/sigma²random-effects model.
 
 
-## 4. Further information  
+### 4. Further information  
 
 The data from the empirical studies was extracted with WebPlotDigitizer version 3.12 (Rohatgi, 2017). For processing the climate variables and statistical models we used Perl version 5.22.1, and R version 3.4.4 (R Core Team, 2018). The data was manipulated with the packages textreadr, Rcurl, data.table, imputeTS (Dowle & Srinivasan, 2017; Rinker, 2017; Duncan Temple Lang and the CRAN team, 2018) and the tidyverse (Wickham, 2017)  packages readr, tidyr, dplyr, stringr and magrittr (Wickahm; Bache & Wickham, 2014; Wickham, Francois, et al., 2017; Wickham, Hester, et al., 2017; Wickham & Henry, 2018).  
 The day length calculations were perfomed with the package geosphere. The dose-response curve analyses were made with the package drc (Ritz et al., 2015) , its standard errors were computed with the packages sandwich (Zeileis, 2006) and lmtest (Zeileis & Hothorn, 2002), and the mixed-effects models were made with the package metafor. We further used the packages lme4 (Bates et al., 2007), nlme, MASS and geomapdata  (Lees,s. 2012), but did not include any data derived from these functions in the final version of the manuscript.  
 
-All analyses were first developed for the correlation of CDL with latitude, and then applied to the analysis of slope estimates. 
-
+All analyses were first developed for the correlation of CDL with latitude, and then applied to the analysis of slope estimates. The history of this research project (including a full description of all tests and approaches) can be found at https://github.com/JensJoschi/variability_timing.
 
 
 # details  
