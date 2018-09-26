@@ -1,12 +1,11 @@
 
 # Summary    
 
-Many insects escape the adverse conditions of winter by diapause. Finding the optimal diapause timing is challenging as the optimal timing may be determined by mean winter onset, its variability, and predictability of the environment. Insects are known to use day length as main cue for mean winter onset, and plastic responses to temperature as secondary cue. It is, however, not known how insects deal with variable environments with little predictability. We hypothesized that 1) the timing of diapause closely tracks mean winter onset (which is different from a linear diapause-latitude relationship); and 2) that the variability in diapause timing increases with environmental variability, but decreases with environmental predictability. 
-We tested these hypotheses with a meta-analysis. First, we calculated mean winter onset, winter variability (between-years standard deviation in winter onset) and predictability (standard deviation in slopes of a temperature-time regression) for ~29,000 climate stations in the northern hemisphere. We then searched for publications that study photoperiodic reaction norms of insects at more than two sites (30 studies, 10 orders, 174 populations). We determined the inflection point and the slopes in the reaction norms, as these determine, resepectively, the mean and the temporal spread of diapause. We then correlated the inflection point with mean winter onset, and the slope estimates with variability and predictability of the environment.  
-As expected, populations from northern latitudes shift their timing towards earlier diapause, progressing with approximately 50 minutes per 5 degrees latitude.  This shift in diapause correlated well with the latitudinal cline in winter onset (and associated changes in photoperiod) from the climate data. Contrary to our hypotheses, however, the variability in diapause was neither explained by winter variability nor by winter predictability. We conclude that insect phenology can readily evolve in response to temperature across insect orders, but that it is vulnerable to changes in climatic variability. 
+Global change alters selection on phenology, due to rises in temperature means, variability and predictability. Species persistence will depend on how these traits evolve, which may encompass changes in means timing, its variability (bet-hedging) or plasticity.
+We conducted a meta-analysis of arthropod diapause timing across species and climatic gradients. We calculated means and slopes of day length reaction norms for 200 populations in 8 orders. We correlated means and slopes of diapause with mean, variability and predictability of winter onset, which we derived from climate station data.
+While timing of diapause and winter onset correlated closely, the slopes were neither explained by winter variability nor by predictability. Insect phenology hence responds readily to mean change, but is vulnerable to altered variability and predictability.
 
-
-See also methods.md for details.
+See draft.md for a full description, or methods.md for further details on methods.
 
 
 # Structure  
