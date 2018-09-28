@@ -1,5 +1,5 @@
 #### Identification
-I searched the web of science database for "(photoperiodic AND (geogr* OR range)) OR (photoperiod* AND latitud*) OR(photoperiod* AND longitud*)". on 19.2.2018, This search yielded 1627 unique  results
+I searched the web of science database for "(photoperiodic AND (geogr* OR range)) OR (photoperiod* AND latitud*) OR(photoperiod* AND longitud*)". on 19.2.2018, This search yielded 1628 unique  results
  (savedrecs*.txt). The results were merged in an excel-file (filtered_list).
 I added articles to the study that I knew or which were cited in these articles but that did not match the keywords (total: 1641)
 
