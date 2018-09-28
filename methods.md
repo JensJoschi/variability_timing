@@ -49,7 +49,7 @@ We conducted two independent literature searches: in a first attempt we limited 
 #### 3.2.1 First search  
 We searched the Web of Science core collection for the topic 
 "(photoperiodic AND (geogr* OR range)) OR (photoperiod* AND latitud*) OR(photoperiod* AND longitud*)"
-on 19.2.2018 (1628  results) and added further relevant articles that did not match the keywords (total: 1641). Based on journal names, titles and abstracts we identified 377 studies on terrestrial invertebrates, 61 of which measured PRCs in at least 3 populations and at least 3 photoperiods. We did a full forward-citation search between April 3rd and April 16th 2018, and found 11 further articles that met all inclusion criteria.
+on 19.2.2018 (1628  results) and added further relevant articles that did not match the keywords (total: 1638). Based on journal names, titles and abstracts we identified 377 studies on terrestrial invertebrates, 61 of which measured PRCs in at least 3 populations and at least 3 photoperiods. We did a full forward-citation search between April 3rd and April 16th 2018, and found 11 further articles that met all inclusion criteria.
 
 #### 3.2.2. Second search  
 
@@ -180,7 +180,7 @@ As thresholds I used x=5°C and y = 10 days for an initial analysis.
 
 ### first search  
 
-I searched the web of science database for "(photoperiodic AND (geogr\* OR range)) OR (photoperiod\* AND latitud\*) OR(photoperiod\* AND longitud\*)" on 19.2.2018. This search yielded 1628 unique  results. I added articles to the study that I knew or which were cited in these articles but that did not match the keywords (total: 1641). 
+I searched the web of science database for "(photoperiodic AND (geogr\* OR range)) OR (photoperiod\* AND latitud\*) OR(photoperiod\* AND longitud\*)" on 19.2.2018. This search yielded 1628 unique  results. I added articles to the study that I knew or which were cited in these articles but that did not match the keywords (total: 1638). 
 I classified the studies as plant/animal, Vertebrate/invertebrate, and water/terrestrial based on journal titles (journal names including e.g. “plant”, “ento*”, “fish” or “bird”), manuscript titles, abstract or full text.  377 studies concentrated on terrestrial invertebrates. We screened the full text of these candidate studies to determine whether PRCs were recorded, and if so, how many photoperiods and populations were measured. We selected all studies with PRC estimates of more than 2 populations and 2 photoperiods (61 studies) for a forward-citation search on April 3rd 2018. We found 762 further articles, and selected those that met the stricter inclusion criteria (at least 3 populations and 4 day lengths, more than one point on sloped part). 11 articles were included for another forward-search. A forward search on these 11 articles on April 12th (94 new citations) brought 1 new study, and following its 20 citations on April 16th yielded another article. Its 14 citations (April 16th) yielded no further article.
 
 
