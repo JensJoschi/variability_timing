@@ -222,26 +222,31 @@ write_delim(station,"temp.txt",append=T)
 rm(station)
 rm(converted)
 rm(slist)
-converted<-read_delim("temp.txt",delim = " ",col_names = c("ID","year",1:372))
-#739 fails, whenever a whole month is missing
-
-#converted<-fread("temp.txt",sep =" ",col.names=c("ID","year",1:372),nrows=1231)
-#length(station$`08Feb_29`) #not many, due to leapyears
-#x<-NA
-#for(t in 1:ncol(station)){x[t]<-n_distinct(station[,t])}
-#station<-station[-which(x==1)]  #dates like 30 feb are erased #this causes some trouble, stations may which happen to have no temp recording on 15 august will have one column less
+m<-c("Jul","Aug","Sep","Oct","Nov","Dec","Jan","Feb","Mar","Apr","May","Jun")
+days<-paste(rep(m,each=31),rep(1:31,12),sep="")
+converted<-fread("temp.txt",sep =" ",col.names=c("ID","year",days))
+converted<-data.frame(converted)
+x<-NA
+for(t in 1:ncol(converted)){x[t]<-sum(!is.na(converted[,t]))}
+station<-select(converted,which(x>0))
 ```
 
-#### test whether everything went fine
+
 
 ### 1. calculate mean winter onset
 ```{r mean}   
+threshold<-50
+t2<-10
+
 #vectors to store results
 mean_winter<-rep(NA,length(unique(converted$ID)))
 sd_winter<- rep(NA,length(unique(converted$ID)))
 nyears<-rep(NA,length(unique(converted$ID)))
+ndays_300<-rep(NA,length(unique(converted$ID)))
+ndays_350<-rep(NA,length(unique(converted$ID)))
+ndays_365<-rep(NA,length(unique(converted$ID)))
 
-stations<-unique(converted$ID)
+stations<-unique(station$ID)
 for (i in 1:length(stations)){ #this loop goes through each of the 1 mil station
 
 
@@ -257,14 +262,17 @@ for (i in 1:length(stations)){ #this loop goes through each of the 1 mil station
   ####calculate winter arrival#####
  # make a binomial matrix with all Temps<threshold = 1, all others =0(including NA)
 
-  bino<-rep(0,nrow(s)*(ncol(s)-2))
-  bino[s[,3:368]<threshold]<-1
-  bino<-matrix(data=bino,nrow=nrow(s),ncol=ncol(s)-2)
+  #bino<-rep(0,nrow(s)*(ncol(s)-2))
+  #bino[s[,3:368]<threshold]<-1
+  bino<-s[,3:368]<threshold
+  bino[is.na(bino)]<-0
+  used<-rowSums(bino,na.rm=T)>t2
+ # bino<-matrix(data=bino,nrow=nrow(s),ncol=ncol(s)-2)
 
   #exclude years that never reach winter (less than x days below y°C)
-  used<-rowSums(bino)>t2
+  #used<-rowSums(bino)>t2
   
-  #exclude stations that reach winter in less than 3 years (this is different from having less than 3 ys of data)
+  #exclude stations that reach winter in less than 3 years 
   if (sum(used) <3) {
     mean_winter[i]<-NA
     sd_winter[i]<-NA
@@ -297,6 +305,9 @@ for (i in 1:length(stations)){ #this loop goes through each of the 1 mil station
   upper <- sum(weights*(w_on-mean_winter[i])^2)
   lower <- sum(weights)-1
   sd_winter[i] <- sqrt(upper/lower)
+  ndays_300[i]<-length(ndays[ndays>300])
+  ndays_350[i]<-length(ndays[ndays>350])
+  ndays_365[i]<-length(ndays[ndays>365])
   
   #clean up memory####
   rm(upper)
@@ -309,11 +320,11 @@ for (i in 1:length(stations)){ #this loop goes through each of the 1 mil station
 
 
 #####gather and save results####
-reslist<-data.frame(unique(station$ID),mean_winter,sd_winter,nyears,p,A,phi,int,beta_y)
+reslist<-data.frame(unique(station$ID),mean_winter,sd_winter,nyears,ndays_300,ndays_350,ndays_365)
 
-names(reslist)<-c("ID","meanwinter","sd winter","nyears","predictability","Amplitude","phase_angle","intercept","beta" )
+names(reslist)<-c("ID","meanwinter","sd_winter","nyears","ndays_300","ndays_350","ndays_365")
 write.table(reslist,"results.txt",append=TRUE,quote=FALSE,row.names=FALSE,col.names=FALSE)
-} #next chunk
+
 ```
 
 
