@@ -14,21 +14,19 @@ As expected, populations from northern latitudes shift their timing towards earl
 # Methods  
 
 ## 1. Overview  
-We calculated mean, variability and predictability of winter onset across the northern hemisphere and correlated these climatic variables with diapausing strategies (means and slopes) of (200?) arthropod populations. 
-We calculated winter onset in each year and climate station as the tenth day on which temperatures fall below 5 °C. We then derived mean winter onset across years for each station and used the standard deviation among years to estimate winter variability. To calculate winter predictability, we regressed temperatures of the last 30 days before winter onset for each year. The slope of this regression describes the pace of seasonal change, and the between-years standard deviation of the slope determines whether the rate of change is consistent (predictable) across years. As a second estimate of predictability we determined the "colour of environmental noise" (Vasseur & Yodzis), that is, the relative extent of long-frequency autocorrelations in temperatures.
+We calculated mean, variability and predictability of winter onset across the northern hemisphere and correlated these climatic variables with diapausing strategies (means and slopes) of 217 arthropod populations.
+We calculated winter onset in each year and climate station as the tenth day on which temperatures fall below 5 °C. We then derived mean winter onset across years for each station and used the standard deviation among years to estimate winter variability. To calculate winter predictability, we regressed temperatures of the last 30 days before winter onset for each year. The slope of this regression describes the pace of seasonal change, and the between-years standard deviation of the slope determines whether the rate of change is consistent (predictable) across years. As a second estimate of predictability we determined the "colour of environmental noise", that is, the relative extent of long-frequency autocorrelations in temperatures.
 We then extracted photoperiodic response curves (PRCs) from 30 published studies (174 populations) along with their sampling locations. We calculated four-parameter dose-response curves to obtain estimates of lower and upper diapause limit, critical day length (inflection point of a logit-curve) and slope of the curves. Critical day lengths were then correlated with mean winter onset, and the slope estimates were correlated with winter variability and predictability.
+
+We then extracted photoperiodic response curves (PRCs) from 37 published studies (217 populations) along with their sampling locations. We calculated four-parameter dose-response curves to obtain estimates of lower and upper diapause limit, critical day length (inflection point of a logit-curve) and slope of the curves. Critical day lengths were then correlated with mean winter onset, and the slope estimates were correlated with winter variability and predictability.
 
 ## 2. climate data  
 ### 2.1. data preparation  
 
-We used land surface temperature data from the Global Historical Climatology Network (GHCN-Daily) (Menne et al., 2012), version 3.22 (Menne et al., 2018). We extracted daily minimum and maximum temperatures from all climate stations (~12 million months with data, ~29,000 stations). We removed all incomplete cases (either minimum or maximum temperature not recorded), all stations with less than 18 months of data, and all stations from the southern hemisphere. This procedure left 11,715,375 months in 28,963 climate stations.
-We then calculated the average of daily maximum and daily minimum temperature of ~5-50 years for each station to obtain an estimate of daily mean temperature. We removed all years in each station in which more than half of the data points was missing, and all stations that cover less than 3 years of data.
+We used land surface temperature data from the Global Historical Climatology Network (GHCN-Daily). We extracted daily minimum and maximum temperatures from all climate stations (~12.6 million months with data, ~34,000 stations). We removed all days with incomplete data (either minimum or maximum temperature not recorded), all years in which more than half of the data points was missing, all stations that covered less than 3 years of data, and all stations from the southern hemisphere. This procedure left 10,991,727 months in 26,804 climate stations. We then calculated the average of daily maximum and daily minimum temperature of 3-244 years for each station to obtain an estimate of daily mean temperature. 
 
 ### 2.2. winter onset and winter variability  
-
-To estimate winter onset in each year and station, we identified cold days with average temperatures below 5°C. We then determined winter onset as the tenth cold day after midsummer. Years in which winter did not arrive according to this definition were excluded. Across all stations with recorded winter onsets, 80 % of the years had more than 350 days with data, and 87.5% had more than 300 days with data (check whether numbers changed). Nevertheless, we calculated a weighted mean winter onset and a frequency weighed standard deviation of winter onset to account for differences in reliability. We obtained x estimates of winter onset and y estimates of winter variability in the northern hemisphere.
-
-
+To estimate winter onset in each year and station, we identified cold days with average temperatures below 5°C. We then determined winter onset as the tenth cold day after midsummer. Years in which winter did not arrive according to this definition were excluded, and stations with less than 3 years with winter onset removed. Across all stations with recorded winter onsets, 68.5 % of the years had more than 350 days with data, and 85.1% had more than 300 days with data. Nevertheless, we calculated a weighted mean winter onset and a frequency weighed standard deviation of winter onset to account for differences in reliability. We obtained 24,270 estimates of winter onset and winter variability in the northern hemisphere.
 
 ### 2.3 winter predictability  
 
@@ -38,9 +36,9 @@ As another method to calculate climate predictability, we calculated the “colo
 
 ## 3. Empirical data  
 
-### 3.1 Inclusion criteria  
+### 3.1 Eligibility criteria  
 
-In our literature search for diapause reaction norms we concentrated on studies that measure photoperiodic response curves (PRCs) of invertebrates. We excluded marine and intertidal organisms, because corresponding climate estimates were only available for terrestrial systems. Invertebrates with a larval stage in shallow water (e.g. mosquitoes) were nevertheless included. Studies with estimates for less than 3 populations (samples) were excluded, because in these cases the variance would be absorbed by the random term “study”, which was included in the analysis. We also excluded all studies that measured diapause at three or fewer photoperiods. To maximize sample sizes, we did not restrict our analysis to any geographic location or publication language.
+In our literature search for diapause reaction norms we concentrated on studies that measure photoperiodic response curves (PRCs) of invertebrates. We excluded marine and intertidal organisms, because corresponding climate estimates were only available for terrestrial systems. Invertebrates with a larval stage in shallow water (e.g. mosquitoes) were nevertheless included. Studies with estimates for less than 3 populations (samples) were excluded, because in these cases the variance would be absorbed by the random term “study”, which was included in the analysis. We also excluded all studies that measured diapause at less than three photoperiods. To maximize sample sizes, we did not restrict our analysis to any geographic location or publication language.
 
 ### 3.2 Search strategy  
 
@@ -49,7 +47,7 @@ We conducted two independent literature searches: in a first attempt we limited 
 #### 3.2.1 First search  
 We searched the Web of Science core collection for the topic 
 "(photoperiodic AND (geogr* OR range)) OR (photoperiod* AND latitud*) OR(photoperiod* AND longitud*)"
-on 19.2.2018 (1628  results) and added further relevant articles that did not match the keywords (total: 1638). Based on journal names, titles and abstracts we identified 377 studies on terrestrial invertebrates, 61 of which measured PRCs in at least 3 populations and at least 3 photoperiods. We did a full forward-citation search between April 3rd and April 16th 2018, and found 11 further articles that met all inclusion criteria.
+on 19.2.2018 (1628  results) and added further relevant articles that did not match the keywords (total: 1638). Based on journal names, titles and abstracts we identified 377 studies on terrestrial invertebrates, 62 of which measured PRCs in at least 3 populations and at least 3 photoperiods. We did a full forward-citation search between April 3rd and April 16th 2018, and found 13 further articles that met all eligibility criteria.
 
 #### 3.2.2. Second search  
 
@@ -71,28 +69,27 @@ and excluded book and article reviews, commentaries, rectration notices and retr
 5. We filtered all remainings studies for the areas Other topics, Physiology, Parasitology, Behavioral Sciences and Infectious diseases, thus leaving out various unrelated ares (e.g. Medicine, Engineering). Within these areas, we included all studies that name an invertebrate taxon, or name no vertebrates, no microbes, no human diseases, no aquatic environments and no plant-specific terms (8 terms) (418 studies).
 
 
-Altogether we found 2,748 studies. We screened the titles of these to filter out articles which were clearly not suited for meta-analysis (e.g. not based on terrestrial invertebrates), which reduced the dataset to 621 articles. We then assessed the full text of the articles, and excluded all articles that did not meet the inclusion criteria.  74 articles remained.
-
-We did a forward citation search on these 74 articles on jul 16 2018 and found 866 articles (609 new references, 257 duplicates from earlier search). We filtered again by title. 197 references were appropriate based on their title, and 3 articles measured at least 3 populations and day lengths (based on full text). Another forward citation search on these 3 articles on July 23th 2018 revealed 73 unique articles, including 36 novel references (not duplicates of earlier search), but none of these were relevant. In total, we found 77 articles. 
-
-One article replicated data of an older article, and 4 conference abstracts were inaccessible, leaving 72 articles for further analysis.
+Altogether we found 2,748 studies. We screened the titles of these to filter out articles which were clearly not suited for meta-analysis (e.g. not based on terrestrial invertebrates), which reduced the dataset to 621 articles. We then assessed the full text of the articles, and excluded all articles that did not meet the eligibility criteria. 74 articles remained. We did a forward citation search on these 74 articles between jul 16 2018 and Jul 23th 2018, and found three further articles.
 
 
-#### 3.2.3 Integration of search results  
+#### 3.2.3 cleaning
 
-64 articles were found by both searches. Out of the 8 articles that were only found in the first search, 3 have been wrongly classified as positive, whereas the remaining five were useful references (2 were not discovered by the second search, 3 were wrongly classified as negative). The 8 unique articles of the second search were all useful (4 false negatives in first search, 4 missing).
-Altogether, there were 77 useful references. Upon closer inspection 1 article had only one population, leaving 76 references.
+The 75 articles found by the first search included 5 false positives, and the 77 articles from the second search included 7 false positives. Thus, 70 references remained in each search. After combining these two datasets, 76 unique articles (624 populations) remained. 
 
+[alternative, counting 3 dl as ineligible:
+The 75 articles found by the first search included 8 studies, which did not have 4 photoperiods and 5 were false positives. 62 remained. From the 77 articles of the second search, 5 had only 3 photoperiods, 7 were false positives. 65 remained. 
+After combining these two datasets, 69 unique articles  remained. ]
 
-### 3.3. Eligibility/cleaning  
+### 3.3 inclusion criteria (1 oct 2018)
 
-We considered only studies with published data (raw data or figures) for further analysis. Within each study we only selected those populations that were tested at more than three day lengths, and which had more than 2 estimates on the sloped part of the population’s PRC, because otherwise the dose-response curve analysis would not allow for a meaningful slope estimate. Some PRCs were incomplete but nevertheless eligible for analysis, because the upper and lower limits of diapause could be interpolated from the remaining populations of a study (see below). 
+Multiple articles did not contain raw data or figures, or the raw data in figures was not unambigously linked to the populations (use of same symbols for all populations). In 12 cases the data could not be retrieved (todo), and the studies had to be removed from analysis (179 populations). 
+The calculation of reliable slope estimates required in general at least four day length measurements, with two points on the sloped part of the reaction norm and two points defining upper and lower limits (though upper or lower limits could be imputed in 3 cases; see below).
+28 studies did not fulfil these requirements for three populations and were removed. 36 studies and 211 populations remained.
 
-14 articles were removed due to lack of relevant data (x missed raw data, y complete and accurate locations data, 2 false positives), and 26 articles had too few populations that met the eligibility criteria. From the remaining 36 studies (312 populations), 104 individual populations were removed, leaving 211 populations for analysis.
 
 
 ### 3.4. Effect size calculation  
-The raw data of x studies was presented as figure. In these cases we saved the figure as .png file and extracted the data with WebPlotDigitizer Version 3.12 (Rohatgi, 2017). Where neccessary, the day length was then rounded or corrected to match the description in materials and methods of the respective study. Y-values that were slightly above 100% or below 0% were set to 100% and 0% respectively.
+One study (7 populations) reported the slope and midpoint from drc analyiss directly, and the remaining 35 studies presented the raw data as tables (3 studies) or figures (32 studies). In the latter case we saved the figure as .png file and extracted the data with WebPlotDigitizer Version 3.12 (Rohatgi, 2017). Where neccessary, the day length was then rounded or corrected to match the description in materials and methods of the respective study. Y-values that were slightly above 100% or below 0% were set to 100% and 0% respectively.
 
 To estimate the midpoints and slopes we modelled diapause with binomial dose response curves in R. This analysis provides lower and upper bounds of photoperiodic induction (we constrained these to range from 0 to 100%), the slope, and the inflection point where 50 % of the individuals are induced (critical day length), so up to four parameters per slope were estimated. We expected that all populations of one species have the same lower and upper limit, which reduces the estimation to 2 parameters per slope, plus 2 global parameters per study. We also applied the alternative models with only one or no fixed global parameters, so the following models were applied on each study (sorted by plausibility):
 
@@ -181,7 +178,9 @@ As thresholds I used x=5°C and y = 10 days for an initial analysis.
 ### first search  
 
 I searched the web of science database for "(photoperiodic AND (geogr\* OR range)) OR (photoperiod\* AND latitud\*) OR(photoperiod\* AND longitud\*)" on 19.2.2018. This search yielded 1628 unique  results. I added articles to the study that I knew or which were cited in these articles but that did not match the keywords (total: 1638). 
-I classified the studies as plant/animal, Vertebrate/invertebrate, and water/terrestrial based on journal titles (journal names including e.g. “plant”, “ento*”, “fish” or “bird”), manuscript titles, abstract or full text.  377 studies concentrated on terrestrial invertebrates. We screened the full text of these candidate studies to determine whether PRCs were recorded, and if so, how many photoperiods and populations were measured. We selected all studies with PRC estimates of more than 2 populations and 2 photoperiods (61 studies) for a forward-citation search on April 3rd 2018. We found 762 further articles, and selected those that met the stricter inclusion criteria (at least 3 populations and 4 day lengths, more than one point on sloped part). 11 articles were included for another forward-search. A forward search on these 11 articles on April 12th (94 new citations) brought 1 new study, and following its 20 citations on April 16th yielded another article. Its 14 citations (April 16th) yielded no further article.
+I classified the studies as plant/animal, Vertebrate/invertebrate, and water/terrestrial based on journal titles (journal names including e.g. “plant”, “ento*”, “fish” or “bird”), manuscript titles, abstract or full text.  366 studies concentrated on terrestrial invertebrates. We screened the full text of these candidate studies to determine whether PRCs were recorded, and if so, how many photoperiods and populations were measured. We selected all studies with PRC estimates of more than 2 populations and 2 photoperiods (62 studies) for a forward-citation search on April 3rd 2018. We found 762 further articles(586 new), and selected those that met the stricter inclusion criteria (at least 3 populations and 3 day lengths). 11 articles were included for another forward-search. A forward search on these 11 articles on April 12th (182 refs, 94 new) brought 1 new study, and following its 20 citations on April 16th yielded another article. Its 14 citations (April 16th) yielded no further article. 
+notes [oct 1 2018]: the two articles from 2nd(3rd) levels forward search are not included in datasets because they have only 3 day lengths anyway. 
+
 
 
 ### second search  
@@ -249,8 +248,6 @@ We screened the titles of the 2748 articles to filter out articles which were cl
 
 we did a forward citation search on these 74 articles on jul 16 2018 and found 866 articles (609 new references, 257 duplicates from earlier search). We filtered again by title, after which 197 references remained. 197 references were appropriate based on their title, and 3 articles measured at least 3 populations and day lengths (based on full text). Another forward citation search on these 3 articles on July 23th 2018 revealed 73 unique articles, including 36 novel references (not duplicates of earlier search), but none of these were relevant. In total, we found 77 articles. 
 
-One article replicated data of an older article, and 4 conference abstracts were inaccessible, leaving 72 articles for further analysis.
-
 
 #### comparison  
 Both searches found 72 articles, but these were not completely the same. We hence compared the lists of articles found in the first and second search, including all forward citations. 
@@ -278,7 +275,26 @@ Contacting the 11 authors with missing dta may bring up to 172 further pops!
 The required information on slopes and CDL was directly given for 1 study (7 populations). For the remaining 204 populations it had to be extracted from figures/tables.
 
 
-###07.09.2018: searched in new google dataset beta search "photoperiodic response insect" - 9 results, not relevant or duplicates #### experimental: search for diapause termination
+# new comparison (1 oct 2018)  
+Out of the 75 articles found by the first search, 8 did not have 4 photoperiods and 5 were false positives. 62 remained. From the 77 articles of the second search, 5 had only 3 photoperiods, 7 were false positives. 65 remained. 
+After combining these two datasets, 69 unique articles remained.
+
+alternative:
+The 75 articles found by the first search included 5 false positives, and the 77 articles from the second search included 7 false positives. Thus, 70 references remained in each search. After combining these two datasets, 76 unique articles (578 populations<-rough overview, get exact number) remained. 
+
+# inclusion (1 oct 2018)
+12 Articles did not have the raw data published, or the raw data in figures was not unambigously linked to the populations (use of same symbols for all populations). 
+7 articles had only three day lengths, and this is not enough to calculate the slope. 
+Only populations with 2 points or more on the sloped part were considered for analysis; 21 Studies had less than three such populations and were therefore excluded. 
+The remaining 36 studies had 211 populations, though one study (7 populations) reported the slope and midponit from drc analyiss directly. Only four of these studies reported photoperiodic response curves for 2 temperatures. 
+
+
+###07.09.2018: searched in new google dataset beta search "photoperiodic lresponse insect" - 9 results, not relevant or duplicates 
+
+#### experimental: search for diapause termination  
+
+
+	
 	
 TS = ( (post-diapaus* OR (diapaus* AND ("termination" OR cessati* OR spring))) AND (geogr* OR "range" OR latitud* OR longitud* OR cline$ OR clinal OR "populations"))
 
