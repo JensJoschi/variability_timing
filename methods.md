@@ -1,3 +1,16 @@
+#issues
+change to 35 studies, 208 populations,
+Japan: 93
+Europe: 77 +7
+US:  24
+China: 7
+
+accurate: 28
+global average: 169
+pop level: 4
+
+add removed studies
+
 # Description of this file  
 This file consists of a summary and a methods section that is updated from time to time, and includes the most important methods. This is followed by a detailed description of all methods and models that have been used (and is hence rather long). In the end there is a checklist that summarises the long methods part and is at the same time my to-do list. 
 
@@ -282,11 +295,13 @@ After combining these two datasets, 69 unique articles remained.
 alternative:
 The 75 articles found by the first search included 5 false positives, and the 77 articles from the second search included 7 false positives. Thus, 70 references remained in each search. After combining these two datasets, 76 unique articles (578 populations<-rough overview, get exact number) remained. 
 
+
 # inclusion (1 oct 2018)
 12 Articles did not have the raw data published, or the raw data in figures was not unambigously linked to the populations (use of same symbols for all populations). 
 7 articles had only three day lengths, and this is not enough to calculate the slope. 
 Only populations with 2 points or more on the sloped part were considered for analysis; 21 Studies had less than three such populations and were therefore excluded. 
-The remaining 36 studies had 211 populations, though one study (7 populations) reported the slope and midponit from drc analyiss directly. Only four of these studies reported photoperiodic response curves for 2 temperatures. 
+The remaining 35 studies were on 211 populations in 31 species (8 orders). The majority of the populations came from japan (93 populations, 17 studies), followed by Europe (84 populations, 12 studies), the US (24 populations, 5 studies), China (7 populations, 2 studies) and Mexico and middle america (3 populations, 1 study) (2 studies were over 2 regions).  One study (7 populations) reported the slope and midponit from drc analyiss directly. Only four of these studies reported photoperiodic response curves for 2 temperatures. 
+
 
 
 ###07.09.2018: searched in new google dataset beta search "photoperiodic lresponse insect" - 9 results, not relevant or duplicates 
@@ -366,7 +381,7 @@ All analyses were done on 30 studies where the slopes can be reliably estimated,
 
 #drc analysis (after merging with new search results)  
 
-same approach as before, but on 204 populations, and with a delta-AIC of 4.0. 172 populations gave no (1 study) or only global averages of sample sizes (e.g. "there were on average 20 individuals per treatment" or "sample sizes ranged from 30-120 individuals" - in this case I used the mean,75), 7 populations (2 studies) had population-level means ("there were on average 20 individuals per treatment in Kochi and Sendai, 40 in Kyoto"), and 25 populations (7 studies) had accurate information (sample size of each treatment in each population).
+same approach as before, but on 204 populations, and with a delta-AIC of 4.0. 169 populations gave no (2 studies) or only global averages of sample sizes (e.g. "there were on average 20 individuals per treatment" or "sample sizes ranged from 30-120 individuals" - in this case I used the mean,75), 7 populations (2 studies) had population-level means ("there were on average 20 individuals per treatment in Kochi and Sendai, 40 in Kyoto"), and 28 populations (8 studies) had accurate information (sample size of each treatment in each population).
 
 Three studies lacked vital data on upper or lower limits for some focal populations, but contained further populations that were excluded for lack of points on the sloped part.  These other populations showed unambigously that the lower and upper limits were 0 and 100%. In these cases we performed a 2-parameter drc (with limits from 0-100%) to allow inclusion of the incomplete populations. 
 One population (KS in Kimura_evol) had to be removed, and three studies (Lehmann, Pegoraro, Murata) were very variable.

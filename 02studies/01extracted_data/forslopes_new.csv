@@ -1,19 +1,4 @@
 set,id,PY,region,pops_left,genus,spec,order,pop,degN,degE,nmethod,perc,n2,dl2
-newsearch,ankersmit,1967,SA,3,Pectinophora,gossypiella,Lepidoptera,el_paso,31.779,-106.478,pop average,96.3689097007,275,10
-newsearch,ankersmit,1967,SA,3,Pectinophora,gossypiella,Lepidoptera,el_paso,31.779,-106.478,pop average,96.4612667498,275,11
-newsearch,ankersmit,1967,SA,3,Pectinophora,gossypiella,Lepidoptera,el_paso,31.779,-106.478,pop average,86.7524344994,275,12
-newsearch,ankersmit,1967,SA,3,Pectinophora,gossypiella,Lepidoptera,el_paso,31.779,-106.478,pop average,64.2027318243,275,12.5
-newsearch,ankersmit,1967,SA,3,Pectinophora,gossypiella,Lepidoptera,el_paso,31.779,-106.478,pop average,10.6161997505,275,13
-newsearch,ankersmit,1967,SA,3,Pectinophora,gossypiella,Lepidoptera,port_lavaca,28.61,-96.629,pop average,95.8181818182,275,10
-newsearch,ankersmit,1967,SA,3,Pectinophora,gossypiella,Lepidoptera,port_lavaca,28.61,-96.629,pop average,95.045045045,275,11
-newsearch,ankersmit,1967,SA,3,Pectinophora,gossypiella,Lepidoptera,port_lavaca,28.61,-96.629,pop average,83,275,12
-newsearch,ankersmit,1967,SA,3,Pectinophora,gossypiella,Lepidoptera,port_lavaca,28.61,-96.629,pop average,81.3407043407,275,12.5
-newsearch,ankersmit,1967,SA,3,Pectinophora,gossypiella,Lepidoptera,port_lavaca,28.61,-96.629,pop average,20.0458640459,275,13
-newsearch,ankersmit,1967,SA,3,Pectinophora,gossypiella,Lepidoptera,port_lavaca,28.61,-96.629,pop average,4.9090909091,275,14
-newsearch,ankersmit,1967,SA,3,Pectinophora,gossypiella,Lepidoptera,virgin_is,18.333,-64.75,pop average,71.9433223255,175,10
-newsearch,ankersmit,1967,SA,3,Pectinophora,gossypiella,Lepidoptera,virgin_is,18.333,-64.75,pop average,79.5498809615,175,11
-newsearch,ankersmit,1967,SA,3,Pectinophora,gossypiella,Lepidoptera,virgin_is,18.333,-64.75,pop average,48.2734812994,175,12.5
-newsearch,ankersmit,1967,SA,3,Pectinophora,gossypiella,Lepidoptera,virgin_is,18.333,-64.75,pop average,5.4880577529,175,13
 newsearch,chen,2013,China,3,Helicoverpa,armigera,Lepidoptera,Yongxiu,29.04,116.82,global average,72.4405687447,71.5,11
 newsearch,chen,2013,China,3,Helicoverpa,armigera,Lepidoptera,Yongxiu,29.04,116.82,global average,43.491549514,71.5,12
 newsearch,chen,2013,China,3,Helicoverpa,armigera,Lepidoptera,Yongxiu,29.04,116.82,global average,31.9938658502,71.5,13
@@ -486,26 +471,26 @@ newsearch,murata,2009,japan,4,Asobara,japonica,Hymenoptera, Tokyo,35.7,139.77444
 newsearch,murata,2009,japan,4,Asobara,japonica,Hymenoptera, Tokyo,35.7,139.77444,global average,68.7388987567,100,13
 newsearch,murata,2009,japan,4,Asobara,japonica,Hymenoptera, Tokyo,35.7,139.77444,global average,11.5452930728,100,14
 newsearch,murata,2009,japan,4,Asobara,japonica,Hymenoptera, Tokyo,35.7,139.77444,global average,48.134991119,100,15
-newsearch,musolin,2011,japan,3,Nezara,viridula,Heteroptera,Okinawa,26.4,127.4,accurate,100,13,10
-newsearch,musolin,2011,japan,3,Nezara,viridula,Heteroptera,Okinawa,26.4,127.4,accurate,100.086404448,27,11
-newsearch,musolin,2011,japan,3,Nezara,viridula,Heteroptera,Okinawa,26.4,127.4,accurate,96.4499042038,27,12
-newsearch,musolin,2011,japan,3,Nezara,viridula,Heteroptera,Okinawa,26.4,127.4,accurate,81.201397498,57,12.5
-newsearch,musolin,2011,japan,3,Nezara,viridula,Heteroptera,Okinawa,26.4,127.4,accurate,48.1836282355,44,13
-newsearch,musolin,2011,japan,3,Nezara,viridula,Heteroptera,Okinawa,26.4,127.4,accurate,57.7707652429,28,14
-newsearch,musolin,2011,japan,3,Nezara,viridula,Heteroptera,Okinawa,26.4,127.4,accurate,1.2397159923,32,15
-newsearch,musolin,2011,japan,3,Nezara,viridula,Heteroptera,Kochi,33.6,133.6,accurate,72.4279835391,51,10
-newsearch,musolin,2011,japan,3,Nezara,viridula,Heteroptera,Kochi,33.6,133.6,accurate,79.4238683128,54,11
-newsearch,musolin,2011,japan,3,Nezara,viridula,Heteroptera,Kochi,33.6,133.6,accurate,61.7283950617,42,11.5
-newsearch,musolin,2011,japan,3,Nezara,viridula,Heteroptera,Kochi,33.6,133.6,accurate,36.2139917695,22,12
-newsearch,musolin,2011,japan,3,Nezara,viridula,Heteroptera,Kochi,33.6,133.6,accurate,39.9176954733,20,12.5
-newsearch,musolin,2011,japan,3,Nezara,viridula,Heteroptera,Kochi,33.6,133.6,accurate,0.4115226337,37,13
-newsearch,musolin,2011,japan,3,Nezara,viridula,Heteroptera,Kochi,33.6,133.6,accurate,9.8765432099,30,14
-newsearch,musolin,2011,japan,3,Nezara,viridula,Heteroptera,Kochi,33.6,133.6,accurate,0.8230452675,35,15
-newsearch,musolin,2011,japan,3,Nezara,viridula,Heteroptera,Osaka,34.7,135.5,accurate,100.4130438883,34,10
-newsearch,musolin,2011,japan,3,Nezara,viridula,Heteroptera,Osaka,34.7,135.5,accurate,72.861696309,109,12
-newsearch,musolin,2011,japan,3,Nezara,viridula,Heteroptera,Osaka,34.7,135.5,accurate,60.3308123196,117,13
-newsearch,musolin,2011,japan,3,Nezara,viridula,Heteroptera,Osaka,34.7,135.5,accurate,0.0829859867,36,14
-newsearch,musolin,2011,japan,3,Nezara,viridula,Heteroptera,Osaka,34.7,135.5,accurate,-0.4149299334,33,15
+newsearch,musolin,2011,japan,3,Nezara,viridula,Hemiptera,Okinawa,26.4,127.4,accurate,100,13,10
+newsearch,musolin,2011,japan,3,Nezara,viridula,Hemiptera,Okinawa,26.4,127.4,accurate,100.086404448,27,11
+newsearch,musolin,2011,japan,3,Nezara,viridula,Hemiptera,Okinawa,26.4,127.4,accurate,96.4499042038,27,12
+newsearch,musolin,2011,japan,3,Nezara,viridula,Hemiptera,Okinawa,26.4,127.4,accurate,81.201397498,57,12.5
+newsearch,musolin,2011,japan,3,Nezara,viridula,Hemiptera,Okinawa,26.4,127.4,accurate,48.1836282355,44,13
+newsearch,musolin,2011,japan,3,Nezara,viridula,Hemiptera,Okinawa,26.4,127.4,accurate,57.7707652429,28,14
+newsearch,musolin,2011,japan,3,Nezara,viridula,Hemiptera,Okinawa,26.4,127.4,accurate,1.2397159923,32,15
+newsearch,musolin,2011,japan,3,Nezara,viridula,Hemiptera,Kochi,33.6,133.6,accurate,72.4279835391,51,10
+newsearch,musolin,2011,japan,3,Nezara,viridula,Hemiptera,Kochi,33.6,133.6,accurate,79.4238683128,54,11
+newsearch,musolin,2011,japan,3,Nezara,viridula,Hemiptera,Kochi,33.6,133.6,accurate,61.7283950617,42,11.5
+newsearch,musolin,2011,japan,3,Nezara,viridula,Hemiptera,Kochi,33.6,133.6,accurate,36.2139917695,22,12
+newsearch,musolin,2011,japan,3,Nezara,viridula,Hemiptera,Kochi,33.6,133.6,accurate,39.9176954733,20,12.5
+newsearch,musolin,2011,japan,3,Nezara,viridula,Hemiptera,Kochi,33.6,133.6,accurate,0.4115226337,37,13
+newsearch,musolin,2011,japan,3,Nezara,viridula,Hemiptera,Kochi,33.6,133.6,accurate,9.8765432099,30,14
+newsearch,musolin,2011,japan,3,Nezara,viridula,Hemiptera,Kochi,33.6,133.6,accurate,0.8230452675,35,15
+newsearch,musolin,2011,japan,3,Nezara,viridula,Hemiptera,Osaka,34.7,135.5,accurate,100.4130438883,34,10
+newsearch,musolin,2011,japan,3,Nezara,viridula,Hemiptera,Osaka,34.7,135.5,accurate,72.861696309,109,12
+newsearch,musolin,2011,japan,3,Nezara,viridula,Hemiptera,Osaka,34.7,135.5,accurate,60.3308123196,117,13
+newsearch,musolin,2011,japan,3,Nezara,viridula,Hemiptera,Osaka,34.7,135.5,accurate,0.0829859867,36,14
+newsearch,musolin,2011,japan,3,Nezara,viridula,Hemiptera,Osaka,34.7,135.5,accurate,-0.4149299334,33,15
 newsearch,nechols,1987,US,3,Chrysopa,oculata,Neuroptera,loveland,40.431269,-105.339661,accurate,100,12,10
 newsearch,nechols,1987,US,3,Chrysopa,oculata,Neuroptera,loveland,40.431269,-105.339661,accurate,86,14,12
 newsearch,nechols,1987,US,3,Chrysopa,oculata,Neuroptera,loveland,40.431269,-105.339661,accurate,93,15,13

@@ -21,26 +21,33 @@ library(geosphere)
 
 # General description  
 ## Aim  
-The aim of this project is to correlate climate variability with variability in seasonal timing. Is the slope in seasonal responses a bet-hedging trait, i.e., is it adaptive to spread one's timing in more variable conditions?  
+Global change alters selection on phenology, due to rises in temperature means, variability and predictability. Species persistence will depend on how phenology evolves, which may encompass according changes in means, variability (bet-hedging) or plasticity.
+We conducted a meta-analysis of arthropod diapause timing across species and climatic gradients. This script calculates means and slopes of day length reaction norms for 211 populations in 8 orders. The means and slopes of diapause will be correlated with mean, variability and predictability of winter onset, but that is in a different script.
 
 
 ### Overview  
-I searched in the web of Science database for studies that measure photoperiodic response curves of invertebrates (folder 02studies/00raw) and extracted the x- and y-coordinates of the points within these curves (folder 02studies/01extracted_data). After adding metadata (latitudes, longitudes,sample sizes) I selected populations with usable data (~200 populations, 30 species) and copied the data into a csv file. The script now calculates the slope and other parameters of the photopeirodic response curve. It uses dose-response curves analysis with package "drc".  
+
+The methods can be found in methods.md in the main folder. In short, we searched the Web of Science database for photoperiodic response curves of arthropods (search results: *.txt in folder 02studies/00raw) and selected 36 articles for analysis. For these articles we then extracted the x- and y-coordinates of the photoperiodic response curves from the figures (folder 02studies/01extracted_data/new). The whole procedure can be found in "populations.ods". We copied the data to the .csv file forslopes_new.csv, which will be used in this script. We now calculate the slope and other parameters of the photoperiodic response curve. 
 
 ### Specific description  
 
 The data was generated with R version `r getRversion()`. Slope estimates derived with package drc, `r citation('drc')`.
 
-The script fits dose-response curves for all populations, seperately for each study. DRCs can estimate the upper and lower limit (range of diapause responses, usually from 0-100%), the inflection point (critical day length, where 50% of the population are in diapause), and the slope of the curve. I am mostly interested in slope of the curve, but also want to extract the critical day length. But the upper and lower limit have to be estimated as well. From a glimpse at the data it can be seen that the upper and lower limit are not always 0 and 100%, and there are several ways to fit the model. 
+One study (7 populations) reported the slope and midpoint from drc analyiss directly. The script concentrates on the remaining 35 studies. One of the studies (Kimura_geogr) was conducted on three species, these 3 species will be treated as independent. This makes 37 studies.
 
-Intuitively one would expect that all populations of one species (and hence also all pops that have been sampled in a study) have the same lower and upper limit. One could therefore estimate a global upper and lower limit, and then slope and inflection point for each population (requires 2 degrees of freedom + 2 df per population). As alternative one could however also imagine a conservative bet-hedging strategy, in which a population never reaches 0% diapause to ensure survival in variable climates. In this case, the lower limit varies by populations, while the upper is fixed (requires 1 df + 3 df per population). The opposite situation, in which populationsut vary in their upper limit while the lower limit is fixed (1df + 3 per pop), is counterintuitive, as it is essentially the opposite of conservative bet-hedging. This strategy could mean that some offspring never diapause, even under winter conditions, hoping that a harsh winter climate never arrives (see skewed distribution in halkett 2004, amnat). The last possible version is that both upper and lower limit vary by population. This makes four models (sorted by plausibility): 
+To estimate the midpoints and slopes we use the package drc. This analysis provides lower and upper bounds of photoperiodic induction, the slope, and the inflection point where 50 % of the individuals are induced (critical day length), so up to four parameters per slope will be estimated. We expected that all populations of one species have the same lower and upper limit, which would reduce the estimation to 2 parameters per slope, plus 2 global parameters per study. This expecteation does not always hold, however, so we also apply the alternative models with only one or no fixed global parameters. The following models are applied on each study (sorted by plausibility):
 
 1. upper and lower parameter fixed at study mean (requires 2 df plus 2 df per population)
 2. upper parameter fixed (requires 1 df plus 3 per population)
-3. lower parameter fixed (requires 1df plus 3 per population)
+3. lower parameter fixed (requires 1 df plus 3 per population)
 4. both limits vary (requires 4 df per population)
 
-This script first determines the available df to see if options 2-4 are available. Then it fits all models that are allowed, and compares by AIC which one is best. If there are ties (delta AIC <2), the most plausible model (sorted as above) is used. 
+We choose the model with lowest AIC. If there are multiple models with an AIC difference less than 4, we use the most plausible model.
+
+Detailed information on number of individuals per point estimate was rarely available. We used all data that was provided to weigh the individual points of the PRC. 
+
+After fitting the curves, we do a bit of quality control and check whether some studies/populations need to be removed. 
+
 
 
 ### Script  
@@ -52,9 +59,9 @@ This script should not be executed completely, becaues it will cause some conver
 
 ```{r load_data}
 data<-read.table("02studies/01extracted_data/forslopes_new.csv", header=T,sep=",")
-length(unique(data$id)) #35 studies that can be used for slope calculation (kimura_geogr has 3 levels)
+length(unique(data$id)) #34 studies that can be used for slope calculation (kimura_geogr has 3 levels)
 data<-unite(data,"popid",c("id","pop","genus","spec"),sep="-",remove=F)
-length(unique(data$popid)) #204 populations (not 211 because lankinen)
+length(unique(data$popid)) #201 populations (not 208 because lankinen)
 
 #summary of #pops per region and level of detail for sample sizes
 
@@ -69,46 +76,52 @@ for ( i in 1:nrow(t)){
 }
 table(t$reg) #unfortunately, the information was converted to values
 levels(data$region)
-#Japan: 83+3-1+10 = 95
+#Japan: 83+10 from the "usa,japan" = 93
 #Europe: 77
-#US: 7+3+11 = 21
+#US: 13+11 from the "usa,japan" = 24
 #China: 7
-#indonesia: 3-2=1
-#middle america + mexico: 3
 #this ignores 7 pops from Europe, where CDL and b were given directly in paper (not part of the analysis dataset)
 
 
 table(t$nMethod)
 levels(data$nmethod)
 
-#accurate: 25
-#global average: 162+7+3 =172
-#pop level: 3+4 =7
+#accurate: 28
+#global average: 159+7+3 =169
+#pop level: 4
 
 data[data$n2==1,15]<-100
 #those with no described sample size (2 studies, 1 with no sample size given, 1 in japanese and sample size not found) get an arbitrary number of 100. No sample size is the same as global average anyway (means that individual-point weighing is not possible).
 
 r<-data.frame(NA,NA,NA,NA,NA,NA,NA,NA,NA)
 names(r)<-c("name","b","b_rel","c","c_rel","d","d_rel","e","e_rel") #the results will be stored in a file with these columns
+
+data$perc[data$perc<0]<-0
+data$perc[data$perc>100]<-100
+data$n2<-round(data$n2)
+data$number<-(data$perc/100) * data$n2
+data$number<-floor(data$number)
 ```
 
 the following hcunk cannot be executed directly (some problem with optimizer). Change i, copy to console and run
 ```{r all_models}
-i<-28
+i<-36
 sub<-data[data$id==unique(data$id)[i],] 
 sub<-droplevels(sub)
 
 #turn percentage into no. failures, no. successes (also round N)
-sub$n2<-round(sub$n2)
-sub$number<-round(sub$n2 * sub$perc/100)
-sub$number[sub$number>sub$n2]<-sub$n2[sub$number>sub$n2]
-sub$number[sub$number<0]<-0
+#sub$n2<-round(sub$n2)
+#sub$number<-round(sub$n2 * sub$perc/100)
+#sub$number[sub$number>sub$n2]<-sub$n2[sub$number>sub$n2]
+#sub$number[sub$number<0]<-0
 
 aics <- c(NA,NA,NA,NA) #will store AIcs of up to four possible models 
 estimates <- nrow(sub)
 pops<-sub$pops_left[1]
 if(length(pops)>1){print(paste("something went wrong in study ",sub$id[1],"\n"))}
 
+#for those with ll.2. only
+#other<-drm((number/n2)~dl2,curveid=popid,data=sub,fct=LL.2(),type="binomial",weights=n2)
 
 # the four models
 
@@ -208,6 +221,12 @@ run next 2 chunks, no need to edit
     d<-coffs[coffs$group=="d",]
     e<-coffs[coffs$group=="e",]
     
+    #if ll.2:
+   # c<-data.frame(NA,NA,NA)
+  #  names(c)<-c("Estimate" ,  "Std. Error", "group"     )
+  #  d<-data.frame(NA,NA,NA)
+  #  names(d)<-c("Estimate" ,  "Std. Error", "group"     )
+    
     #need to bring these into sensible shape
     new_data<-data.frame(b,c,d,e)
     new_data<-new_data[,c(1,2,4,5,7,8,10,11)] #removes "group"
@@ -222,47 +241,44 @@ write.table(results, "02studies/02output/slopes.txt",append=T,sep="\t",col.names
  print(paste(i,"|",results$id[1],"|",choice,sep=""))
 ```
 
-i|study         |best |chosen |impossible   |notes
-1|ankersmit     |3    |3      |4            |4: too few df
-2|chen          |3,4  |3      |
-3|gomi          |LL.2 |LL.2   |all          |mod 1 would have missing data for 2 pops
-4|gotoh         |3      
-5|hashimoto     |3                          |caused by Nagaoka only
-6|ito           |2,4  |2 
-7|kimura_geogr_1|3    
-8|kimura_geogr_2|3,4  |3
-9|kimura_geogr_3|1,3,4|1      |             |evidence for 1 from 2 further pops
-10|koveos       |3
-11|kurahashi    |3,4  |3
-12|kurota       |3    
-13|lankinen     |3    |3      |             |evidence for 1/3 from 8 further pops
-14|lehmann      |2,4  |2
-15|lumme        |2,4  |2
-16|lushai       |1,3  |1
-17|murata       |4    |exclude              |9 variable pops, bad fit
-18|musolin      |3
-19|nechols      |LL.2 |LL.2                 |mod 1 would have NA for 1 pop, evidence from 7 further pops
-20|paolucci     |3,4  |3
-21|pegoraro     |1    |1
-22|pullin       |2    |2      |4            |problems estimating s.e. remove?
-23|riihima      |2    |2      |3            |removed box constraints
-24|shimizu      |3,4  |3
-25|shintani     |LL.2 |LL.2                 |mod1 would have NAs, evidence from 8 further pops
-26|shroyer      |2,4  |2
-27|so           |3
-28|suwa         |1,3  |1
-29|tyukmaeva    |3,4  |3
-30|ujiye        |1    |1      |2,3,4          |too few df for other models
-31|urbanski     |3    |3      |               |1 and 2 without box constraints
-32|vaznunes     |3
-33|wang         |1,3  |1
-34|yoshida      |3,4  |3      |               |2 without box constraints
-35|kimura_evol  |1    |1      |2,3,4          |removed KS; too few df 
-36|takeda       |1,2,3|1
-37|noda         |3    |3      |               |removed dl<9
+i|study         |best   |chosen |impossible   |notes
+1|chen          |1,3,4  |1      |
+2|gomi          |LL.2   |LL.2   |all          |mod 1 would have missing data for 2 pops
+3|gotoh         |3      
+4|hashimoto     |1,3    |1                    |nagaoka and okayama removed            
+5|ito           |2,4    |2                    |WA removed
+6|kimura_geogr_1|3                            |OI removed
+7|kimura_geogr_2|3,4    |3
+8|kimura_geogr_3|1,3,4  |1      |            |evidence for 1 from 2 further pops
+9|koveos        |4                            |thessaloniki1 and padua removed
+10|kurota       |3    |3      |4   
+11|lankinen     |3    |3      |             |evidence for 1/3 from 8 further pops; dietikon2 removed
+12|lehmann      |NA    |NA      |             |removed
+13|lumme        |2,4  |2
+14|lushai       |NA  |NA                      |removed
+15|murata       |NA    |NA                      |removed
+16|musolin      |NA   |NA                     |removed
+17|nechols      |LL.2 |LL.2                 |mod 1 would have NA for 1 pop, evidence from 7 further pops
+18|paolucci     |1-4  |1                    |SCH removed
+19|pegoraro     |NA   |NA                    |removed
+20|pullin       |2    |2      |4
+21|riihima      |2    |2      |4            |removed pops oulo 1+2, kuusamo3
+22|ryan         |1,2,3|1      |4
+23|shimizu      |3,4  |3                    |consider removing SPR
+24|shintani     |LL.2 |LL.2                 |mod1 would have NAs, evidence from 8 further pops
+25|shroyer      |NA   |NA                   |removed
+26|so           |NA   |NA                   |removed
+27|suwa         |1    |1      |2-4          |removed pops 14,15,16,18,21,23,31
+28|tyukmaeva    |3,4  |3                    |removed pops pudasjarvi2, paltamo1, ivas1,lathi1,lathi3
+29|ujiye        |NA    |NA      |NA         |removed
+30|urbanski     |3    |3      |4              |1 and 2 without box constraints (bc fit is soo bad), 4 has NA for 1 pop
+31|vaznunes     |3    |3      |4            |removed S1,S2, T1,T2
+32|wang         |1,3  |1
+33|yoshida      |3    |3
+34|kimura_evol  |NA   |NA                   |removed
+35|takeda       |1,3,4|1                    |consider removing
+36|noda         |3    |3      |               |removed dl<9
 
-lehmann,pegoraro?
-murata raus
 
 ```{r quality_control}
 
@@ -271,70 +287,74 @@ results <- read.table("02studies/02output/slopes.txt",sep = "\t")
 #substr(as.character(results[,1]),start=3,stop =10000L)==as.character(results[,3])
 
 names(results)<-c("row","set","popid","ID","PY","region","pops_left","genus","spec", "order", "pop","degN","degE","nmethod","perc","n2","dl2","number","b","bse","c","cse","d","dse","e","ese")
-results<-results[-39,] #was empty
 
-hist(results$b,breaks=50)
-hist(results$cse,breaks=50)
-hist(results$dse,breaks=50)
-results$popid[results$e>50] #remove that
 
-#the following populations are clearly problematic:
-# "murata- Ogasawara-Asobara-japonica"  - bse, cse, dse
-# "murata- Tokyo-Asobara-japonica"     -cse, dse
-# "pegoraro-Sp22-Drosophila-melanogaster"  -e, ese
-#murata and pegoraro SP22 will be removed
-results$use<-"y"
-results[results$ID=="murata",27]<-"n"
-results[results$popid=="pegoraro-Sp22-Drosophila-melanogaster",27]<-"n"
-restore<-results
-results<-results[results$use=="y",]
-results$ID<-droplevels(results$ID)
+#removed 9 studies (33 pops) and 27 further pops
+#201-33-27 = 141 pops left
+#in: 27 studies (though one study has 3 specs)
 
+
+
+#results[results$popid=="gotoh- Ishikawa-Tetranychus-urticae","use"]<-"n"
 
 
 #checking distribution of standard errors (too small s.e. are aproblem because influence becomes infinite)
 #b(slope)
-plot(1/results$bse,log="y", main = "influnece of data points on b",ylab="1/s.e. [log]")
-med<-median(1/results$bse)
+results$invvar_b<-1/(results$bse^2)
+results$invse_b<-1/results$bse
+plot(1:141,results$invvar_b, main = "influnece of data points on b",ylab="inverse variance [log]",log="y")
+med<-median(results$invvar_b)
 abline(h=med)
 abline(h=med*10,col=2)
 abline(h=med/10,col=2)
 abline(h=med*5,col=4)
 abline(h=med/5,col=4)
+abline(h=med*50,col=1)
+abline(h=med/50,col=1)
 text(10,med*10,"median*10")
 text(10,med*5,"median*5")
-results$popid[(1/results$bse)>median(1/results$bse)*10]#populations with more than 10 times the median influence
-results$popid[(1/results$bse)<median(1/results$bse)/10]#populations with less than 1/10th the median influence
+text(10,med*50,"median*50")
+#some points are >100 times more influential than others
 
-points(x= rownames(results[results$ID=="tyukmaeva",]),y=1/results[results$ID=="tyukmaeva",]$bse,col=2,pch=21,bg=2)
- points(x= rownames(results[results$ID=="suwa",]),y=1/results[results$ID=="suwa",]$bse,col=4,pch=21,bg=4)
+#points I consider  highest quality
+points(x= which(results$ID=="urbanski"),y=results$invvar_b[which(results$ID=="urbanski")],col=2,pch=21,bg=2)
+#points i consider lowest quality
+points(x=which(results$ID=="suwa"),y=results$invvar_b[which(results$ID=="suwa")],col=4,pch=21,bg=4)
+results$popid[results$invvar_b>med*10]
 
-#maybe remove those two studies (likely overfitted)?
-#when suwa and tyukmaeva are removed, the influences ranges from 5 times more influential than the median to ~1/10th (skew, some points even less)
+
+#maybe remove those populations (likely overfitted)?
+
 
 #same with e (CDL)
-plot(1/results$ese,log="y", main = "influnece of data points on e",ylab="1/s.e. [log]")
-med<-median(1/results$ese)
+results$invvar_e<-1/(results$ese^2)
+results$invse_e<-1/results$ese
+plot(1:141,results$invvar_e, main = "influnece of data points on e",ylab="inverse variance [log]",log="y")
+med<-median(results$invvar_e)
 abline(h=med)
 abline(h=med*10,col=2)
 abline(h=med/10,col=2)
 abline(h=med*5,col=4)
 abline(h=med/5,col=4)
-abline(h=med*20,col=5)
-abline(h=med/20,col=5)
-text(180,med*10,"median*10")
-text(180,med*5,"median*5")
-text(180,med*20,"median*20")
+abline(h=med*50,col=1)
+abline(h=med/50,col=1)
+text(10,med*10,"median*10")
+text(10,med*5,"median*5")
+text(10,med*50,"median*50")
+#some points are >100 times more influential than others
 
-results$popid[(1/results$ese)>median(1/results$ese)*10]#populations with more than 10 times the median influence
+#points I consider  highest quality
+points(x= which(results$ID=="urbanski"),y=results$invvar_e[which(results$ID=="urbanski")],col=2,pch=21,bg=2)
+#points i consider lowest quality
+points(x=which(results$ID=="suwa"),y=results$invvar_e[which(results$ID=="suwa")],col=4,pch=21,bg=4)
+results$popid[results$invvar_e>med*50]
 
-points(x= rownames(results[results$ID=="suwa",]),y=1/results[results$ID=="suwa",]$ese,col=4,pch=21,bg=4)
 
-results$popid[(1/results$ese)<median(1/results$ese)/10]#populations with less than 1/10 times the median influence
 
+ 
 #remove suwa completely, and 4 pops of tyukmaeva for b estimates
 results<-restore
-results[(1/results$bse)>median(1/results$bse)*10,27]<-"e_only"
+results[(1/results$bse)>median(1/results$bse)*5,27]<-"e_only"
 results[(1/results$ese)>median(1/results$ese)*10,27]<-"b_only"
 results[results$ID=="suwa",27]<-"n"
 
