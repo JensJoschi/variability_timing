@@ -59,9 +59,9 @@ This script should not be executed completely, becaues it will cause some conver
 
 ```{r load_data}
 data<-read.table("02studies/01extracted_data/forslopes_new.csv", header=T,sep=",")
-length(unique(data$id)) #34 studies that can be used for slope calculation (kimura_geogr has 3 levels)
+length(unique(data$id)) #32 studies that can be used for slope calculation (kimura_geogr has 3 levels)
 data<-unite(data,"popid",c("id","pop","genus","spec"),sep="-",remove=F)
-length(unique(data$popid)) #201 populations (not 208 because lankinen)
+length(unique(data$popid)) #183 populations (not 190 because lankinen)
 
 #summary of #pops per region and level of detail for sample sizes
 
@@ -76,9 +76,9 @@ for ( i in 1:nrow(t)){
 }
 table(t$reg) #unfortunately, the information was converted to values
 levels(data$region)
-#Japan: 83+10 from the "usa,japan" = 93
-#Europe: 77
-#US: 13+11 from the "usa,japan" = 24
+#Japan: 80+10 from the "usa,japan" = 90
+#Europe: 63
+#US: 12+11 from the "usa,japan" = 23
 #China: 7
 #this ignores 7 pops from Europe, where CDL and b were given directly in paper (not part of the analysis dataset)
 
@@ -86,15 +86,15 @@ levels(data$region)
 table(t$nMethod)
 levels(data$nmethod)
 
-#accurate: 28
-#global average: 159+7+3 =169
+#accurate: 22
+#global average: 147+7+3 =157
 #pop level: 4
 
 data[data$n2==1,15]<-100
 #those with no described sample size (2 studies, 1 with no sample size given, 1 in japanese and sample size not found) get an arbitrary number of 100. No sample size is the same as global average anyway (means that individual-point weighing is not possible).
 
-r<-data.frame(NA,NA,NA,NA,NA,NA,NA,NA,NA)
-names(r)<-c("name","b","b_rel","c","c_rel","d","d_rel","e","e_rel") #the results will be stored in a file with these columns
+r<-data.frame(NA,NA,NA,NA,NA,NA,NA,NA,NA,NA)
+names(r)<-c("name","b","b_rel","c","c_rel","d","d_rel","e","e_rel","nsl") #the results will be stored in a file with these columns
 
 data$perc[data$perc<0]<-0
 data$perc[data$perc>100]<-100
@@ -105,8 +105,12 @@ data$number<-floor(data$number)
 
 the following hcunk cannot be executed directly (some problem with optimizer). Change i, copy to console and run
 ```{r all_models}
-i<-36
+i<-34
 sub<-data[data$id==unique(data$id)[i],] 
+
+#if pops have to be removed (do after fitting)
+#sub<-sub[!sub$popid %in% unique(sub$popid)[c(3,4)],]
+
 sub<-droplevels(sub)
 
 #turn percentage into no. failures, no. successes (also round N)
@@ -244,10 +248,10 @@ write.table(results, "02studies/02output/slopes.txt",append=T,sep="\t",col.names
 i|study         |best   |chosen |impossible   |notes
 1|chen          |1,3,4  |1      |
 2|gomi          |LL.2   |LL.2   |all          |mod 1 would have missing data for 2 pops
-3|gotoh         |3      
+3|gotoh         |3                            |consider removing ishikawa     
 4|hashimoto     |1,3    |1                    |nagaoka and okayama removed            
 5|ito           |2,4    |2                    |WA removed
-6|kimura_geogr_1|3                            |OI removed
+6|kimura_geogr_1|3                            |consider removing OI
 7|kimura_geogr_2|3,4    |3
 8|kimura_geogr_3|1,3,4  |1      |            |evidence for 1 from 2 further pops
 9|koveos        |4                            |thessaloniki1 and padua removed
@@ -259,25 +263,23 @@ i|study         |best   |chosen |impossible   |notes
 15|murata       |NA    |NA                      |removed
 16|musolin      |NA   |NA                     |removed
 17|nechols      |LL.2 |LL.2                 |mod 1 would have NA for 1 pop, evidence from 7 further pops
-18|paolucci     |1-4  |1                    |SCH removed
-19|pegoraro     |NA   |NA                    |removed
-20|pullin       |2    |2      |4
-21|riihima      |2    |2      |4            |removed pops oulo 1+2, kuusamo3
-22|ryan         |1,2,3|1      |4
-23|shimizu      |3,4  |3                    |consider removing SPR
-24|shintani     |LL.2 |LL.2                 |mod1 would have NAs, evidence from 8 further pops
-25|shroyer      |NA   |NA                   |removed
-26|so           |NA   |NA                   |removed
-27|suwa         |1    |1      |2-4          |removed pops 14,15,16,18,21,23,31
-28|tyukmaeva    |3,4  |3                    |removed pops pudasjarvi2, paltamo1, ivas1,lathi1,lathi3
-29|ujiye        |NA    |NA      |NA         |removed
-30|urbanski     |3    |3      |4              |1 and 2 without box constraints (bc fit is soo bad), 4 has NA for 1 pop
-31|vaznunes     |3    |3      |4            |removed S1,S2, T1,T2
-32|wang         |1,3  |1
-33|yoshida      |3    |3
-34|kimura_evol  |NA   |NA                   |removed
-35|takeda       |1,3,4|1                    |consider removing
-36|noda         |3    |3      |               |removed dl<9
+18|paolucci     |1-4  |1                    |SCH looks odd
+19|riihima      |2    |2      |             |removed oulo2
+20|ryan         |1,2,3|1      |4
+21|shimizu      |3,4  |3                    |SPR removed
+22|shintani     |LL.2 |LL.2                 |mod1 would have NAs, evidence from 8 further pops
+23|shroyer      |2    
+24|so           |NA   |NA                   |removed
+25|suwa         |1    |1      |             |removed all pops except 7,10,16,20; consider removing completely
+26|tyukmaeva    |3,4  |3                    |removed lathi1,lathi3
+27|ujiye        |NA    |NA      |NA         |removed
+28|urbanski     |3    |3      |4              |1 and 2 without box constraints (bc fit is soo bad), 4 has NA for 1 pop
+29|vaznunes     |3    |3      |4            |removed S1,S2,T2
+30|wang         |1,3  |1
+31|yoshida      |3    |3
+32|kimura_evol  |NA   |NA                   |removed
+33|takeda       |1,3,4|1                    |consider removing
+34|noda         |3    |3      |               |removed dl<9; removed ishigaki
 
 
 ```{r quality_control}
@@ -286,12 +288,12 @@ results <- read.table("02studies/02output/slopes.txt",sep = "\t")
 #first col is rownames. check if that is same as ID
 #substr(as.character(results[,1]),start=3,stop =10000L)==as.character(results[,3])
 
-names(results)<-c("row","set","popid","ID","PY","region","pops_left","genus","spec", "order", "pop","degN","degE","nmethod","perc","n2","dl2","number","b","bse","c","cse","d","dse","e","ese")
+names(results)<-c("row","set","popid","ID","PY","region","pops_left","genus","spec", "order", "pop","degN","degE","nmethod","perc","n2","dl2","number","nslop","inc2","b","bse","c","cse","d","dse","e","ese")
 
+#removed 7 studies (21 pops) and 22 further pops
 
-#removed 9 studies (33 pops) and 27 further pops
-#201-33-27 = 141 pops left
-#in: 27 studies (though one study has 3 specs)
+#182-21-22 = 139 pops left
+#in: 25 studies (though one study has 3 specs)
 
 
 
@@ -301,8 +303,7 @@ names(results)<-c("row","set","popid","ID","PY","region","pops_left","genus","sp
 #checking distribution of standard errors (too small s.e. are aproblem because influence becomes infinite)
 #b(slope)
 results$invvar_b<-1/(results$bse^2)
-results$invse_b<-1/results$bse
-plot(1:141,results$invvar_b, main = "influnece of data points on b",ylab="inverse variance [log]",log="y")
+plot(1:nrow(results),results$invvar_b, main = "influnece of data points on b",ylab="inverse variance [log]",log="y")
 med<-median(results$invvar_b)
 abline(h=med)
 abline(h=med*10,col=2)
@@ -315,21 +316,30 @@ text(10,med*10,"median*10")
 text(10,med*5,"median*5")
 text(10,med*50,"median*50")
 #some points are >100 times more influential than others
+#
+#points(x=which(results$n_slop<3),y=results$invvar_b[results$n_slop<3],pch=21,bg=2)
 
 #points I consider  highest quality
 points(x= which(results$ID=="urbanski"),y=results$invvar_b[which(results$ID=="urbanski")],col=2,pch=21,bg=2)
 #points i consider lowest quality
 points(x=which(results$ID=="suwa"),y=results$invvar_b[which(results$ID=="suwa")],col=4,pch=21,bg=4)
-results$popid[results$invvar_b>med*10]
 
+points(x=which(results$popid=="gotoh- Ishikawa-Tetranychus-urticae"), y=results$invvar_b[which(results$popid=="gotoh- Ishikawa-Tetranychus-urticae")], col=4,pch=21,bg=4)#no problem
 
-#maybe remove those populations (likely overfitted)?
+points(x=which(results$popid=="kimura_geogr_1-OI-Drosophila-auraria"), y=results$invvar_b[which(results$popid=="kimura_geogr_1-OI-Drosophila-auraria")], col=4,pch=21,bg=4)#no problem
+
+points(x=which(results$popid=="paolucci-SCH-Nasonia-vitripennis"), y=results$invvar_b[which(results$popid=="paolucci-SCH-Nasonia-vitripennis")], col=4,pch=21,bg=4)#no problem
+
+points(x=which(results$ID == "takeda"), y=results$invvar_b[which(results$ID=="takeda")], col=4,pch=21,bg=4)#no problem
+
+results$invvar_b[results$invvar_b>med*10]<-med*10
+#15 inverse variance limited to 10*median
+
 
 
 #same with e (CDL)
 results$invvar_e<-1/(results$ese^2)
-results$invse_e<-1/results$ese
-plot(1:141,results$invvar_e, main = "influnece of data points on e",ylab="inverse variance [log]",log="y")
+plot(1:144,results$invvar_e, main = "influnece of data points on e",ylab="inverse variance [log]",log="y")
 med<-median(results$invvar_e)
 abline(h=med)
 abline(h=med*10,col=2)
@@ -342,23 +352,28 @@ text(10,med*10,"median*10")
 text(10,med*5,"median*5")
 text(10,med*50,"median*50")
 #some points are >100 times more influential than others
+#points i consider lowest quality
+points(x=which(results$ID=="suwa"),y=results$invvar_e[which(results$ID=="suwa")],col=4,pch=21,bg=4)
+
+points(x=which(results$popid=="gotoh- Ishikawa-Tetranychus-urticae"), y=results$invvar_e[which(results$popid=="gotoh- Ishikawa-Tetranychus-urticae")], col=4,pch=21,bg=4)#no problem
+
+points(x=which(results$popid=="kimura_geogr_1-OI-Drosophila-auraria"), y=results$invvar_e[which(results$popid=="kimura_geogr_1-OI-Drosophila-auraria")], col=4,pch=21,bg=4)#no problem
+
+points(x=which(results$popid=="paolucci-SCH-Nasonia-vitripennis"), y=results$invvar_e[which(results$popid=="paolucci-SCH-Nasonia-vitripennis")], col=4,pch=21,bg=4)#no problem
+
+points(x=which(results$ID == "takeda"), y=results$invvar_e[which(results$ID=="takeda")], col=4,pch=21,bg=4)#no problem
+
+points(x=which(results$n_slop<3),y=results$invvar_e[results$n_slop<3],pch=21,bg=2)
+
 
 #points I consider  highest quality
 points(x= which(results$ID=="urbanski"),y=results$invvar_e[which(results$ID=="urbanski")],col=2,pch=21,bg=2)
 #points i consider lowest quality
 points(x=which(results$ID=="suwa"),y=results$invvar_e[which(results$ID=="suwa")],col=4,pch=21,bg=4)
-results$popid[results$invvar_e>med*50]
+results$invvar_e[results$invvar_e>med*10]<-med*10
+#27 inverse variances reset to median*10
 
-
-
- 
-#remove suwa completely, and 4 pops of tyukmaeva for b estimates
-results<-restore
-results[(1/results$bse)>median(1/results$bse)*5,27]<-"e_only"
-results[(1/results$ese)>median(1/results$ese)*10,27]<-"b_only"
-results[results$ID=="suwa",27]<-"n"
-
-write.table(results,"02studies/02output/slopes.txt",sep = "\t",row.names=F)
+write.table(results,"02studies/02output/slopes_clean.txt",sep = "\t",row.names=F)
 ```
 
 

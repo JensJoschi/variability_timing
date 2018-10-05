@@ -87,7 +87,7 @@ Altogether we found 2,748 studies. We screened the titles of these to filter out
 
 #### 3.2.3 cleaning
 
-The 75 articles found by the first search included 5 false positives, and the 77 articles from the second search included 7 false positives. Thus, 70 references remained in each search. After combining these two datasets, 76 unique articles (624 populations) remained. 
+The 75 articles found by the first search included 5 false positives, and the 77 articles from the second search included 7 false positives. Thus, 70 references remained in each search. After combining these two datasets, 78 unique articles (624 populations) remained. [2 are not in database because <3DL]
 
 [alternative, counting 3 dl as ineligible:
 The 75 articles found by the first search included 8 studies, which did not have 4 photoperiods and 5 were false positives. 62 remained. From the 77 articles of the second search, 5 had only 3 photoperiods, 7 were false positives. 65 remained. 
@@ -97,7 +97,7 @@ After combining these two datasets, 69 unique articles  remained. ]
 
 Multiple articles did not contain raw data or figures, or the raw data in figures was not unambigously linked to the populations (use of same symbols for all populations). In 12 cases the data could not be retrieved (todo), and the studies had to be removed from analysis (179 populations). 
 The calculation of reliable slope estimates required in general at least four day length measurements, with two points on the sloped part of the reaction norm and two points defining upper and lower limits (though upper or lower limits could be imputed in 3 cases; see below).
-28 studies did not fulfil these requirements for three populations and were removed. 36 studies and 211 populations remained.
+32 studies (144 populations) did not fulfil these requirements for three populations and were removed. 34 studies and 195 populations remained.
 
 
 
@@ -293,7 +293,7 @@ Out of the 75 articles found by the first search, 8 did not have 4 photoperiods 
 After combining these two datasets, 69 unique articles remained.
 
 alternative:
-The 75 articles found by the first search included 5 false positives, and the 77 articles from the second search included 7 false positives. Thus, 70 references remained in each search. After combining these two datasets, 76 unique articles (578 populations<-rough overview, get exact number) remained. 
+The 75 articles found by the first search included 5 false positives, and the 77 articles from the second search included 7 false positives. Thus, 70 references remained in each search. After combining these two datasets, 78 unique articles (624 populations) remained. 
 
 
 # inclusion (1 oct 2018)
