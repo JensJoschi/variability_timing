@@ -61,7 +61,7 @@ This script should not be executed completely, becaues it will cause some conver
 data<-read.table("02studies/01extracted_data/forslopes_new.csv", header=T,sep=",")
 length(unique(data$id)) #32 studies that can be used for slope calculation (kimura_geogr has 3 levels)
 data<-unite(data,"popid",c("id","pop","genus","spec"),sep="-",remove=F)
-length(unique(data$popid)) #183 populations (not 190 because lankinen)
+length(unique(data$popid)) #182 populations (not 189 because lankinen)
 
 #summary of #pops per region and level of detail for sample sizes
 
@@ -77,7 +77,7 @@ for ( i in 1:nrow(t)){
 table(t$reg) #unfortunately, the information was converted to values
 levels(data$region)
 #Japan: 80+10 from the "usa,japan" = 90
-#Europe: 63
+#Europe: 62
 #US: 12+11 from the "usa,japan" = 23
 #China: 7
 #this ignores 7 pops from Europe, where CDL and b were given directly in paper (not part of the analysis dataset)
@@ -87,7 +87,7 @@ table(t$nMethod)
 levels(data$nmethod)
 
 #accurate: 22
-#global average: 147+7+3 =157
+#global average: 146+7+3 =156
 #pop level: 4
 
 data[data$n2==1,15]<-100

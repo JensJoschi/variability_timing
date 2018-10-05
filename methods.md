@@ -60,7 +60,7 @@ We conducted two independent literature searches: in a first attempt we limited 
 #### 3.2.1 First search  
 We searched the Web of Science core collection for the topic 
 "(photoperiodic AND (geogr* OR range)) OR (photoperiod* AND latitud*) OR(photoperiod* AND longitud*)"
-on 19.2.2018 (1628  results) and added further relevant articles that did not match the keywords (total: 1638). Based on journal names, titles and abstracts we identified 377 studies on terrestrial invertebrates, 62 of which measured PRCs in at least 3 populations and at least 3 photoperiods. We did a full forward-citation search between April 3rd and April 16th 2018, and found 13 further articles that met all eligibility criteria.
+on 19.2.2018 (1628  results) and added further relevant articles that did not match the keywords (total: 1638). Based on journal names, titles and abstracts we identified 377 studies on terrestrial invertebrates, 62 of which measured PRCs in at least 3 populations and at least 3 photoperiods. We did a full forward-citation search between April 3rd and April 16th 2018, and found 13 further articles that met all eligibility criteria [the two from 2ndlev forward search are not in databased because <3DL anyway].
 
 #### 3.2.2. Second search  
 
@@ -89,20 +89,16 @@ Altogether we found 2,748 studies. We screened the titles of these to filter out
 
 The 75 articles found by the first search included 5 false positives, and the 77 articles from the second search included 7 false positives. Thus, 70 references remained in each search. After combining these two datasets, 78 unique articles (624 populations) remained. [2 are not in database because <3DL]
 
-[alternative, counting 3 dl as ineligible:
-The 75 articles found by the first search included 8 studies, which did not have 4 photoperiods and 5 were false positives. 62 remained. From the 77 articles of the second search, 5 had only 3 photoperiods, 7 were false positives. 65 remained. 
-After combining these two datasets, 69 unique articles  remained. ]
 
-### 3.3 inclusion criteria (1 oct 2018)
+### 3.3 inclusion criteria
 
 Multiple articles did not contain raw data or figures, or the raw data in figures was not unambigously linked to the populations (use of same symbols for all populations). In 12 cases the data could not be retrieved (todo), and the studies had to be removed from analysis (179 populations). 
-The calculation of reliable slope estimates required in general at least four day length measurements, with two points on the sloped part of the reaction norm and two points defining upper and lower limits (though upper or lower limits could be imputed in 3 cases; see below).
-32 studies (144 populations) did not fulfil these requirements for three populations and were removed. 34 studies and 195 populations remained.
+The calculation of reliable slope estimates required in general at least four day length measurements, with two points on the sloped part of the reaction norm and two points defining upper and lower limits (though upper or lower limits could be imputed in 3 cases; see below). 33 studies with 189 populations fulfilled these requirements.
 
 
 
 ### 3.4. Effect size calculation  
-One study (7 populations) reported the slope and midpoint from drc analyiss directly, and the remaining 35 studies presented the raw data as tables (3 studies) or figures (32 studies). In the latter case we saved the figure as .png file and extracted the data with WebPlotDigitizer Version 3.12 (Rohatgi, 2017). Where neccessary, the day length was then rounded or corrected to match the description in materials and methods of the respective study. Y-values that were slightly above 100% or below 0% were set to 100% and 0% respectively.
+One study (7 populations) reported the slope and midpoint from drc analyiss directly, and the remaining 32 studies presented the raw data as tables (3 studies) or figures (29 studies). In the latter case we saved the figure as .png file and extracted the data with WebPlotDigitizer Version 3.12 (Rohatgi, 2017). Where neccessary, the day length was then rounded or corrected to match the description in materials and methods of the respective study. Y-values that were slightly above 100% or below 0% were set to 100% and 0% respectively.
 
 To estimate the midpoints and slopes we modelled diapause with binomial dose response curves in R. This analysis provides lower and upper bounds of photoperiodic induction (we constrained these to range from 0 to 100%), the slope, and the inflection point where 50 % of the individuals are induced (critical day length), so up to four parameters per slope were estimated. We expected that all populations of one species have the same lower and upper limit, which reduces the estimation to 2 parameters per slope, plus 2 global parameters per study. We also applied the alternative models with only one or no fixed global parameters, so the following models were applied on each study (sorted by plausibility):
 
@@ -111,13 +107,15 @@ To estimate the midpoints and slopes we modelled diapause with binomial dose res
 3. lower parameter fixed (requires 1 df plus 3 per population)
 4. both limits vary (requires 4 df per population)
 
-We chose the model with lowest AIC. If there were multiple models with an AIC difference less than 4, we used the most plausible model. If necessary for model convergence, we removed the box constraints (diapause ranging between 0 and 100%), provided the resulting estimates were reasonable (e.g. lower limit = -0.02%). We recorded the standard error along with the estimates of slope, inflection point and upper and lower limits, using a robust sandwich estimation method (Zeileis, 2006). 
+We chose the model with lowest AIC. If there were multiple models with an AIC difference less than 4, we used the most plausible model. We recorded the standard error along with the estimates of slope, inflection point and upper and lower limits, using a robust sandwich estimation method (Zeileis, 2006). 
 
 Three studies lacked vital data on upper or lower limits for some focal populations, but contained further populations that were excluded for lack of points on the sloped part.  These other populations showed unambigously that the lower and upper limits were 0 and 100%. In these cases we performed a 2-parameter drc (with limits from 0-100%) to allow inclusion of the incomplete populations. 
 
-Detailed information on number of individuals per point estimate was rarely available (25 populations, 7 studies), as sample sizes were either given as population-level means (7 populations, 2 studies) or as global average or range (x populations, y studies), or missed entirely (1 study, x populations). We used all data that was provided to weigh the individual points of the PRC. We wish to emphasize that a lack of detailed information should not be confused with a partially unweighted (“vote-count”) meta-analysis, because the sample size (populations per study) was always known. Rather, the lack of weighing in the PRC estimates lead to slightly higher standard errors in the estimates, i.e. the missing information occurred on a lower level (points within population) than the level of replication (population).
+Detailed information on number of individuals per point estimate was rarely available (22 populations, 7 studies), as sample sizes were either given as population-level means (4 populations, 1 study) or as global average or range (139 populations, 22 studies), or missed entirely (2 studies, 10 populations). We used all data that was provided to weigh the individual points of the PRC. We wish to emphasize that a lack of detailed information should not be confused with a partially unweighted (“vote-count”) meta-analysis, because the sample size (populations per study) was always known. Rather, the lack of weighing in the PRC estimates lead to slightly higher standard errors in the estimates, i.e. the missing information occurred on a lower level (points within population) than the level of replication (population).
 
-During analysis we removed two studies and two further populations. In addition we removed and three populations for the slope estimation, and four populations for the estimation of mean diapause. In total there were 5 studies, with 181 populations with CDL estimates, and 182 populations with slope estimates.
+During analysis we removed 7 studies (21 populations) and 22 further populations, because the fitted curves did no longer match the inclusion criteria (2 points on sloped part), resulting in unrealistically high slope estimates and low standard errors. 25 Studies and 139 populations were left.
+
+Our strict inclusion criteria ensured that all 139 populations have at least two data points on the sloped part. However, populations with data only at the extremes of the slope (e.g. 5% and 95%) nevertheless resulted in unrealistically low standard errors. The inverse variance, which is needed to determine the weight of each study, hence ranged over 5 orders of magnitude (10^0 - 10^(-5)), with lowest values mostly on the least reliable studies. Constraining the analysis to populations with three data points on the sloped part would bias the selection to populations with flat slopes, while halving the dataset and not fully mitigating the problem. Instead, we capped the inverse variance at 10 times the median inverse variance. This affected 15 populations for the slope estimates, and  27 studies for the mean estimates. We repeated all further analyses with uncapped variances, with those points removed, and with an unweighted meta-analysis to test how this decision biased our results. (todo)
 
 
 ## 3. Statistical analysis  
@@ -289,19 +287,24 @@ The required information on slopes and CDL was directly given for 1 study (7 pop
 
 
 # new comparison (1 oct 2018)  
-Out of the 75 articles found by the first search, 8 did not have 4 photoperiods and 5 were false positives. 62 remained. From the 77 articles of the second search, 5 had only 3 photoperiods, 7 were false positives. 65 remained. 
-After combining these two datasets, 69 unique articles remained.
+[Out of the 75 articles found by the first search, 8 did not have 4 photoperiods and 5 were false positives. 62 remained. From the 77 articles of the second search, 5 had only 3 photoperiods, 7 were false positives. 65 remained. 
+After combining these two datasets, 69 unique articles remained.]
 
 alternative:
 The 75 articles found by the first search included 5 false positives, and the 77 articles from the second search included 7 false positives. Thus, 70 references remained in each search. After combining these two datasets, 78 unique articles (624 populations) remained. 
 
 
 # inclusion (1 oct 2018)
-12 Articles did not have the raw data published, or the raw data in figures was not unambigously linked to the populations (use of same symbols for all populations). 
-7 articles had only three day lengths, and this is not enough to calculate the slope. 
+
 Only populations with 2 points or more on the sloped part were considered for analysis; 21 Studies had less than three such populations and were therefore excluded. 
 The remaining 35 studies were on 211 populations in 31 species (8 orders). The majority of the populations came from japan (93 populations, 17 studies), followed by Europe (84 populations, 12 studies), the US (24 populations, 5 studies), China (7 populations, 2 studies) and Mexico and middle america (3 populations, 1 study) (2 studies were over 2 regions).  One study (7 populations) reported the slope and midponit from drc analyiss directly. Only four of these studies reported photoperiodic response curves for 2 temperatures. 
 
+
+#inclusion 4 oct 2018
+Multiple articles did not contain raw data or figures, or the raw data in figures was not unambigously linked to the populations (use of same symbols for all populations). In 12 cases the data could not be retrieved (todo), and the studies had to be removed from analysis (179 populations). 445 populations remained.
+9 articles (52 populations) had only three day lengths, and this is not enough to calculate the slope. 
+The calculation of reliable slope estimates required in general at least four day length measurements, with two points on the sloped part of the reaction norm and two points defining upper and lower limits (though upper or lower limits could be imputed in 3 cases; see below).
+24 studies (98 populations) did not fulfil these requirements for three populations and were removed. Moreover, 106 of the remaining 295 populations were removed, leaving 33 studies with 189 populations.
 
 
 ###07.09.2018: searched in new google dataset beta search "photoperiodic lresponse insect" - 9 results, not relevant or duplicates 
@@ -383,27 +386,97 @@ All analyses were done on 30 studies where the slopes can be reliably estimated,
 
 same approach as before, but on 204 populations, and with a delta-AIC of 4.0. 169 populations gave no (2 studies) or only global averages of sample sizes (e.g. "there were on average 20 individuals per treatment" or "sample sizes ranged from 30-120 individuals" - in this case I used the mean,75), 7 populations (2 studies) had population-level means ("there were on average 20 individuals per treatment in Kochi and Sendai, 40 in Kyoto"), and 28 populations (8 studies) had accurate information (sample size of each treatment in each population).
 
-Three studies lacked vital data on upper or lower limits for some focal populations, but contained further populations that were excluded for lack of points on the sloped part.  These other populations showed unambigously that the lower and upper limits were 0 and 100%. In these cases we performed a 2-parameter drc (with limits from 0-100%) to allow inclusion of the incomplete populations. 
 One population (KS in Kimura_evol) had to be removed, and three studies (Lehmann, Pegoraro, Murata) were very variable.
 Murata was removed subsequently, and the line SP22 in Pegoraro(entirely flat) was removed,too.
 We then removed Suwa, because the low S.e. in both b and e suggest that it was overfitted. Three populations had very low standard errors in the b estimate, so that the influence (1/s.e.) was more than 10 times higher than the median. Similarly, 4 populations had very low s.e. in the slope estimates. These 7 populations were flagged to be removed from the respective analyses.
 In the end there were 35 studies, with 181 populations with CDL estimates, and 182 populations with slope estimates.
 
-To estimate the slopes I modelled diapause with four-parameter binomial dose response curves in R. This analysis provides lower and upper bounds of photoperiodic induction (I constrained these to range from 0 to 100%), the slope, and the inflection point where 50 % of the individuals are induced (critical day length), so four parameters per slope were estimated. Where detailed information on sample sizes was available (% of all cases), we used these numbers to weight the individual points of the PRC. We wish to emphasize that a lack of detailed information  should not be confused with a partially unweighted (“vote-count”) meta-analysis, because the sample size (populations per study) was always known. Rather, the lack of weighing in the PRC estimates lead to slightly higher standard errors in the estimates, i.e. the missing information occurred on a lower level (points within population) than the level of replication (population). I also recorded the standard error, using a robust sandwich estimation method (Zeileis, 2006).
-To get the coordinates of the study populations, I used 1) the coordinates that were quoted in the studies, or, if not available coordinates of the quoted town or area. Town and area coordinates were made available by the WikiProject Geographical coordinates and the Geohack tool (Dispenser et al., 2018) 
 
-There were 2 problems with the first attempt to calculate dose-response-curves. First, studies with only 1 point estimate on the slope part should not be included, because the slope estimate becomes unreliable. Secondly, the estimation method with 4 parameters per curve costs many degrees of freedom. Intuitively one would expect, however, that all populations of one species have the same lower and upper limit, wich would reduce the estimation to 2 parameters per slope, plus 2 global parameters. I therefore tried the following models on each study (sorted by plausibility): 
+
+### drc analysis 4 oct
+One study (7 populations) reported the slope and midpoint from drc analyiss directly, and the remaining 32 studies presented the raw data as tables (3 studies) or figures (29 studies). In the latter case we saved the figure as .png file and extracted the data with WebPlotDigitizer Version 3.12 (Rohatgi, 2017). Where neccessary, the day length was then rounded or corrected to match the description in materials and methods of the respective study. Y-values that were slightly above 100% or below 0% were set to 100% and 0% respectively.
+
+To estimate the midpoints and slopes we modelled diapause with binomial dose response curves in R. This analysis provides lower and upper bounds of photoperiodic induction (we constrained these to range from 0 to 100%), the slope, and the inflection point where 50 % of the individuals are induced (critical day length), so up to four parameters per slope were estimated. We expected that all populations of one species have the same lower and upper limit, which reduces the estimation to 2 parameters per slope, plus 2 global parameters per study. We also applied the alternative models with only one or no fixed global parameters, so the following models were applied on each study (sorted by plausibility):
 
 1. upper and lower parameter fixed at study mean (requires 2 df plus 2 df per population)
 2. upper parameter fixed (requires 1 df plus 3 per population)
 3. lower parameter fixed (requires 1 df plus 3 per population)
 4. both limits vary (requires 4 df per population)
 
-Model 2 may results from conservative bet-hedging (some populations have non-zero diapause regardless of season, to hedge against early winter), while model 3 is the risk-prone opposite (some non-diapausing offspring exist even late in the season to hope for late winter, see halkett et al 2004).
+We chose the model with lowest AIC. If there were multiple models with an AIC difference less than 4, we used the most plausible model. We recorded the standard error along with the estimates of slope, inflection point and upper and lower limits, using a robust sandwich estimation method (Zeileis, 2006). 
 
-All analyses were done on 30 studies where the slopes can be reliably estimated, i.e. with at least 2 points on the slope part (this could include the highest point of one population if that was still below a study-wide upper limit). I fitted all models, provided there were at least 3 residual df left, and chose those with lowest AIC. If there were multiple models with delta AIC <2, I used the most plausible model. If necessary for model convergence, I removed the box constraints (diapause ranging between 0and 100%), provided the resulting estimates were reasonable (e.g. lower limit = -0.02%, or s.e. of estimte going slightly over the limit). Model 3 was (surprisingly) most often the best suited model. 
+Three studies lacked vital data on upper or lower limits for some focal populations, but contained further populations that were excluded for lack of points on the sloped part.  These other populations showed unambigously that the lower and upper limits were 0 and 100%. In these cases we performed a 2-parameter drc (with limits from 0-100%) to allow inclusion of the incomplete populations. 
 
->
+Detailed information on number of individuals per point estimate was rarely available (22 populations, 7 studies), as sample sizes were either given as population-level means (4 populations, 1 study) or as global average or range (139 populations, 22 studies), or missed entirely (2 studies, 10 populations). We used all data that was provided to weigh the individual points of the PRC. We wish to emphasize that a lack of detailed information should not be confused with a partially unweighted (“vote-count”) meta-analysis, because the sample size (populations per study) was always known. Rather, the lack of weighing in the PRC estimates lead to slightly higher standard errors in the estimates, i.e. the missing information occurred on a lower level (points within population) than the level of replication (population).
+
+During analysis we removed 7 studies (21 populations) and 22 further populations, because the fitted curves did no longer match the inclusion criteria (2 points on sloped part), resulting in unrealistically high slope estimates and low standard errors. 25 Studies and 139 populations were left.
+
+table of all decisions made:
+i|study         |best   |chosen |impossible   |notes
+1|chen          |1,3,4  |1      |
+2|gomi          |LL.2   |LL.2   |all          |mod 1 would have missing data for 2 pops
+3|gotoh         |3                            |consider removing ishikawa     
+4|hashimoto     |1,3    |1                    |nagaoka and okayama removed            
+5|ito           |2,4    |2                    |WA removed
+6|kimura_geogr_1|3                            |consider removing OI
+7|kimura_geogr_2|3,4    |3
+8|kimura_geogr_3|1,3,4  |1      |            |evidence for 1 from 2 further pops
+9|koveos        |4                            |thessaloniki1 and padua removed
+10|kurota       |3    |3      |4   
+11|lankinen     |3    |3      |             |evidence for 1/3 from 8 further pops; dietikon2 removed
+12|lehmann      |NA    |NA      |             |removed
+13|lumme        |2,4  |2
+14|lushai       |NA  |NA                      |removed
+15|murata       |NA    |NA                      |removed
+16|musolin      |NA   |NA                     |removed
+17|nechols      |LL.2 |LL.2                 |mod 1 would have NA for 1 pop, evidence from 7 further pops
+18|paolucci     |1-4  |1                    |SCH looks odd
+19|riihima      |2    |2      |             |removed oulo2
+20|ryan         |1,2,3|1      |4
+21|shimizu      |3,4  |3                    |SPR removed
+22|shintani     |LL.2 |LL.2                 |mod1 would have NAs, evidence from 8 further pops
+23|shroyer      |2    
+24|so           |NA   |NA                   |removed
+25|suwa         |1    |1      |             |removed all pops except 7,10,16,20; consider removing completely
+26|tyukmaeva    |3,4  |3                    |removed lathi1,lathi3
+27|ujiye        |NA    |NA      |NA         |removed
+28|urbanski     |3    |3      |4              |1 and 2 without box constraints (bc fit is soo bad), 4 has NA for 1 pop
+29|vaznunes     |3    |3      |4            |removed S1,S2,T2
+30|wang         |1,3  |1
+31|yoshida      |3    |3
+32|kimura_evol  |NA   |NA                   |removed
+33|takeda       |1,3,4|1                    |consider removing
+34|noda         |3    |3      |               |removed dl<9; removed ishigaki
+
+
+Our strict inclusion criteria ensured that all 139 populations have at least two data points on the sloped part. However, populations with data only at the extremes of the slope (e.g. 5% and 95%) nevertheless resulted in unrealistically low standard errors. The inverse variance, which is needed to determine the weight of each study, hence ranged over 5 orders of magnitude (10^0 - 10^(-5)), with lowest values mostly on the least reliable studies. Constraining the analysis to populations with three data points on the sloped part would bias the selection to populations with flat slopes, while halving the dataset and not fully mitigating the problem. Instead, we capped the inverse variance at 10 times the median inverse variance. This affected 15 populations for the slope estimates, 
+ [1] chen-Yongxiu-Helicoverpa-armigera           hashimoto-Iwamizawa-Pieris-rapae           
+ [3] hashimoto-Naze-Pieris-rapae                 kurota-Ninohe-Bruchidius-dorsalis          
+ [5] riihimaa-Punkaharju-Chymomyza-costata       shintani-Yokokawa-Psacothea-hilaris        
+ [7] shroyer-BURDETTE-Aedes-triseratius          suwa-16-Tetranychus-pueraricola            
+ [9] suwa-20-Tetranychus-pueraricola             suwa-7-Tetranychus-pueraricola             
+[11] tyukmaeva-Oulanka3-Drosophila-montana       tyukmaeva-Pelkosenniemi1-Drosophila-montana
+[13] tyukmaeva-Pelkosenniemi2-Drosophila-montana tyukmaeva-Pelkosenniemi4-Drosophila-montana
+[15] yoshida-onuma-Drosophila-triauraria   
+
+and  27 studies for the mean estimates:
+[1] gomi-FI-Hyphantria-cunea                 gomi-SO-Hyphantria-cunea                
+ [3] hashimoto-Iwamizawa-Pieris-rapae         ito-HA-Orius-sauteri                    
+ [5] ito-MO-Orius-sauteri                     kimura_geogr_1-OI-Drosophila-auraria    
+ [7] kimura_geogr_1-OI-Drosophila-auraria     kimura_geogr_2-IW-Drosophila-triauraria 
+ [9] koveos-Thessaloniki2-Tetranychus-urticae koveos-Voorne-Tetranychus-urticae       
+[11] kurota-Ninohe-Bruchidius-dorsalis        kurota-Sagamihara-Bruchidius-dorsalis   
+[13] riihimaa-Punkaharju-Chymomyza-costata    shintani-Yokokawa-Psacothea-hilaris     
+[15] shroyer-BURDETTE-Aedes-triseratius       suwa-10-Tetranychus-pueraricola         
+[17] suwa-16-Tetranychus-pueraricola          suwa-20-Tetranychus-pueraricola         
+[19] suwa-7-Tetranychus-pueraricola           vaznunes-L-Tetranychus-urticae          
+[21] vaznunes-P-Tetranychus-urticae           vaznunes-V-Tetranychus-urticae          
+[23] vaznunes-W-Tetranychus-urticae           wang-HH-Sericinus-montelus              
+[25] wang-WH-Sericinus-montelus               takeda-stjohn-Diatraea-grandiosella     
+[27] noda-Sendai-Laodelphax-striatellus   
+
+ We repeated all further analyses with uncapped variances, with those points removed, and with an unweighted meta-analysis to test how this decision biased our results. (todo)
+ 
 ## Statistical analysis
 
 The statistical model became quite complicated, and I needed to test a couple of things before settling on the final model. Originally I planned the following models:
