@@ -1,16 +1,23 @@
 
 
 *.dly
-
-/old
-
 *.tar.gz
+
 
 *.Rproj
 
+
 *.RData
 
+
 *.Rhistory
+
+*.odt
+*.ps
+winter-onset_*.png
+results_*.png
+/old
+
 
 01climate_data/\.Rhistory
 
@@ -43,3 +50,11 @@
 \.~lock\.short_version\.odt#
 
 letters\.odt
+
+
+
+02studies/00raw/new_figs/
+
+02studies/01extracted_data/plots_results_old/
+
+04 figs/

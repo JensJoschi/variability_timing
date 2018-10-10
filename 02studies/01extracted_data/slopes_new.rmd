@@ -289,15 +289,15 @@ results <- read.table("02studies/02output/slopes.txt",sep = "\t")
 #substr(as.character(results[,1]),start=3,stop =10000L)==as.character(results[,3])
 
 names(results)<-c("row","set","popid","ID","PY","region","pops_left","genus","spec", "order", "pop","degN","degE","nmethod","perc","n2","dl2","number","nslop","inc2","b","bse","c","cse","d","dse","e","ese")
+table(results$popid)
+#kimura_geogr_1 accidentally added twice
+results<-results[-c(21:25),]
+results<-droplevels(results)
+
 
 #removed 7 studies (21 pops) and 22 further pops
-
 #182-21-22 = 139 pops left
 #in: 25 studies (though one study has 3 specs)
-
-
-
-#results[results$popid=="gotoh- Ishikawa-Tetranychus-urticae","use"]<-"n"
 
 
 #checking distribution of standard errors (too small s.e. are aproblem because influence becomes infinite)
@@ -339,7 +339,7 @@ results$invvar_b[results$invvar_b>med*10]<-med*10
 
 #same with e (CDL)
 results$invvar_e<-1/(results$ese^2)
-plot(1:144,results$invvar_e, main = "influnece of data points on e",ylab="inverse variance [log]",log="y")
+plot(1:139,results$invvar_e, main = "influnece of data points on e",ylab="inverse variance [log]",log="y")
 med<-median(results$invvar_e)
 abline(h=med)
 abline(h=med*10,col=2)
@@ -371,8 +371,28 @@ points(x= which(results$ID=="urbanski"),y=results$invvar_e[which(results$ID=="ur
 #points i consider lowest quality
 points(x=which(results$ID=="suwa"),y=results$invvar_e[which(results$ID=="suwa")],col=4,pch=21,bg=4)
 results$invvar_e[results$invvar_e>med*10]<-med*10
-#27 inverse variances reset to median*10
+#26 inverse variances reset to median*10
 
+
+#add lankinen 2013
+lank <- data.frame(
+  row = c("b:lankinen_13-Pelkosenniemi-Drosophila-montana", "b:lankinen_13-Oulanka-Drosophila-montana", "b:lankinen_13-Kemi-Drosophila-montana", "b:lankinen_13-Pudasjarvi-Drosophila-montana", "b:lankinen_13-Paltamo-Drosophila-montana", "b:lankinen_13-ivaskila-Drosophila-montana","b:lankinen_13-lahti-Drosophila-montana"),
+  set=rep("byhand",7),
+  popid=c("b:lankinen_13-Pelkosenniemi-Drosophila-montana", "b:lankinen_13-Oulanka-Drosophila-montana", "b:lankinen_13-Kemi-Drosophila-montana", "b:lankinen_13-Pudasjarvi-Drosophila-montana", "b:lankinen_13-Paltamo-Drosophila-montana", "b:lankinen_13-ivaskila-Drosophila-montana","b:lankinen_13-lahti-Drosophila-montana"),
+  ID = rep("lankinen_13",7), PY = rep(2013,7), region = rep ("Europe",7), pops_left= rep(7,7), genus = rep("Drosophila",7), spec = rep("montana",7), order = rep("Diptera",7), 
+  pop = c("Pelkosenniemi", "Oulanka", "Kemi", "Pudasjarvi", "Paltamo", "ivaskila","lahti"), 
+  degN =c(67.1, 66.4, 65.7, 65.4, 64.3, 62.2, 61.1),
+  degE = c(27.3, 29.2, 24.7, 27.0, 27.9, 25.7, 25.7),
+  nmethod = rep(NA,7), perc = rep(NA,7), n2 = rep(NA,7), dl2= rep(NA,7), number= rep(NA,7),nslop=rep(NA,7),inc2=rep(NA,7),
+  b=c(35.59, 26.40, 39.38, 27.91, 43.03, 36.72, 45.38),
+  bse = c(11.61, 7.04, 19.64, 7.25, 13.84, 14.22, 12.81),
+  c = rep(0,7),cse = rep(NA,7),d=rep(1,7),dse = rep(NA,7),
+  e = c(19.22, 19.38, 18.63, 19.46, 18.78, 18.32, 17.70),
+  ese = c(0.46,0.72,1.13, 1.00, 0.42, 0.75, 0.34))
+ lank$invvar_b<-1/(lank$bse^2)
+lank$invvar_e<-1/(lank$ese^2)
+results<-rbind(results,lank)
+                   
 write.table(results,"02studies/02output/slopes_clean.txt",sep = "\t",row.names=F)
 ```
 
