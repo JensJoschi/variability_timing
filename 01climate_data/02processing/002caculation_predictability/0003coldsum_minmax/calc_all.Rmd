@@ -217,7 +217,7 @@ write_delim(station,"temp.txt",append=T)
 }
 ```
 
-
+reload the temp dataset and remove dates like 31 feb
 ```{r reload}
 rm(station)
 rm(converted)
@@ -228,23 +228,31 @@ converted<-fread("temp.txt",sep =" ",col.names=c("ID","year",days))
 converted<-data.frame(converted)
 x<-NA
 for(t in 1:ncol(converted)){x[t]<-sum(!is.na(converted[,t]))}
-station<-select(converted,which(x>0))
+station<-dplyr::select(converted,which(x>0))
 ```
 
 
 
 ### 1. calculate mean winter onset
 ```{r mean}   
-threshold<-50
-t2<-10
+threshlist <-seq(0,150,5)
+t2list <-c(5,10,15)
+reslen<-length(unique(station$ID))
+
+for(threloop in 1:length(threshlist)){
+  threshold<-threshlist[threloop]
+  for(t2loop in 1:length(t2list)){
+    t2<-t2list[t2loop]
+
+
 
 #vectors to store results
-mean_winter<-rep(NA,length(unique(converted$ID)))
-sd_winter<- rep(NA,length(unique(converted$ID)))
-nyears<-rep(NA,length(unique(converted$ID)))
-ndays_300<-rep(NA,length(unique(converted$ID)))
-ndays_350<-rep(NA,length(unique(converted$ID)))
-ndays_365<-rep(NA,length(unique(converted$ID)))
+mean_winter<-rep(NA,reslen),
+sd_winter<- rep(NA,reslen)
+nyears<-rep(NA,reslen)
+ndays_300<-rep(NA,reslen)
+ndays_350<-rep(NA,reslen)
+ndays_365<-rep(NA,reslen)
 
 stations<-unique(station$ID)
 for (i in 1:length(stations)){ #this loop goes through each of the 1 mil station
@@ -323,7 +331,9 @@ for (i in 1:length(stations)){ #this loop goes through each of the 1 mil station
 reslist<-data.frame(unique(station$ID),mean_winter,sd_winter,nyears,ndays_300,ndays_350,ndays_365)
 
 names(reslist)<-c("ID","meanwinter","sd_winter","nyears","ndays_300","ndays_350","ndays_365")
-write.table(reslist,"results.txt",append=TRUE,quote=FALSE,row.names=FALSE,col.names=FALSE)
+write.table(reslist,paste("results_",threshold,"-",t2,".txt",sep=""),append=TRUE,quote=FALSE,row.names=FALSE,col.names=FALSE)
+  }
+}
 
 ```
 
