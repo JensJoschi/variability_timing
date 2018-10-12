@@ -229,11 +229,12 @@ converted<-data.frame(converted)
 x<-NA
 for(t in 1:ncol(converted)){x[t]<-sum(!is.na(converted[,t]))}
 station<-dplyr::select(converted,which(x>0))
+rm(converted)
 ```
 
 
 
-### 1. calculate mean winter onset
+### 1. calculate mean winter onset, sd(winter), predictability
 ```{r mean}   
 threshlist <-seq(0,150,5)
 t2list <-c(5,10,15)
@@ -247,12 +248,13 @@ for(threloop in 1:length(threshlist)){
 
 
 #vectors to store results
-mean_winter<-rep(NA,reslen),
+mean_winter<-rep(NA,reslen)
 sd_winter<- rep(NA,reslen)
 nyears<-rep(NA,reslen)
 ndays_300<-rep(NA,reslen)
 ndays_350<-rep(NA,reslen)
 ndays_365<-rep(NA,reslen)
+p<-rep(NA,reslen)
 
 stations<-unique(station$ID)
 for (i in 1:length(stations)){ #this loop goes through each of the 1 mil station
@@ -323,41 +325,53 @@ for (i in 1:length(stations)){ #this loop goes through each of the 1 mil station
   rm(weights)
   rm(ndays)
   rm(bino)
+  
+  ##calculate standard deviation in slopes of last 30 days before winter onset####
+  #idea: transpose and use gather to make 1 long vector ("day1:day 10,000" only that they are not   called like that)
+        #cut at (winter onset - 30) and winter onset of each year (multiple pieces)
+        #clean incomplete data
+        #make correlations of temperature ~ time to get the slope of each year
+        #calculate sd of the slopes between years
+  
+  #transpose
+  
+ rownames(s)<-1:nrow(s) #these are years 1:x
+  n<-gather(as.data.frame(t(s[3:368]))) #turns into long format with 2 columns:
+  #key = 1,1,1...(366 times), 2,2,2...(366 times),..,40,40... (assuming there are 40 years)
+  #value = temperature year 1, day 1:366, year 2, day 1.... 
+  n$xvec<-rep(1:(ncol(s)-2),length(unique(n$key))) #xvec is days after 1st july, so it repeats 1:366, 40 times
+  n$key<-as.integer(n$key)
+  
+  #cut
+  n<-filter(n,xvec<w_on[key] & xvec >= w_on[key]-31)  #now dataset contains only last 31 days before winter onset in that respective year
+  
+  #clean
+  n2<-group_by(n,key)
+  sm<-summarise(n2,sum(!is.na(value))>10) #makes a tibble with 2 cols, key and usable==T or F
+  usable<-pull(sm[sm[,2]==T,1]) #makes a vector with all years that have >10 days
+  n<-n[n$key %in% usable,]
+
+  #slope estimates
+  slopes<-rep(NA,length(usable))
+  for (keygroup in usable){ 
+    y<-filter(n,key == keygroup)
+    slopes[keygroup]<-coef(lm(y$value~y$xvec))[2]
+  }
+  #translation: for each year take data of that year, save slope estimate from lm
+  p[i]<-sd(slopes,na.rm=T)
 
   } #next station
 
 
 #####gather and save results####
-reslist<-data.frame(unique(station$ID),mean_winter,sd_winter,nyears,ndays_300,ndays_350,ndays_365)
+reslist<-data.frame(unique(station$ID), mean_winter ,sd_winter, p, nyears, ndays_300, ndays_350, ndays_365)
 
-names(reslist)<-c("ID","meanwinter","sd_winter","nyears","ndays_300","ndays_350","ndays_365")
+names(reslist)<-c("ID","meanwinter","sd_winter","nyears","p","ndays_300","ndays_350","ndays_365")
 write.table(reslist,paste("results_",threshold,"-",t2,".txt",sep=""),append=TRUE,quote=FALSE,row.names=FALSE,col.names=FALSE)
   }
 }
 
 ```
-
-
-#### data structure  
-Due to problems with memory allocation, the big (26 million rows) dataset needs to be processed piece-wise. I chose 30 chunks of 1000 climate stations each. 
-The following steps have to be done on that 1000 station dataset
-
-* change data structure from 
-    station 1 year 1 month 1 day 1,2,3..31
-    station 1 year 1 month 2 day 1,2,3..31  
-  to:  
-    station 1 year 1 day 1,2,3.. 365
-    station 1 year 2 day 1,2,3.. 365  
-    
-* make subset with 1 station and
-  * calculate winter onset in each year  
-  * calculate mean winter onset (weighted by number of days per year)  
-  * calculate weighted standard deviation in winter onset  
-  * calculate standard deviation in slopes of temperature decline before winter  
-  * change structure to station 1 day 1....20,000 and make nls regression  
-
-
-
 
 
 ### actual calculation  
