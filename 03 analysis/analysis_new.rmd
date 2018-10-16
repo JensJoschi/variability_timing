@@ -93,10 +93,11 @@ locations<-read.fwf(
 )
 #reslist<-read.table("01climate_data/03output/results.txt",na.string = c("NA","-9999","-999.9"))  <-- this is with old thres of 5°C
 reslist<-read.table("01climate_data/03output/results_100-5.txt",na.string = c("NA","-9999","-999.9"))
-names(reslist)<-c("ID","meanwinter","sd_winter","nyears","p","ndays_300","ndays_350","ndays_365")
+names(reslist)<-c("ID","meanwinter","sd_winter","p","nyears","ndays_300","ndays_350","ndays_365")
+reslist<-reslist[1:26804,] #the same data was appended twice
 climate<-merge(locations,reslist,by=1)
 rm(reslist)
-names(climate)<-c("ID","lat","lon","alt","name","no_idea","meanwinter","sd_winter", "nyears" ,  "p",  "ndays_300"  ,"ndays_350",  "ndays_365" )
+names(climate)<-c("ID","lat","lon","alt","name","no_idea","meanwinter","sd_winter", "p",  "nyears" ,  "ndays_300"  ,"ndays_350",  "ndays_365" )
 
 climate<-climate[!is.na(climate$meanwinter),] #because these cannot be used anyway
 ```
@@ -184,6 +185,28 @@ pw<-climate$dl^(-4.5)
 M2<-lm(pw~climate$lat)
 plot(climate$dl~climate$lat,pch=22,cex=0.2,xlab = "Latitude",ylab = "Day length at winter onset",main="",col=NA,bg=1,bty="n",yaxt="n")
 points(x=seq(0,70,length.out=1000),y=(coef(M2)[1]+seq(0,70,length.out = 1000)*coef(M2)[2])^(1/(-4.5)),col=2)
+
+svg("concept.svg")
+par(mar=c(5,5,3,2)+0.1)
+plot(daylength(0,1:365), xlab="Julian day", ylab = "Day length", cex.axis=1.5, cex.lab=1.5, bty = "n", main="", type="l", lwd=3, ylim=c(0,24), col=hsv(0.6,1,1), xaxt="n", yaxt="n")
+axis(1,at=seq(0,365,by=60),cex.axis=1.5)
+axis(2,at=seq(0,24,by=2),cex.axis=1.5)
+
+points(x=climate$meanwinter+182,y=climate$dl,cex=0.1,col=hsv(0.6,1-0.5*(climate$lat-min(climate$lat))/(max(climate$lat)-min(climate$lat)),1))#"darkgray"
+
+lines(daylength(20,1:365),lwd=3,col=hsv(0.6,0.9,1))
+lines(daylength(40,1:365),lwd=3,col=hsv(0.6,0.8,1))
+lines(daylength(50,1:365),lwd=3,col=hsv(0.6,0.7,1))
+lines(daylength(60,1:365),lwd=3,col=hsv(0.6,0.6,1))
+lines(daylength(70,1:365),lwd=3,col=hsv(0.6,0.5,1))
+points(x=rep(180,5),y=daylength(c(20,40,50,60,70),180),bg=1,pch=21)
+dev.off()
+lat<-20:70
+lengths<-daylength(lat,240)
+M2<-lm(lengths~lat)
+
+
+
 ```
 ## Map of winter variability
 Variability has been defined as standard deeviation of winter onset. 
@@ -215,21 +238,21 @@ dev.off()
 ## predictability  
 This way of calculating winter unpredictability is the standard deviation in slopes of a temperature regression, 30 days before winter onset of each year
 ```{r}
-x<-climate$p
-#x[x>126]<-126 #capped to make plotting sensible
-x[x>80]<-80 #capped to make plotting sensible
-x<-x-min(x)
+x<-climate[!is.na(climate$p),]
+nrow(x[x$p>4,])/nrow(x)
+x$p[x$p>4]<-4 #capped to make plotting sensible
+x$p<-x$p-min(x$p)
 
-x<-x/(max(x)) #values between 0 and 1
+x$p<-x$p/(max(x$p)) #values between 0 and 1
 #large values (high standard deviation) should be red
 
-x<-1-x #now high values mean high preddictability
+x$p<-1-x$p #now high values mean high preddictability
 
 
-r<- x * 162
+r<- x$p * 162
 r <- r + 30
-g<-100 - (x * 100)
-b<-200 - (x * 200)
+g<-100 - (x$p * 100)
+b<-200 - (x$p * 200)
 
 
 svg("w_p_10C5d.svg",width = 14 ,height = 7,pointsize=12)
@@ -239,7 +262,7 @@ theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
 
 mp+ 
   borders("world", colour="gray50", fill="gray50")+
-  geom_point(aes(x=climate$lon, y=climate$lat), col = rgb(r,g,b,maxColorValue = 255), size=0.4)+
+  geom_point(aes(x=x$lon, y=x$lat), col = rgb(r,g,b,maxColorValue = 255), size=0.4)+
     geom_point(aes(x=slopes$degE,y=slopes$degN), col = 1, size=0.6)
 dev.off()
 ```
@@ -258,10 +281,10 @@ for(threloop in 1:length(threshlist)){
   for (t2loop in 1:length(t2list)){
     t2<-t2list[t2loop]
     reslist<-read.table(paste("01climate_data/03output/results_",threshold,"-",t2,".txt",sep=""))
-    names(reslist)<-c("ID","meanwinter","sd_winter","nyears","p","ndays_300","ndays_350","ndays_365")
+    names(reslist)<-c("ID","meanwinter","sd_winter","p","nyears","ndays_300","ndays_350","ndays_365")
     climate<-merge(locations,reslist,by=1)
 rm(reslist)
-names(climate)<-c("ID","lat","lon","alt","name","no_idea","meanwinter","sd_winter", "nyears" ,   "p", "ndays_300"  ,"ndays_350",  "ndays_365" )
+names(climate)<-c("ID","lat","lon","alt","name","no_idea","meanwinter","sd_winter",   "p", "nyears" , "ndays_300"  ,"ndays_350",  "ndays_365" )
 
 climate<-climate[!is.na(climate$meanwinter),] 
 climate<-climate[climate$lat<70,]
@@ -482,7 +505,7 @@ P <- W - W %*% X %*% solve(t(X) %*% W %*% X) %*% t(X) %*% W #generalized calcula
 100 * sum(rmamod_nested$sigma2) / (sum(rmamod_nested$sigma2) + (rmamod_nested$k-rmamod_nested$p)/sum(diag(P)))
 #I² of each level
 round(100 * rmamod_nested$sigma2 / (sum(rmamod_nested$sigma2) + (rmamod_nested$k-rmamod_nested$p)/sum(diag(P))),4)
-#heterogeneity is apparently 99.95%, 61%,16% and 22% due to order/genus/ID
+#heterogeneity is apparently 99.95%, 62%,15% and 22% due to order/genus/ID
 
 
 
@@ -500,7 +523,7 @@ text(x=21,y=c2,labels=names(n),pos=4,bty="n",cex=0.8)
 #4. pseudo-R^2
 pseudo_nested<-rma.mv(yi = e ~ 1, V =var_e , random = ~1|order/genus/ID,data = slopes,test="t")
 rsq<-(sum(pseudo_nested$sigma2)-sum(rmamod_nested$sigma2))/sum(pseudo_nested$sigma2)
-#0.6028
+#0.604607
 
 
 #6. plot prediction + credible interval
@@ -763,149 +786,135 @@ for(i in 1:length(unique(slopes$order))){
  # print(sub$order[1])
  # print (coef(studmod)[2]*5*60)
 }
+dev.off()
 ```
 
 
-## slope and winter variability/predictability
-This is the main part of the study. slopes is expected to correlate with variability and predictability. predictability is here defined as sd(slopes) of temperature right before winter onset. The colour of noise approach is considered exploratory and in a different section.
 
+## slope and winter variability/predictability
+slopes is expected to correlate with variability and predictability. predictability is here defined as sd(slopes) of temperature right before winter onset.
 
 
 ```{r forest_b}
-#1. cex of points:
-#the point sizes are not returned by forest.default, but one can use part of the code from the forest.default function:
+#mostly copy of forest plot cdl.
 
 #code snippet to make cex of each point proportional to inverse of variance
-vi<-slopes$bse^2 #own line
-wi <- 1/sqrt(vi)
+wi <- 1/sqrt(1/slopes$invvar_b)
 psize <- wi/sum(wi, na.rm = TRUE)
 psize <- (psize - min(psize, na.rm = TRUE))/(max(psize, na.rm = TRUE) - min(psize, na.rm = TRUE))
 psize <- (psize * 1) + 0.5
 
-#2. colors and pch
-slopes$col<-hsv((as.numeric(slopes$order)-1)/8,1,1) # 8 different colors, 1 per invertebrate order
 
-#pch should be different for each species within an order
-os<-unite(slopes,"os",c(order,spec))$os
+#make gaps between orders
+#first, calculate y-value: midpoint of each order
+n<-table(slopes$order)
+cums<-cumsum(as.numeric(n))
+cums<-c(0,cums)
+cums<-nrow(slopes)-cums
+c2<-NA
+for(i in 1:(length(cums)-1)){
+  c2[i]<-mean(c(cums[i],cums[i+1]))
+}
 
-slopes$pch<-21
-slopes$pch[32:37]<-22
-slopes$pch[38:40]<-23
-slopes$pch[41:43]<-24
-slopes$pch[44:46]<-25
-slopes$pch[47:50]<-21
-slopes$pch[51:53]<-22
-slopes$pch[54:56]<-23
-slopes$pch[71:76]<-22
-slopes$pch[77:79]<-23
-slopes$pch[87:89]<-22
-slopes$pch[90:109]<-23
-slopes$pch[110:114]<-24
-slopes$pch[115:126]<-25
-slopes$pch[135:140]<-22
-slopes$pch[141:143]<-23
-slopes$pch[144:147]<-24
-slopes$pch[148:168]<-25
-slopes$pch[173:175]<-22
-slopes$pch[176:178]<-23
+#idea: get a vector "s" of form 1,2,3,4,4.1,4.2,4.3,5 if the gap is inserted at 4
+#then plot data between 1:length(s), with data only on non-decimal places
+gaplength=10
+s<-nrow(slopes):1
+for(i in 1:8){
+s<-c(s,seq(cums[i+1]+0.2,cums[i+1]+0.9,length.out=gaplength))
+}
+s<-s[order(s,decreasing=F)]
+vec <- which(s%%1==0)
 
 
+#start plotting
 
-#3. plot points (data is same as forest.default, only pretty)
-xlim<-c(-20,220)
-
-plot(x=slopes$b,y=nrow(slopes):1,pch=slopes$pch,bg=slopes$col,cex=psize,xlim=xlim,xlab="Slope estimate",bty="n",yaxt="n",ylab="",cex.lab=1.5)
+svg("forest_b.svg",pointsize=12,height=7,width=7/3)
+par(mar=c(5,1,0,1)+0.1)
+xlim<-c(0,230)
+plot(x=slopes$b, y=vec[length(vec):1], pch=slopes$pch, bg=slopes$col, cex=psize, xlim=xlim, xlab="Slope of reaction norm", bty="n", yaxt="n", ylab="", cex.lab=1, cex.axis=1)
 
 #4. lines for confidence intervals (calculation from forest.default)
 cv<-qnorm(0.05/2,lower.tail=F)*slopes$bse
 ci_l<-slopes$b-cv
 ci_u<-slopes$b+cv
 num<-nrow(slopes)
+
 for (i in 1: nrow(slopes)){
-  lines(x=c(ci_l[num-i+1],ci_u[num-i+1]),y=c(i,i))
+  lines(x=c(ci_l[num-i+1],ci_u[num-i+1]),y=c(vec[i],vec[i]))
   if (ci_l[num-i+1] < xlim[1]){
-    arrows(xlim[1],i,xlim[1]-10,i,col=1,xpd=T,length = 1/nrow(slopes) * 10)
+    arrows(xlim[1],vec[i],xlim[1]-10,vec[i],col=1,xpd=T,length = 1/nrow(slopes) * 10)
   }
    if (ci_u[num-i+1] > xlim[2]){
-    arrows(xlim[2],i,xlim[2]+10,i,col=1,xpd=T,length = 1/nrow(slopes) * 10)
+    arrows(xlim[2],vec[i],xlim[2]+10,vec[i],col=1,xpd=T,length = 1/nrow(slopes) * 10)
   }
 }
 
 #5. points again so they are in foreground
-points(x=slopes$b,y=nrow(slopes):1,bg=slopes$col,pch=slopes$pch,cex=psize,col=1)
+points(x=slopes$b,y=vec[length(vec):1],bg=slopes$col,pch=slopes$pch,cex=psize,col=1)
 
 #6. legend
-#legend("bottomright",legend=names(n)[8:1],col=rep(1,8),pt.bg=hsv((7:0)/8,1,1),pch=22,bty="n",ncol=1)
 
-#would maybe be better to align legend with data:
-#first, calculate y-value: midpoint of each order
-cums<-cumsum(as.numeric(n))
-cums<-c(0,cums)
-c2<-NA
-for(i in 1:(length(cums)-1)){
-  c2[i]<-mean(c(cums[i],cums[i+1]))
-}
+
+
 #printing of legend
-names(n)<-c("Coleoptera", "Diptera", "Hemiptera", "Homoptera", "Hymenoptera", "Lepidoptera", "Neuroptera", "Trombidiformes") #Capitalized
-points(x= rep(169,8),y=c2,pch=21,bg=hsv((1:8-1)/8,1,1),cex=0.8)
-text(x=170,y=c2,labels=names(n),pos=4,bty="n",cex=0.8)
-#abline(h=cums+0.5,lty=2,lwd=0.5)#draw line for diff orders
+#points(x= rep(5.1,8),y=c2,pch=22,bg=hsv((1:8-1)/8,1,1),cex=0.8)
+#text(x=5,y=c2,labels=names(n),pos=4,bty="n",cex=0.8)
+
+#diamonds
+m_b<-mean(slopes$b)
+se<-sd(slopes$b)/sqrt(nrow(slopes))
+m_v<-qnorm(0.05/2,lower.tail=F)*se
+polygon(x=c(m_e-m_v, m_e, m_e+m_v, m_e),y=c(-18,-15,-18,-21),xpd=T,lwd=2,col="darkgrey")
+
+#by order
+gaps <- which(s%%1!=0)[seq(gaplength/2,gaplength*8,gaplength)]
+
+for(i in 1:length(unique(slopes$order))){
+sub<-slopes[slopes$order ==unique(slopes$order)[i],]
+m_e<-mean(sub$b)
+se<-sd(sub$b)/sqrt(nrow(sub))
+m_v<-qnorm(0.05/2,lower.tail=F)*se
+polygon(x=c(m_e-m_v, m_e, m_e+m_v, m_e), y=c(gaps[9-i],gaps[9-i]+2,gaps[9-i],gaps[9-i]-2), xpd=T, lwd=1, col=unique(slopes$col2)[i])
+}
+
+dev.off()
 
 ```
-```{r weight_b}
-invvar<-(1/slopes$bse)^2
 
-#plot untransformed s.e.
-plot(NA,xlim=c(0,nrow(slopes)),ylim=range(1/slopes$bse),main = "influence of data points with untransformed s.e.")
-segments(x0=1:nrow(slopes),y0=rep(0,nrow(slopes)),x1=1:nrow(slopes),y1=1/slopes$bse,col=slopes$col_vary,lwd=1.5)
+### mean timing vs sd(winter), ~ p and slopes ~ lat  (makes no sense, but just to be sure)
+```{r nonsense}
 
-#inverse variance
-plot(NA,xlim=c(0,nrow(slopes)),ylim=range(invvar),xaxt="n",xlab="",ylab = "Influence",main = "influence of data points with inverse variance)")
-segments(x0=1:nrow(slopes),y0=rep(0,nrow(slopes)),x1=1:nrow(slopes),y1=invvar,col=slopes$col_vary,lwd=1.5)
-```
+rmamod_nested<-rma.mv(yi = e ~ sd_winter, V = var_e, random = ~1|order/genus/ID, data = slopes,test="t")
+pseudo_nested<-rma.mv(yi = e ~ 1, V =var_e , random = ~1|order/genus/ID,data = slopes,test="t")
+paste("Rsquare e~sd: ", (sum(pseudo_nested$sigma2) - sum(rmamod_nested$sigma2))/sum(pseudo_nested$sigma2))
+#0
 
-Again, it is better to use s.e.
+rmamod_nested<-rma.mv(yi = e ~ p, V = var_e, random = ~1|order/genus/ID, data = slopes,test="t")
+paste("Rsquare e~p: ", (sum(pseudo_nested$sigma2) - sum(rmamod_nested$sigma2))/sum(pseudo_nested$sigma2))
+#0
 
-### model slopes ~ variability
-
-
-
-```{r fullmod_b}
-rmamod_nested<-rma.mv(yi = b ~ degN, V = bse, random = ~1|order/genus/spec/ID, data = slopes,test="t")
-summary(rmamod_nested) 
-profile(rmamod_nested, sigma2=1)#order
-profile(rmamod_nested, sigma2=2)#order/g
-profile(rmamod_nested, sigma2=3)#order/g/s #quite flat
-profile(rmamod_nested, sigma2=4)#order/g/s/study
-```
-
-
-#### alternative models  
-```{r profplots}
-rmamod_rednested<-rma.mv(yi = b ~ degN, V = bse, random = ~1|order/genus/ID,data = slopes)
-profile(rmamod_rednested, sigma2=1)#order
-profile(rmamod_rednested, sigma2=2)#order/g #not much but okay
-profile(rmamod_rednested, sigma2=3)#order/g/study 
-
-#comparing to model without study
-rmamod_rednested2<-rma.mv(yi = b ~ degN, V = bse, random = ~1|order/genus/spec,data = slopes) 
-profile(rmamod_rednested2, sigma2=1)#order
-profile(rmamod_rednested2, sigma2=2)#order/g #not much but okay
-profile(rmamod_rednested2, sigma2=3)#order/g/study 
+slopes$var_b<-1/slopes$invvar_b
+rmamod_nested<-rma.mv(yi = b ~ degN, V = var_b, random = ~1|order/genus/spec/ID, data = slopes,test="t")
+pseudo_nested<-rma.mv(yi = b ~ 1, V =var_b , random = ~1|order/genus/ID,data = slopes,test="t")
+paste("Rsquare slope~latitude: ", (sum(pseudo_nested$sigma2) - sum(rmamod_nested$sigma2))/sum(pseudo_nested$sigma2))
+#0
 ```
 
 
-#### correlation slope with latitude
-This is not the original hypothesis, but since the code is copy-pasted anyway, why not test it...
-For consistency I use the same model as before
-
-```{r degN_b}
-rmamod_nested<-rmamod_rednested
+## the real slope model  
+```{r b_var}
+slopes$var_b<-1/slopes$invvar_b
+rmamod_nested<-rma.mv(yi = b ~ sd_winter, V = var_b, random = ~1|order/genus/spec/ID, data = slopes,test="t")
+rmamod_rednested<-rma.mv(yi = b ~ sd_winter, V = var_b, random = ~1|order/genus/ID,data = slopes)
+rmamod_rednested2<-rma.mv(yi = b ~ sd_winter, V = var_b, random = ~1|order/genus/spec,data = slopes) 
+rmamod_nested<-rmamod_rednested #ok in this case order also explains nearly no variance. Leave it in for consistency anyway
 
 #1. estimate +ci
 confint(rmamod_nested,fixed=T,random=F)
+
 #2. I² 
-W <- diag(1/slopes$bse)
+W <- diag(1/slopes$var_b)
 X <- model.matrix(rmamod_nested)
 P <- W - W %*% X %*% solve(t(X) %*% W %*% X) %*% t(X) %*% W #generalized calculation of I² as described in http://www.metafor-project.org/doku.php/tips:i2_multilevel_multivariate
 #overall I² (using sum of sigmas)
@@ -913,169 +922,200 @@ P <- W - W %*% X %*% solve(t(X) %*% W %*% X) %*% t(X) %*% W #generalized calcula
 100 * sum(rmamod_nested$sigma2) / (sum(rmamod_nested$sigma2) + (rmamod_nested$k-rmamod_nested$p)/sum(diag(P)))
 #I² of each level
 round(100 * rmamod_nested$sigma2 / (sum(rmamod_nested$sigma2) + (rmamod_nested$k-rmamod_nested$p)/sum(diag(P))),4)
-#heterogeneity is apparently 99.8%, 10%,60% and 28% due to order/genus/ID
-
-
-#3. forest plot #this version plots predictions + CI as whiskers
-x<-forest(rmamod_nested, addcred=T,addfit=T,cex.axis=1,cex.lab=2,cex=0.5,xlim=c(-120,250),alim=c(-120,230),slab=NA,annotate=F,xlab="slope")
-points(slopes$b,nrow(slopes):1,bg=slopes$col,pch=slopes$pch)
-#grey: prediction interval, bars= confidence intervals 
-
-points(x= rep(210,8),y=c2,pch=21,bg=hsv((1:8-1)/8,1,1),cex=0.8)
-text(x=210,y=c2,labels=names(n),pos=4,bty="n",cex=0.8)
+#heterogeneity is 0%, 91%, and 9% due to order/genus/ID
 
 
 #4. pseudo-R^2
-pseudo_nested<-rma.mv(yi = b ~ 1, V =bse , random = ~1|order/genus/ID,data = slopes,test="t")
+pseudo_nested<-rma.mv(yi = b ~ 1, V =var_b , random = ~1|order/genus/ID,data = slopes,test="t")
 rsq<-(sum(pseudo_nested$sigma2)-sum(rmamod_nested$sigma2))/sum(pseudo_nested$sigma2)
-#0
+#0.06
 
 
 #6. plot prediction + credible interval
 #6.1. caculate pi and ci
 ps<-predict.rma(rmamod_nested)
-ub<-data.frame(slopes$degN,ps$cr.ub,ps$ci.ub)
+ub<-data.frame(slopes$sd_winter,ps$cr.ub,ps$ci.ub)
 names(ub)<-c("degN","cr","ci")
 ub<-ub[order(ub$degN),]
-lb<-data.frame(slopes$degN,ps$cr.lb,ps$ci.lb)
+lb<-data.frame(slopes$sd_winter,ps$cr.lb,ps$ci.lb)
 names(lb)<-c("degN","cr","ci")
 lb<-lb[order(lb$degN),]
 combined<-rbind(ub,lb[nrow(lb):1,])
 
 #2. plot data
-plot(x=slopes$degN,y=slopes$b,pch=slopes$pch,cex=0.8,col=NA, bg=slopes$col,main = "", xlab = "Latitude (°N)", ylab = "slope",bty="n",xaxt="n")
+plot(x=slopes$sd_winter,y=slopes$b,pch=slopes$pch,cex=0.8,col=NA, bg=slopes$col,main = "", xlab = "Winter variability", ylab = "Slope estimate",bty="n",xaxt="n")
 legend("topleft",legend=names(n)[8:1],col=rep(1,8),pt.bg=hsv((7:0)/8,1,1),pch=22,bty="n",ncol=1,cex=0.8)
 #3. add CI and CR
 polygon(x=combined$degN, y=combined$cr,col="lightgrey",border=NA)
 #polygon(x=combined$degN, y=combined$ci,col="darkgrey",border=NA)
-lines(x=slopes$degN,y=ps$pred,lwd=2)
-points(x=slopes$degN,y=slopes$b,pch=slopes$pch,cex=0.8,col=NA,bg=slopes$col)
+lines(x=slopes$sd_winter,y=ps$pred,lwd=2)
+points(x=slopes$sd_winter,y=slopes$b,pch=slopes$pch,cex=0.8,col=NA,bg=slopes$col)
 
-segments(x0=slopes$degN,x1=slopes$degN,y0=slopes$b-1.96*slopes$bse,y1=slopes$b+1.96*slopes$bse)
-axis(1,at=c(0,20,40,60,80))
-#obviously no signal
+segments(x0=slopes$sd_winter, x1=slopes$sd_winter, y0=slopes$b-1.96*slopes$bse, y1=slopes$b+1.96*slopes$bse)
+axis(1)
+
+s_est<-confint(rmamod_nested,fixed=T,random=F)$fixed[2,1]*5
+s_est<-round(s_est,2)
+rsq=round(rsq,2)
+#5 degrees latitude ~ 1 hour
+#text(50,20,paste("slope = ",s_est, " hours/5°N\npseudo-R² = ",rsq),cex=0.8)
+
 ```
 
-## combining climate and slope
+```{r plot_b_var}
 
-```{r combine2}
-climate<-climate[climate$lat<=70,]
-climate$expdl<-daylength(climate$lat,climate$meanwinter+182)
+names(n)<- paste(unique(slopes$order)," (", table(slopes$order), ")", sep = "")
+
+svg("b_var.svg",width=10,pointsize=12)
+par(mar = c(5,5,0,0)+0.1)
 
 
-slopes$meanwinter<-NA
-slopes$sd_winter<-NA
-slopes$unpredictability<-NA
-slopes$nyears<-NA
-slopes$beta<-NA 
+plot(x=slopes$sd_winter, y=slopes$b, pch=22, cex=1.5, col=NA,  bg=slopes$col, main = "",  xlab = "Winter variabliity", ylab = "Slope estimate",bty="n",xaxt="n",cex.lab=1.5,cex.axis=1.5,ylim = c(0,330))
 
-for ( i in 1:nrow(slopes)){
-  #reduce to +-5 °
-  sub<-climate[between(climate$lat,slopes[i,"degN"]-5,slopes[i,"degN"]+5)& between(climate$lon,slopes[i,"degE"]-5,slopes[i,"degE"]+5),]
+legend("topright",legend=names(n)[1:8],col=rep(1,8),pt.bg=hsv((7:0)/8,1,1)[8:1],pch=22,bty="n",ncol=1,cex=1.3,y.intersp=0.8)
+
+#3. add CI and CR
+points(x=slopes$sd_winter,y=slopes$b,pch=22,cex=1.5,col=NA,bg=slopes$col)
+
+cv<-qnorm(0.05/2,lower.tail=F)*slopes$bse
+segments(x0=slopes$sd_winter, x1=slopes$sd_winter, y0=slopes$b-cv, y1=slopes$b+cv, col="darkgray")
+axis(1,cex.axis=1.5)
+
+for(i in 1:length(unique(slopes$order))){
+  sub<-slopes[slopes$order==unique(slopes$order)[i],]
+  studmod<-rma.mv(yi = b ~ sd_winter, V = var_b, data = sub,random = ~1|genus/ID)
+  sub$pred<-predict(studmod)$pred
+  lines(sub$pred~sub$sd_winter,col=sub$col[1],lwd=1 + round(5* table(slopes$order)[i]/max(table(slopes$order))))
   
-  sub$diffN<-sub$lat-slopes[i,"degN"] #calculate distance in latitude
-  sub$diffE<-sub$lon-slopes[i,"degE"] #same for longitude
-  sub$diff<-sqrt(sub$diffN^2+sub$diffE^2) #euclidian distance
-      #test whether this works
-#  plot(sub$lat~sub$lon,pch=22,bg=rgb(1,sub$diff,1,maxColorValue = max(sub$diff)))
-
-
-  sub<-arrange(sub,diff)[1:5,] #sort and take 5 lowest values
-  
-
-  
-  slopes$meanwinter[i]<-weighted.mean(sub$meanwinter,1/sub$diff)
-  slopes$sd_winter[i]<-weighted.mean(sub$sd_winter,1/sub$diff)
-  slopes$p[i]<-weighted.mean(sub$p,1/sub$diff)
-  slopes$nyears[i]<-weighted.mean(sub$nyears,1/sub$diff)
-  slopes$beta[i]<-weighted.mean(sub$beta,1/sub$diff)
-
+  ps<-predict.rma(studmod)
+  ub<-data.frame(sub$sd_winter,ps$cr.ub,ps$ci.ub)
+  names(ub)<-c("degN","cr","ci")
+  ub<-ub[order(ub$degN),]
+  lb<-data.frame(sub$sd_winter,ps$cr.lb,ps$ci.lb)
+  names(lb)<-c("degN","cr","ci")
+  lb<-lb[order(lb$degN),]
+  combined<-rbind(ub,lb[nrow(lb):1,])
+  polygon(x=combined$degN, y=combined$ci,col=hsv((as.numeric(sub$order[1])-1)/8,1,1,alpha=0.2),border=NA)
+  print(sub$order[1])
+  print (coef(studmod)[2])
 }
 
-slopes<-slopes[!is.na(slopes$meanwinter),]
+
+
+dev.off()
 ```
 
-
-## the slope model
-```{r model_b}
-bmodel<-rma.mv(yi = b ~ sd_winter , V = bse, random = ~1|order/genus/ID,data = slopes)
+```{r b_p}
+restore<-slopes
+slopes<-slopes[!is.na(slopes$p),]
+rmamod_nested<-rma.mv(yi = b ~ p, V = var_b, random = ~1|order/genus/spec/ID, data = slopes,test="t")
+rmamod_rednested<-rma.mv(yi = b ~ p, V = var_b, random = ~1|order/genus/ID,data = slopes)
+rmamod_rednested2<-rma.mv(yi = b ~ p, V = var_b, random = ~1|order/genus/spec,data = slopes) 
+rmamod_nested<-rmamod_rednested #ok in this case order also explains nearly no variance. Leave it in for consistency anyway
 
 #1. estimate +ci
-confint(bmodel,fixed=T,random=F)
+confint(rmamod_nested,fixed=T,random=F)
+
 #2. I² 
-W <- diag(1/slopes$bse)
-X <- model.matrix(bmodel)
+W <- diag(1/slopes$var_b)
+X <- model.matrix(rmamod_nested)
 P <- W - W %*% X %*% solve(t(X) %*% W %*% X) %*% t(X) %*% W #generalized calculation of I² as described in http://www.metafor-project.org/doku.php/tips:i2_multilevel_multivariate
 #overall I² (using sum of sigmas)
 
-100 * sum(bmodel$sigma2) / (sum(bmodel$sigma2) + (bmodel$k-bmodel$p)/sum(diag(P)))
+100 * sum(rmamod_nested$sigma2) / (sum(rmamod_nested$sigma2) + (rmamod_nested$k-rmamod_nested$p)/sum(diag(P)))
 #I² of each level
-round(100 * bmodel$sigma2 / (sum(bmodel$sigma2) + (bmodel$k-bmodel$p)/sum(diag(P))),4)
-#heterogeneity is apparently 99.6%, 5%,63% and 31% due to order/genus/ID
-
-
-#3. forest plot #this version plots predictions + CI as whiskers
-x<-forest(bmodel, addcred=T,addfit=T,cex.axis=1,cex.lab=2,cex=0.5,xlim=c(-50,250),alim=c(-50,250),slab=NA,annotate=F,xlab="slope")
-points(slopes$b,nrow(slopes):1,bg=slopes$col,pch=slopes$pch)
-#grey: prediction interval, bars= confidence intervals 
-
-points(x= rep(210,8),y=c2,pch=21,bg=hsv((1:8-1)/8,1,1),cex=0.8)
-text(x=210,y=c2,labels=names(n),pos=4,bty="n",cex=0.8)
+round(100 * rmamod_nested$sigma2 / (sum(rmamod_nested$sigma2) + (rmamod_nested$k-rmamod_nested$p)/sum(diag(P))),4)
+#heterogeneity is 0%, 92%, and 8% due to order/genus/ID
 
 
 #4. pseudo-R^2
-pseudo_b<-rma.mv(yi = b ~ 1, V =bse , random = ~1|order/genus/ID,data = slopes,test="t")
-rsq<-(sum(pseudo_b$sigma2)-sum(bmodel$sigma2))/sum(pseudo_b$sigma2)
-#0
+pseudo_nested<-rma.mv(yi = b ~ 1, V =var_b , random = ~1|order/genus/ID,data = slopes,test="t")
+rsq<-(sum(pseudo_nested$sigma2)-sum(rmamod_nested$sigma2))/sum(pseudo_nested$sigma2)
+# 0.02505739  
 
 
 #6. plot prediction + credible interval
 #6.1. caculate pi and ci
-ps<-predict.rma(bmodel)
-ub<-data.frame(slopes$sd_winter,ps$cr.ub,ps$ci.ub)
-names(ub)<-c("sd","cr","ci")
-ub<-ub[order(ub$sd),]
-lb<-data.frame(slopes$sd_winter,ps$cr.lb,ps$ci.lb)
-names(lb)<-c("sd","cr","ci")
-lb<-lb[order(lb$sd),]
+ps<-predict.rma(rmamod_nested)
+ub<-data.frame(slopes$p,ps$cr.ub,ps$ci.ub)
+names(ub)<-c("degN","cr","ci")
+ub<-ub[order(ub$degN),]
+lb<-data.frame(slopes$p,ps$cr.lb,ps$ci.lb)
+names(lb)<-c("degN","cr","ci")
+lb<-lb[order(lb$degN),]
 combined<-rbind(ub,lb[nrow(lb):1,])
 
 #2. plot data
-plot(x=slopes$sd_winter,y=slopes$b,pch=slopes$pch,cex=0.8,col=NA, bg=slopes$col,main = "", xlab = "Winter variability", ylab = "Slope",bty="n",xaxt="n")
+plot(x=slopes$p,y=slopes$b,pch=slopes$pch,cex=0.8,col=NA, bg=slopes$col,main = "", xlab = "Winter predictability", ylab = "Slope estimate",bty="n",xaxt="n")
+legend("topright",legend=names(n)[8:1],col=rep(1,8),pt.bg=hsv((7:0)/8,1,1),pch=22,bty="n",ncol=1,cex=0.8)
+#3. add CI and CR
+polygon(x=combined$degN, y=combined$cr,col="lightgrey",border=NA)
+#polygon(x=combined$degN, y=combined$ci,col="darkgrey",border=NA)
+lines(x=slopes$p,y=ps$pred,lwd=2)
+points(x=slopes$p,y=slopes$b,pch=slopes$pch,cex=0.8,col=NA,bg=slopes$col)
+
+segments(x0=slopes$p, x1=slopes$p, y0=slopes$b-1.96*slopes$bse, y1=slopes$b+1.96*slopes$bse)
+axis(1)
+
+s_est<-confint(rmamod_nested,fixed=T,random=F)$fixed[2,1]*5
+s_est<-round(s_est,2)
+rsq=round(rsq,2)
+#5 degrees latitude ~ 1 hour
+#text(50,20,paste("slope = ",s_est, " hours/5°N\npseudo-R² = ",rsq),cex=0.8)
+
+```
+
+```{r plot_b_p}
+
+svg("b_p.svg",width=10,pointsize=12)
+par(mar = c(5,5,0,0)+0.1)
+
+
+plot(x=slopes$p, y=slopes$b, pch=22, cex=1.5, col=NA,  bg=slopes$col, main = "",  xlab = "Winter unpredictabliity", ylab = "Slope estimate",bty="n",xaxt="n",cex.lab=1.5,cex.axis=1.5,ylim = c(0,330),xaxt="n")
+axis(1,at=c(0, 0.5, 1, 1.5, 2, 2.5),cex.axis=1.5)
+legend("topright",legend=names(n)[1:8],col=rep(1,8),pt.bg=hsv((7:0)/8,1,1)[8:1],pch=22,bty="n",ncol=1,cex=1.3,y.intersp=0.8)
 
 #3. add CI and CR
-polygon(x=combined$sd, y=combined$cr,col="lightgrey",border=NA)
+points(x=slopes$p,y=slopes$b,pch=22,cex=1.5,col=NA,bg=slopes$col)
 
-lines(x=slopes$sd_winter,y=ps$pred,lwd=2,col="lightgrey")
-points(x=slopes$sd_winter,y=slopes$b,pch=slopes$pch,cex=0.8,col=NA,bg=slopes$col)
+cv<-qnorm(0.05/2,lower.tail=F)*slopes$bse
+segments(x0=slopes$p, x1=slopes$p, y0=slopes$b-cv, y1=slopes$b+cv, col="darkgray")
+axis(1,cex.axis=1.5)
 
-segments(x0=slopes$sd_winter,x1=slopes$sd_winter,y0=slopes$b-1.96*slopes$bse,y1=slopes$b+1.96*slopes$bse)
-axis(1)
+for(i in 1:length(unique(slopes$order))){
+  sub<-slopes[slopes$order==unique(slopes$order)[i],]
+  studmod<-rma.mv(yi = b ~ p, V = var_b, data = sub,random = ~1|genus/ID)
+  sub$pred<-predict(studmod)$pred
+  lines(sub$pred~sub$p,col=sub$col[1],lwd=1 + round(5* table(slopes$order)[i]/max(table(slopes$order))))
+  
+  ps<-predict.rma(studmod)
+  ub<-data.frame(sub$p,ps$cr.ub,ps$ci.ub)
+  names(ub)<-c("degN","cr","ci")
+  ub<-ub[order(ub$degN),]
+  lb<-data.frame(sub$p,ps$cr.lb,ps$ci.lb)
+  names(lb)<-c("degN","cr","ci")
+  lb<-lb[order(lb$degN),]
+  combined<-rbind(ub,lb[nrow(lb):1,])
+  polygon(x=combined$degN, y=combined$ci, col=hsv((as.numeric(sub$order[1])-1)/8,1,1,alpha=0.2),border=NA)
+  print(sub$order[1])
+  print (coef(studmod)[2])
+}
+
+
+
+dev.off()
 ```
-
-
 
 ### model slopes ~ variability * predictability
-```{r slopemodels}
-slopes_vp.f<-rma.mv(yi = b ~ sd_winter * p, V = real_ses, random = ~1|order/g/s/study, data = slopes,test="t")
 
-summary(slopes_vp.f) # species has no variance explained
-#profile(slopes_vp.f, sigma2=1)#order
-#profile(slopes_vp.f, sigma2=2)#order/g
-#profile(slopes_vp.f, sigma2=3)#order/g/s #flat
-#profile(slopes_vp.f, sigma2=4)#order/g/s/study
-
-slopes_vp.s<-rma.mv(yi = b ~ sd_winter * p, V = real_ses, random = ~1|order/g/study, data = slopes,test="t")
-
-summary(slopes_vp.s) # species has no variance explained
-#profile(slopes_vp.s, sigma2=1)#order
-#profile(slopes_vp.s, sigma2=2)#order/g
-#profile(slopes_vp.s, sigma2=3)#order/g/study #fine
+```{r interaction}
+rmamod_nested<-rma.mv(yi = b ~ sd_winter*p, V = var_b, random = ~1|order/genus/spec/ID, data = slopes,test="t")
+pseudo_nested<-rma.mv(yi = b ~ 1, V =var_b , random = ~1|order/genus/ID,data = slopes,test="t")
+rsq<-(sum(pseudo_nested$sigma2)-sum(rmamod_nested$sigma2))/sum(pseudo_nested$sigma2)
+rsq#0.07
 ```
 
 
-### results (without plotting)
-The same model as for CDL can be used
 ```{r slope_results}
 slopesbackup<-slopes
 slopes<-slopes[!is.na(slopes$b),]
@@ -1123,135 +1163,24 @@ rsq<-(sum(pseudo_nested.s$sigma2)-sum(rmamod_nested$sigma2))/sum(pseudo_nested.s
 #0
 ```
 
-### plot result, seperately for b~v, b~p models
-
-```{r}
-vmod<-rma.mv(yi = b ~ sd_winter, V = real_ses, random = ~1|order/g/study, data = slopes,test="t") #actually the full model would sort of work here, but keeping this for consistency
-summary(vmod)
-
-#6. plot prediction + credible interval
-ps<-predict.rma(vmod)
-
-normal<- data.frame(slopes$sd_winter,ps$cr.lb,ps$ci.lb)
-names(normal)<-c("sd_winter","cr","ci")
-normal<-normal[order(normal$sd_winter),]
-reversed<-data.frame(slopes$sd_winter,ps$cr.ub,ps$ci.ub)
-names(reversed)<-c("sd_winter","cr","ci")
-reversed<-reversed[order(reversed$sd_winter),]
-reversed<-reversed[nrow(reversed):1,]
-combined<-rbind(normal,reversed)
-names(combined)<-c("sd_winter","cr","ci")
-
-plot(x=slopes$sd_winter,y=slopes$b,pch=21,cex=0.8,col=NA, bg=slopes$col,main = "Physiological determination vs. winter variability", xlab = "Sd (winter onset)", ylab = "slope of diapause timing")
-legend("topleft",pch = 21, pt.bg = 1:7,legend=unique(slopes$order)[7:1],cex=0.8)
-polygon(x=combined$sd_winter, y=combined$cr,col="lightgrey",border=NA)
-polygon(x=combined$sd_winter, y=combined$ci,col="darkgrey",border=NA)
-lines(x=slopes$sd_winter,y=ps$pred,lwd=2,col="lightgray")
-points(x=slopes$sd_winter,y=slopes$b,pch=21,cex=0.8,col=NA,bg=slopes$col)
-#ci.lb<-ci.lb[length(ci.lb):1]
-#ci.ub<-ci.ub[length(ci.ub):1]
-#segments(x0=slopes$sd_winter[order(slopes$sd_winter)],x1=slopes$sd_winter[order(slopes$sd_winter)],y0=ci.lb,y1=ci.ub)
-
-#segments(x0=slopes$sd_winter,x1=slopes$sd_winter,y0=slopes$b+slopes$real_ses,y1=slopes$b-slopes$real_ses)
-axis(1)
-s_est<-confint(vmod,fixed=T,random=F)$fixed[2,1]
-s_est<-round(s_est,2)
-rsq<-(sum(pseudo_nested.s$sigma2)-sum(vmod$sigma2))/sum(pseudo_nested.s$sigma2)
-rsq=round(rsq,2)
-text(25,250,paste("slope = ",s_est, " \npseudo-R² = ",rsq),cex=0.8)
-
-##################
-
-pmod<-rma.mv(yi = b ~ p, V = real_ses, random = ~1|order/g/study, data = slopes,test="t") 
-summary(pmod)
-
-#6. plot prediction + credible interval
-ps<-predict.rma(pmod)
-
-normal<- data.frame(slopes$p,ps$cr.lb,ps$ci.lb)
-names(normal)<-c("p","cr","ci")
-normal<-normal[order(normal$p),]
-reversed<-data.frame(slopes$p,ps$cr.ub,ps$ci.ub)
-names(reversed)<-c("p","cr","ci")
-reversed<-reversed[order(reversed$p),]
-reversed<-reversed[nrow(reversed):1,]
-combined<-rbind(normal,reversed)
-names(combined)<-c("p","cr","ci")
-
-plot(x=slopes$p,y=slopes$b,pch=21,cex=0.8,col=NA, bg=slopes$col,main = "Physiological determination vs. winter predictability", xlab = "Unpredictability(slopes)", ylab = "slope of diapause timing")
-legend("topright",pch = 21, pt.bg = 1:7,legend=unique(slopes$order)[7:1],cex=0.8)
-polygon(x=combined$p, y=combined$cr,col="lightgrey",border=NA)
-polygon(x=combined$p, y=combined$ci,col="darkgrey",border=NA)
-lines(x=slopes$p,y=ps$pred,lwd=2,col="lightgray")
-points(x=slopes$p,y=slopes$b,pch=21,cex=0.8,col=NA,bg=slopes$col)
-#ci.lb<-ci.lb[length(ci.lb):1]
-#ci.ub<-ci.ub[length(ci.ub):1]
-#segments(x0=slopes$p[order(slopes$p)],x1=slopes$p[order(slopes$p)],y0=ci.lb,y1=ci.ub)
-
-#segments(x0=slopes$p,x1=slopes$p,y0=slopes$b+slopes$real_ses,y1=slopes$b-slopes$real_ses)
-axis(1)
-s_est<-confint(vmod,fixed=T,random=F)$fixed[2,1]
-s_est<-round(s_est,2)
-rsq<-(sum(pseudo_nested.s$sigma2)-sum(pmod$sigma2))/sum(pseudo_nested.s$sigma2)
-rsq=round(rsq,2)
-text(1.2,300,paste("slope = ",s_est, " \npseudo-R² = ",rsq),cex=0.8)
-```
 
 ## exploratory stuff
 ### correlation of d with winter variability/predictability
 
 ```{r d}
 #get studies with meaningful d estimate
-x<-slopes[slopes$study %in% c("1","5","6","6b","22","27","33","35","37","45","53","55","56","60"),]
+x<-slopes[slopes$ID %in% c("kurota","urbanski","kimura_geogr_1","yoshida","shimizu","paolucci","gotoh","koveos"),]
 x<-droplevels(x)
-plot(x$d~x$sd_winter,pch=22,bg=x$study)
-plot(x$d~x$p,pch=22,bg=x$study)
-
-dmod<-rma.mv(yi = b ~ sd_winter, V = real_ses, random = ~1|order/g/study, data = slopes,test="t") 
-```
-
-
-#### forest plot and inversion  
-```{r forest}
-x$real_ses<-1/x$d_se
-dfe<-mydeffor(x=x$d,sei=x$real_ses,annotate=F,pch=22,col=1,xlim=c(0,1.2),alim=c(0,1.2),bg=1:3,slab=NA,cex=1,rows=nrow(x):1, main = "Forest plot of upper limit estimates (from DRC)",xlab="d") #rows=nrow:1 because it plots the data in reverse order
-points(x=dfe[[9]],y=1:nrow(x),col=1,bg=x$col[nrow(x):1],pch=22,cex=dfe[[10]]+0.1)
-#draw line for diff orders
-
-#plot inverse of untransformed s.e.
-plot(NA,xlim=c(0,nrow(x)),ylim=c(0,30000),main = "influence of data points with untransformed s.e.")
-segments(x0=1:nrow(x),y0=rep(0,nrow(x)),x1=1:nrow(x),y1=1/x$real_ses,col=x$col,lwd=1.5)
-
-#alternative
-x$expses<-exp(x$real_ses) 
-plot(NA,xlim=c(0,nrow(x)),ylim=c(0,1.3),main = "influence of data points transformed s.e.")
-segments(x0=1:nrow(x),y0=rep(0,nrow(x)),x1=1:nrow(x),y1=1/x$expses,col=x$col,lwd=1.5)
-```
-
-
-```{r}
-x<-x[order(x$sd_winter),]
- plot(x$d~x$sd_winter,pch=22,bg=x$study,type="p")
-for(i in unique(x$study)){
-  a<-x[x$study==i,]
- 
-  lines(a$sd_winter,a$d,col=a$study)
+plot(x$d~x$sd_winter,pch=22,bg=x$ID,col=NA)
+plot(x$d~x$p,pch=22,bg=x$ID,col=NA)
+d<-NA
+for (i in (1:8)){
+  sub<-x[x$ID == unique(x$ID)[i],]
+  d<-c(d,sub$d/max(sub$d))
 }
- 
- x<-x[order(x$p),]
- plot(x$d~x$p,pch=22,bg=x$study,type="p")
-for(i in unique(x$study)){
-  a<-x[x$study==i,]
- 
-  lines(a$p,a$d,col=a$study)
-}
+x$d<-d[-1]
+dmod<-rma.mv(yi = d ~ sd_winter, V = dse^2, random = ~1|order/g/ID, data = x,test="t") 
 ```
 
-not much of a pattern here
-```{r}
-plot(slopes$b~slopes$beta)
-```
-
-not much of a pattern either
 
 
