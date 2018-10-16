@@ -237,7 +237,8 @@ rm(converted)
 ### 1. calculate mean winter onset, sd(winter), predictability
 ```{r mean}   
 threshlist <-seq(0,150,5)
-t2list <-c(5,10,15)
+#t2list <-c(5,10,15)
+t2list<-5
 reslen<-length(unique(station$ID))
 
 for(threloop in 1:length(threshlist)){
@@ -366,7 +367,7 @@ for (i in 1:length(stations)){ #this loop goes through each of the 1 mil station
 #####gather and save results####
 reslist<-data.frame(unique(station$ID), mean_winter ,sd_winter, p, nyears, ndays_300, ndays_350, ndays_365)
 
-names(reslist)<-c("ID","meanwinter","sd_winter","nyears","p","ndays_300","ndays_350","ndays_365")
+names(reslist)<-c("ID","meanwinter","sd_winter","p","nyears","ndays_300","ndays_350","ndays_365")
 write.table(reslist,paste("results_",threshold,"-",t2,".txt",sep=""),append=TRUE,quote=FALSE,row.names=FALSE,col.names=FALSE)
   }
 }
