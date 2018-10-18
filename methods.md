@@ -63,13 +63,13 @@ and excluded book and article reviews, commentaries, rectration notices and retr
 
 1. We used all 847 hits from the area Entomology.
 
-2. We filtered all remaining studies for the area Zoology, and included all 458 studies which name an invertebrate taxon (85 search criteria) or name no vertebrate taxon (61 criteria) in the title. In addition we included studies from invertebrate-specific journals that were not tagged as Zoology (14 hits).
+2. We filtered all remaining studies for the area Zoology, and included all 458 studies which name an invertebrate taxon (75 search criteria) or name no vertebrate taxon (69 criteria) in the title. In addition we included studies from invertebrate-specific journals that were not tagged as Zoology (14 hits).
  
-3. We filtered all remaining studies for the areas Ecology, Evolutionary Biology, Genetics, Biodiversity & Conservation and Soil Science. We included all 994 studies that name an invertebrate taxon (85 criteria), or name no vertebrates, no micro-organisms, no plant-specific terms, no aquatic environments and no genetic methods (83 terms).
+3. We filtered all remaining studies for the areas Ecology, Evolutionary Biology, Genetics, Biodiversity & Conservation and Soil Science. We included all 994 studies that name an invertebrate taxon (75 criteria), or name no vertebrates, no micro-organisms, no plant-specific terms, no aquatic environments and no genetic methods (87 terms).
 
-4. We filtered all remainings studies for the areas Agriculture, Plant Sciences, Forestry and Food Science Technology, and included all studies (50) with invertebrate taxa (85 criteria) in the titles. 
+4. We filtered all remainings studies for the areas Agriculture, Plant Sciences, Forestry and Food Science Technology, and included all studies (50) with invertebrate taxa (75 criteria) in the titles. 
 
-5. We filtered all remainings studies for the areas Other topics, Physiology, Parasitology, Behavioral Sciences and Infectious diseases, thus leaving out various unrelated ares (e.g. Medicine, Engineering). Within these areas, we included all studies that name an invertebrate taxon, or name no vertebrates, no microbes, no human diseases, no aquatic environments and no plant-specific terms (8 terms) (418 studies).
+5. We filtered all remainings studies for the areas Other topics, Physiology, Parasitology, Behavioral Sciences and Infectious diseases, thus leaving out various unrelated ares (e.g. Medicine, Engineering). Within these areas, we included all studies that name an invertebrate taxon (75 criteria), or name no vertebrates, no microbes, no human diseases, no aquatic environments and no plant-specific terms (92 terms) (418 studies).
 
 
 Altogether we found 2,748 studies. We screened the titles of these to filter out articles which were clearly not suited for meta-analysis (e.g. not based on terrestrial invertebrates), which reduced the dataset to 621 articles. We then assessed the full text of the articles, and excluded all articles that did not meet the eligibility criteria. 74 articles remained. We did a forward citation search on these 74 articles between jul 16 2018 and Jul 23th 2018, and found three further articles.
