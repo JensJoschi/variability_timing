@@ -18,4 +18,4 @@ Thus, all data may be outdated.
 - Analysis_new.rmd correlates the DRC parameters with climate
 - slides.pdf gives a visual explanation of study
 - short_draft.pdf is a draft for a publication (contains some figures)
-- methods.md contains a more detailed explanation, including all things that did not end up in paper
+- methods.md contains a more detailed explanation, including all things that did not end up in paper (methods.md will be split into two documents, and both will show here. 1. further methods that were employed but did not end up in paper and 2. methods that were useless)
