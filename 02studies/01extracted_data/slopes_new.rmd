@@ -9,20 +9,21 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, cache=TRUE)
+library(plyr)
 library(tidyverse)
 library(textreadr)
 library(drc)
 library(sandwich)
 library(lmtest)
-library(plyr)
 library(geosphere)
+library(metafor)
 ```
 
 
 # General description  
 ## Aim  
 Global change alters selection on phenology, due to rises in temperature means, variability and predictability. Species persistence will depend on how phenology evolves, which may encompass according changes in means, variability (bet-hedging) or plasticity.
-We conducted a meta-analysis of arthropod diapause timing across species and climatic gradients. This script calculates means and slopes of day length reaction norms for 211 populations in 8 orders. The means and slopes of diapause will be correlated with mean, variability and predictability of winter onset, but that is in a different script.
+We conducted a meta-analysis of arthropod diapause timing across species and climatic gradients. This script calculates means and slopes of day length reaction norms for 146 populations in 8 orders. The means and slopes of diapause will be correlated with mean, variability and predictability of winter onset, but that is in a different script.
 
 
 ### Overview  
@@ -61,7 +62,7 @@ This script should not be executed completely, becaues it will cause some conver
 data<-read.table("02studies/01extracted_data/forslopes_new.csv", header=T,sep=",")
 length(unique(data$id)) #32 studies that can be used for slope calculation (kimura_geogr has 3 levels)
 data<-unite(data,"popid",c("id","pop","genus","spec"),sep="-",remove=F)
-length(unique(data$popid)) #182 populations (not 189 because lankinen)
+length(unique(data$popid)) #182 populations (not 189 because lankinen 2013 is not in here)
 
 #summary of #pops per region and level of detail for sample sizes
 
@@ -102,8 +103,8 @@ data$n2<-round(data$n2)
 data$number<-(data$perc/100) * data$n2
 data$number<-floor(data$number)
 ```
+Now the drc analysis is performed individually for each study. The following chunk cannot be executed directly (some problem with optimizer). Change i, copy the whole chunk to console and run.
 
-the following hcunk cannot be executed directly (some problem with optimizer). Change i, copy to console and run
 ```{r all_models}
 i<-34
 sub<-data[data$id==unique(data$id)[i],] 
@@ -113,18 +114,12 @@ sub<-data[data$id==unique(data$id)[i],]
 
 sub<-droplevels(sub)
 
-#turn percentage into no. failures, no. successes (also round N)
-#sub$n2<-round(sub$n2)
-#sub$number<-round(sub$n2 * sub$perc/100)
-#sub$number[sub$number>sub$n2]<-sub$n2[sub$number>sub$n2]
-#sub$number[sub$number<0]<-0
 
 aics <- c(NA,NA,NA,NA) #will store AIcs of up to four possible models 
 estimates <- nrow(sub)
 pops<-sub$pops_left[1]
-if(length(pops)>1){print(paste("something went wrong in study ",sub$id[1],"\n"))}
 
-#for those with ll.2. only
+# some studies require a ll.2, see methods. in this case:
 #other<-drm((number/n2)~dl2,curveid=popid,data=sub,fct=LL.2(),type="binomial",weights=n2)
 
 # the four models
@@ -155,7 +150,8 @@ drm4<-drm((number/n2)~dl2, curveid=popid, data=sub, fct=LL.4(), type="binomial",
 
 ```
 
-This chunk can run
+The preceding chunk ran the four possible models, and these will be now compared by AIC. 
+(This chunk can run, no need to copy into console)
 ```{r compare}
 plot(drm1)
 plot(drm2)
@@ -173,7 +169,8 @@ aics[3]-min(aics)
 aics[4]-min(aics)
 ```
 
-change the value in choice and run this chunk
+
+After choosing one of the models, change the value in "choice" and "final" and run this chunk
 ```{r choose}
 choice <-3
 final<-drm3
@@ -181,7 +178,8 @@ summary(final)
 results<-list(final,choice)
 ```
 
-run next 2 chunks, no need to edit
+Now that the model is selected for each study, a simple plot of it will be saved (for later checking, not high-quality plots as in papers). This chunk can run, no need to copy to console.
+
 ```{r save_plot}
   #possible values of "choice" and their meaning
   # NA "no model possible due to lack of df"
@@ -214,19 +212,21 @@ run next 2 chunks, no need to edit
 
 ```
 
+Lastly, the estimates of b and CDL need to be extracted and saved, along with their standard errors. This chunk runs, except for ll.2 in which lines 220-225 have to be used.
+
 ```{r save_data}
     #write these into results table
     coffs<-coeftest(final,vcov = sandwich)[,1:2] #provides estimate and SE
     coffs<-as.data.frame(coffs)
     #save slope coefficients
     coffs$group<-substr(rownames(coffs),1,1)
-    b<-coffs[coffs$group=="b",]
-    c<-coffs[coffs$group=="c",]
-    d<-coffs[coffs$group=="d",]
-    e<-coffs[coffs$group=="e",]
+    b<-coffs[coffs$group=="b",] #b = slope of the logit-curve
+    c<-coffs[coffs$group=="c",] #c = lower limit of the curve
+    d<-coffs[coffs$group=="d",] #d = upper limit
+    e<-coffs[coffs$group=="e",] #e = CDL, midpoint, inflection point of the curve
     
     #if ll.2:
-   # c<-data.frame(NA,NA,NA)
+  # c<-data.frame(NA,NA,NA)
   #  names(c)<-c("Estimate" ,  "Std. Error", "group"     )
   #  d<-data.frame(NA,NA,NA)
   #  names(d)<-c("Estimate" ,  "Std. Error", "group"     )
@@ -244,6 +244,8 @@ run next 2 chunks, no need to edit
 write.table(results, "02studies/02output/slopes.txt",append=T,sep="\t",col.names=FALSE)
  print(paste(i,"|",results$id[1],"|",choice,sep=""))
 ```
+What follows is the summary of the analyses:
+The numbers correspond to models drm1, drm2, drm3 and drm4
 
 i|study         |best   |chosen |impossible   |notes
 1|chen          |1,3,4  |1      |
@@ -279,16 +281,17 @@ i|study         |best   |chosen |impossible   |notes
 31|yoshida      |3    |3
 32|kimura_evol  |NA   |NA                   |removed
 33|takeda       |1,3,4|1                    |consider removing
-34|noda         |3    |3      |               |removed dl<9; removed ishigaki
+34|noda         |3    |3      |             |removed dl<9; removed ishigaki
 
 
-```{r quality_control}
+All models were done semi-automatically, now we need to check what the data looks like.
 
-results <- read.table("02studies/02output/slopes.txt",sep = "\t")
+```{r data_summary}
+results <- read.table("02studies/02output/slopes.txt",sep = "\t") #reload results
 #first col is rownames. check if that is same as ID
-#substr(as.character(results[,1]),start=3,stop =10000L)==as.character(results[,3])
+#substr(as.character(results[,1]),start=3,stop =10000L)==as.character(results[,3]) #all true
 
-names(results)<-c("row","set","popid","ID","PY","region","pops_left","genus","spec", "order", "pop","degN","degE","nmethod","perc","n2","dl2","number","nslop","inc2","b","bse","c","cse","d","dse","e","ese")
+names(results)<-c("row","set","popid","ID","PY","region","pops_left","genus","spec", "order", "pop","degN","degE","nmethod","perc","n2","dl2","number","nslop","inc2","b","bse","c","cse","d","dse","e","ese") #cols "nmethod" to "inc2" will not be used anymore
 table(results$popid)
 #kimura_geogr_1 accidentally added twice
 results<-results[-c(21:25),]
@@ -298,83 +301,72 @@ results<-droplevels(results)
 #removed 7 studies (21 pops) and 22 further pops
 #182-21-22 = 139 pops left
 #in: 25 studies (though one study has 3 specs)
+```
 
 
-#checking distribution of standard errors (too small s.e. are aproblem because influence becomes infinite)
-#b(slope)
-results$invvar_b<-1/(results$bse^2)
-plot(1:nrow(results),results$invvar_b, main = "influnece of data points on b",ylab="inverse variance [log]",log="y")
-med<-median(results$invvar_b)
-abline(h=med)
-abline(h=med*10,col=2)
-abline(h=med/10,col=2)
-abline(h=med*5,col=4)
-abline(h=med/5,col=4)
-abline(h=med*50,col=1)
-abline(h=med/50,col=1)
-text(10,med*10,"median*10")
-text(10,med*5,"median*5")
-text(10,med*50,"median*50")
-#some points are >100 times more influential than others
-#
-#points(x=which(results$n_slop<3),y=results$invvar_b[results$n_slop<3],pch=21,bg=2)
+Several populations are on the brink of being overfitted, but there is no simple test for that. Populations with very vew estimates (day lengths) get standard errors close to zero, even though they are least reliable. Weighing them by the inverse of their variance (1/s.e.^2) would be problematic, because they get nearly infinite weight despite being least reliable.
+Demonstration of this issue:
 
-#points I consider  highest quality
-points(x= which(results$ID=="urbanski"),y=results$invvar_b[which(results$ID=="urbanski")],col=2,pch=21,bg=2)
-#points i consider lowest quality
-points(x=which(results$ID=="suwa"),y=results$invvar_b[which(results$ID=="suwa")],col=4,pch=21,bg=4)
+```{r funnel_plots}
+#this model is only for demonstration purposes, actual analysis will run in different script
+results$col<-hsv((as.numeric(results$order)-1)/8,1,1) # 8 different colors, 1 per invertebrate order
+rmamod_rednested<-rma.mv(yi = e ~ degN, V = 1, random = ~1|order/genus/ID,data = results) # latitude as fixed factor, no weighing
 
-points(x=which(results$popid=="gotoh- Ishikawa-Tetranychus-urticae"), y=results$invvar_b[which(results$popid=="gotoh- Ishikawa-Tetranychus-urticae")], col=4,pch=21,bg=4)#no problem
-
-points(x=which(results$popid=="kimura_geogr_1-OI-Drosophila-auraria"), y=results$invvar_b[which(results$popid=="kimura_geogr_1-OI-Drosophila-auraria")], col=4,pch=21,bg=4)#no problem
-
-points(x=which(results$popid=="paolucci-SCH-Nasonia-vitripennis"), y=results$invvar_b[which(results$popid=="paolucci-SCH-Nasonia-vitripennis")], col=4,pch=21,bg=4)#no problem
-
-points(x=which(results$ID == "takeda"), y=results$invvar_b[which(results$ID=="takeda")], col=4,pch=21,bg=4)#no problem
-
-results$invvar_b[results$invvar_b>med*10]<-med*10
-#15 inverse variance limited to 10*median
+svg("funnel_ese.svg",pointsize=12,width=10)
+plot(x=resid(rmamod_rednested), y=results$ese, ylim=c(1,0), xlab = "Model residuals", ylab = "Standard error", bty="n",pch = 21, bg= results$col, xlim=c(-3.5,3.5), yaxs ="i", cex.axis=1.5, cex.lab = 1.5)
+polygon(c(-5,5,5,-5),c(2,2,-2,-2),col="darkgrey")
+polygon(c(-1.96,1.96,0,-1.96),c(1,1,0,1),col=0,lty=0)
+lines(x=c(0,1.96),y=c(0,1),lty=3)
+lines(x=c(0,-1.96),y=c(0,1),lty=3)
+abline(v=0,lty=1)
+points(x=resid(rmamod_rednested), y=results$ese,pch = 21, bg= results$col,xpd=T)
+arrows(-0.3972738,0.9,-0.3972738,1,length=0.1) #goes to 8.259408
+dev.off()
 
 
+#same for b
+rmamod_rednested<-rma.mv(yi = b~1, V = 1, random = ~1|order/genus/ID,data = results)
 
-#same with e (CDL)
-results$invvar_e<-1/(results$ese^2)
-plot(1:139,results$invvar_e, main = "influnece of data points on e",ylab="inverse variance [log]",log="y")
-med<-median(results$invvar_e)
-abline(h=med)
-abline(h=med*10,col=2)
-abline(h=med/10,col=2)
-abline(h=med*5,col=4)
-abline(h=med/5,col=4)
-abline(h=med*50,col=1)
-abline(h=med/50,col=1)
-text(10,med*10,"median*10")
-text(10,med*5,"median*5")
-text(10,med*50,"median*50")
-#some points are >100 times more influential than others
-#points i consider lowest quality
-points(x=which(results$ID=="suwa"),y=results$invvar_e[which(results$ID=="suwa")],col=4,pch=21,bg=4)
+svg("funnel_bse.svg",pointsize=12,width=10)
+plot(x=resid(rmamod_rednested), y=results$bse, ylim=c(80,0), xlab = "Model residuals", ylab = "Standard error", bty="n",pch = 21, bg= results$col,xlim=c(-170,170),yaxs="i", cex.axis=1.5, cex.lab = 1.5)
+polygon(c(-200,200,200,-200),c(100,100,-20,-20),col="darkgrey")
+polygon(c(-1.96*100,1.96*100,0,-1.96*100),c(100,100,0,100),col=0,lty=0)
+lines(x=c(0,1.96*100),y=c(0,100),lty=3)
+lines(x=c(0,-1.96*100),y=c(0,100),lty=3)
+abline(v=0,lty=1)
+points(x=resid(rmamod_rednested), y=results$bse,pch = 21, bg= results$col)
+axis(1,cex.axis=1.5)
+axis(2,cex.axis=1.5)
+arrows(-46.6847,70,-46.6847,80,length=0.1) #goes to 152.6679
+dev.off()
 
-points(x=which(results$popid=="gotoh- Ishikawa-Tetranychus-urticae"), y=results$invvar_e[which(results$popid=="gotoh- Ishikawa-Tetranychus-urticae")], col=4,pch=21,bg=4)#no problem
+```
 
-points(x=which(results$popid=="kimura_geogr_1-OI-Drosophila-auraria"), y=results$invvar_e[which(results$popid=="kimura_geogr_1-OI-Drosophila-auraria")], col=4,pch=21,bg=4)#no problem
+These funnel plots show that points with high standard errors spread less around expectation than points with low standard errors (i.e. the funnel goes wrong way). especially for slope estimates with s.e. between 0 and 20. For higher s.e. it becomes better (spread proportional to s.e.)
 
-points(x=which(results$popid=="paolucci-SCH-Nasonia-vitripennis"), y=results$invvar_e[which(results$popid=="paolucci-SCH-Nasonia-vitripennis")], col=4,pch=21,bg=4)#no problem
+Lets try a different way of weighing, based on the no. of points on the sloped part. We count all points on sloped part plus first point on the upper and lower limit. These are the points that mostly define shape of drc. It was manually done by counting the points on the fittted curves.
 
-points(x=which(results$ID == "takeda"), y=results$invvar_e[which(results$ID=="takeda")], col=4,pch=21,bg=4)#no problem
+```{r n_points}
+results$npoints <- c(4,4,5, 5,4,4,3,3,4, 4,7,4,7, 5,4,4,4, 4,4,5, 4,4,3,5,4, 4,4,4,3, 6,5,6, 4,4,3,5,4, 4,4,4, 4,6,5,3,4,3,4,4, 5,5,5, 4,4,3, 4,5,7,4, 3,5,4, 10,7,4, 5,4,4, 4,3,4,3, 4,4,4, 4,4,4,4, 5,5,5,4,4,4,4,3,4,5,4,4,3,4,3,4,5,5, 9,10,6,8,9,6,8,7,10,5,9,10,6,6,8,10,9,8,6,10,10, 4,4,6,4,5,4, 5,4,4,4, 5,5,4, 4,6,4, 5,4,4,4,4,5)
 
-points(x=which(results$n_slop<3),y=results$invvar_e[results$n_slop<3],pch=21,bg=2)
+rmamod_rednested<-rma.mv(yi = e ~ degN, V = 1, random = ~1|order/genus/ID,data = results)
+svg("funnel_n_e.svg",pointsize=12,width=10) #this is the same as before, only with a differnet y axis
+plot(x=resid(rmamod_rednested), y=results$npoints ,ylim=c(3,10), xlab = "Model residuals", ylab = "Sample size", bty="n",pch = 21, bg= results$col,xlim=c(-3,3),yaxs="i", cex.axis=1.5, cex.lab = 1.5,xpd=T)
+abline(v=0,lty=1)
+dev.off()
 
+rmamod_rednested<-rma.mv(yi = b ~ 1, V = 1, random = ~1|order/genus/ID,data = results)
+svg("funnel_n_b.svg",pointsize=12,width=10)
+plot(x=resid(rmamod_rednested), y=results$npoints ,ylim=c(3,10), xlab = "Model residuals", ylab = "Sample size", bty="n",pch = 21, bg= results$col,xlim=c(-150,150),yaxs="i", cex.axis=1.5, cex.lab = 1.5,xpd=T)
+abline(v=0,lty=1)
+dev.off()
+```
 
-#points I consider  highest quality
-points(x= which(results$ID=="urbanski"),y=results$invvar_e[which(results$ID=="urbanski")],col=2,pch=21,bg=2)
-#points i consider lowest quality
-points(x=which(results$ID=="suwa"),y=results$invvar_e[which(results$ID=="suwa")],col=4,pch=21,bg=4)
-results$invvar_e[results$invvar_e>med*10]<-med*10
-#26 inverse variances reset to median*10
+These funnel plots look much better, because they are in the right direction now. The shading "funnel" is missing in these plots, because it cannot be calculated with sample sizes only. See also ?funnel. 
 
+One publication is misssing so far, that is lankinen 2013. They gave b and CDL estimates directly so there was no need to extract data with a drc analysis. The paper does not directly mention standard error of the estimates, but this is not neccessary anyway with a sample-size based approach. What would be needed though is the snumber of points that contribute to the slope estimation. The only mention in the study is that there are 7 day length treatments, which seems to include multiple points at 0 or 100 %. I take the median sample size (4) of all data, so that the dataset has an average weight. The closely related study by tyukmaeva has same methods and gets 3-5 (median 4) day lengths per population, so that seems to fit.
 
-#add lankinen 2013
+```{r lankinen}
 lank <- data.frame(
   row = c("b:lankinen_13-Pelkosenniemi-Drosophila-montana", "b:lankinen_13-Oulanka-Drosophila-montana", "b:lankinen_13-Kemi-Drosophila-montana", "b:lankinen_13-Pudasjarvi-Drosophila-montana", "b:lankinen_13-Paltamo-Drosophila-montana", "b:lankinen_13-ivaskila-Drosophila-montana","b:lankinen_13-lahti-Drosophila-montana"),
   set=rep("byhand",7),
@@ -385,113 +377,14 @@ lank <- data.frame(
   degE = c(27.3, 29.2, 24.7, 27.0, 27.9, 25.7, 25.7),
   nmethod = rep(NA,7), perc = rep(NA,7), n2 = rep(NA,7), dl2= rep(NA,7), number= rep(NA,7),nslop=rep(NA,7),inc2=rep(NA,7),
   b=c(35.59, 26.40, 39.38, 27.91, 43.03, 36.72, 45.38),
-  bse = c(11.61, 7.04, 19.64, 7.25, 13.84, 14.22, 12.81),
+  bse = rep(NA,7),# c(11.61, 7.04, 19.64, 7.25, 13.84, 14.22, 12.81),
   c = rep(0,7),cse = rep(NA,7),d=rep(1,7),dse = rep(NA,7),
   e = c(19.22, 19.38, 18.63, 19.46, 18.78, 18.32, 17.70),
-  ese = c(0.46,0.72,1.13, 1.00, 0.42, 0.75, 0.34))
- lank$invvar_b<-1/(lank$bse^2)
-lank$invvar_e<-1/(lank$ese^2)
+  ese = rep(NA,7), #c(0.46,0.72,1.13, 1.00, 0.42, 0.75, 0.34)),
+  col = rep( "#FFBF00",7),
+  npoints = rep(4,7))
+
 results<-rbind(results,lank)
                    
 write.table(results,"02studies/02output/slopes_clean.txt",sep = "\t",row.names=F)
 ```
-
-
-
-
-Now the slope and cdl estimates are done. After combining with climate data it turned out that the CDL data is quite far away (2 months) from the mean winter onset. This chunk explains the calculation of the julian date that is most consistent with onset of diapause
-```{r}
-
-results <- read.table("02studies/02output/slopes.txt",sep = "\t")
-#first col is rownames. check if that is same as ID
-substr(as.character(results[,1]),start=3,stop =10000L)==as.character(results[,3])
-
-names(results)<-c("row","set","popid","ID","PY","region","pops_left","genus","spec", "order", "pop","degN","degE","nmethod","perc","n2","dl2","number","b","bse","c","cse","d","dse","e","dse")
-results<-results[-39,] #was empty
-
-results<-results[order(results$degN),]
-
-url<-"ftp://ftp.ncdc.noaa.gov/pub/data/ghcn/daily/ghcnd-stations.txt"
-locations<-read.fwf(
-  file=url
-  ,sep="!",na.strings=c("NA","-999.9"), #sep = ! because ! does not exist in dataset - > dataset is fixed-width and should have no additional separators
-  widths=c(11, 9, 10, 7,2,35)
-)
-reslist<-read.table("01climate_data/03output/results.txt",na.string = c("NA","-9999","-999.9"))
-names(reslist)<-c("ID","meanwinter","sd_winter","nyears","p","A","phi","c","beta")
-climate<-merge(locations,reslist,by=1)
-rm(locations)
-rm(reslist)
-names(climate)<-c("ID","lat","lon","alt","no_idea","name","meanwinter","sd_winter", "nyears","p","A","phi","c","beta")
-climate<-climate[climate$lat<=70,]
-plot(climate$meanwinter~climate$lat,pch=22,cex=0.1, main ="Mean winter onset vs. latitude")
-M<-lm(climate$meanwinter~climate$lat)
-
-
-#1. Let us assume that winter onset is on day 330 (an arbitrary day). Then one can calculate the "optimal" CDL response given latitude and day 330:
-plot(results$e~results$degN,main = "CDL vs latitude, red= expectation if winter onset =180")
-dl<-daylength(results$degN,330)
-points(dl~results$degN,col=2)
-#a model of the form (expected ~ observed) should give a quite good fit, because there is a good (negative) correlation. But this is not quite what I want, as they should not only correlate but be more or less identical. An alternative model of form (expted~observed - intercept) should give, on the other hand, a really bad fit
-
-plot(dl~results$e,main = "expected(for day=180) vs observed.",sub="setting intercept to 0")
-M1<-lm(dl~results$e)
-M2<-lm(dl~results$e-1)
-abline(M1,col=1,lty=2)
-abline(M2,col=2)
-
-#bringing that back to the CDL~latitude plot:
-plot(results$e~results$degN,main = "CDL vs latitude", sub="red= expectation if winter onset =180\nblue = model predictions without intercept",ylim=c(4,22),xlab="")
-points(dl~results$degN,col=2)
-#points(predict(M)~results$degN,col="green")
-points(predict(M2)~results$degN,col=4)
-#this model is indeed a bad fit to the data. 
-
-#the same can now be done for all 365 days, and then the model with the highest log-likelihood should be selected
-
-
-```
-
-```{r}
-logliks<-rep(NA,365)
-for ( i in 1:365){
-  dl<-daylength(results$degN,i)
-  M<-lm(dl~results$e-1)
-  logliks[i]<-logLik(M)
-  #abline(M)
-}
-plot(logliks,type="l", main ="logLikelihood profile for different dates",xlab = "Julian date", ylab = "LogLikelihood")
-points(logliks,pch=22,cex=0.3,bg=1)#160-183
-order(logliks,decreasing=T)[1:10]
-#135, 211,  212,134,136
-plot(results$e~results$degN,main = "CDL vs latitude", sub="red= expectation if winter onset =135\nblue = 211\ngreen =180",ylim=c(4,22),xlab="")
-dlbest<-daylength(results$degN,144)
-dlsecond<-daylength(results$degN,202)
-dlbad=daylength(results$degN,180)
-
-points(dlbest~results$degN,col=2)
-points(dlsecond~results$degN,col=4)
-points(dlbad~results$degN,col="green")
-#best and second best are equal
-M<-lm(dlbest~results$e-1)
-M2<-lm(dlsecond~results$e-1)
-```
-The best estimates by this procedure are day 135 (may 15th) and day 211 (jul 30th), these estimates are exactly equal, as they are both 38 days away from summer solstice. 
-
-checking whether calculation is correct with https://www.esrl.noaa.gov/gmd/grad/solcalc/
-```{r}
-plot(results$e~results$degN,main = "CDL vs latitude", sub="red= expectation if winter onset =30jul\nblue = 1.dec",ylim=c(4,22),xlab="")
-dlbest<-daylength(results$degN,135)
-dlmeteorolog<-daylength(results$degN,305)
-points(dlsecond~results$degN,col=2)
-points(dlmeteorolog~results$degN,col=4)
-Nvec<-10*(1:7)
-dlvec<-c(18,18,18,19,19,20,22)+c(23,38,55,16,46,35,58)/60 - (c(5,5,5,4,4,3,1)+c(49,35,18,56,26,36,05)/60) #taken from noaa calculator for Nvec °N, 0°E
-dlvec2<-c(17,17,17,16,16,15)+c(37,19,0,35,1,3)/60 - 
-  (c(6,6,6,7,7,8)+c(1,19,38,2,37,35)/60)
-dlvec2<-c(dlvec2,0)
-
-points(dlvec~Nvec,col="green")
-points(dlvec2~Nvec,col="black",pch=22,bg=1) # NOAA uses "apparent sunrise", could be civil sunrise/sunset
-```
-
