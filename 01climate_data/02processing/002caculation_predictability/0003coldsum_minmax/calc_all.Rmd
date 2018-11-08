@@ -374,6 +374,93 @@ write.table(reslist,paste("results_",threshold,"-",t2,".txt",sep=""),append=TRUE
 
 ```
 
+### calculation colour of noise
+```{r}
+beta<-rep(NA,n_distinct(station$ID))
+for ( i in 1:n_distinct(station$ID)){
+
+  obs<-filter(station,ID == unique(station$ID)[i])
+  tr<-as.data.frame(t(obs[3:368]))
+  colnames(tr)<-1:ncol(tr)
+  obs<-gather(tr)[,2] 
+  obs<-data.frame(obs)
+  ys           <- nrow(obs)/366
+
+  # fill in gaps by interpolation
+  obs          <-na.interpolation(obs)
+
+  # append day
+  obs           <- cbind(obs,rep(1:366,ys))
+  colnames(obs) <- c("measurement","day")
+
+  # extract daily mean from each observations  
+  daily.average <- ave(obs$measurement,obs$day)
+  obs$norm      <- obs$measurement - daily.average
+
+  # spectral density
+  dens          <- spectrum(obs$norm,plot=F,method="pgram")
+  #  select the interval [1/n,.5/month] (i.e. ignore frequencies below the   resolution of the data and above a 2-month period)
+  freq          <- dens$freq[dens$freq >= 1/(60*ys) & dens$freq<= 1/59]
+  spec          <-dens$spec[dens$freq >= 1/(60*ys) & dens$freq<= 1/59]
+
+  # linear regression
+  if(length(freq)<5){next
+  }else{
+  reg <- lm(log10(spec)~log10(freq))
+  beta[i]<--coef(reg)[2]
+}
+
+}
+df<-data.frame(unique(station$ID),beta)
+names(df)<-c("ID","beta")
+write.table(df,"beta.txt",quote=FALSE,row.names=FALSE)
+```
+
+```{r testing}
+beta<-rep(NA,n_distinct(station$ID))
+obs<-rep(sin((1:366)/366 * 2* pi),30)
+t<-data.frame(rep(NA,366*30))
+for( i in 1:366){
+  t[,i]<-(rep(sin((1:366)/i * 2* pi),30))
+}
+t<-t[,60:366]
+freqvec<-seq(1,0,length.out=307)
+new<-data.frame(rep(NA,nrow(t)))
+for (i in 1:ncol(t)){
+new[,i]<-t[,i]*freqvec[i]
+}
+plot(rowSums(new,na.rm=T),type="l")
+
+#obs<-obs+rnorm(length(obs),0.2)
+  #obs<-data.frame(obs)
+  obs<-rowSums(new,na.rm=T)
+  ys           <- nrow(obs)/366
+
+  # fill in gaps by interpolation
+  obs          <-na.interpolation(obs)
+
+  # append day
+  obs           <- cbind(obs,rep(1:366,ys))
+  colnames(obs) <- c("measurement","day")
+
+  # extract daily mean from each observations  
+  daily.average <- ave(obs$measurement,obs$day)
+  obs$norm      <- obs$measurement - daily.average
+
+  # spectral density
+  dens          <- spectrum(obs$norm,plot=F,method="pgram")
+  #  select the interval [1/n,.5/month] (i.e. ignore frequencies below the   resolution of the data and above a 2-month period)
+  freq          <- dens$freq[dens$freq >= 1/(60*ys) & dens$freq<= 1/59]
+  spec          <-dens$spec[dens$freq >= 1/(60*ys) & dens$freq<= 1/59]
+
+  # linear regression
+  if(length(freq)<5){next
+  }else{
+  reg <- lm(log10(spec)~log10(freq))
+  -coef(reg)[2]
+}
+
+```
 
 ### actual calculation  
 Do the calculations, piecewise for 29 chunks of data; save the results
