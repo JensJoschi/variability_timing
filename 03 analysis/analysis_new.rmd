@@ -48,8 +48,6 @@ The data was generated with R version `r getRversion()`. It requires the dataset
 ## General stuff  
 color scheme
 ```{r col_defs}
-col_def<-(1:8)
-col_def<-col_def[-2]
 col_def <- hsv(1:8/8,1,1)
 ```
 
@@ -100,6 +98,8 @@ rm(reslist)
 names(climate)<-c("ID","lat","lon","alt","name","no_idea","meanwinter","sd_winter", "p",  "nyears" ,  "ndays_300"  ,"ndays_350",  "ndays_365" )
 
 climate<-climate[!is.na(climate$meanwinter),] #because these cannot be used anyway
+beta<-read.table("01climate_data/03output/beta.txt",header=T)
+climate<-merge(climate,beta,by=1)
 ```
 
 
@@ -638,12 +638,110 @@ for ( i in 1:nrow(slopes)){
   slopes$sd_winter[i]<-weighted.mean(sub$sd_winter,1/sub$diff)
   slopes$p[i]<-weighted.mean(sub$p,1/sub$diff)
   slopes$nyears[i]<-weighted.mean(sub$nyears,1/sub$diff)
-#  slopes$beta[i]<-weighted.mean(sub$beta,1/sub$diff)
+  slopes$beta[i]<-weighted.mean(sub$beta,1/sub$diff)
 
 }
 
 slopes<-slopes[!is.na(slopes$meanwinter),]
 ```
+
+
+### within vs between treat variance  
+```{r varwithbet}
+par(mfrow=c(1,1))
+x<-(slopes$sd_winter>14)+1
+plot(y=slopes$within,x=slopes$between,pch=21,col=NA,bg=x,xlab = "between-treatment variance",ylab="within-treatment variance")
+points(y=slopes$within[x==2], x = slopes$between[x==2],pch=21,bg=2)
+
+x<-(slopes$sd_winter-min(slopes$sd_winter))/(max(slopes$sd_winter)-min(slopes$sd_winter))
+plot(y=slopes$within,x=slopes$between,pch=21,col=NA,bg=hsv(1,1-x,1),xlab = "between-treatment variance",ylab="within-treatment variance",ylim = c(0,250))
+
+logcurve<-function(x,b,c,d,e){(d-c)/(1+exp(-b*(x-e)))+c}
+x<-seq(12-4, 12+4, length.out =1000)
+
+w<-rep(NA,100)
+bet<-rep(NA,100)
+for ( i in 0:999){
+ y_a<-logcurve(x,b=i/20,c= 0,d=1,e=12)
+    w[i]<-sum(y_a*(1-y_a))
+    bet[i]<- (sd(y_a)/(sqrt(length(y_a))))^2
+}
+segments(x0 = bet[1:999],y0 = w[1:999],x1 = bet[2:1000],y1 = w[2:1000],lwd=3,col="grey") #this line shows varying slopes for c,d = 0,1; it is also the outer parameter space
+
+for ( i in 0:999){
+ y_a<-logcurve(x,b=100,c= 0,d=i/1000,e=12)
+    w[i]<-sum(y_a*(1-y_a))
+    bet[i]<- (sd(y_a)/(sqrt(length(y_a))))^2
+}
+segments(x0 = bet[1:999],y0 = w[1:999],x1 = bet[2:1000],y1 = w[2:1000],lwd=3,col="grey") # this line shows varing d for max slope
+
+
+for ( i in 0:999){
+ y_a<-logcurve(x,b=100,c= 0.5-(5*i/1000),d=0.5+(5*i/1000),e=12)
+    w[i]<-sum(y_a*(1-y_a))
+    bet[i]<- (sd(y_a)/(sqrt(length(y_a))))^2
+}
+#segments(x0 = bet[1:999],y0 = w[1:999],x1 = bet[2:1000],y1 = w[2:1000],lwd=3,col="grey") # this line shows varing range for max slope
+
+x<-(slopes$sd_winter-min(slopes$sd_winter))/(max(slopes$sd_winter)-min(slopes$sd_winter))
+#points(y=slopes$within,x=slopes$between,pch=21,col=NA,bg=hsv(1,1-x,1))
+#points(points(w_a~bet_a,col=4,pch=22,bg=4))
+#text(x=bet_a+0.00001,y= w_a, "C")
+#points(points(w_b~bet_b,col=4,pch=22,bg=4))
+#text(x=bet_b+0.00001,y= w_b, "B")
+#points(points(w_c~bet_c,col=4,pch=22,bg=4))
+#text(x=bet_c+0.00001,y= w_c, "D")
+#points(points(w_d~bet_d,col=4,pch=22,bg=4))
+#text(x=bet_d-0.00001,y= w_d, "A")
+
+x<-seq(12-4, 12+4, length.out =1000)
+plot(y=slopes$within,x=slopes$between,pch=21,col=NA,bg=1,xlab = "between-treatment variance",ylab="within-treatment variance",ylim = c(0,250))
+for( i in 0:10){
+  for (j in 0:10){
+    for (k in 0:10){
+      y_a<-logcurve(x,b=i*2,c=j/10,d=k/10,e=12)
+    points(y= sum(y_a*(1-y_a)), x = (sd(y_a)/(sqrt(length(y_a))))^2, pch=21,bg=1)
+    }
+  }
+}
+
+x<-(slopes$sd_winter-min(slopes$sd_winter))/(max(slopes$sd_winter)-min(slopes$sd_winter))
+points(y=slopes$within,x=slopes$between,pch=21,col=NA,bg=hsv(1,1-x,1))
+
+x<-seq(12-4, 12+4, length.out =1000)
+y_a<-logcurve(x,b=0,c=0.5,d=0.5,e=12)
+y_b<-logcurve(x,b=100,c=0.1,d=0.9,e=12)
+y_c<-logcurve(x,b=0,c=0,d=0.1,e=12)
+y_d<-logcurve(x,b=100,c=0,d=1,e=12)
+
+w_a<-sum(y_a*(1-y_a))
+w_b<-sum(y_b*(1-y_b))
+w_c<-sum(y_c*(1-y_c))
+w_d<-sum(y_d*(1-y_d))
+
+bet_a <- (sd(y_a)/(sqrt(length(y_a))))^2
+bet_b <- (sd(y_b)/(sqrt(length(y_b))))^2
+bet_c <- (sd(y_c)/(sqrt(length(y_c))))^2
+bet_d <- (sd(y_d)/(sqrt(length(y_d))))^2
+
+
+
+par(mfrow=c(2,2),mar=c(2,2,2,2))
+plot(y_a~x,type="l",ylim=c(0,1),lwd=2)
+text(13,0.1,paste("within:",round(w_a,2)))
+text(13,0,paste("between:",round(bet_a,5)))
+plot(y_b~x,type="l",ylim=c(0,1),lwd=2)
+text(13,0.1,paste("within:",round(w_b,2)))
+text(13,0,paste("between:",round(bet_b,5)))
+plot(y_c~x,type="l",ylim=c(0,1),lwd=2)
+text(13,0.1,paste("within:",round(w_c,2)))
+text(13,0,paste("between:",round(bet_c,5)))
+plot(y_d~x,type="l",ylim=c(0,1),lwd=2)
+text(13,0.1,paste("within:",round(w_d,2)))
+text(13,0,paste("between:",round(bet_d,5)))
+
+```
+
 
 ### visualising
 ```{r maps}

@@ -175,7 +175,7 @@ As thresholds I used x=5°C and y = 10 days for an initial analysis.
 #### additions october 2018  
 Our use of thresholds was a more or less arbitrary decision. The first threshold (5°, 10 days) resulted in a mean winter onset around 30 november, much earlier than the day lengths from the empirical studies (~13 hours, mid-july). I then tried to find the most suitable parameter combination, by finding out which mean timing best fits the data, and adjusting the parameters to get such a mean tming. The best fit was 94 days earlier than the 5°,10 day combination. The combination 15°,7 days yielded a winter onset that is still 1 month away from the best fit, but I left it at that gap, because I think that otherwise the calculation of winter onset becomes unstable (inflates variability?). 1 month is fine anyway, because that represents a realistic gap between diapause induction and diapause expression. 
 I then systematically varied the parameters to prepare for a sensitivity analysis, between 5 and 15°C, and the number of days below this threshold between 1 and 10 days.
-For the (hopefully really) final analysis I settled for 5 days below 10°C (not 10 days below 5), because this is similar to the values of halkett et al (regression over monthly means crosses 12°C) and waldock (threshold value of 11°C).  It resulted in a global median winter onset around Oct 11 
+For the (hopefully really) final analysis I settled for 5 days below 10°C (not 10 days below 5), because this is similar to the values of halkett et al (regression over monthly means crosses 12°C) and waldock (threshold value of 11°C).  It resulted in a global median winter onset around Oct 11 .
 
 
 ## empirical data  
@@ -414,6 +414,16 @@ and  26 studies for the mean estimates:
 
  We repeated all further analyses with uncapped variances, with those points removed, and with an unweighted meta-analysis to test how this decision biased our results. (todo)
  
+## changes after statistical consulting  (oct 2018)
+inverse variance approach is probably fine as is, though capping at the xth percentile is better than saying 10* the mean. using a sample-size weighing may be better than inverse variance wieghing. The actual analysis is fine, though the I² close to 100% is strange. double check if there is an error.
+
+description of the sample size weighing:
+Meta-analysis models differ from regular mixed-effects models in that the data points (effect sizes of each study) are weighed by their reliability. Usually the models are weighed by the inverse of the effect size variance, but this was not feasible in our analysis. Even though we restricted our analysis to populations with at least two points on the sloped part, an unbalanced distribution of data points (e.g. at 5% and 95% induction) caused partial overfitting in some populations and resulted in unrealistically low standard errors. We looked at funnel plots (s.e. vs residuals of the models 1) CDL~lat, random = ID/genus/order, unit weight; 2) slope ~ 1, same random, unit weight), and they showed that points with high standard errors spread less around expectation than points with low standard errors (i.e. the funnel goes wrong way). especially for slope estimates with s.e. between 0 and 20. For higher s.e. it becomes better (spread proportional to s.e.)
+
+We tried a different weighing, based on the no. of points on the sloped part. We counted all points on sloped part plus first point on the upper and lower limit. These are the points that mostly define shape of drc. It was manually done by counting the points on the fittted curves.These funnel plots look much better, because they are in the right direction now. The shading "funnel" is missing in these plots, because it cannot be calculated with sample sizes only. See also ?funnel. 
+
+ (Fig. S1). The inverse variance weight hence ranged over 5 orders of magnitude (100 - 10-5), with highest values mostly on the least reliable studies. We therefore weighed the studies by the number of day length treatments that hit the sloped part. This is similar to a sample size- weighing approach, only without the caveat that sample sizes are not comparable across studies. To test whether this decision biased our results, we repeated all analyses by weighing with inverse variances (these were capped at the 20th percentile to allow model convergence) and with an unweighted analysis.
+ 
 ## Statistical analysis  
 
 The statistical model became quite complicated, and I needed to test a couple of things before settling on the final model. Originally I planned the following models:
@@ -521,14 +531,11 @@ weights = 1/s.e (of slope estimate), because s.e. were not close to 0. For predi
 I plotted upper limit ~ variability (for a subset with meaningful estimates), cdl ~ variability, cdl ~ predictability, and slope ~ colour of noise, but did not do formal models. there was no meaningful effect. 
 
 
-# To-do list  
+## analysis after discussion on 6.11.18  
+plasticity and bet-hedging are difficult to separate, especially for polyphenisms. If diapause depends on day length, it is clearly plasticity. But if we look at one day length, half of the offspring may be induced while the other half is not. That means, there is variance among the offspring which can be bet-hedging. We argue that for polyphenisms bet-hedging and plasticity are different ends on a continuum of strategies: plasticity means maximising the response to the environment and thus minimizing the variance among your offspring (all respond the same way); bet-hedging means maximising the variance of your offspring, which also means losing the response to the environmental cue.
+Consider diapause strategies in response to day length as example: having 0% induction in one environment but 100% induction in the other is maximal plasticity. Having 50% induction in both environments means maximising the variance of your offspring but loses plasticity. anything between these values goes. In general, bet-hedging is summed variance within treatments (e.g. variance among offspring at 20% induction + var(30%)+var(70%) + var(100%)). Plasticity is the variance between treatments (sd(0,20,30,70,100) divided by sqrt(n) and then all squared). This leaves a continuum of strategies in the parameter space (variance within ~ variance between). You can have full plasticity and no bet-hedging, no bet-hedging but full plasticity, or neither bet-hedging nor plasticity( no reaction norm), so the parameter space should be triangular.
+Following this logic, we calculated variance within treatments (formula within = n*p(1-p), with p= probability of induction and n = 1 datapoint per day length). We then calculated between treatment variance (formula between = (sd(p_i)/sqrt(n))^2). These formulas depend critically on the number of day length treatments, but these vary among studies. I thus used the parameters from the dose-response curve models (slope, inflection point, limits), and calculated %diapause for 1000 equally spaced day lengths within inflection point +- 4h. I then calculated the sum of the treatment variances, these values ranged from 0 to 250 (0.5*(1-0.5)*1000). The between-treatment variance was calculated as (sd/100)^2. Plotting the within – treatment variance against between-treatment variance gives a funnel shape. High between-treatment variance always means low within-treatment variance (you cant have both bet-hedging and plasticity). The between-treatment variance can be lowered by decreasing the slope and/or range of the limits; if the elevation is at 50%, this is the maximal bet-hedging response; if the elevation is at 0% or 100%, this means lack of both plasticity and bet-hedging (i.e. no reaction norm). We expected that organisms that cannot be plastic will hedge their bets, i.e. there is a linear replacement of plasticity by bet-hedging. We also expected that the position in the parameter space depends on the predictability of the environment. 
 
-
-[ ] extract rawdata (danilevski)  
-[ ] ask authors for missing data (N,coordinates, PRCs)  
-[.] get slope estimates from dose-response curve analysis on all populations (danilevskii missing)  
-[ ] calculate exponential curve DL~lat
-[ ] write paper
 
 # References
 

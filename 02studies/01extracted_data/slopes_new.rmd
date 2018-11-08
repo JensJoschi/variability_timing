@@ -292,7 +292,7 @@ results <- read.table("02studies/02output/slopes.txt",sep = "\t") #reload result
 #substr(as.character(results[,1]),start=3,stop =10000L)==as.character(results[,3]) #all true
 
 names(results)<-c("row","set","popid","ID","PY","region","pops_left","genus","spec", "order", "pop","degN","degE","nmethod","perc","n2","dl2","number","nslop","inc2","b","bse","c","cse","d","dse","e","ese") #cols "nmethod" to "inc2" will not be used anymore
-table(results$popid)
+#table(results$popid)
 #kimura_geogr_1 accidentally added twice
 results<-results[-c(21:25),]
 results<-droplevels(results)
@@ -388,3 +388,29 @@ results<-rbind(results,lank)
                    
 write.table(results,"02studies/02output/slopes_clean.txt",sep = "\t",row.names=F)
 ```
+
+
+```{r}
+results<-read.table("02studies/02output/slopes_clean.txt",header=T)
+d<-c(0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.2,0.8,0.8,0.8,0.8,0.8,0.8,0.8,0.8,0.8)
+within<- sum(d*(1-d))
+between<-sd(d)/((sqrt(length(d)))^2)
+results$within<-NA
+results$between<-NA
+
+##look after c,d = NA [set to 0,1]
+results$c[is.na(results$c)]<-0
+results$d[is.na(results$d)]<-1 #ll.2 was performed in these cases, and c and d are defined to be 0 and 1
+
+logcurve<-function(x,b,c,d,e){(d-c)/(1+exp(-b*(x-e)))+c}
+
+for(i in 1:nrow(results)){
+  x<-seq(results$e[i]-4, results$e[i]+4, length.out =1000)
+  y<-logcurve(x,results$b[i],results$c[i],results$d[i],results$e[i])
+  results$within[i]<- sum(y*(1-y))
+  results$between[i]<-(sd(y)/(sqrt(length(y))))^2
+}
+
+write.table(results,"02studies/02output/slopes_clean.txt",sep = "\t",row.names=F)
+```
+
