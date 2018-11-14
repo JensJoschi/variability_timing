@@ -1,5 +1,5 @@
 ---
-title: "Calculation of winter variability: X days below Y °C"
+title: "Calculation of climate means and predictability"
 author: "Jens Joschinski"
 date: "September 17, 2018"
 output: 
@@ -18,26 +18,20 @@ library(dplyr)
 library(stringr)
 library(magrittr)
 library(imputeTS)
-#threshold<-50
-#t2<-10
 ```
 
 # General description  
-## Aim  
-The aim of this project is to correlate climate variability with variability in seasonal timing. Is the slope in seasonal responses a bet-hedging trait, i.e., is it adaptive to spread one's timing in more variable conditions?  
+## Project aim  
+The aim of this project is to correlate means and variance of diapause timing with climate means and climate predictability.
 
+## Script overview  
+The script calculates mean winter onset and winter predictability for all climate stations around the world. The data will be combined with reaction norms of various arthropod species in separate scripts. 
+The script first has a general part: it uses the daily minimum and maximum temeratures for all months, years and climate stations all over the world from the GHCN dataste (~ 12million X 31 days).These were pre-processed with PERL and saved as two txt files. The two datasets are now opened, cleaned, and the mean of min and max is calculated for each day. The resulting workspace with one matrix of 11 mil x 31days is saved as textfile.  
 
-### Overview  
-The script calculates mean winter onset, winter variability and winter predictability for all climate stations around the world. The data will be combined with reaction norms of various organisms in separate scripts. 
-The script first has a general part: it uses the daily minimum and maximum temeratures for all months, years and climate stations all over the world from the GHCN dataste (~12million X 31 days).These were pre-processed with PERL and saved as two txt files. The two datasets are now opened, cleaned, and the mean of min and max is calculated for each day. The resulting workspace with one matrix of 11milx31days is saved.  
+The second part of the script calculates mean and standard deviation of winter onset. This calculation depends on the definition of winter, and for a sensitivity analysis a larger range of definitions is used in a loop. For each definition the script takes about 30 minutes to complete. The resulting data is saved as .txt file.
 
-The remaining parts of the script individually calculate mean winter, winter variability and winter predictability (based on two different ways)
+The last part calculates predictability as colour of noise, i.e. based on autocorrelations in the temperature data. This part has to run only once.
 
-Further processing uses smaller chunks of data at a time (30 chunks of 1k climate stations). These are subsequently read in and transformed to differen format (so that 1 row has temperature of a whole year). Then I calculate winter onset as xth day that temperature falls below y°C. For each station I calculate mean winter onset (weighted by available data per year), standard deviation in winter onset, and winter predictability: I make a linear regression through the last 31 days before winter onset of each year, and calculate the slope. The inverse of the standard deviation of this slope estimate across years is winter predictability.Finally, all data of one station is put into a single vector, and I apply a non-linear least square regression: The data is expected to follow a sine-curve with a period of 365 days, and I record for each station amplitude (difference between summer and winter), phase angle (day of peak summer) and intercept (mean temperature). The results (mean winter onset, sd, correlation, nls-parameters) are saved in a text file. All of this is done on all chunks of data, and the results are appended in a single file.
-
-
-
-## Specifics
 
 The data was generated with R version `r getRversion()`. It uses the GHCN-daily dataset by NOAA:
 ```{r, echo =F}
@@ -46,7 +40,8 @@ print (text[1])
 ```
 
 
-## Script  
+# Script  
+## data preparation  
 
 ### calculate mean temperature  
 
@@ -92,8 +87,8 @@ rm(converted2)
 ```
 
 
-#### clean data  
-The following chunk removes 
+### clean data  
+The following chunk removes:   
 - data from southern hemisphere
 - years with <50% data present
 - stations with <3 years of data
@@ -152,9 +147,9 @@ rm(include)
 nrow(join)#10,991,727
 length(unique(join$ID)) #26,804
 ```
-#### saving  
+### saving  
 
-a bit of cleaning, and saving the workspace
+a bit of further cleaning, and saving the workspace
 ```{r save}
 join<-join[,-(1:2)]
 names(join)<-c("ID","year","month",1:31,"days")
@@ -174,7 +169,7 @@ save.image(file = "converted.RData")
 
 
 
-#### transposing data
+### transposing data
 the Data so far has an awkward structure, with one month per row. The following chunk puts all data from one year to one line, and also starts the "year" in july.
 
 ```{r transform_matrix}
@@ -217,7 +212,12 @@ write_delim(station,"temp.txt",append=T)
 }
 ```
 
-reload the temp dataset and remove dates like 31 feb
+
+## calculation mean winter, sd(winter)  
+
+### preparation 
+
+Reload the dataset and remove dates like 31 feb
 ```{r reload}
 rm(station)
 rm(converted)
@@ -234,7 +234,9 @@ rm(converted)
 
 
 
-### 1. calculate mean winter onset, sd(winter), predictability
+### 1. calculate mean winter onset, sd(winter), predictability  
+In the following chunk, a loop selects 1 station at a time. The temperature matrix is transformed to a binomial matrix (1 if winter is cold enough, 0 if not), and cumSum is used to determine the 5th day of the year that crosses the threshold. The mean winter onset and the standard deviation among years is recorded. Lastly, the 30 days before winter onset of each year are selected, a correlation of temperature ~ time is made, and the slope for each year recorded. The standard deviation between years is another predictability estimate. In the end, all of these variables are saved. A loop is constructed around these calculations to do different thresholds.
+  
 ```{r mean}   
 threshlist <-seq(0,150,5)
 #t2list <-c(5,10,15)
@@ -258,7 +260,7 @@ ndays_365<-rep(NA,reslen)
 p<-rep(NA,reslen)
 
 stations<-unique(station$ID)
-for (i in 1:length(stations)){ #this loop goes through each of the 1 mil station
+for (i in 1:length(stations)){ #this loop goes through each of the stations
 
 
   ####read in station####
@@ -375,6 +377,8 @@ write.table(reslist,paste("results_",threshold,"-",t2,".txt",sep=""),append=TRUE
 ```
 
 ### calculation colour of noise
+
+In this last part, the colour of noise is calculated. 
 ```{r}
 beta<-rep(NA,n_distinct(station$ID))
 for ( i in 1:n_distinct(station$ID)){
@@ -415,304 +419,5 @@ df<-data.frame(unique(station$ID),beta)
 names(df)<-c("ID","beta")
 write.table(df,"beta.txt",quote=FALSE,row.names=FALSE)
 ```
-
-```{r testing}
-beta<-rep(NA,n_distinct(station$ID))
-obs<-rep(sin((1:366)/366 * 2* pi),30)
-t<-data.frame(rep(NA,366*30))
-for( i in 1:366){
-  t[,i]<-(rep(sin((1:366)/i * 2* pi),30))
-}
-t<-t[,60:366]
-freqvec<-seq(1,0,length.out=307)
-new<-data.frame(rep(NA,nrow(t)))
-for (i in 1:ncol(t)){
-new[,i]<-t[,i]*freqvec[i]
-}
-plot(rowSums(new,na.rm=T),type="l")
-
-#obs<-obs+rnorm(length(obs),0.2)
-  #obs<-data.frame(obs)
-  obs<-rowSums(new,na.rm=T)
-  ys           <- nrow(obs)/366
-
-  # fill in gaps by interpolation
-  obs          <-na.interpolation(obs)
-
-  # append day
-  obs           <- cbind(obs,rep(1:366,ys))
-  colnames(obs) <- c("measurement","day")
-
-  # extract daily mean from each observations  
-  daily.average <- ave(obs$measurement,obs$day)
-  obs$norm      <- obs$measurement - daily.average
-
-  # spectral density
-  dens          <- spectrum(obs$norm,plot=F,method="pgram")
-  #  select the interval [1/n,.5/month] (i.e. ignore frequencies below the   resolution of the data and above a 2-month period)
-  freq          <- dens$freq[dens$freq >= 1/(60*ys) & dens$freq<= 1/59]
-  spec          <-dens$spec[dens$freq >= 1/(60*ys) & dens$freq<= 1/59]
-
-  # linear regression
-  if(length(freq)<5){next
-  }else{
-  reg <- lm(log10(spec)~log10(freq))
-  -coef(reg)[2]
-}
-
-```
-
-### actual calculation  
-Do the calculations, piecewise for 29 chunks of data; save the results
-```{r}   
-
-x<-unique(converted$ID)
-for (loop in 1:29){ #this loop goes through the 29 chunks of 1k stations (last chunk has only 963 entries)
-station<-converted[converted$ID %in% x[((loop-1)*1000+1):(1000*loop)],]
-station<-turn_around(station)
-
-#remove years with <182 days of data
-n<-rowSums(!is.na(station))
-station<-station[n>184,] #2 more becasue they always have id and year
-
-#remove stations with less than 3 years
-temp<-table(station$ID)
-temp <-as.data.frame(t(temp)) 
-temp<-temp[temp$Freq<3,2]
-temp<-droplevels(temp)
-station<-station[!(station$ID %in% temp),]
-station<-droplevels(station)
-
-#vectors to store results
-mean_winter<-rep(NA,length(unique(station$ID)))
-sd_winter<- rep(NA,length(unique(station$ID)))
-nyears<-rep(NA,length(unique(station$ID)))
-p<-rep(NA,length(unique(station$ID)))
-beta_y<-rep(NA,length(unique(station$ID)))
-#beta_m<-rep(NA,length(unique(station$ID)))
-A<-rep(NA,length(unique(station$ID)))
-phi<-rep(NA,length(unique(station$ID)))
-int<-rep(NA,length(unique(station$ID)))
-
-
-for (i in 1:length(unique(station$ID))){ #this loop goes through each of the 1 k stations
-  
-  ####read in station####
-  id<-unique(station$ID)[i]
-  s<-filter(station,ID==id)
-  ndays<-rowSums(!is.na(s))-2
-  #format of the data: year 1, day 1...365
-  #                    year 2, day 1...365
-  
-   
-  
-  ####calculate winter arrival#####
- # make a binomial matrix with all Temps<threshold = 1, all others =0(including NA)
-
-  bino<-rep(0,nrow(s)*(ncol(s)-2))
-  bino[s[,3:368]<threshold]<-1
-  bino<-matrix(data=bino,nrow=nrow(s),ncol=ncol(s)-2)
-
-  #exclude years that never reach winter (less than x days below y°C)
-  used<-rowSums(bino)>t2
-  
-  #exclude stations that reach winter in less than 3 years (this is different from having less than 3 ys of data)
-  if (sum(used) <3) {
-    mean_winter[i]<-NA
-    sd_winter[i]<-NA
-     next
-  }
-  
-  bino<-bino[used,]
-  s<-s[used,]
-  w_on<-rep(NA,nrow(bino))
-  ndays<-ndays[used]
-  
-  #calcualte row-wise cumulative sums
-  #function cumsum works only on columns, so matrix needs transposing
-  bino <- 
-    bino %>%
-    t %>% 
-    as.data.frame %>%
-    cumsum %>%
-    t %>%
-    as.data.frame
-  
-  bino<-bino==t2 #turns it into TRUE/FALSE
- w_on<- max.col(bino, ties.method="first")#first "true" ="threshold reached" in each year
- nyears[i] <- length(w_on)
-  
-  ##calculate mean and sd in winter arrival (both weighted)####
- 
-  mean_winter[i]<-weighted.mean(w_on,ndays)
-  weights<-ndays/366
-  upper <- sum(weights*(w_on-mean_winter[i])^2)
-  lower <- sum(weights)-1
-  sd_winter[i] <- sqrt(upper/lower)
-  
-  #clean up memory####
-  rm(upper)
-  rm(lower)
-  rm(weights)
-  rm(ndays)
-  rm(bino)
-
-
-  ##calculate standard deviation in slopes of last 30 days before winter onset####
-  #idea: transpose and use gather to make 1 long vector ("day1:day 10,000" only that they are not called like that)
-        #cut at (winter onset - 30) and winter onset of each year (multiple pieces)
-        #clean incomplete data
-        #make correlations of temperature ~ time to get the slope of each year
-        #calculate sd of the slopes between years
-  
-  #transpose
-  rownames(s)<-1:nrow(s) #these are years 1:x
-  n<-gather(as.data.frame(t(s[3:368]))) #turns into long format with 2 columns:
-  #key = 1,1,1...(366 times), 2,2,2...(366 times),..,40,40... (assuming there are 40 years)
-  #value = temperature year 1, day 1:366, year 2, day 1.... 
-  n$xvec<-rep(1:(ncol(s)-2),length(unique(n$key))) #xvec is days after 1st july, so it repeats 1:366, 40 times
-  n$key<-as.integer(n$key)
-  
-  #cut
-  n<-filter(n,xvec<w_on[key] & xvec >= w_on[key]-31)  #now dataset contains only last 31 days before winter onset in that respective year
-  
-  #clean
-  n2<-group_by(n,key)
-  sm<-summarise(n2,sum(!is.na(value))>10) #makes a tibble with 2 cols, key and usable==T or F
-  usable<-pull(sm[sm[,2]==T,1]) #makes a vector with all years that have >10 days
-  n<-n[n$key %in% usable,]
-
-  #slope estimates
-  slopes<-rep(NA,length(usable))
-  for (keygroup in usable){ 
-    y<-filter(n,key == keygroup)
-    slopes[keygroup]<-coef(lm(y$value~y$xvec))[2]
-  }
-  #translation: for each year take data of that year, save slope estimate from lm
-  p[i]<-sd(slopes,na.rm=T)
-
-
-  
-  #make non-linear least-square regression ####
-
-# The function tries up to three times per climate station, with different starting parameters.
- n<-gather(as.data.frame(t(s[3:ncol(s)])))
-
- parms<-wrap_error(n$value,s_A=400,s_phi=pi/2,s_c=200)
-  if (parms[1]==FALSE){parms<-wrap_error(n$value,s_A=40,s_phi=pi,s_c=200)}
-  if (parms[1]==FALSE){parms<-wrap_error(n$value,s_A=40,s_phi=2*pi,s_c=200)}
-  if (parms[1]==FALSE){print (paste("failed in ",i));parms<-c(-9999,-9999,-9999)}
-
- A[i]<-parms[1]
- phi[i]<-parms[2]
- int[i]<-parms[3]
- 
-  
- ####  spectral density estimate: beta ###
-#two ways to calculate beta are tested:1. over the whole year, 2. over last 60 days before winter onset.
-
-#whole year
- obs<-n[,2]
-obs<-as.data.frame(obs)
-ys           <- nrow(obs)/366
-
-# fill in gaps by interpolation
-obs          <-na.interpolation(obs)
-
-# append day
-obs           <- cbind(obs,rep(1:366,ys))
-colnames(obs) <- c("measurement","day")
-
-# extract daily mean from each observations  
-daily.average <- ave(obs$measurement,obs$day)
-obs$norm      <- obs$measurement - daily.average
-
-# spectral density
-dens          <- spectrum(obs$norm,plot=F,method="pgram")
-# select the interval [1/n,.5/month] (i.e. ignore frequencies below the resolution of the data and above a 2-month period)
-freq          <- dens$freq[dens$freq >= 1/(60*ys) & dens$freq<= 1/59]
-spec          <-dens$spec[dens$freq >= 1/(60*ys) & dens$freq<= 1/59]
-
-# linear regression
-if(length(freq)<5){next
-  }else{
-reg <- lm(log10(spec)~log10(freq))
-beta_y[i]<--coef(reg)[2]
-}
-
-#2. 2 months
-potentially_wrong<-function(){
-  #idea: transpose and use gather to make 1 long vector ("day1:day 10,000" only that they are not called like that)
-        #cut at (winter onset - 60) and winter onset of each year (multiple pieces)
-        #clean incomplete data
-        #calculate colour of noise on these chunks
-  s<-s[w_on>67,]
-  w_on<-w_on[w_on>67]
-  s<-droplevels(s)
-  if(length(w_on[w_on>60])==0){next}
-  #transpose
-  rownames(s)<-1:nrow(s) #these are years 1:x
-  n<-gather(as.data.frame(t(s[3:368]))) #turns into long format with 2 columns:
-  n<-droplevels(n)
-  #key = 1,1,1...(366 times), 2,2,2...(366 times),..,40,40... (assuming there are 40 years)
-  #value = temperature year 1, day 1:366, year 2, day 1.... 
-  n$xvec<-rep(1:(ncol(s)-2),length(unique(n$key))) #xvec is days after 1st july, so it repeats 1:366, 40 times
-  n$key<-as.integer(n$key)
-  
-  #cut
-  n<-filter(n,xvec<w_on[key] & xvec >= w_on[key]-60)  #now dataset contains only last 60 days before winter onset in that respective year
-  
-  #clean
-  n2<-group_by(n,key)
-  sm<-summarise(n2,sum(!is.na(value))>40) #makes a tibble with 2 cols, key and usable==T or F
-  usable<-pull(sm[sm[,2]==T,1]) #makes a vector with all years that have >10 days
-  if(length(usable)<1){next}
-  n<-n[n$key %in% usable,]
-
-  obs<-n[,2]
-obs<-as.data.frame(obs)
-ys           <- nrow(obs)/60
-
-# fill in gaps by interpolation
-obs          <-na.interpolation(obs)
-
-# append day
-obs           <- cbind(obs,rep(1:60,ys))
-colnames(obs) <- c("measurement","day")
-
-# extract daily mean from each observations  
-daily.average <- ave(obs$measurement,obs$day)
-obs$norm      <- obs$measurement - daily.average
-
-# spectral density
-dens          <- spectrum(obs$norm,plot=F,method="pgram")
-# select the interval [1/n,.5/month] (i.e. ignore frequencies below the resolution of the data and above a 2-month period)
-freq          <- dens$freq[dens$freq >= 1/(60*ys) & dens$freq<= 1/59]
-spec          <-dens$spec[dens$freq >= 1/(60*ys) & dens$freq<= 1/59]
-
-if(length(freq)<5){next
-  }else{
-# linear regression
-reg <- lm(log10(spec)~log10(freq))
-beta_m[i]<--coef(reg)[2]
-}
-
-#abline(lm(log10(dens$spec)~log10(dens$freq)))
-}
-
-
-  } #next station
-
-
-#####gather and save results####
-reslist<-data.frame(unique(station$ID),mean_winter,sd_winter,nyears,p,A,phi,int,beta_y)
-
-names(reslist)<-c("ID","meanwinter","sd winter","nyears","predictability","Amplitude","phase_angle","intercept","beta" )
-write.table(reslist,"results.txt",append=TRUE,quote=FALSE,row.names=FALSE,col.names=FALSE)
-} #next chunk
-```
-
-
-In the next step the results have to be combined with data from empirical studies. this is in another script (folder 03Analysis)
 
 
