@@ -135,93 +135,61 @@ newsearch,ito,2000,japan,4,Orius,sauteri,Hemiptera,TU,36.080556,140.114722,accur
 newsearch,ito,2000,japan,4,Orius,sauteri,Hemiptera,TU,36.080556,140.114722,accurate,18.2320441989,44,14,4,x
 newsearch,ito,2000,japan,4,Orius,sauteri,Hemiptera,TU,36.080556,140.114722,accurate,14.364640884,34,15,4,x
 newsearch,ito,2000,japan,4,Orius,sauteri,Hemiptera,TU,36.080556,140.114722,accurate,12.1546961326,50,16,4,x
-newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,Diptera,KO,44.774361,142.254389,global average,-1.3441618258,110,16,4,n
-newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,Diptera,KO,44.774361,142.254389,global average,-1.4578985957,110,14,4,n
-newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,Diptera,KO,44.774361,142.254389,global average,11.3464177617,110,13.5,4,n
-newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,Diptera,KO,44.774361,142.254389,global average,33.2186565902,110,13,4,n
-newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,Diptera,KO,44.774361,142.254389,global average,44.0057902356,110,12.5,4,n
-newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,Diptera,KO,44.774361,142.254389,global average,46.0793713459,110,12,4,n
-newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,Diptera,KO,44.774361,142.254389,global average,51.6759724024,110,10,4,n
-newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,Diptera,ON,41.972,140.6691,global average,-1.0067114094,110,16,3,n
-newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,Diptera,ON,41.972,140.6691,global average,-1.4578985957,110,14,3,n
-newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,Diptera,ON,41.972,140.6691,global average,2.6234654936,110,13.5,3,n
-newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,Diptera,ON,41.972,140.6691,global average,11.7383866298,110,13,3,n
-newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,Diptera,ON,41.972,140.6691,global average,33.267535202,110,12.5,3,n
-newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,Diptera,ON,41.972,140.6691,global average,69.2356137086,110,12,3,n
-newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,Diptera,ON,41.972,140.6691,global average,77.5148985769,110,10,3,n
-newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,Diptera,IW,38.104278,140.87016,global average,-1.6797322956,110,16,2,n
-newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,Diptera,IW,38.104278,140.87016,global average,-1.4578985957,110,14,2,n
-newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,Diptera,IW,38.104278,140.87016,global average,-1.4015001974,110,13.5,2,n
-newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,Diptera,IW,38.104278,140.87016,global average,1.3394619593,110,13,2,n
-newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,Diptera,IW,38.104278,140.87016,global average,-1.6242738706,110,12.5,2,n
-newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,Diptera,IW,38.104278,140.87016,global average,18.5663527156,110,12,2,n
-newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,Diptera,IW,38.104278,140.87016,global average,31.709999436,110,11.5,2,n
-newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,Diptera,IW,38.104278,140.87016,global average,54.3605361608,110,10,2,n
-newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,Diptera,TS,36.321889,139.003278,global average,-1.0067114094,110,16,2,n
-newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,Diptera,TS,36.321889,139.003278,global average,-1.7934690655,110,14,2,n
-newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,Diptera,TS,36.321889,139.003278,global average,-1.0772094073,110,13.5,2,n
-newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,Diptera,TS,36.321889,139.003278,global average,-1.0095313293,110,13,2,n
-newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,Diptera,TS,36.321889,139.003278,global average,-1.2981031339,110,12.5,2,n
-newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,Diptera,TS,36.321889,139.003278,global average,9.1722595078,110,12,2,n
-newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,Diptera,TS,36.321889,139.003278,global average,17.2823491813,110,11.5,2,n
-newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,Diptera,TS,36.321889,139.003278,global average,41.6144981483,110,10,2,n
-newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,Diptera,OI,33.233333,131.606667,global average,-1.6797322956,110,16,2,n
-newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,Diptera,OI,33.233333,131.606667,global average,-1.4578985957,110,14,2,n
-newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,Diptera,OI,33.233333,131.606667,global average,-1.0095313293,110,13,2,n
-newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,Diptera,OI,33.233333,131.606667,global average,-1.3018630271,110,12.5,2,n
-newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,Diptera,OI,33.233333,131.606667,global average,2.4589701652,110,12,2,n
-newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,Diptera,OI,33.233333,131.606667,global average,12.5843626041,110,11.5,2,n
-newsearch,kimura_geogr_1,1984,japan,5,Drosophila,auraria,Diptera,OI,33.233333,131.606667,global average,19.1275167785,110,10,2,n
-newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,Diptera,ON,41.972,140.6691,global average,2.5806451613,110,16,2,n
-newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,Diptera,ON,41.972,140.6691,global average,1.6129032258,110,14,2,n
-newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,Diptera,ON,41.972,140.6691,global average,11.2903225806,110,13.5,2,n
-newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,Diptera,ON,41.972,140.6691,global average,18.064516129,110,13,2,n
-newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,Diptera,ON,41.972,140.6691,global average,97.4193548387,110,12,2,n
-newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,Diptera,ON,41.972,140.6691,global average,75.4838709677,110,10,2,n
-newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,Diptera,IW,38.104278,140.87016,global average,2.2580645161,110,16,2,n
-newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,Diptera,IW,38.104278,140.87016,global average,2.2580645161,110,14,2,n
-newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,Diptera,IW,38.104278,140.87016,global average,7.7419354839,110,13.5,2,n
-newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,Diptera,IW,38.104278,140.87016,global average,2.5806451613,110,13,2,n
-newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,Diptera,IW,38.104278,140.87016,global average,14.1935483871,110,12.5,2,n
-newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,Diptera,IW,38.104278,140.87016,global average,55.4838709677,110,12,2,n
-newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,Diptera,IW,38.104278,140.87016,global average,69.3548387097,110,10,2,n
-newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,Diptera,OI,33.233333,131.606667,global average,6.4516129032,110,16,2,n
-newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,Diptera,OI,33.233333,131.606667,global average,6.1290322581,110,14,2,n
-newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,Diptera,OI,33.233333,131.606667,global average,5.1612903226,110,13.5,2,n
-newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,Diptera,OI,33.233333,131.606667,global average,3.2258064516,110,13,2,n
-newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,Diptera,OI,33.233333,131.606667,global average,7.0967741935,110,12.5,2,n
-newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,Diptera,OI,33.233333,131.606667,global average,42.5806451613,110,12,2,n
-newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,Diptera,OI,33.233333,131.606667,global average,35.8064516129,110,11.5,2,n
-newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,Diptera,OI,33.233333,131.606667,global average,62.9032258065,110,10,2,n
-newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,Diptera,KG,31.6,130.55,global average,5.8064516129,110,16,2,n
-newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,Diptera,KG,31.6,130.55,global average,1.935483871,110,14,2,n
-newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,Diptera,KG,31.6,130.55,global average,4.1935483871,110,13.5,2,n
-newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,Diptera,KG,31.6,130.55,global average,2.5806451613,110,13,2,n
-newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,Diptera,KG,31.6,130.55,global average,2.5806451613,110,12.5,2,n
-newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,Diptera,KG,31.6,130.55,global average,19.3548387097,110,12,2,n
-newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,Diptera,KG,31.6,130.55,global average,9.6774193548,110,11.5,2,n
-newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,Diptera,KG,31.6,130.55,global average,47.7419354839,110,10,2,n
-newsearch,kimura_geogr_3,1984,japan,3,Drosophila,subauraria,Diptera,ON,41.972,140.6691,global average,-0.6688963211,110,16,3,x
-newsearch,kimura_geogr_3,1984,japan,3,Drosophila,subauraria,Diptera,ON,41.972,140.6691,global average,33.223103228,110,14,3,x
-newsearch,kimura_geogr_3,1984,japan,3,Drosophila,subauraria,Diptera,ON,41.972,140.6691,global average,44.2861974372,110,13.5,3,x
-newsearch,kimura_geogr_3,1984,japan,3,Drosophila,subauraria,Diptera,ON,41.972,140.6691,global average,65.3864943069,110,13,3,x
-newsearch,kimura_geogr_3,1984,japan,3,Drosophila,subauraria,Diptera,ON,41.972,140.6691,global average,93.5073841644,110,12.5,3,x
-newsearch,kimura_geogr_3,1984,japan,3,Drosophila,subauraria,Diptera,ON,41.972,140.6691,global average,96.5446619819,110,12,3,x
-newsearch,kimura_geogr_3,1984,japan,3,Drosophila,subauraria,Diptera,ON,41.972,140.6691,global average,99.6664913006,110,10,3,x
-newsearch,kimura_geogr_3,1984,japan,3,Drosophila,subauraria,Diptera,KT,39.28675,141.113222,global average,-0.3335086994,110,16,3,x
-newsearch,kimura_geogr_3,1984,japan,3,Drosophila,subauraria,Diptera,KT,39.28675,141.113222,global average,2.4538724588,110,14,3,x
-newsearch,kimura_geogr_3,1984,japan,3,Drosophila,subauraria,Diptera,KT,39.28675,141.113222,global average,21.8800496035,110,13.5,3,x
-newsearch,kimura_geogr_3,1984,japan,3,Drosophila,subauraria,Diptera,KT,39.28675,141.113222,global average,62.0420127015,110,13,3,x
-newsearch,kimura_geogr_3,1984,japan,3,Drosophila,subauraria,Diptera,KT,39.28675,141.113222,global average,98.1915373342,110,12.5,3,x
-newsearch,kimura_geogr_3,1984,japan,3,Drosophila,subauraria,Diptera,KT,39.28675,141.113222,global average,91.5270001127,110,12,3,x
-newsearch,kimura_geogr_3,1984,japan,3,Drosophila,subauraria,Diptera,KT,39.28675,141.113222,global average,99.6664913006,110,10,3,x
-newsearch,kimura_geogr_3,1984,japan,3,Drosophila,subauraria,Diptera,IW,38.104278,140.87016,global average,-1.0033444816,110,16,4,x
-newsearch,kimura_geogr_3,1984,japan,3,Drosophila,subauraria,Diptera,IW,38.104278,140.87016,global average,-0.5571004472,110,14,4,x
-newsearch,kimura_geogr_3,1984,japan,3,Drosophila,subauraria,Diptera,IW,38.104278,140.87016,global average,15.8599827139,110,13.5,4,x
-newsearch,kimura_geogr_3,1984,japan,3,Drosophila,subauraria,Diptera,IW,38.104278,140.87016,global average,30.9383337717,110,13,4,x
-newsearch,kimura_geogr_3,1984,japan,3,Drosophila,subauraria,Diptera,IW,38.104278,140.87016,global average,57.0544135884,110,12.5,4,x
-newsearch,kimura_geogr_3,1984,japan,3,Drosophila,subauraria,Diptera,IW,38.104278,140.87016,global average,85.5088121454,110,12,4,x
-newsearch,kimura_geogr_3,1984,japan,3,Drosophila,subauraria,Diptera,IW,38.104278,140.87016,global average,99.6664913006,110,10,4,x
+newsearch,kimura_geogr_1,1984,japan,6,Drosophila,auraria,Diptera,KO,44.76,142.26,accurate,100,22,10,NA,NA
+newsearch,kimura_geogr_1,1984,japan,6,Drosophila,auraria,Diptera,KO,44.76,142.26,accurate,100,61,12,NA,NA
+newsearch,kimura_geogr_1,1984,japan,6,Drosophila,auraria,Diptera,KO,44.76,142.26,accurate,74.8344370861,151,12.5,NA,NA
+newsearch,kimura_geogr_1,1984,japan,6,Drosophila,auraria,Diptera,KO,44.76,142.26,accurate,59.693877551,196,13,NA,NA
+newsearch,kimura_geogr_1,1984,japan,6,Drosophila,auraria,Diptera,KO,44.76,142.26,accurate,40.5128205128,195,13.5,NA,NA
+newsearch,kimura_geogr_1,1984,japan,6,Drosophila,auraria,Diptera,KO,44.76,142.26,accurate,37.2549019608,51,14,NA,NA
+newsearch,kimura_geogr_1,1984,japan,6,Drosophila,auraria,Diptera,ON,41.97,140.67,accurate,93.4782608696,92,10,NA,NA
+newsearch,kimura_geogr_1,1984,japan,6,Drosophila,auraria,Diptera,ON,41.97,140.67,accurate,82.7956989247,93,12,NA,NA
+newsearch,kimura_geogr_1,1984,japan,6,Drosophila,auraria,Diptera,ON,41.97,140.67,accurate,81.0810810811,37,12.5,NA,NA
+newsearch,kimura_geogr_1,1984,japan,6,Drosophila,auraria,Diptera,ON,41.97,140.67,accurate,87.5,8,13,NA,NA
+newsearch,kimura_geogr_1,1984,japan,6,Drosophila,auraria,Diptera,ON,41.97,140.67,accurate,16.6666666667,66,13.5,NA,NA
+newsearch,kimura_geogr_1,1984,japan,6,Drosophila,auraria,Diptera,ON,41.97,140.67,accurate,0,53,14,NA,NA
+newsearch,kimura_geogr_1,1984,japan,6,Drosophila,auraria,Diptera,IW,38.11,140.87,accurate,82.0512820513,78,10,NA,NA
+newsearch,kimura_geogr_1,1984,japan,6,Drosophila,auraria,Diptera,IW,38.11,140.87,accurate,78.7234042553,47,11.5,NA,NA
+newsearch,kimura_geogr_1,1984,japan,6,Drosophila,auraria,Diptera,IW,38.11,140.87,accurate,33.3333333333,36,12,NA,NA
+newsearch,kimura_geogr_1,1984,japan,6,Drosophila,auraria,Diptera,IW,38.11,140.87,accurate,3.3333333333,60,12.5,NA,NA
+newsearch,kimura_geogr_1,1984,japan,6,Drosophila,auraria,Diptera,IW,38.11,140.87,accurate,3.9682539683,126,13,NA,NA
+newsearch,kimura_geogr_1,1984,japan,6,Drosophila,auraria,Diptera,IW,38.11,140.87,accurate,0,28,13.5,NA,NA
+newsearch,kimura_geogr_1,1984,japan,6,Drosophila,auraria,Diptera,IW,38.11,140.87,accurate,0,17,14,NA,NA
+newsearch,kimura_geogr_1,1984,japan,6,Drosophila,auraria,Diptera,TS,36.32,139,accurate,87.5,40,10,NA,NA
+newsearch,kimura_geogr_1,1984,japan,6,Drosophila,auraria,Diptera,TS,36.32,139,accurate,72.9166666667,48,11.5,NA,NA
+newsearch,kimura_geogr_1,1984,japan,6,Drosophila,auraria,Diptera,TS,36.32,139,accurate,35.2941176471,85,12,NA,NA
+newsearch,kimura_geogr_1,1984,japan,6,Drosophila,auraria,Diptera,TS,36.32,139,accurate,25,20,12.5,NA,NA
+newsearch,kimura_geogr_1,1984,japan,6,Drosophila,auraria,Diptera,TS,36.32,139,accurate,12.5,48,13,NA,NA
+newsearch,kimura_geogr_1,1984,japan,6,Drosophila,auraria,Diptera,TS,36.32,139,accurate,11.7647058824,17,13.5,NA,NA
+newsearch,kimura_geogr_1,1984,japan,6,Drosophila,auraria,Diptera,TS,36.32,139,accurate,0,58,14,NA,NA
+newsearch,kimura_geogr_1,1984,japan,6,Drosophila,auraria,Diptera,OI,33.25,131.65,accurate,73.3333333333,15,10,NA,NA
+newsearch,kimura_geogr_1,1984,japan,6,Drosophila,auraria,Diptera,OI,33.25,131.65,accurate,11.7647058824,34,11.5,NA,NA
+newsearch,kimura_geogr_1,1984,japan,6,Drosophila,auraria,Diptera,OI,33.25,131.65,accurate,0,97,12,NA,NA
+newsearch,kimura_geogr_1,1984,japan,6,Drosophila,auraria,Diptera,OI,33.25,131.65,accurate,0,61,12.5,NA,NA
+newsearch,kimura_geogr_1,1984,japan,6,Drosophila,auraria,Diptera,MY,31.92,131.44,accurate,56.7567567568,111,10,NA,NA
+newsearch,kimura_geogr_1,1984,japan,6,Drosophila,auraria,Diptera,MY,31.92,131.44,accurate,50,14,11.5,NA,NA
+newsearch,kimura_geogr_1,1984,japan,6,Drosophila,auraria,Diptera,MY,31.92,131.44,accurate,12,125,12,NA,NA
+newsearch,kimura_geogr_1,1984,japan,6,Drosophila,auraria,Diptera,MY,31.92,131.44,accurate,0,17,12.5,NA,NA
+newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,Diptera,ON,41.97,140.67,accurate,100,27,10,NA,NA
+newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,Diptera,ON,41.97,140.67,accurate,100,36,12,NA,NA
+newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,Diptera,ON,41.97,140.67,accurate,60.2094240838,191,13,NA,NA
+newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,Diptera,ON,41.97,140.67,accurate,56.4102564103,117,13.5,NA,NA
+newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,Diptera,ON,41.97,140.67,accurate,1.1494252874,87,14,NA,NA
+newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,Diptera,IW,38.11,140.87,accurate,90.4761904762,42,10,NA,NA
+newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,Diptera,IW,38.11,140.87,accurate,68.2926829268,123,12,NA,NA
+newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,Diptera,IW,38.11,140.87,accurate,52.5,160,12.5,NA,NA
+newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,Diptera,IW,38.11,140.87,accurate,1.5625,64,13,NA,NA
+newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,Diptera,IW,38.11,140.87,accurate,0,32,14,NA,NA
+newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,Diptera,OI,33.25,131.65,accurate,100,16,10,NA,NA
+newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,Diptera,OI,33.25,131.65,accurate,86.2745098039,51,11.5,NA,NA
+newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,Diptera,OI,33.25,131.65,accurate,75.1479289941,169,12,NA,NA
+newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,Diptera,OI,33.25,131.65,accurate,35.8024691358,81,12.5,NA,NA
+newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,Diptera,OI,33.25,131.65,accurate,18.9655172414,58,13,NA,NA
+newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,Diptera,OI,33.25,131.65,accurate,3.125,32,13.5,NA,NA
+newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,Diptera,KG,31.58,130.54,accurate,100,53,10,NA,NA
+newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,Diptera,KG,31.58,130.54,accurate,74.1935483871,62,11.5,NA,NA
+newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,Diptera,KG,31.58,130.54,accurate,51.1627906977,86,12,NA,NA
+newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,Diptera,KG,31.58,130.54,accurate,21.4285714286,98,12.5,NA,NA
+newsearch,kimura_geogr_2,1984,japan,4,Drosophila,triauraria,Diptera,KG,31.58,130.54,accurate,5.1282051282,39,13,NA,NA
 newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,leningrad,59.933333,30.266667,global average,99.3243243243,250,8,2,n
 newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,leningrad,59.933333,30.266667,global average,99.2549469112,250,9,2,n
 newsearch,koveos,1993,Europe,7,Tetranychus,urticae,Trombidiformes,leningrad,59.933333,30.266667,global average,99.1885859073,250,10,2,n
@@ -670,7 +638,7 @@ newsearch,so,1992,japan,3,Tetranychus,urticae,Trombidiformes,F,34.596667,135.837
 newsearch,so,1992,japan,3,Tetranychus,urticae,Trombidiformes,F,34.596667,135.8375,global average,59.0413049091,40,12,2,n
 newsearch,so,1992,japan,3,Tetranychus,urticae,Trombidiformes,F,34.596667,135.8375,global average,62.6287605626,40,13,2,n
 newsearch,so,1992,japan,3,Tetranychus,urticae,Trombidiformes,F,34.596667,135.8375,global average,0.2452651213,40,14,2,n
-newsearch,so,1992,japan,3,Tetranychus,urticae,Trombidiformes,A,34.516667,135.85,global average,,40,9,2,n
+newsearch,so,1992,japan,3,Tetranychus,urticae,Trombidiformes,A,34.516667,135.85,global average,80.0979900153,40,9,2,n
 newsearch,so,1992,japan,3,Tetranychus,urticae,Trombidiformes,A,34.516667,135.85,global average,80.0979900153,40,10,2,n
 newsearch,so,1992,japan,3,Tetranychus,urticae,Trombidiformes,A,34.516667,135.85,global average,86.2651532073,40,11,2,n
 newsearch,so,1992,japan,3,Tetranychus,urticae,Trombidiformes,A,34.516667,135.85,global average,89.8526088609,40,12,2,n
@@ -1313,3 +1281,149 @@ oldsearch,noda,1992,japan,7,Laodelphax,striatellus,Homoptera,Ishigaki,24.340556,
 oldsearch,noda,1992,japan,7,Laodelphax,striatellus,Homoptera,Ishigaki,24.340556,124.155556,not described,33.8141025641,1,10,3,x
 oldsearch,noda,1992,japan,7,Laodelphax,striatellus,Homoptera,Ishigaki,24.340556,124.155556,not described,13.9423076923,1,11,3,x
 oldsearch,noda,1992,japan,7,Laodelphax,striatellus,Homoptera,Ishigaki,24.340556,124.155556,not described,12.5,1,12,3,x
+newsearch,kimura_BJLS,1993,japan,6,Drosophila,auraria,Diptera,Wakkanai,45.4,141.69,accurate,98.9473684211,95,11,NA,NA
+newsearch,kimura_BJLS,1993,japan,6,Drosophila,auraria,Diptera,Wakkanai,45.4,141.69,accurate,95.4022988506,87,12,NA,NA
+newsearch,kimura_BJLS,1993,japan,6,Drosophila,auraria,Diptera,Wakkanai,45.4,141.69,accurate,52.7173913043,184,13,NA,NA
+newsearch,kimura_BJLS,1993,japan,6,Drosophila,auraria,Diptera,Wakkanai,45.4,141.69,accurate,5.7803468208,173,14,NA,NA
+newsearch,kimura_BJLS,1993,japan,6,Drosophila,auraria,Diptera,Wakkanai,45.4,141.69,accurate,0,82,15,NA,NA
+newsearch,kimura_BJLS,1993,japan,6,Drosophila,auraria,Diptera,Haboro,44.36,141.7,accurate,98.9583333333,96,11,NA,NA
+newsearch,kimura_BJLS,1993,japan,6,Drosophila,auraria,Diptera,Haboro,44.36,141.7,accurate,88.6956521739,115,12,NA,NA
+newsearch,kimura_BJLS,1993,japan,6,Drosophila,auraria,Diptera,Haboro,44.36,141.7,accurate,58.2582582583,333,13,NA,NA
+newsearch,kimura_BJLS,1993,japan,6,Drosophila,auraria,Diptera,Haboro,44.36,141.7,accurate,11.9533527697,343,14,NA,NA
+newsearch,kimura_BJLS,1993,japan,6,Drosophila,auraria,Diptera,Haboro,44.36,141.7,accurate,0,70,15,NA,NA
+newsearch,kimura_BJLS,1993,japan,6,Drosophila,auraria,Diptera,Sapporo,43.07,141.35,accurate,100,70,11,NA,NA
+newsearch,kimura_BJLS,1993,japan,6,Drosophila,auraria,Diptera,Sapporo,43.07,141.35,accurate,82.1138211382,123,12,NA,NA
+newsearch,kimura_BJLS,1993,japan,6,Drosophila,auraria,Diptera,Sapporo,43.07,141.35,accurate,47.7192982456,285,13,NA,NA
+newsearch,kimura_BJLS,1993,japan,6,Drosophila,auraria,Diptera,Sapporo,43.07,141.35,accurate,2,200,14,NA,NA
+newsearch,kimura_BJLS,1993,japan,6,Drosophila,auraria,Diptera,Sapporo,43.07,141.35,accurate,0.8620689655,116,15,NA,NA
+newsearch,kimura_BJLS,1993,japan,6,Drosophila,auraria,Diptera,Kikonai,41.66,140.43,accurate,95.7894736842,95,11,NA,NA
+newsearch,kimura_BJLS,1993,japan,6,Drosophila,auraria,Diptera,Kikonai,41.66,140.43,accurate,75.2941176471,255,12,NA,NA
+newsearch,kimura_BJLS,1993,japan,6,Drosophila,auraria,Diptera,Kikonai,41.66,140.43,accurate,15.9217877095,358,13,NA,NA
+newsearch,kimura_BJLS,1993,japan,6,Drosophila,auraria,Diptera,Kikonai,41.66,140.43,accurate,0,50,14,NA,NA
+newsearch,kimura_BJLS,1993,japan,6,Drosophila,auraria,Diptera,Imabetsu,41.15,140.45,accurate,97.6470588235,85,11,NA,NA
+newsearch,kimura_BJLS,1993,japan,6,Drosophila,auraria,Diptera,Imabetsu,41.15,140.45,accurate,80.6451612903,186,12,NA,NA
+newsearch,kimura_BJLS,1993,japan,6,Drosophila,auraria,Diptera,Imabetsu,41.15,140.45,accurate,15.1515151515,297,13,NA,NA
+newsearch,kimura_BJLS,1993,japan,6,Drosophila,auraria,Diptera,Imabetsu,41.15,140.45,accurate,0,80,14,NA,NA
+newsearch,kimura_BJLS,1993,japan,6,Drosophila,auraria,Diptera,Yagishiri,44.44,141.43,accurate,98.6666666667,75,11,NA,NA
+newsearch,kimura_BJLS,1993,japan,6,Drosophila,auraria,Diptera,Yagishiri,44.44,141.43,accurate,92.1739130435,115,12,NA,NA
+newsearch,kimura_BJLS,1993,japan,6,Drosophila,auraria,Diptera,Yagishiri,44.44,141.43,accurate,44.1441441441,222,13,NA,NA
+newsearch,kimura_BJLS,1993,japan,6,Drosophila,auraria,Diptera,Yagishiri,44.44,141.43,accurate,6,200,14,NA,NA
+newsearch,kimura_BJLS,1993,japan,6,Drosophila,auraria,Diptera,Yagishiri,44.44,141.43,accurate,0,82,15,NA,NA
+newsearch,kimura_BJLS_2,1993,japan,10,Drosophila,biauraria,Diptera,Sapporo,43.07,141.35,accurate,100,90,11,NA,NA
+newsearch,kimura_BJLS_2,1993,japan,10,Drosophila,biauraria,Diptera,Sapporo,43.07,141.35,accurate,100,90,12,NA,NA
+newsearch,kimura_BJLS_2,1993,japan,10,Drosophila,biauraria,Diptera,Sapporo,43.07,141.35,accurate,86.9047619048,84,13,NA,NA
+newsearch,kimura_BJLS_2,1993,japan,10,Drosophila,biauraria,Diptera,Sapporo,43.07,141.35,accurate,42.9411764706,170,14,NA,NA
+newsearch,kimura_BJLS_2,1993,japan,10,Drosophila,biauraria,Diptera,Sapporo,43.07,141.35,accurate,0,119,15,NA,NA
+newsearch,kimura_BJLS_2,1993,japan,10,Drosophila,biauraria,Diptera,Setana,42.45,139.85,accurate,100,8,11,NA,NA
+newsearch,kimura_BJLS_2,1993,japan,10,Drosophila,biauraria,Diptera,Setana,42.45,139.85,accurate,96.9230769231,65,12,NA,NA
+newsearch,kimura_BJLS_2,1993,japan,10,Drosophila,biauraria,Diptera,Setana,42.45,139.85,accurate,88.8888888889,9,13,NA,NA
+newsearch,kimura_BJLS_2,1993,japan,10,Drosophila,biauraria,Diptera,Setana,42.45,139.85,accurate,24.3243243243,37,14,NA,NA
+newsearch,kimura_BJLS_2,1993,japan,10,Drosophila,biauraria,Diptera,Setana,42.45,139.85,accurate,0,65,15,NA,NA
+newsearch,kimura_BJLS_2,1993,japan,10,Drosophila,biauraria,Diptera,Kikonai,41.66,140.43,accurate,100,89,11,NA,NA
+newsearch,kimura_BJLS_2,1993,japan,10,Drosophila,biauraria,Diptera,Kikonai,41.66,140.43,accurate,98.0392156863,102,12,NA,NA
+newsearch,kimura_BJLS_2,1993,japan,10,Drosophila,biauraria,Diptera,Kikonai,41.66,140.43,accurate,84.5360824742,97,13,NA,NA
+newsearch,kimura_BJLS_2,1993,japan,10,Drosophila,biauraria,Diptera,Kikonai,41.66,140.43,accurate,10,90,14,NA,NA
+newsearch,kimura_BJLS_2,1993,japan,10,Drosophila,biauraria,Diptera,Kikonai,41.66,140.43,accurate,0,86,15,NA,NA
+newsearch,kimura_BJLS_2,1993,japan,10,Drosophila,biauraria,Diptera,Oma,41.54,140.92,accurate,98.7654320988,81,11,NA,NA
+newsearch,kimura_BJLS_2,1993,japan,10,Drosophila,biauraria,Diptera,Oma,41.54,140.92,accurate,99.2125984252,127,12,NA,NA
+newsearch,kimura_BJLS_2,1993,japan,10,Drosophila,biauraria,Diptera,Oma,41.54,140.92,accurate,72.4550898204,167,13,NA,NA
+newsearch,kimura_BJLS_2,1993,japan,10,Drosophila,biauraria,Diptera,Oma,41.54,140.92,accurate,12.7659574468,141,14,NA,NA
+newsearch,kimura_BJLS_2,1993,japan,10,Drosophila,biauraria,Diptera,Oma,41.54,140.92,accurate,0,157,15,NA,NA
+newsearch,kimura_BJLS_2,1993,japan,10,Drosophila,biauraria,Diptera,Futatsui,40.2,140.22,accurate,100,91,11,NA,NA
+newsearch,kimura_BJLS_2,1993,japan,10,Drosophila,biauraria,Diptera,Futatsui,40.2,140.22,accurate,94.9494949495,99,12,NA,NA
+newsearch,kimura_BJLS_2,1993,japan,10,Drosophila,biauraria,Diptera,Futatsui,40.2,140.22,accurate,69.6721311475,122,13,NA,NA
+newsearch,kimura_BJLS_2,1993,japan,10,Drosophila,biauraria,Diptera,Futatsui,40.2,140.22,accurate,15.5844155844,77,14,NA,NA
+newsearch,kimura_BJLS_2,1993,japan,10,Drosophila,biauraria,Diptera,Futatsui,40.2,140.22,accurate,0,129,15,NA,NA
+newsearch,kimura_BJLS_2,1993,japan,10,Drosophila,biauraria,Diptera,Sakata,38.92,139.84,accurate,90.7692307692,130,11,NA,NA
+newsearch,kimura_BJLS_2,1993,japan,10,Drosophila,biauraria,Diptera,Sakata,38.92,139.84,accurate,83.8888888889,180,12,NA,NA
+newsearch,kimura_BJLS_2,1993,japan,10,Drosophila,biauraria,Diptera,Sakata,38.92,139.84,accurate,42.8571428571,245,13,NA,NA
+newsearch,kimura_BJLS_2,1993,japan,10,Drosophila,biauraria,Diptera,Sakata,38.92,139.84,accurate,6.25,160,14,NA,NA
+newsearch,kimura_BJLS_2,1993,japan,10,Drosophila,biauraria,Diptera,Sakata,38.92,139.84,accurate,0,129,15,NA,NA
+newsearch,kimura_BJLS_2,1993,japan,10,Drosophila,biauraria,Diptera,Murakami,38.12,139.48,accurate,100,105,11,NA,NA
+newsearch,kimura_BJLS_2,1993,japan,10,Drosophila,biauraria,Diptera,Murakami,38.12,139.48,accurate,95.4198473282,131,12,NA,NA
+newsearch,kimura_BJLS_2,1993,japan,10,Drosophila,biauraria,Diptera,Murakami,38.12,139.48,accurate,51.7073170732,205,13,NA,NA
+newsearch,kimura_BJLS_2,1993,japan,10,Drosophila,biauraria,Diptera,Murakami,38.12,139.48,accurate,9.0909090909,77,14,NA,NA
+newsearch,kimura_BJLS_2,1993,japan,10,Drosophila,biauraria,Diptera,Murakami,38.12,139.48,accurate,2.5423728814,118,15,NA,NA
+newsearch,kimura_BJLS_2,1993,japan,10,Drosophila,biauraria,Diptera,Okushiri,42.07,139.45,accurate,100,95,11,NA,NA
+newsearch,kimura_BJLS_2,1993,japan,10,Drosophila,biauraria,Diptera,Okushiri,42.07,139.45,accurate,98.0198019802,101,12,NA,NA
+newsearch,kimura_BJLS_2,1993,japan,10,Drosophila,biauraria,Diptera,Okushiri,42.07,139.45,accurate,81.0126582278,79,13,NA,NA
+newsearch,kimura_BJLS_2,1993,japan,10,Drosophila,biauraria,Diptera,Okushiri,42.07,139.45,accurate,25.4716981132,106,14,NA,NA
+newsearch,kimura_BJLS_2,1993,japan,10,Drosophila,biauraria,Diptera,Okushiri,42.07,139.45,accurate,0,129,15,NA,NA
+newsearch,kimura_BJLS_2,1993,japan,10,Drosophila,biauraria,Diptera,Tobishima,39.11,139.33,accurate,100,51,11,NA,NA
+newsearch,kimura_BJLS_2,1993,japan,10,Drosophila,biauraria,Diptera,Tobishima,39.11,139.33,accurate,100,56,12,NA,NA
+newsearch,kimura_BJLS_2,1993,japan,10,Drosophila,biauraria,Diptera,Tobishima,39.11,139.33,accurate,89.247311828,93,13,NA,NA
+newsearch,kimura_BJLS_2,1993,japan,10,Drosophila,biauraria,Diptera,Tobishima,39.11,139.33,accurate,62.7118644068,59,14,NA,NA
+newsearch,kimura_BJLS_2,1993,japan,10,Drosophila,biauraria,Diptera,Tobishima,39.11,139.33,accurate,0,69,15,NA,NA
+newsearch,kimura_BJLS_2,1993,japan,10,Drosophila,biauraria,Diptera,Sado,38.02,138.37,accurate,97.6470588235,85,11,NA,NA
+newsearch,kimura_BJLS_2,1993,japan,10,Drosophila,biauraria,Diptera,Sado,38.02,138.37,accurate,92.2222222222,90,12,NA,NA
+newsearch,kimura_BJLS_2,1993,japan,10,Drosophila,biauraria,Diptera,Sado,38.02,138.37,accurate,40.3225806452,124,13,NA,NA
+newsearch,kimura_BJLS_2,1993,japan,10,Drosophila,biauraria,Diptera,Sado,38.02,138.37,accurate,7.03125,128,14,NA,NA
+newsearch,kimura_BJLS_2,1993,japan,10,Drosophila,biauraria,Diptera,Sado,38.02,138.37,accurate,0.8547008547,117,15,NA,NA
+newsearch,kimura_BJLS_3,1993,japan,8,Drosophila,triauraria,Diptera,Kikonai,41.66,140.43,accurate,100,52,11,NA,NA
+newsearch,kimura_BJLS_3,1993,japan,8,Drosophila,triauraria,Diptera,Kikonai,41.66,140.43,accurate,85.7142857143,63,12,NA,NA
+newsearch,kimura_BJLS_3,1993,japan,8,Drosophila,triauraria,Diptera,Kikonai,41.66,140.43,accurate,38.6138613861,202,13,NA,NA
+newsearch,kimura_BJLS_3,1993,japan,8,Drosophila,triauraria,Diptera,Kikonai,41.66,140.43,accurate,0,59,14,NA,NA
+newsearch,kimura_BJLS_3,1993,japan,8,Drosophila,triauraria,Diptera,Kikonai,41.66,140.43,accurate,0,64,15,NA,NA
+newsearch,kimura_BJLS_3,1993,japan,8,Drosophila,triauraria,Diptera,Iwanuma,38.11,140.87,accurate,100,30,11,NA,NA
+newsearch,kimura_BJLS_3,1993,japan,8,Drosophila,triauraria,Diptera,Iwanuma,38.11,140.87,accurate,91.6666666667,24,12,NA,NA
+newsearch,kimura_BJLS_3,1993,japan,8,Drosophila,triauraria,Diptera,Iwanuma,38.11,140.87,accurate,22.2222222222,54,13, ,NA
+newsearch,kimura_BJLS_3,1993,japan,8,Drosophila,triauraria,Diptera,Iwanuma,38.11,140.87,accurate,5.5555555556,18,14,NA,NA
+newsearch,kimura_BJLS_3,1993,japan,8,Drosophila,triauraria,Diptera,Kagoshima,31.58,130.54,accurate,93.6507936508,63,10,NA,NA
+newsearch,kimura_BJLS_3,1993,japan,8,Drosophila,triauraria,Diptera,Kagoshima,31.58,130.54,accurate,72.602739726,73,11,NA,NA
+newsearch,kimura_BJLS_3,1993,japan,8,Drosophila,triauraria,Diptera,Kagoshima,31.58,130.54,accurate,44.8717948718,78,12,NA,NA
+newsearch,kimura_BJLS_3,1993,japan,8,Drosophila,triauraria,Diptera,Kagoshima,31.58,130.54,accurate,3.0769230769,65,13,NA,NA
+newsearch,kimura_BJLS_3,1993,japan,8,Drosophila,triauraria,Diptera,Kagoshima,31.58,130.54,accurate,0,35,14,NA,NA
+newsearch,kimura_BJLS_3,1993,japan,8,Drosophila,triauraria,Diptera,Okushiri,42.07,139.45,accurate,100,96,11,NA,NA
+newsearch,kimura_BJLS_3,1993,japan,8,Drosophila,triauraria,Diptera,Okushiri,42.07,139.45,accurate,89.2857142857,56,12,NA,NA
+newsearch,kimura_BJLS_3,1993,japan,8,Drosophila,triauraria,Diptera,Okushiri,42.07,139.45,accurate,89.3203883495,103,13,NA,NA
+newsearch,kimura_BJLS_3,1993,japan,8,Drosophila,triauraria,Diptera,Okushiri,42.07,139.45,accurate,15.1351351351,185,14,NA,NA
+newsearch,kimura_BJLS_3,1993,japan,8,Drosophila,triauraria,Diptera,Okushiri,42.07,139.45,accurate,0,75,15,NA,NA
+newsearch,kimura_BJLS_3,1993,japan,8,Drosophila,triauraria,Diptera,Beijing,39.9166667,116.383333,accurate,94.0298507463,67,10,NA,NA
+newsearch,kimura_BJLS_3,1993,japan,8,Drosophila,triauraria,Diptera,Beijing,39.9166667,116.383333,accurate,76.3636363636,55,11,NA,NA
+newsearch,kimura_BJLS_3,1993,japan,8,Drosophila,triauraria,Diptera,Beijing,39.9166667,116.383333,accurate,34.8837209302,43,12,NA,NA
+newsearch,kimura_BJLS_3,1993,japan,8,Drosophila,triauraria,Diptera,Beijing,39.9166667,116.383333,accurate,1.3157894737,76,13,NA,NA
+newsearch,kimura_BJLS_3,1993,japan,8,Drosophila,triauraria,Diptera,Baoding,38.86667,115.46667,accurate,76.7441860465,43,10,NA,NA
+newsearch,kimura_BJLS_3,1993,japan,8,Drosophila,triauraria,Diptera,Baoding,38.86667,115.46667,accurate,61.1111111111,18,11,NA,NA
+newsearch,kimura_BJLS_3,1993,japan,8,Drosophila,triauraria,Diptera,Baoding,38.86667,115.46667,accurate,25,40,12,NA,NA
+newsearch,kimura_BJLS_3,1993,japan,8,Drosophila,triauraria,Diptera,Baoding,38.86667,115.46667,accurate,13.3333333333,60,13,NA,NA
+newsearch,kimura_BJLS_3,1993,japan,8,Drosophila,triauraria,Diptera,Heze,35.23333,115.43333,accurate,91.8032786885,61,10,NA,NA
+newsearch,kimura_BJLS_3,1993,japan,8,Drosophila,triauraria,Diptera,Heze,35.23333,115.43333,accurate,83.7837837838,74,11,NA,NA
+newsearch,kimura_BJLS_3,1993,japan,8,Drosophila,triauraria,Diptera,Heze,35.23333,115.43333,accurate,42.8571428571,35,12,NA,NA
+newsearch,kimura_BJLS_3,1993,japan,8,Drosophila,triauraria,Diptera,Heze,35.23333,115.43333,accurate,0,43,13,NA,NA
+newsearch,kimura_BJLS_3,1993,japan,8,Drosophila,triauraria,Diptera,Shanghai,31.2286,121.4747,accurate,93.5064935065,77,10,NA,NA
+newsearch,kimura_BJLS_3,1993,japan,8,Drosophila,triauraria,Diptera,Shanghai,31.2286,121.4747,accurate,84.3137254902,51,11,NA,NA
+newsearch,kimura_BJLS_3,1993,japan,8,Drosophila,triauraria,Diptera,Shanghai,31.2286,121.4747,accurate,28,50,12,NA,NA
+newsearch,kimura_BJLS_3,1993,japan,8,Drosophila,triauraria,Diptera,Shanghai,31.2286,121.4747,accurate,0,77,13,NA,NA
+newsearch,kimura_BJLS_4,1993,japan,6,Drosophila,subauraria,Diptera,Sarobetsu,45.08,141.69,accurate,100,77,11,NA,NA
+newsearch,kimura_BJLS_4,1993,japan,6,Drosophila,subauraria,Diptera,Sarobetsu,45.08,141.69,accurate,100,116,12,NA,NA
+newsearch,kimura_BJLS_4,1993,japan,6,Drosophila,subauraria,Diptera,Sarobetsu,45.08,141.69,accurate,94.2105263158,190,13,NA,NA
+newsearch,kimura_BJLS_4,1993,japan,6,Drosophila,subauraria,Diptera,Sarobetsu,45.08,141.69,accurate,83.4532374101,139,14,NA,NA
+newsearch,kimura_BJLS_4,1993,japan,6,Drosophila,subauraria,Diptera,Sarobetsu,45.08,141.69,accurate,3.743315508,187,15,NA,NA
+newsearch,kimura_BJLS_4,1993,japan,6,Drosophila,subauraria,Diptera,Sarobetsu,45.08,141.69,accurate,1.7857142857,112,16,NA,NA
+newsearch,kimura_BJLS_4,1993,japan,6,Drosophila,subauraria,Diptera,Sapporo,43.07,141.35,accurate,100,98,11,NA,NA
+newsearch,kimura_BJLS_4,1993,japan,6,Drosophila,subauraria,Diptera,Sapporo,43.07,141.35,accurate,95.9595959596,99,12,NA,NA
+newsearch,kimura_BJLS_4,1993,japan,6,Drosophila,subauraria,Diptera,Sapporo,43.07,141.35,accurate,81.1881188119,101,13,NA,NA
+newsearch,kimura_BJLS_4,1993,japan,6,Drosophila,subauraria,Diptera,Sapporo,43.07,141.35,accurate,45.5357142857,112,14,NA,NA
+newsearch,kimura_BJLS_4,1993,japan,6,Drosophila,subauraria,Diptera,Sapporo,43.07,141.35,accurate,0.6944444444,144,15,NA,NA
+newsearch,kimura_BJLS_4,1993,japan,6,Drosophila,subauraria,Diptera,Sapporo,43.07,141.35,accurate,0,128,16,NA,NA
+newsearch,kimura_BJLS_4,1993,japan,6,Drosophila,subauraria,Diptera,Setana,42.45,139.85,accurate,99.1379310345,116,11,NA,NA
+newsearch,kimura_BJLS_4,1993,japan,6,Drosophila,subauraria,Diptera,Setana,42.45,139.85,accurate,76.5432098765,81,12,NA,NA
+newsearch,kimura_BJLS_4,1993,japan,6,Drosophila,subauraria,Diptera,Setana,42.45,139.85,accurate,35.7894736842,190,13,NA,NA
+newsearch,kimura_BJLS_4,1993,japan,6,Drosophila,subauraria,Diptera,Setana,42.45,139.85,accurate,5.4545454545,110,14,NA,NA
+newsearch,kimura_BJLS_4,1993,japan,6,Drosophila,subauraria,Diptera,Setana,42.45,139.85,accurate,0,139,15,NA,NA
+newsearch,kimura_BJLS_4,1993,japan,6,Drosophila,subauraria,Diptera,Kikonai,41.66,140.43,accurate,100,38,11,NA,NA
+newsearch,kimura_BJLS_4,1993,japan,6,Drosophila,subauraria,Diptera,Kikonai,41.66,140.43,accurate,94.1176470588,34,12,NA,NA
+newsearch,kimura_BJLS_4,1993,japan,6,Drosophila,subauraria,Diptera,Kikonai,41.66,140.43,accurate,75.9259259259,54,13,NA,NA
+newsearch,kimura_BJLS_4,1993,japan,6,Drosophila,subauraria,Diptera,Kikonai,41.66,140.43,accurate,11.6279069767,43,14,NA,NA
+newsearch,kimura_BJLS_4,1993,japan,6,Drosophila,subauraria,Diptera,Kikonai,41.66,140.43,accurate,5.5555555556,18,15,NA,NA
+newsearch,kimura_BJLS_4,1993,japan,6,Drosophila,subauraria,Diptera,Rishiri,45.25,141.21,accurate,100,55,11,NA,NA
+newsearch,kimura_BJLS_4,1993,japan,6,Drosophila,subauraria,Diptera,Rishiri,45.25,141.21,accurate,100,68,12,NA,NA
+newsearch,kimura_BJLS_4,1993,japan,6,Drosophila,subauraria,Diptera,Rishiri,45.25,141.21,accurate,98.6486486486,74,13,NA,NA
+newsearch,kimura_BJLS_4,1993,japan,6,Drosophila,subauraria,Diptera,Rishiri,45.25,141.21,accurate,83.6734693878,49,14,NA,NA
+newsearch,kimura_BJLS_4,1993,japan,6,Drosophila,subauraria,Diptera,Rishiri,45.25,141.21,accurate,14.5833333333,48,15,NA,NA
+newsearch,kimura_BJLS_4,1993,japan,6,Drosophila,subauraria,Diptera,Rishiri,45.25,141.21,accurate,11.1111111111,27,16,NA,NA
+newsearch,kimura_BJLS_4,1993,japan,6,Drosophila,subauraria,Diptera,Okushiri,42.07,139.45,accurate,100,94,11,NA,NA
+newsearch,kimura_BJLS_4,1993,japan,6,Drosophila,subauraria,Diptera,Okushiri,42.07,139.45,accurate,95.5357142857,112,12,NA,NA
+newsearch,kimura_BJLS_4,1993,japan,6,Drosophila,subauraria,Diptera,Okushiri,42.07,139.45,accurate,88.7096774194,124,13,NA,NA
+newsearch,kimura_BJLS_4,1993,japan,6,Drosophila,subauraria,Diptera,Okushiri,42.07,139.45,accurate,17.4825174825,143,14,NA,NA
+newsearch,kimura_BJLS_4,1993,japan,6,Drosophila,subauraria,Diptera,Okushiri,42.07,139.45,accurate,1.6666666667,60,15,NA,NA

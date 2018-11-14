@@ -1,0 +1,153 @@
+species	ID	lat	lon	dl	Diap	ND	perc
+auraria	Wakkanai	45.4	141.69	11	94	1	98.94736842
+auraria	Wakkanai	45.4	141.69	12	83	4	95.40229885
+auraria	Wakkanai	45.4	141.69	13	97	87	52.7173913
+auraria	Wakkanai	45.4	141.69	14	10	163	5.780346821
+auraria	Wakkanai	45.4	141.69	15	0	82	0
+auraria	Haboro	44.36	141.7	11	95	1	98.95833333
+auraria	Haboro	44.36	141.7	12	102	13	88.69565217
+auraria	Haboro	44.36	141.7	13	194	139	58.25825826
+auraria	Haboro	44.36	141.7	14	41	302	11.95335277
+auraria	Haboro	44.36	141.7	15	0	70	0
+auraria	Sapporo	43.07	141.35	11	70	0	100
+auraria	Sapporo	43.07	141.35	12	101	22	82.11382114
+auraria	Sapporo	43.07	141.35	13	136	149	47.71929825
+auraria	Sapporo	43.07	141.35	14	4	196	2
+auraria	Sapporo	43.07	141.35	15	1	115	0.862068966
+auraria	Kikonai	41.66	140.43	11	91	4	95.78947368
+auraria	Kikonai	41.66	140.43	12	192	63	75.29411765
+auraria	Kikonai	41.66	140.43	13	57	301	15.92178771
+auraria	Kikonai	41.66	140.43	14	0	50	0
+auraria	Imabetsu	41.15	140.45	11	83	2	97.64705882
+auraria	Imabetsu	41.15	140.45	12	150	36	80.64516129
+auraria	Imabetsu	41.15	140.45	13	45	252	15.15151515
+auraria	Imabetsu	41.15	140.45	14	0	80	0
+auraria	Yagishiri	44.44	141.43	11	74	1	98.66666667
+auraria	Yagishiri	44.44	141.43	12	106	9	92.17391304
+auraria	Yagishiri	44.44	141.43	13	98	124	44.14414414
+auraria	Yagishiri	44.44	141.43	14	12	188	6
+auraria	Yagishiri	44.44	141.43	15	0	82	0
+biauraria	Sapporo	43.07	141.35	11	90	0	100
+biauraria	Sapporo	43.07	141.35	12	90	0	100
+biauraria	Sapporo	43.07	141.35	13	73	11	86.9047619
+biauraria	Sapporo	43.07	141.35	14	73	97	42.94117647
+biauraria	Sapporo	43.07	141.35	15	0	119	0
+biauraria	Setana	42.45	139.85	11	8	0	100
+biauraria	Setana	42.45	139.85	12	63	2	96.92307692
+biauraria	Setana	42.45	139.85	13	8	1	88.88888889
+biauraria	Setana	42.45	139.85	14	9	28	24.32432432
+biauraria	Setana	42.45	139.85	15	0	65	0
+biauraria	Kikonai	41.66	140.43	11	89	0	100
+biauraria	Kikonai	41.66	140.43	12	100	2	98.03921569
+biauraria	Kikonai	41.66	140.43	13	82	15	84.53608247
+biauraria	Kikonai	41.66	140.43	14	9	81	10
+biauraria	Kikonai	41.66	140.43	15	0	86	0
+biauraria	Oma	41.54	140.92	11	80	1	98.7654321
+biauraria	Oma	41.54	140.92	12	126	1	99.21259843
+biauraria	Oma	41.54	140.92	13	121	46	72.45508982
+biauraria	Oma	41.54	140.92	14	18	123	12.76595745
+biauraria	Oma	41.54	140.92	15	0	157	0
+biauraria	Futatsui	40.2	140.22	11	91	0	100
+biauraria	Futatsui	40.2	140.22	12	94	5	94.94949495
+biauraria	Futatsui	40.2	140.22	13	85	37	69.67213115
+biauraria	Futatsui	40.2	140.22	14	12	65	15.58441558
+biauraria	Futatsui	40.2	140.22	15	0	129	0
+biauraria	Sakata	38.92	139.84	11	118	12	90.76923077
+biauraria	Sakata	38.92	139.84	12	151	29	83.88888889
+biauraria	Sakata	38.92	139.84	13	105	140	42.85714286
+biauraria	Sakata	38.92	139.84	14	10	150	6.25
+biauraria	Sakata	38.92	139.84	15	0	129	0
+biauraria	Murakami	38.12	139.48	11	105	0	100
+biauraria	Murakami	38.12	139.48	12	125	6	95.41984733
+biauraria	Murakami	38.12	139.48	13	106	99	51.70731707
+biauraria	Murakami	38.12	139.48	14	7	70	9.090909091
+biauraria	Murakami	38.12	139.48	15	3	115	2.542372881
+biauraria	Okushiri	42.07	139.45	11	95	0	100
+biauraria	Okushiri	42.07	139.45	12	99	2	98.01980198
+biauraria	Okushiri	42.07	139.45	13	64	15	81.01265823
+biauraria	Okushiri	42.07	139.45	14	27	79	25.47169811
+biauraria	Okushiri	42.07	139.45	15	0	129	0
+biauraria	Tobishima	39.11	139.33	11	51	0	100
+biauraria	Tobishima	39.11	139.33	12	56	0	100
+biauraria	Tobishima	39.11	139.33	13	83	10	89.24731183
+biauraria	Tobishima	39.11	139.33	14	37	22	62.71186441
+biauraria	Tobishima	39.11	139.33	15	0	69	0
+biauraria	Sado	38.02	138.37	11	83	2	97.64705882
+biauraria	Sado	38.02	138.37	12	83	7	92.22222222
+biauraria	Sado	38.02	138.37	13	50	74	40.32258065
+biauraria	Sado	38.02	138.37	14	9	119	7.03125
+biauraria	Sado	38.02	138.37	15	1	116	0.854700855
+triauraria	Kikonai	41.66	140.43	11	52	0	100
+triauraria	Kikonai	41.66	140.43	12	54	9	85.71428571
+triauraria	Kikonai	41.66	140.43	13	78	124	38.61386139
+triauraria	Kikonai	41.66	140.43	14	0	59	0
+triauraria	Kikonai	41.66	140.43	15	0	64	0
+triauraria	Iwanuma	38.11	140.87	11	30	0	100
+triauraria	Iwanuma	38.11	140.87	12	22	2	91.66666667
+triauraria	Iwanuma	38.11	140.87	13	12	42	22.22222222
+triauraria	Iwanuma	38.11	140.87	14	1	17	5.555555556
+triauraria	Kagoshima	31.58	130.54	10	59	4	93.65079365
+triauraria	Kagoshima	31.58	130.54	11	53	20	72.60273973
+triauraria	Kagoshima	31.58	130.54	12	35	43	44.87179487
+triauraria	Kagoshima	31.58	130.54	13	2	63	3.076923077
+triauraria	Kagoshima	31.58	130.54	14	0	35	0
+triauraria	Okushiri	42.07	139.45	11	96	0	100
+triauraria	Okushiri	42.07	139.45	12	50	6	89.28571429
+triauraria	Okushiri	42.07	139.45	13	92	11	89.32038835
+triauraria	Okushiri	42.07	139.45	14	28	157	15.13513514
+triauraria	Okushiri	42.07	139.45	15	0	75	0
+triauraria	Narao	32.85	129.06	10	170	1	99.41520468
+triauraria	Narao	32.85	129.06	11	125	7	94.6969697
+triauraria	Narao	32.85	129.06	12	113	103	52.31481481
+triauraria	Narao	32.85	129.06	13	20	108	15.625
+triauraria	Narao	32.85	129.06	14	4	113	3.418803419
+triauraria	Beijing			10	63	4	94.02985075
+triauraria	Beijing			11	42	13	76.36363636
+triauraria	Beijing			12	15	28	34.88372093
+triauraria	Beijing			13	1	75	1.315789474
+triauraria	Baoding			10	33	10	76.74418605
+triauraria	Baoding			11	11	7	61.11111111
+triauraria	Baoding			12	10	30	25
+triauraria	Baoding			13	8	52	13.33333333
+triauraria	Heze			10	56	5	91.80327869
+triauraria	Heze			11	62	12	83.78378378
+triauraria	Heze			12	15	20	42.85714286
+triauraria	Heze			13	0	43	0
+triauraria	Shanghai			10	72	5	93.50649351
+triauraria	Shanghai			11	43	8	84.31372549
+triauraria	Shanghai			12	14	36	28
+triauraria	Shanghai			13	0	77	0
+subauraria	Sarobetsu	45.08	141.69	11	77	0	100
+subauraria	Sarobetsu	45.08	141.69	12	116	0	100
+subauraria	Sarobetsu	45.08	141.69	13	179	11	94.21052632
+subauraria	Sarobetsu	45.08	141.69	14	116	23	83.45323741
+subauraria	Sarobetsu	45.08	141.69	15	7	180	3.743315508
+subauraria	Sarobetsu	45.08	141.69	16	2	110	1.785714286
+subauraria	Sapporo	43.07	141.35	11	98	0	100
+subauraria	Sapporo	43.07	141.35	12	95	4	95.95959596
+subauraria	Sapporo	43.07	141.35	13	82	19	81.18811881
+subauraria	Sapporo	43.07	141.35	14	51	61	45.53571429
+subauraria	Sapporo	43.07	141.35	15	1	143	0.694444444
+subauraria	Sapporo	43.07	141.35	16	0	128	0
+subauraria	Setana	42.45	139.85	11	115	1	99.13793103
+subauraria	Setana	42.45	139.85	12	62	19	76.54320988
+subauraria	Setana	42.45	139.85	13	68	122	35.78947368
+subauraria	Setana	42.45	139.85	14	6	104	5.454545455
+subauraria	Setana	42.45	139.85	15	0	139	0
+subauraria	Kikonai	41.66	140.43	11	38	0	100
+subauraria	Kikonai	41.66	140.43	12	32	2	94.11764706
+subauraria	Kikonai	41.66	140.43	13	41	13	75.92592593
+subauraria	Kikonai	41.66	140.43	14	5	38	11.62790698
+subauraria	Kikonai	41.66	140.43	15	1	17	5.555555556
+subauraria	Rishiri	45.25	141.21	11	55	0	100
+subauraria	Rishiri	45.25	141.21	12	68	0	100
+subauraria	Rishiri	45.25	141.21	13	73	1	98.64864865
+subauraria	Rishiri	45.25	141.21	14	41	8	83.67346939
+subauraria	Rishiri	45.25	141.21	15	7	41	14.58333333
+subauraria	Rishiri	45.25	141.21	16	3	24	11.11111111
+subauraria	Okushiri	42.07	139.45	11	94	0	100
+subauraria	Okushiri	42.07	139.45	12	107	5	95.53571429
+subauraria	Okushiri	42.07	139.45	13	110	14	88.70967742
+subauraria	Okushiri	42.07	139.45	14	25	118	17.48251748
+subauraria	Okushiri	42.07	139.45	15	1	59	1.666666667
+

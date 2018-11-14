@@ -16,7 +16,7 @@ As expected, populations from northern latitudes shift their timing towards earl
 
 ## 1. Overview  
 We used climate station data to calculate mean winter onset and mean day length at winter onset for 25,340 locations. We then calculated winter predictability with three methods: First, we calculated the standard deviation in winter onset. This served as estimate of the reliability of day lenght as cue. Secondly, we estimated reliability of preceding autumn temperatures. For this we regressed temperatures of the last 30 days before winter onset for each year and calculated the between-years standard deviation of the slope. Thirdly, we determined the "colour of environmental noise" (Vasseur & Yodzis 2004), that is, the relative extent of long-frequency autocorrelations in temperatures.
-We then extracted photoperiodic response curves (PRCs) from 26 published studies (146 populations) along with their sampling locations. We calculated four-parameter dose-response curves to obtain estimates of lower and upper diapause limit, critical day length (inflection point) and slope of the curves. We converted critical day lengths into julian days, and we calculated variances within and between day lengths. We then correlated mean timing and variance components with the climate variables:
+We then extracted photoperiodic response curves (PRCs) from 27 published studies (169 populations) along with their sampling locations. We calculated four-parameter dose-response curves to obtain estimates of lower and upper diapause limit, critical day length (inflection point) and slope of the curves. We converted critical day lengths into julian days, and we calculated variances within and between day lengths. We then correlated mean timing and variance components with the climate variables:
 1) mean diapause timing was correlated with mean winter onset (mean timing)
 2) mean diapause timing was correlated with an interaction of mean winter onset and day length predictability (conservative bet-hedging)
 3) Between-treatments variance were correlated with day length predictability (adaptive plasticity)
@@ -58,21 +58,23 @@ OR TI = (("day length" OR photoperiod* OR diapaus* OR hibern* OR dorman*) AND "p
 but filtered the output by arthropod-related terminology. We found 1638 references in the first search, of which we judged 377 potentially relevant, and 62 met all inclusion criteria. In the second search we found 2748 references, with 621 potentially relevant and 74 included articles. For both searches we did a full forward-citation search on all included articles, and we found 13 and 3 further references, respectively. The search results were largely congruent, and altogether there were 78 useful references (624 populations).
 
 ### 3.3 Inclusion criteria  
-12 articles (179 populations) were not accompanied by raw data, tables or figures that allowed further analysis, and the authors were deceased, did no longer have the raw data or did not respond to our emails. These articles were hence excluded from analysis. From the remaining studies we only selected those populations with at least 2 estimates on the sloped part of the population’s PRC and two further estimates to define upper and lower limits, because otherwise the dose-response curve analysis would not allow for a meaningful slope estimate. Some PRCs were incomplete but nevertheless eligible for analysis, because the upper and lower limits of diapause could be interpolated from the remaining populations of a study (see below). We only included studies with at least 3 remaining populations. This procedure left 33 studies with 189 populations.
+11 articles (123 populations) were not accompanied by raw data, tables or figures that allowed further analysis, and the authors were deceased, did no longer have the raw data or did not respond to our emails. These articles were hence excluded from analysis. From the remaining studies we only selected those populations with at least 2 estimates on the sloped part of the population’s PRC and two further estimates to define upper and lower limits, because otherwise the dose-response curve analysis would not allow for a meaningful slope estimate. Some PRCs were incomplete but nevertheless eligible for analysis, because the upper and lower limits of diapause could be interpolated from the remaining populations of a study (see below). We only included studies with at least 3 remaining populations. This procedure left 34 studies with 217 populations.
 
 
 
 ### 3.4. Data extraction  
-One study (7 populations) reported the slope and midpoint directly, and the remaining 32 studies presented the raw data as tables (3 studies) or figures (29 studies). In the latter case we saved the figure and extracted the data with WebPlotDigitizer Version 3.12 (Rohatgi 2017). Where neccessary, the day length was then rounded or corrected to match the description in materials and methods of the respective study. Y-values that were slightly above 100% or below 0% were set to 100% and 0% respectively.
+One study (7 populations) reported the slope and midpoint directly, and 33 studies presented the raw data as tables (4 studies) or figures (29 studies). In the latter case we saved the figure and extracted the data with WebPlotDigitizer Version 3.12 (Rohatgi 2017). Where neccessary, the day length was then rounded or corrected to match the description in materials and methods of the respective study. Y-values that were slightly above 100% or below 0% were set to 100% and 0% respectively.
 
 ### 3.5 Dose-response curve modelling  
 To estimate the midpoints and slopes we modelled diapause with binomial dose response curves in R (R Core Team n.d.). This analysis provides lower and upper bounds of photoperiodic induction (we constrained these to range from 0 to 100%), the slope, and the inflection point where 50 % of the individuals are induced (critical day length), so up to four parameters per slope were estimated. We expected that all populations of one species have the same lower and upper limit, which reduces the estimation to 2 parameters per slope, plus 2 global parameters per study. We also applied the alternative models with only one or no fixed global parameters .We chose the model with lowest AIC. If there were multiple models with an AIC difference less than 4, we used the most plausible model. [We recorded the standard error along with the estimates of slope, inflection point and upper and lower limits, using the robust sandwich estimation method, which allows deviating from the assumption that residual errors have constant variance (Zeileis 2006).]
 
 [Three studies lacked vital data on upper or lower limits for some focal populations, but contained further populations that were excluded for lack of points on the sloped part. These other populations showed unambigously that the lower and upper limits were 0 and 100%. In these cases we performed a 2-parameter does-response curve to allow inclusion of the incomplete populations.]
 
-Detailed information on number of individuals per point estimate was rarely available (22 populations, 7 studies), as sample sizes were either given as population-level means (4 populations, 1 study) or as global average or range (139 populations, 22 studies), or missed entirely (2 studies, 10 populations). We used all data that was provided to weigh the individual points of the PRC. We wish to emphasize that a lack of detailed information should not be confused with an unweighted (“vote-count”) meta-analysis, because the sample size (day lengths per population) was always known. Rather, the lack of weighing in the PRC estimates lead to slightly less accurate estimates, i.e. the missing information occurred on a lower level (points within population) than the level of replication (population).
 
-During analysis we removed 7 studies (21 populations) and 22 further populations, because the fitted curves did no longer match the inclusion criteria. 26 Studies and 146 populations were left.
+
+Detailed information on number of individuals per point estimate was rarely available (62 populations, 9 studies), as sample sizes were either given as population-level means (4 populations, 1 study) or as global average or range (134 populations, 21 studies), or missed entirely (2 studies, 10 populations). We used all data that was provided to weigh the individual points of the PRC. We wish to emphasize that a lack of detailed information should not be confused with an unweighted (“vote-count”) meta-analysis, because the sample size (day lengths per population) was always known. Rather, the lack of weighing in the PRC estimates lead to slightly less accurate estimates, i.e. the missing information occurred on a lower level (points within population) than the level of replication (population).
+
+During analysis we removed 7 studies (21 populations) and 27 further populations, because the fitted curves did no longer match the inclusion criteria. 27 Studies and 169 populations were left.
 
 ### 3.6 Effect size calculation  
 We used the critical day length from the dose-response curves to calculate the julian day of winter onset. To do so, we used the reported latitude of the sampling location and the day length function from package geosphere (Hijmans 2017).
@@ -82,7 +84,7 @@ For each dose-response curve we calculated variance within treatments and varian
 Meta-analysis models differ from regular mixed-effects models in that the data points (effect sizes of each study) are weighed by their reliability. Usually the models are weighed by the inverse of the effect size variance, but this was not feasible for the variance components. [Moreover, populations with a low number and an unbalanced distribution of data points (e.g. only at 5% and 95% induction) caused partial overfitting of the dose-response models and resulted in unrealistically low standard errors (Fig. S1), so that the least reliable studies would obtain highest weights. ]We therefore weighed the studies by the number of day length treatments that contributed to the slope of the fitted curve. This is similar to a sample size- weighing approach, only without the caveat that sample sizes are not comparable across studies. 
 
 ## 4. Statistical analysis  
-Our analysis is based on 146 populations from 26 studies, which covers 22 species from 16 genera and 8 orders. To obtain estimates of mean winter onset and its predictability for the study site locations, we averaged the estimates from the 5 closest stations within a 5° radius (weighted by 1/euclidian distance). When the coordinates were not directly provided in the study, we used the coordinates of the quoted town or area. Town and area coordinates were made available by the WikiProject Geographical coordinates (https://en.wikipedia.org/wiki/Wikipedia:WikiProject_Geographical_coordinates) and the Geohack tool (https://www.mediawiki.org/wiki/GeoHack).
+Our analysis is based on 169 populations from 27 studies, which covers 23 species from 16 genera and 8 orders. To obtain estimates of mean winter onset and its predictability for the study site locations, we averaged the estimates from the 5 closest stations within a 5° radius (weighted by 1/euclidian distance). When the coordinates were not directly provided in the study, we used the coordinates of the quoted town or area. Town and area coordinates were made available by the WikiProject Geographical coordinates (https://en.wikipedia.org/wiki/Wikipedia:WikiProject_Geographical_coordinates) and the Geohack tool (https://www.mediawiki.org/wiki/GeoHack).
 
 We then correlated mean timing and variance components with the climate variables:
 
@@ -104,6 +106,7 @@ The data from the studies was extracted with WebPlotDigitizer version 3.12 (Roha
 The day length calculations were perfomed with the package geosphere (Hijmans 2017). The dose-response curve analyses were made with the package drc (Ritz et al. 2015), its standard errors were computed with the packages sandwich (Zeileis 2006) and lmtest (Zeileis & Hothorn 2002), and the mixed-effects models were made with the package metafor (Viechtbauer 2010).
 
 The history of this research project (including a full description of all tests and approaches) can be found at https://github.com/JensJoschi/variability_timing
+
 
 
 # details  
@@ -195,10 +198,14 @@ The 75 articles found by the first search included 5 false positives, and the 77
 
 
 #### inclusion
+
+we received data for 2 studies (kimura_geogr and kimura_BJLS) on 14.11.2018. this changes the numbers a bit, so the numbers below are slightly off.
+
 Multiple articles did not contain raw data or figures, or the raw data in figures was not unambigously linked to the populations (use of same symbols for all populations). In 12 cases the data could not be retrieved (todo), and the studies had to be removed from analysis (179 populations). 445 populations remained.
 9 articles (52 populations) had only three day lengths, and this is not enough to calculate the slope. 
 The calculation of reliable slope estimates required in general at least four day length measurements, with two points on the sloped part of the reaction norm and two points defining upper and lower limits (though upper or lower limits could be imputed in 3 cases; see below).
 24 studies (98 populations) did not fulfil these requirements for three populations and were removed. Moreover, 106 of the remaining 295 populations were removed, leaving 33 studies with 189 populations.
+
 
 
 ### drc analysis
@@ -223,38 +230,40 @@ i|study         |best   |chosen |impossible   |notes
 3|gotoh         |3                            |consider removing ishikawa     
 4|hashimoto     |1,3    |1                    |nagaoka and okayama removed            
 5|ito           |2,4    |2                    |WA removed
-6|kimura_geogr_1|3                            |consider removing OI
-7|kimura_geogr_2|3,4    |3
-8|kimura_geogr_3|1,3,4  |1      |            |evidence for 1 from 2 further pops
-9|koveos        |4                            |thessaloniki1 and padua removed
-10|kurota       |3    |3      |4   
-11|lankinen     |3    |3      |             |evidence for 1/3 from 8 further pops; dietikon2 removed
-12|lehmann      |NA    |NA      |             |removed
-13|lumme        |2,4  |2
-14|lushai       |NA  |NA                      |removed
-15|murata       |NA    |NA                      |removed
-16|musolin      |NA   |NA                     |removed
-17|nechols      |LL.2 |LL.2                 |mod 1 would have NA for 1 pop, evidence from 7 further pops
-18|paolucci     |1-4  |1                    |SCH looks odd
-19|riihima      |2    |2      |             |removed oulo2
-20|ryan         |1,2,3|1      |4
-21|shimizu      |3,4  |3                    |SPR removed
-22|shintani     |LL.2 |LL.2                 |mod1 would have NAs, evidence from 8 further pops
-23|shroyer      |2    
-24|so           |NA   |NA                   |removed
-25|suwa         |1    |1      |             |removed all pops except 7,10,16,20; consider removing completely
-26|tyukmaeva    |3,4  |3                    |removed lathi1,lathi3
-27|ujiye        |NA    |NA      |NA         |removed
-28|urbanski     |3    |3      |4              |1 and 2 without box constraints (bc fit is soo bad), 4 has NA for 1 pop
-29|vaznunes     |3    |3      |4            |removed S1,S2,T2
-30|wang         |1,3  |1
-31|yoshida      |3    |3
-32|kimura_evol  |NA   |NA                   |removed
-33|takeda       |1,3,4|1                    |consider removing
-34|noda         |3    |3      |               |removed dl<9; removed ishigaki
+6|kimura_geogr_1|4      |3                    |ON,OI and MY removed;drm3 used despite deltaAIC = 5, because evidence from 3 further pops for common c
+7|kimura_geogr_2|1,2,3  |1                    |IW removed
+8|koveos        |4                            |thessaloniki1 and padua removed
+9|kurota        |3    |3      |4   
+10|lankinen     |3    |3      |             |evidence for 1/3 from 8 further pops; dietikon2 removed
+11|lehmann      |NA    |NA      |             |removed
+12|lumme        |2,4  |2
+13|lushai       |NA  |NA                      |removed
+14|murata       |NA    |NA                      |removed
+15|musolin      |NA   |NA                     |removed
+16|nechols      |LL.2 |LL.2                 |mod 1 would have NA for 1 pop, evidence from 7 further pops
+17|paolucci     |1-4  |1                    |SCH looks odd
+18|riihima      |2    |2      |             |removed oulo2
+19|ryan         |1,2,3|1      |4
+20|shimizu      |3,4  |3                    |SPR removed
+21|shintani     |LL.2 |LL.2                 |mod1 would have NAs, evidence from 8 further pops
+22|shroyer      |2    
+23|so           |NA   |NA                   |removed
+24|suwa         |1    |1      |             |removed all pops except 7,10,16,20; consider removing completely
+25|tyukmaeva    |3,4  |3                    |removed lathi1,lathi3
+26|ujiye        |NA    |NA      |NA         |removed
+27|urbanski     |3    |3      |4              |1 and 2 without box constraints (bc fit is soo bad), 4 has NA for 1 pop
+28|vaznunes     |3    |3      |4            |removed S1,S2,T2
+29|wang         |1,3  |1
+30|yoshida      |3    |3
+31|kimura_evol  |NA   |NA                   |removed
+32|takeda       |1,3,4|1                    |consider removing
+33|noda         |3    |3      |             |removed dl<9; removed ishigaki
+34|kimura_BJLS  |1    |1                    |
+35|kimura_BJLS_2|3    |3                    |removed Setana
+36|kimura_BJLS_3|1,3  |1
+37|kimura_BJLS_4|1,2,3|1
 
-
-Our strict inclusion criteria ensured that all 146 populations have at least two data points on the sloped part. However, populations with data only at the extremes of the slope (e.g. 5% and 95%) nevertheless resulted in unrealistically low standard errors. The inverse variance, which is needed to determine the weight of each study, hence ranged over 5 orders of magnitude (10^0 - 10^(-5)), with lowest values mostly on the least reliable studies.
+Our strict inclusion criteria ensured that all 162 populations have at least two data points on the sloped part. However, populations with data only at the extremes of the slope (e.g. 5% and 95%) nevertheless resulted in unrealistically low standard errors. The inverse variance, which is needed to determine the weight of each study, hence ranged over 5 orders of magnitude (10^0 - 10^(-5)), with lowest values mostly on the least reliable studies.
 We looked at funnel plots (s.e. vs residuals of the models 1) CDL~lat, random = ID/genus/order, unit weight; 2) slope ~ 1, same random, unit weight), and they showed that points with high standard errors spread less around expectation than points with low standard errors (i.e. the funnel goes wrong way). especially for slope estimates with s.e. between 0 and 20. For higher s.e. it becomes better (spread proportional to s.e.)
 
 Constraining the analysis to populations with three data points on the sloped part would bias the selection to populations with flat slopes, while halving the dataset and not fully mitigating the problem. Instead, we capped the inverse variance at 10 times the median inverse variance. This affected 15 populations for the slope estimates, 
@@ -284,7 +293,7 @@ and  26 studies for the mean estimates:
 [25] wang-WH-Sericinus-montelus               takeda-stjohn-Diatraea-grandiosella     
 [27] noda-Sendai-Laodelphax-striatellus   
 
-
+[this is before  integration of kimuras data]
  
 We tried a different weighing, based on the no. of points on the sloped part. We counted all points on sloped part plus first point on the upper and lower limit. These are the points that mostly define shape of drc. It was manually done by counting the points on the fittted curves.These funnel plots look much better, because they are in the right direction now. The shading "funnel" is missing in these plots, because it cannot be calculated with sample sizes only. See also ?funnel. 
 
