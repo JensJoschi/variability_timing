@@ -43,13 +43,13 @@ This script should not be executed completely, becaues it will cause some conver
 
 
 ## load data  
-One study (7 populations) reported the slope and midpoint from drc analyiss directly. The script concentrates on the remaining 33 studies (210 populations). One of the studies (Kimura_geogr) was conducted on two species, and one study was conducted on 4 species (kimura_bjls) the 2/4 species will be treated as independent. This makes 37 "studies".
+One study (7 populations) reported the slope and midpoint from drc analyiss directly. The script concentrates on the remaining 34 studies (218 populations). One of the studies (Kimura_geogr) was conducted on two species, and one study was conducted on 4 species (kimura_bjls) the 2/4 species will be treated as independent. This makes 38 "studies".
 
 ```{r load_data}
 data<-read.table("02studies/01extracted_data/forslopes_new.csv", header=T,sep=",")
-length(unique(data$id)) #33 studies that can be used for slope calculation (kimura_geogr has 2 levels)
+length(unique(data$id)) #34 studies that can be used for slope calculation (kimura_geogr has 2 levels, kimura_bjls has 4)
 data<-unite(data,"popid",c("id","pop","genus","spec"),sep="-",remove=F)
-length(unique(data$popid)) #210 populations (not 218 because lankinen 2013 is not in here)
+length(unique(data$popid)) #218 populations (not 225 because lankinen 2013 is not in here)
 
 #summary of #pops per region and level of detail for sample sizes
 
@@ -64,7 +64,7 @@ for ( i in 1:nrow(t)){
 }
 table(t$reg) #unfortunately, the information was converted to values
 levels(data$region)
-#Japan: 108+10 from the "usa,japan" = 118
+#Japan: 116+10 from the "usa,japan" = 126
 #Europe: 62
 #US: 12+11 from the "usa,japan" = 23
 #China: 7
@@ -74,7 +74,7 @@ levels(data$region)
 table(t$nMethod)
 levels(data$nmethod)
 
-#accurate: 62
+#accurate: 70
 #global average: 134+7+3 =144
 #pop level: 4
 
@@ -108,7 +108,7 @@ The drc analysis is performed individually for each study. The following chunk m
 
 
 ```{r all_models}
-i<-37
+i<-38
 sub<-data[data$id==unique(data$id)[i],] 
 
 #if pops have to be removed (do after fitting)
@@ -174,8 +174,8 @@ aics[4]-min(aics)
 
 After choosing one of the models, change the value in "choice" and "final" and run this chunk
 ```{r choose}
-choice <-1
-final<-drm1
+choice <-3
+final<-drm3
 summary(final)
 results<-list(final,choice)
 ```
@@ -291,6 +291,7 @@ i|study         |best   |chosen |impossible   |notes
 35|kimura_BJLS_2|3    |3                    |removed Setana
 36|kimura_BJLS_3|1,3  |1
 37|kimura_BJLS_4|1,2,3|1
+38|ichijo       |3    |3                    |removed SA, ON
 
 ## quality control  
 All models were done semi-automatically, now we need to check what the data looks like.
@@ -302,9 +303,9 @@ results <- read.table("02studies/02output/slopes.txt",sep = "\t") #reload result
 
 names(results)<-c("row","set","popid","ID","PY","region","pops_left","genus","spec", "order", "pop","degN","degE","nmethod","perc","n2","dl2","number","nslop","inc2","b","bse","c","cse","d","dse","e","ese") #cols "nmethod" to "inc2" will not be used anymore
 
-#removed 7 studies (21 pops) and 27 further pops
-#210-21-27 = 162 pops left
-#in: 26 studies (though one study has 2 and one has 4 species = 30 studies)
+#removed 7 studies (21 pops) and 29 further pops
+#218-21-29 = 168 pops left
+#in: 27 studies (though one study has 2 and one has 4 species = 31 studies)
 ```
 
 ### the problem with s.e.  
@@ -353,7 +354,7 @@ These funnel plots show that points with high standard errors spread less around
 Lets try a different way of weighing, based on the no. of points on the sloped part. We count all points on sloped part plus first point on the upper and lower limit. These are the points that mostly define shape of drc. It was manually done by counting the points on the fittted curves.
 
 ```{r n_points}
-results$npoints <- c(4,4,5, 5,4,4,3,3,4, 4,7,4,7, 5,4,4,4, 4,4,5, 6,4,6, 4,6,5, 4,4,3,5,4, 4,4,4, 4,6,5,3,4,3,4,4, 5,5,5, 4,4,3, 4,5,7,4, 3,5,4, 10,7,4, 5,4,4, 4,3,4,3, 4,4,4, 4,4,4,4, 5,5,5,4,4,4,4,3,4,5,4,4,3,4,3,4,5,5, 9,10,6,8,9,6,8,7,10,5,9,10,6,6,8,10,9,8,6,10,10, 4,4,6,4,5,4, 5,4,4,4, 5,5,4, 4,6,4, 5,4,4,4,4,5, 5,5,5,4,4,5, 4,4,4,4,5,5,4,4,4, 4,4,5,4,4,4,4,4, 4,5,5,4,4,4)
+results$npoints <- c(4,4,5, 5,4,4,3,3,4, 4,7,4,7, 5,4,4,4, 4,4,5, 6,4,6, 4,6,5, 4,4,3,5,4, 4,4,4, 4,6,5,3,4,3,4,4, 5,5,5, 4,4,3, 4,5,7,4, 3,5,4, 10,7,4, 5,4,4, 4,3,4,3, 4,4,4, 4,4,4,4, 5,5,5,4,4,4,4,3,4,5,4,4,3,4,3,4,5,5, 9,10,6,8,9,6,8,7,10,5,9,10,6,6,8,10,9,8,6,10,10, 4,4,6,4,5,4, 5,4,4,4, 5,5,4, 4,6,4, 5,4,4,4,4,5, 5,5,5,4,4,5, 4,4,4,4,5,5,4,4,4, 4,4,5,4,4,4,4,4, 4,5,5,4,4,4, 6,4,5,4,4,4)
 
 rmamod_rednested<-rma.mv(yi = e ~ degN, V = 1, random = ~1|order/genus/ID,data = results)
 svg("funnel_n_e.svg",pointsize=12,width=10) #this is the same as before, only with a differnet y axis
@@ -365,7 +366,7 @@ dev.off()
 
 rmamod_rednested<-rma.mv(yi = b ~ 1, V = 1, random = ~1|order/genus/ID,data = results)
 svg("funnel_n_b.svg",pointsize=12,width=10)
-plot(x=resid(rmamod_rednested), y=results$npoints ,ylim=c(3,10), xlab = "Model residuals", ylab = "Sample size", bty="n",pch = 21, bg= results$col,xlim=c(-160,160),yaxs="i", cex.axis=1.5, cex.lab = 1.5,xpd=T)
+plot(x=resid(rmamod_rednested), y=results$npoints ,ylim=c(3,10), xlab = "Model residuals", ylab = "Sample size", bty="n",pch = 21, bg= results$col,xlim=c(-163,165),yaxs="i", cex.axis=1.5, cex.lab = 1.5,xpd=T)
 abline(v=0,lty=1)
 dev.off()
 ```
