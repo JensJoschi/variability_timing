@@ -29,28 +29,66 @@ library(ggplot2)
 
 
 # General description  
-## Aim  
-The aim of this project is to correlate climate variability with variability in seasonal timing. Is the slope in seasonal responses a bet-hedging trait, i.e., is it adaptive to spread one's timing in more variable conditions?  
+## Project aim  
+The aim of this project is to correlate means and variance of diapause timing with climate means and climate predictability.
 
+## Script overview  
 
-### Overview  
-
-Previous scripts calculated winter variability and winter predictability based on climate station data (30k stations), and various parameters of photoperiodic response curves from published studies (146 populations,26 studies). This script analyses these datasets.
+Previous scripts calculated winter onset means and predictability based on climate station data (30k stations), and various parameters of photoperiodic response curves from published studies (~175 populations,28 studies). This script analyses these datasets.
 
 
 ### Specific description  
 
-The data was generated with R version `r getRversion()`. It requires the datasets "01climate_data/03output/results.txt" and "02studies/02output/slopes.txt", and the locations.txt file from the NOAA server.
+The data was generated with R version `r getRversion()` (3.44). It requires the datasets "01climate_data/03output/results.txt" and "02studies/02output/slopes_clean.txt", and the locations.txt file from the NOAA server.
+
+In this script we do:
+1. maps of winter onset and winter predictability (day length and 2x temperature)
+
+2a. correlate critical day length (CDL) with latitude. This is not quite as the hypotheses, but allows comparison to historical data
+2b. correlate day length of mean winter onset with latitude. also for comparison with historical data.
+
+3. correlate critical day (CD) as interaction of mean winter onset and day length predictability
+4. Between-treatments variance was correlated with day length predictability 5. Within-treatment variance was correlated with an interaction of day length and temperature predictabilities 
+ 
+### statistical approaches  
+The correct statistical approach should be:
+
+estimate ~ climate data, random = (study/species/genus/order), 
+
+with the estimate weighted by the inverse of its variance. The funnel plots showed however that inverse variance does not work, so I take the number of points on the sloped part as sample-size weighing (see manuscript and drc script). This goes in metafor with rma.mv(yi,V,W= sample_size), but is not so straight-forward. Testing with fake data how it works:
+
+```{r test_weighing}
+yi<-rnorm(120,1)
+ID<-rep(1:12,each = 10)
+group<-rep(1:4,each=30)
+yi<-yi*ID+5*group
+
+vi<-1/(1:120)^20 #weights would range from 1 - 10^20, if using that the model should crash
+vi2<-sample(1:10,120,replace=T) #much more reasonable weights...
+vi2[which(yi == min(yi))]<-0.2 #... but the lowest estimate gets very high weight, which should cause underestimation of yi
+
+w<-rep(1,120) #using that would cause an unweighted analysis
+w2<-sample(1:3,120,replace=T)
+data<-data.frame(yi,vi,vi2,as.factor(ID),as.factor(group),w,w2)
+
+M_unw<-rma.mv (yi, V=w, random = ~1|group/ID, data = data,test="t") #works and gives reasonable yi estimate
+#M_crash<-rma.mv (yi, vi, random = ~1|group/ID, data = data,test="t") #does not work, which is good
+#M_nocfrash<-M_crash<-rma.mv (yi, vi, W=w, random = ~1|group/ID, data = data,test="t") #does not work, which is strange
+M_invvar2<-rma.mv (yi, vi2, random = ~1|group/ID, data = data,test="t") #works, but estimate is lower than real yi
+
+M_userw<-rma.mv (yi, V= vi2, W= w,random = ~1|group/ID, data = data,test="t") #recovers unweighted case because weights are now overriding V
+M_userw2<-rma.mv (yi, V= w, W= w,random = ~1|group/ID, data = data,test="t") #recovers unweighted case because weights are now overriding V
+```
+So I will use V = 1 and W = 1/sample_size.
+
+
+What significance tests (if any) should be reported?
+p-values become difficult to calculate in this analysis, because it is nested, unbalanced and weighted, so conditional F-tests are no option (GLMM-Faq by ben bolker explains that well). likelihood-ratio test should work, though it might be inaccurate for small sample sizes. Using a bootstrap version that builds its own Chisquare-like distribution works only for lmer. P is problematic to defend for meta-analyses anyway, so I will not report it. Instead I will report the estimate of the coefficient with confidence interval (Wald-Type,because profile loglik and bootstrap are not available in metafor),I² + confidence interval, pseudo-R², a forest plot, and a plot of prediction + credible intervals. 
+
+Generally all outcome statistics are inaccurate, because they expect that variance of each point is known, but I only provide a coarse estimate of vairance that is based on a very low within-population sample size (~4-10 points to get a slope estimate). that needs to be discussed.
 
 
 # Script  
-
-## General stuff  
-color scheme
-```{r col_defs}
-col_def <- hsv(1:8/8,1,1)
-```
-
 
 ## Overview of studies  
 
@@ -65,19 +103,19 @@ paste(n_distinct(slopes$spec),"species")
 
 #one of the studies has three species
 slopes$ID[slopes$ID=="kimura_geogr_2"]<-"kimura_geogr_1"
-slopes$ID[slopes$ID=="kimura_geogr_3"]<-"kimura_geogr_1"
+slopes$ID[slopes$ID=="kimura_BJLS_2"]<-"kimura_BJLS"
+slopes$ID[slopes$ID=="kimura_BJLS_3"]<-"kimura_BJLS"
+slopes$ID[slopes$ID=="kimura_BJLS_4"]<-"kimura_BJLS"
 slopes$ID<-droplevels(slopes$ID)
 paste(nrow(slopes),"populations")
 paste(n_distinct(slopes$ID),"studies")
 
 slopes$col<-hsv((as.numeric(slopes$order)-1)/8,1,1) # 8 different colors, 1 per invertebrate order
 slopes$col2<-hsv((as.numeric(slopes$order)-1)/8,0.5,1)
-
-
-slopes$degN[140]<-67.1 #was a typo
+slopes<-slopes[order(slopes$order),]
 ```
-## climate data  
 
+## climate data  
 As climate dataset I chose the parameters (5 days below 10°C), a combination that is close to e.g. halkett 2004, and results in a mean winter onset in mid-october (when many animals start their diapause)
 
 ```{r load}
@@ -100,10 +138,20 @@ names(climate)<-c("ID","lat","lon","alt","name","no_idea","meanwinter","sd_winte
 climate<-climate[!is.na(climate$meanwinter),] #because these cannot be used anyway
 beta<-read.table("01climate_data/03output/beta.txt",header=T)
 climate<-merge(climate,beta,by=1)
+
+climate<-climate[climate$lat<70,]
+#calculate day length:
+#Day length changes not only with latitude but also with day of year
+#The correct calculation of day length at a given latitude for a given day is difficult: https://en.wikipedia.org/wiki/Sunrise_equation
+#luckily there is a package that solves that.
+
+climate$dl <- daylength(climate$lat,climate$meanwinter+182)
 ```
 
 
-## map of winter onset  
+## maps  
+
+### map of winter onset  
 ```{r w_on}
 x<-climate$meanwinter
 x<-x-min(x)
@@ -129,14 +177,10 @@ mp+
 dev.off()
 ```
 
-## map of day length at winter onset
-Day length changes not only with latitude but also with day of year
-The correct calculation of day length at a given latitude for a given day is difficult: https://en.wikipedia.org/wiki/Sunrise_equation
-luckily there is a package that solves that.
+### map of day length at winter onset
+
 ```{r w_dl}
-climate<-climate[climate$lat<70,]
-restore<-climate
-x<-daylength(climate$lat,climate$meanwinter+182)
+x<-climate$dl
 length(x[x>16])/length(x)
 x[x>16]<-16
 x<-24-x #x is night length now, high values = short days
@@ -162,56 +206,10 @@ mp+
   geom_point(aes(x=slopes$degE,y=slopes$degN), col = 1, size=0.6)
 dev.off()
 ```
+### Map of winter predictability(by day length)
 
-## correlation day length at winter onset with latitude  
-The day length at winter onset should correlate with latitude, and organisms should respond to that. 
-What is the optimal diapause shift with latitude?
-```{r cor}
-climate<-climate[climate$lat>20,]
-climate$dl <- daylength(climate$lat,climate$meanwinter+182)
-svg("corr_dl_lat_10C5d.svg")
-par(mar=c(5,5,3,2)+0.1)
-plot(climate$dl~climate$lat,pch=22,cex=0.2,xlab = "Latitude",ylab = "Day length at winter onset",main="",col=NA,bg=1,bty="n",yaxt="n",cex.axis=1.5,cex.lab=1.5)
-axis(2,at=c(4,8,12,16,20,24),cex.axis=1.5)
-M<-lm(climate$dl~climate$lat)
-lines(x=c(20,70),y=coef(M)[1]+c(20,70)*coef(M)[2],lwd=4,col="darkgrey")
-#text(60,8,"R² = 0.54")
-dev.off()
-coef(M)[2]*5
-
-#logs<-boxcox(M,lambda=seq(-5,5,0.1))
-#logs$x[which(logs$y==max(logs$y))]
-pw<-climate$dl^(-4.5)
-M2<-lm(pw~climate$lat)
-plot(climate$dl~climate$lat,pch=22,cex=0.2,xlab = "Latitude",ylab = "Day length at winter onset",main="",col=NA,bg=1,bty="n",yaxt="n")
-points(x=seq(0,70,length.out=1000),y=(coef(M2)[1]+seq(0,70,length.out = 1000)*coef(M2)[2])^(1/(-4.5)),col=2)
-
-svg("concept.svg")
-par(mar=c(5,5,3,2)+0.1)
-plot(daylength(0,1:365), xlab="Julian day", ylab = "Day length", cex.axis=1.5, cex.lab=1.5, bty = "n", main="", type="l", lwd=3, ylim=c(0,24), col=hsv(0.6,1,1), xaxt="n", yaxt="n")
-axis(1,at=seq(0,365,by=60),cex.axis=1.5)
-axis(2,at=seq(0,24,by=2),cex.axis=1.5)
-
-points(x=climate$meanwinter+182,y=climate$dl,cex=0.1,col=hsv(0.6,1-0.5*(climate$lat-min(climate$lat))/(max(climate$lat)-min(climate$lat)),1))#"darkgray"
-
-lines(daylength(20,1:365),lwd=3,col=hsv(0.6,0.9,1))
-lines(daylength(40,1:365),lwd=3,col=hsv(0.6,0.8,1))
-lines(daylength(50,1:365),lwd=3,col=hsv(0.6,0.7,1))
-lines(daylength(60,1:365),lwd=3,col=hsv(0.6,0.6,1))
-lines(daylength(70,1:365),lwd=3,col=hsv(0.6,0.5,1))
-points(x=rep(180,5),y=daylength(c(20,40,50,60,70),180),bg=1,pch=21)
-dev.off()
-lat<-20:70
-lengths<-daylength(lat,240)
-M2<-lm(lengths~lat)
-
-
-
-```
-## Map of winter variability
-Variability has been defined as standard deeviation of winter onset. 
-```{r w_var}
-climate<-restore #<20 °N was removed before, now it is back in
+Variability defined as standard deeviation of winter onset. 
+```{r w_p_dl}
 x<-climate$sd_winter
 x[x>30]<-30 #capped to make plotting sensible
 x<-x-min(x)
@@ -235,9 +233,10 @@ mp+
     geom_point(aes(x=slopes$degE,y=slopes$degN), col = 1, size=0.6)
 dev.off()
 ```
-## predictability  
+
+### predictability by temperature 
 This way of calculating winter unpredictability is the standard deviation in slopes of a temperature regression, 30 days before winter onset of each year
-```{r}
+```{r w_p_t}
 x<-climate[!is.na(climate$p),]
 nrow(x[x$p>4,])/nrow(x)
 x$p[x$p>4]<-4 #capped to make plotting sensible
@@ -246,7 +245,6 @@ x$p<-x$p-min(x$p)
 x$p<-x$p/(max(x$p)) #values between 0 and 1
 #large values (high standard deviation) should be red
 
-x$p<-1-x$p #now high values mean high preddictability
 
 
 r<- x$p * 162
@@ -267,7 +265,39 @@ mp+
 dev.off()
 ```
 
-## how do these climate pics change with parameters?  
+
+### predictability as colour of noise  
+```{r w_p_beta}
+x<-climate[!is.na(climate$beta),]
+nrow(x[x$beta>2,])/nrow(x)
+x$beta[x$beta>2]<-2 #capped to make plotting sensible
+x$beta[x$beta<(-2)]<-(-2) #capped to make plotting sensible
+x$beta<-x$beta-min(x$beta)
+
+x$beta<-x$beta/(max(x$beta)) #values between 0 and 1
+#large values (high standard deviation) should be red
+
+
+
+r<- x$beta * 162
+r <- r + 30
+g<-100 - (x$beta * 100)
+b<-200 - (x$beta * 200)
+
+
+svg("w_b_10C5d.svg",width = 14 ,height = 7,pointsize=12)
+mp <- ggplot() + 
+theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_rect(fill = 0), title=element_blank(), axis.text=element_blank(), axis.title = element_blank(), axis.ticks = element_blank(), plot.margin = unit(c(0,0,0,0),units= "cm")) #or rgb(30,100,200,maxColorValue = 255)
+
+mp+ 
+  borders("world", colour="gray50", fill="gray50")+
+  geom_point(aes(x=x$lon, y=x$lat), col = rgb(r,g,b,maxColorValue = 255), size=0.4)+
+    geom_point(aes(x=slopes$degE,y=slopes$degN), col = 1, size=0.6)
+dev.off()
+```
+
+### how do these climate pics change with parameters?  
 The following chunk correlates day length at winter onset with latitude, for a variety of parameter combinations (currently commented out). It also saves the slope estimates
 ```{r sensitivity}
 threshlist <-seq(0,150,5)
@@ -315,278 +345,213 @@ dev.off()
 ```
 
 
-### statistical approaches  
-The "slopes" dataset contains different estimates (e.g. slope and inflection point) of 146 populations (population is the replicate here) in 26 studies, for 22 species, 16 genera and 8 orders. The correct statistical approach should be:
+## Danilevskys rule  
+### correlation day length at winter onset with latitude  
 
-estimate ~ climate data, random = (study/species/genus/order), 
+Danilevsky argued that organisms change their day length response by 1 hour per 5°N. Is that correct? Given the climate data, what is the optimal diapause shift with latitude?
 
-with the estimate weighted by the inverse of its variance. One could argue that study can be erased because it is almost entirely covered by species. I will try to keep it in though, because random effects with nearly 0 explained variance have no effect anyway. The only package (i am aware of) that can do the correct weighting is metafor, and it now also supports nested random terms.
+```{r cor}
+restore<-climate
+climate<-climate[climate$lat>20,]
 
-What significance tests (if any) should be reported?
-p-values become difficult to calculate in this analysis, because it is nested, unbalanced and weighted, so conditional F-tests are no option (GLMM-Faq by ben bolker explains that well). likelihood-ratio test should work, though it might be inaccurate for small sample sizes. Using a bootstrap version that builds its own Chisquare-like distribution works only for lmer. P is problematic to defend for meta-analyses anyway, so I will not report it. Instead I will report the estimate of the coefficient with confidence interval (Wald-Type,because profile loglik and bootstrap are not available in metafor),I² + confidence interval, pseudo-R², a forest plot, and a plot of prediction + credible intervals. All models will be tested on the easier correlation of latitude and critical day length, and if working, applied to the correlation with predictability/variability.
-
-Generally all outcome statistics are inaccurate, because they expect that variance of each point is known, but I only provide a coarse estimate of vairance that is based on a very low within-population sample size (~4-10 points to get a slope estimate). that needs to be discussed.
-
-
-## Critical day length and latitude  
-
-### forest plots of CDL  
-
-This forest plot is just to get an overview how the dose-response curve modelling worked; it is not done on the actual meta-analytic model. 
-
-```{r forest_cdl}
-#x<-forest.default(x=slopes$e, vi=1/slopes$invvar_e, annotate=F, pch=22, col=1, bg=1, xlim=c(10,20), slab=NA, cex=1, rows=nrow(slopes):1, main = "",xlab="Critical day length")
-
-#it is difficult to control all arguments for a publication-ready figure, so I make my own:
-
-#1. cex of points:
-#the point sizes are not returned by forest.default, but one can use part of the code from the forest.default function:
-
-#code snippet to make cex of each point proportional to inverse of variance
-wi <- 1/sqrt(1/slopes$invvar_e)
-psize <- wi/sum(wi, na.rm = TRUE)
-psize <- (psize - min(psize, na.rm = TRUE))/(max(psize, na.rm = TRUE) - min(psize, na.rm = TRUE))
-psize <- (psize * 1) + 0.5
-
-
-
-#pch should be different for each species within an order
-slopes<-unite(slopes,"os",c(order,spec),remove=F)
-slopes<-slopes[order(slopes$os),]
-slopes$pch=21
-
-#these are not sorted the right way. data is sorted by order-genus-species, but pch is alphabetically (->same pch may appear next to each other)
-
-#manually (works):
-slopes$pch<-22
-slopes$pch[4:7]<-21
-slopes$pch[29:33]<-21
-slopes$pch[34:36]<-23
-slopes$pch[37:47]<-24
-slopes$pch[48:72]<-24
-slopes$pch[73:75]<-25
-slopes$pch[76:82]<-22
-slopes$pch[83:85]<-21
-slopes$pch[105:110]<-21
-slopes$pch[111:113]<-23
-slopes$pch[114:116]<-24
-slopes$pch[117:120]<-25
-slopes$pch[132:145]<-21
-#3. plot points (data is same as forest.default, only pretty)
-
-#make gaps between orders
-#first, calculate y-value: midpoint of each order
-n<-table(slopes$order)
-cums<-cumsum(as.numeric(n))
-cums<-c(0,cums)
-cums<-nrow(slopes)-cums
-c2<-NA
-for(i in 1:(length(cums)-1)){
-  c2[i]<-mean(c(cums[i],cums[i+1]))
-}
-
-#idea: get a vector "s" of form 1,2,3,4,4.1,4.2,4.3,5 if the gap is inserted at 4
-#then plot data between 1:length(s), with data only on non-decimal places
-gaplength=10
-s<-nrow(slopes):1
-for(i in 1:8){
-s<-c(s,seq(cums[i+1]+0.2,cums[i+1]+0.9,length.out=gaplength))
-}
-s<-s[order(s,decreasing=F)]
-vec <- which(s%%1==0)
-
-
-#start plotting
-
-svg("forest_cdl.svg",pointsize=12,height=7,width=7/3)
-par(mar=c(5,1,0,1)+0.1)
-xlim<-c(8,21.2)
-plot(x=slopes$e,y=vec[length(vec):1],pch=slopes$pch,bg=slopes$col,cex=psize,xlim=xlim,xlab="Critical day length (h)",bty="n",yaxt="n",ylab="",cex.lab=1,cex.axis=1)
-
-#4. lines for confidence intervals (calculation from forest.default)
-cv<-qnorm(0.05/2,lower.tail=F)*slopes$ese
-ci_l<-slopes$e-cv
-ci_u<-slopes$e+cv
-num<-nrow(slopes)
-
-for (i in 1: nrow(slopes)){
-  lines(x=c(ci_l[num-i+1],ci_u[num-i+1]),y=c(vec[i],vec[i]))
-  if (ci_l[num-i+1] < xlim[1]){
-    arrows(xlim[1],vec[i],xlim[1]-1,vec[i],col=1,xpd=T,length = 1/nrow(slopes) * 10)
-  }
-   if (ci_u[num-i+1] > xlim[2]){
-    arrows(xlim[2],vec[i],xlim[2]+1,vec[i],col=1,xpd=T,length = 1/nrow(slopes) * 10)
-  }
-}
-
-#5. points again so they are in foreground
-points(x=slopes$e,y=vec[length(vec):1],bg=slopes$col,pch=slopes$pch,cex=psize,col=1)
-
-#6. legend
-
-
-
-#printing of legend
-#points(x= rep(5.1,8),y=c2,pch=22,bg=hsv((1:8-1)/8,1,1),cex=0.8)
-#text(x=5,y=c2,labels=names(n),pos=4,bty="n",cex=0.8)
-
-#diamonds
-m_e<-mean(slopes$e)
-se<-sd(slopes$e)/sqrt(nrow(slopes))
-m_v<-qnorm(0.05/2,lower.tail=F)*se
-polygon(x=c(m_e-m_v, m_e, m_e+m_v, m_e),y=c(-18,-15,-18,-21),xpd=T,lwd=2,col="darkgrey")
-
-#by order
-gaps <- which(s%%1!=0)[seq(gaplength/2,gaplength*8,gaplength)]
-
-for(i in 1:length(unique(slopes$order))){
-sub<-slopes[slopes$order ==unique(slopes$order)[i],]
-m_e<-mean(sub$e)
-se<-sd(sub$e)/sqrt(nrow(sub))
-m_v<-qnorm(0.05/2,lower.tail=F)*se
-polygon(x=c(m_e-m_v, m_e, m_e+m_v, m_e), y=c(gaps[9-i],gaps[9-i]+2,gaps[9-i],gaps[9-i]-2), xpd=T, lwd=1, col=unique(slopes$col2)[i])
-}
-
+svg("corr_dl_lat_10C5d.svg")
+par(mar=c(5,5,3,2)+0.1)
+plot(climate$dl~climate$lat,pch=22,cex=0.2,xlab = "Latitude",ylab = "Day length at winter onset",main="",col=NA,bg=1,bty="n",yaxt="n",cex.axis=1.5,cex.lab=1.5)
+axis(2,at=c(4,8,12,16,20,24),cex.axis=1.5)
+M<-lm(climate$dl~climate$lat)
+lines(x=c(20,70),y=coef(M)[1]+c(20,70)*coef(M)[2],lwd=4,col="darkgrey")
+#text(60,8,"R² = 0.54")
 dev.off()
+coef(M)[2]*5
+
+#logs<-boxcox(M,lambda=seq(-5,5,0.1))
+#logs$x[which(logs$y==max(logs$y))]
+pw<-climate$dl^(-4.5)
+M2<-lm(pw~climate$lat)
+plot(climate$dl~climate$lat,pch=22,cex=0.2,xlab = "Latitude",ylab = "Day length at winter onset",main="",col=NA,bg=1,bty="n",yaxt="n")
+points(x=seq(0,70,length.out=1000),y=(coef(M2)[1]+seq(0,70,length.out = 1000)*coef(M2)[2])^(1/(-4.5)),col=2)
+
+svg("concept.svg")
+par(mar=c(5,5,3,2)+0.1)
+plot(daylength(0,1:365), xlab="Julian day", ylab = "Day length", cex.axis=1.5, cex.lab=1.5, bty = "n", main="", type="l", lwd=3, ylim=c(0,24), col=hsv(0.6,1,1), xaxt="n", yaxt="n")
+axis(1,at=seq(0,365,by=60),cex.axis=1.5)
+axis(2,at=seq(0,24,by=2),cex.axis=1.5)
+
+points(x=climate$meanwinter+182,y=climate$dl,cex=0.1,col=hsv(0.6,1-0.5*(climate$lat-min(climate$lat))/(max(climate$lat)-min(climate$lat)),1))#"darkgray"
+
+lines(daylength(20,1:365),lwd=3,col=hsv(0.6,0.9,1))
+lines(daylength(40,1:365),lwd=3,col=hsv(0.6,0.8,1))
+lines(daylength(50,1:365),lwd=3,col=hsv(0.6,0.7,1))
+lines(daylength(60,1:365),lwd=3,col=hsv(0.6,0.6,1))
+lines(daylength(70,1:365),lwd=3,col=hsv(0.6,0.5,1))
+points(x=rep(180,5),y=daylength(c(20,40,50,60,70),180),bg=1,pch=21)
+dev.off()
+climate<-restore
 ```
+The optimal response is 0.81 h /5 degrees latitude. the curve is exponential though
 
 
-### The model for latitude - CDL
 
-The critical day length (day length at which 50 % of all offspring switch to diapause) should correlate with latitude. Earlier studies quote rates of 1-1.5 hours per 5°N. Let's see if that holds for the data in this meta-analysis.
+### Critical day length and latitude  
 
+Danilevsky quotes rates of 1-1.5 hours per 5°N. Let's see if that holds for the data in this meta-analysis.
 
-```{r nested_rma}
-slopes$var_e<-1/slopes$invvar_e
-rmamod_nested<-rma.mv(yi = e ~ degN, V = var_e, random = ~1|order/genus/spec/ID, data = slopes,test="t")
+#### the full model  
+```{r cdl_lat_full}
+#rmamod_nested<-rma.mv(yi = e ~ degN, V=rep(1,nrow(slopes)), W = npoints, random = ~1|order/genus/spec/ID, data = slopes,test="t")
+rmamod_nested<-rma.mv(yi = e ~ degN, V=1/npoints, random = ~1|order/genus/spec/ID/popid, data = slopes,test="t")
 summary(rmamod_nested) # species has no variance explained
 profile(rmamod_nested, sigma2=1)#order
 profile(rmamod_nested, sigma2=2)#order/g
 profile(rmamod_nested, sigma2=3)#order/g/s #very flat
 profile(rmamod_nested, sigma2=4)#order/g/s/study
+profile(rmamod_nested, sigma2=5)#order/g/s/study
 ```
 
-species explains nothing because in most cases each study has 1 species.
-
-Study identity is always included in meta-analysis, so the default would be removing "species". On the other hand, removing species but leaving ID in emphasizes differences among auhtors, while the removal of ID and inclusion of species emphasizes biological differences.
+Species explains nothing because in most cases each species is replicated once (one study per species). Only 5 species occur multiple (2-3) times, usually in studies from the same authors (except O.sauteri and 1 T.urticae). To complicate things, 2 studies have 2/4 species. It is probably best to remove ID from the random structure.
 
 
 #### alternative models  
 ```{r profplots}
-rmamod_rednested<-rma.mv(yi = e ~ degN, V = var_e, random = ~1|order/genus/ID,data = slopes)
-profile(rmamod_rednested, sigma2=1)#order
-profile(rmamod_rednested, sigma2=2)#order/g #linear increase no maximum
-profile(rmamod_rednested, sigma2=3)#order/g/study 
+#model without species
+reduced<-rma.mv(yi = e ~ degN, V=1/npoints, random = ~1|order/genus/ID/popid,data = slopes)
 
-#comparing to model without study
-rmamod_rednested2<-rma.mv(yi = e ~ degN, V = var_e, random = ~1|order/genus/spec,data = slopes) 
-profile(rmamod_rednested2, sigma2=1)#order
-profile(rmamod_rednested2, sigma2=2)#order/g #better
-profile(rmamod_rednested2, sigma2=3)#order/g/study 
+profile(reduced, sigma2=1)#order
+profile(reduced, sigma2=2)#order/g 
+profile(reduced, sigma2=3)#order/g/study 
+profile(reduced, sigma2=4)#order/g/study/pop
+
+#model without study
+reduced2<-rma.mv(yi = e ~ degN, V=1/npoints, random = ~1|order/genus/spec/popid,data = slopes)
+
+profile(reduced2, sigma2=1)#order
+profile(reduced2, sigma2=2)#order/g 
+profile(reduced2, sigma2=3)#order/g/spec 
+profile(reduced2, sigma2=4)#order/g/spec 
 ```
 
 #### results  
-I stick to the one without species
+I stick to the one without study.
+estimates and conf intervals will be done with metafor package. I² makes no sense because I use sample size weighing approach. For R² I can report the nakagawa-R² (from metafor), a conditional or a marginal R². I use metafor for the conditional(?, ignores randoms), and lme for the marginal(?) pseudo-R² 
 ```{r degN_results}
-rmamod_nested<-rmamod_rednested
+
+#summary statistics
+quantile(slopes$degN)
+#     0%      25%      50%      75%     100% 
+#25.22806 36.08056 41.15000 51.84167 67.10000 
+mean(slopes$degN) #44.42637
+
+
+weighted.mean(slopes$e,slopes$npoints)# 14.00758
+x<-daylength(44.42637,1:360)
+which(x<14.05&x>13.95) #day 229 at 44.43 °N
+
+
+#modelling
+rmamod_nested<-reduced2
+nullmod<-rma.mv(yi = e ~ 1, V=1/npoints, random = ~1|order/genus/spec/popid, data = slopes)
+coef(nullmod)#same as weighted mean
+
 summary(rmamod_nested)
-#comparing to lmes
-#summary(lme(e~degN, random =~ 1|order/genus/ID,data=slopes,weights=~var_e)) #very similar
 
 #1. estimate +ci
 confint(rmamod_nested,fixed=T,random=F)
+#0.2020 ( 0.1846 - 0.2193)
+#=60.60 (55.38- 65.79) min
 
-#2. I² 
-W <- diag(1/slopes$var_e)
-X <- model.matrix(rmamod_nested)
-P <- W - W %*% X %*% solve(t(X) %*% W %*% X) %*% t(X) %*% W #generalized calculation of I² as described in http://www.metafor-project.org/doku.php/tips:i2_multilevel_multivariate
-#overall I² (using sum of sigmas)
-
-100 * sum(rmamod_nested$sigma2) / (sum(rmamod_nested$sigma2) + (rmamod_nested$k-rmamod_nested$p)/sum(diag(P)))
-#I² of each level
-round(100 * rmamod_nested$sigma2 / (sum(rmamod_nested$sigma2) + (rmamod_nested$k-rmamod_nested$p)/sum(diag(P))),4)
-#heterogeneity is apparently 99.95%, 62%,15% and 22% due to order/genus/ID
-
-
-
-#3. forest plot #this version plots predictions + CI as whiskers
-
-
-x<-forest(rmamod_nested, addcred=T,addfit=T,cex.axis=1,cex.lab=2,cex=0.5,xlim=c(6,25),alim=c(8,23),slab=NA,annotate=F,xlab="CDL")
-points(slopes$e,nrow(slopes):1,bg=slopes$col,pch=slopes$pch)
-#grey: prediction interval, bars= confidence intervals 
-
-points(x= rep(21,8),y=c2,pch=21,bg=hsv((1:8-1)/8,1,1),cex=0.8)
-text(x=21,y=c2,labels=names(n),pos=4,bty="n",cex=0.8)
-
+#generalized calculation of I² is described in http://www.metafor-project.org/doku.php/tips:i2_multilevel_multivariate
+#but it makes no sense in sample-size weighing approach
 
 #4. pseudo-R^2
-pseudo_nested<-rma.mv(yi = e ~ 1, V =var_e , random = ~1|order/genus/ID,data = slopes,test="t")
-rsq<-(sum(pseudo_nested$sigma2)-sum(rmamod_nested$sigma2))/sum(pseudo_nested$sigma2)
-#0.604607
+rsq<-(sum(nullmod$sigma2)-sum(rmamod_nested$sigma2))/sum(nullmod$sigma2)
+rsq #0.5393216
+#partial rsquares
+parsq<-(nullmod$sigma2-rmamod_nested$sigma2)/nullmod$sigma2
+#parsq not sensible because 0 variance explained by genus in nullmod
+
+#alternative R2 - ignoring random
+summary(lm(rmamod_nested$yi~fitted(rmamod_nested), weights = 1/rmamod_nested$vi))$adj.r.squared #0.73
+
+#blup-based
+lme<-lme(e ~ degN, random =~ 1|order/genus/spec, data=slopes, weights=~npoints, method="REML")
+#level order
+summary(lm(slopes$e~fitted(lme, level = 1)))$adj.r.squared#0.84
+#genus
+summary(lm(slopes$e~fitted(lme, level = 2)))$adj.r.squared#0.89
+#species
+summary(lm(slopes$e~fitted(lme, level = 3)))$adj.r.squared#0.90
 
 
-#6. plot prediction + credible interval
-#6.1. caculate pi and ci
+n<-table(slopes$order)
+names(n)<- paste(names(n)," (", n, ")", sep = "")
+```
+```{r}
+ps<-predict(lme)
+#library effects
+```
+
+
+#### plot  
+```{r degN_plot}
+#1. caculate pi and ci
 ps<-predict.rma(rmamod_nested)
-ub<-data.frame(slopes$degN,ps$cr.ub,ps$ci.ub)
+ub<-data.frame(slopes$degN, ps$cr.ub, ps$ci.ub)
 names(ub)<-c("degN","cr","ci")
 ub<-ub[order(ub$degN),]
-lb<-data.frame(slopes$degN,ps$cr.lb,ps$ci.lb)
+lb<-data.frame(slopes$degN, ps$cr.lb, ps$ci.lb)
 names(lb)<-c("degN","cr","ci")
 lb<-lb[order(lb$degN),]
-combined<-rbind(ub,lb[nrow(lb):1,])
+combined<-rbind(ub, lb[nrow(lb):1,])
 
 #2. plot data
-plot(x=slopes$degN,y=slopes$e,pch=slopes$pch,cex=0.8,col=NA, bg=slopes$col,main = "", xlab = "Latitude (°N)", ylab = "Critical photoperiod (h)",bty="n",xaxt="n")
-legend("topleft",legend=names(n)[8:1],col=rep(1,8),pt.bg=hsv((7:0)/8,1,1),pch=22,bty="n",ncol=1,cex=0.8)
+svg("CDL_lat.svg", width=10, pointsize=12)
+par(mar = c(5,5,0,0) +0.1)
+plot(x=slopes$degN, y=slopes$e, pch=21, cex=2*slopes$npoints/10, col=1, bg=slopes$col, main = "", xlab = "Latitude (°N)", ylab = "Critical photoperiod (h)",bty="n", xaxt="n", cex.axis = 1.5, cex.lab=1.5)
+
+
+legend("topleft",legend=names(n)[8:1], col=rep(1,8), pt.bg=hsv((7:0)/8,1,1), pch=21, bty="n", ncol=1,cex=1.5)
 #3. add CI and CR
 polygon(x=combined$degN, y=combined$cr,col="lightgrey",border=NA)
 #polygon(x=combined$degN, y=combined$ci,col="darkgrey",border=NA)
 lines(x=slopes$degN,y=ps$pred,lwd=2)
-points(x=slopes$degN,y=slopes$e,pch=slopes$pch,cex=0.8,col=NA,bg=slopes$col)
+points(x=slopes$degN,y=slopes$e,pch=21,col=1,bg=slopes$col,cex=2*slopes$npoints/10)
 
-segments(x0=slopes$degN,x1=slopes$degN,y0=slopes$e-1.96*slopes$ese,y1=slopes$e+1.96*slopes$ese)
-axis(1,at=c(0,20,30,40,50,60,70,80))
+axis(1,at=c(0,20,30,40,50,60,70,80),cex.axis=1.5, cex.lab = 1.5)
 
 s_est<-confint(rmamod_nested,fixed=T,random=F)$fixed[2,1]*5
 s_est<-round(s_est,2)
 rsq=round(rsq,2)
-#5 degrees latitude ~ 1 hour
+#5 degrees latitude ~ 59 minutes
 #text(50,20,paste("slope = ",s_est, " hours/5°N\npseudo-R² = ",rsq),cex=0.8)
-
+dev.off()
 ```
 
 #### alternative plot of results  
 
-making the same plot as last one, but with lines for each study
-```{r CDL_studylines, include =F}
-
-names(n)<- paste(unique(slopes$order)," (", table(slopes$order), ")", sep = "")
-
-svg("CDL_lat.svg",width=10,pointsize=12)
+making the same plot as last one, but with lines for each order
+```{r degN_plot_order}
+svg("CDL_lat_order.svg",width=10,pointsize=12)
 par(mar = c(5,5,0,0)+0.1)
 
+plot(x=slopes$degN, y=slopes$e, pch=21, cex=2*slopes$npoints/10, col=1, bg=slopes$col, main = "", xlab = "Latitude (°N)", ylab = "Critical photoperiod (h)",bty="n", xaxt="n", cex.axis = 1.5, cex.lab=1.5)
 
-plot(x=slopes$degN,y=slopes$e,pch=22,cex=1.3,col=NA, bg=slopes$col,main = "", xlab = "Latitude (°N)", ylab = "Critical photoperiod (h)",bty="n",xaxt="n",cex.lab=1.5,cex.axis=1.5)
-
-legend("topleft",legend=names(n)[1:8],col=rep(1,8),pt.bg=hsv((7:0)/8,1,1)[8:1],pch=22,bty="n",ncol=1,cex=1.3,y.intersp=0.8)
-
+legend("topleft",legend=names(n)[8:1], col=rep(1,8), pt.bg=hsv((7:0)/8,1,1), pch=21, bty="n", ncol=1,cex=1.5)
 #3. add CI and CR
-#polygon(x=combined$degN, y=combined$ci,col="lightgrey",border=NA)
-#polygon(x=combined$degN, y=combined$ci,col="darkgrey",border=NA)
-#lines(x=slopes$degN,y=ps$pred,lwd=2)
-points(x=slopes$degN,y=slopes$e,pch=22,cex=1.3,col=NA,bg=slopes$col)
+lines(sort(slopes$degN), ub$cr, lwd=1.5, lty=3)
+lines(sort(slopes$degN),lb$cr, lwd=1.5, lty=3)
+#polygon(x=combined$degN, y=combined$cr,col="lightgrey",border=NA)
 
-cv<-qnorm(0.05/2,lower.tail=F)*slopes$ese
-segments(x0=slopes$degN,x1=slopes$degN,y0=slopes$e-cv,y1=slopes$e+cv,col="darkgray")
-axis(1,at=c(0,20,30,40,50,60,70,80))
+lines(x=slopes$degN,y=ps$pred,lwd=2)
+
+
+axis(1,at=c(0,20,30,40,50,60,70,80),cex.axis=1.5, cex.lab = 1.5)
 
 for(i in 1:length(unique(slopes$order))){
   sub<-slopes[slopes$order==unique(slopes$order)[i],]
-  studmod<-rma.mv(yi = e ~ degN, V = var_e, data = sub,random = ~1|genus/ID)
+  studmod<-rma.mv(yi = e ~ degN,V=1/npoints, data = sub,random = ~1|genus/ID)
   sub$pred<-predict(studmod)$pred
-  lines(sub$pred~sub$degN,col=sub$col[1],lwd=1 + round(5* table(slopes$order)[i]/max(table(slopes$order))))
+  #lines(sub$pred~sub$degN,col=sub$col[1],lwd=1.5 )
+ lines(sub$pred~sub$degN,col=sub$col[1],lwd=1 + round(5* table(slopes$order)[i]/max(table(slopes$order))))
   
   ps<-predict.rma(studmod)
   ub<-data.frame(sub$degN,ps$cr.ub,ps$ci.ub)
@@ -596,17 +561,17 @@ for(i in 1:length(unique(slopes$order))){
   names(lb)<-c("degN","cr","ci")
   lb<-lb[order(lb$degN),]
   combined<-rbind(ub,lb[nrow(lb):1,])
-  polygon(x=combined$degN, y=combined$ci,col=hsv((as.numeric(sub$order[1])-1)/8,1,1,alpha=0.2),border=NA)
+  polygon(x=combined$degN, y=combined$ci,col=hsv((as.numeric(sub$order[1])-1)/8,1,1,alpha=0.5*sqrt(table(slopes$order)[i]/max(table(slopes$order)))),border=NA)#or alpha =0.25
   print(sub$order[1])
   print (coef(studmod)[2]*5*60)
 }
-
+points(x=slopes$degN ,y=slopes$e, pch=21, col=1, bg=slopes$col, cex=2*slopes$npoints/10)
 
 
 dev.off()
 ```
 
-The estimate of 1 h per 5° N is not too bad, overall diapause becomes 69 min earlier per 5°.
+The estimate of 1 h per 5° N is not too bad, overall diapause becomes 49 min earlier per 5°.
 
 
 
@@ -644,6 +609,129 @@ for ( i in 1:nrow(slopes)){
 
 slopes<-slopes[!is.na(slopes$meanwinter),]
 ```
+
+## correlation critical day ~ w_on * p
+### calculate critical julian day
+```{r critical_day}
+slopes$cd<-NA
+for ( i in 1:nrow(slopes)){
+  x<-daylength(slopes[i,12],180:360)
+  slopes$cd[i]<-which.min(abs(slopes[i,27]-x))+179
+}
+```
+
+### the models
+```{r}
+weighting <- slopes$npoints
+mod<-rma.mv(yi = cd, mods = ~ meanwinter*sd_winter , V=1/weighting, random = ~1|(order/genus/spec),data = slopes)
+
+profile(reduced2, sigma2=1)#order
+profile(reduced2, sigma2=2)#order/g 
+profile(reduced2, sigma2=3)#order/g/spec 
+
+red<-rma.mv(yi = cd ~ meanwinter+sd_winter, V=1/weighting, random = ~1|(order/genus/spec),data = slopes)
+red2<-rma.mv(yi = cd ~ meanwinter, V=1/weighting, random = ~1|order/genus/spec,data = slopes)
+red3<-rma.mv(yi = cd ~ sd_winter, V=1/weighting, random = ~1|order/genus/spec,data = slopes)
+
+nullmod      <-rma.mv(yi = cd,          V=1/weighting, random = ~1|(order/genus/spec), data = slopes)
+
+lmemod<- lme(cd ~ meanwinter * sd_winter, random =~ 1|order/genus/spec, data=slopes, weights=~npoints, method="ML")
+lmemod2<- lme(cd ~ meanwinter + sd_winter, random =~ 1|order/genus/spec, data=slopes, weights=~npoints, method="ML")
+lmemod3<- lme(cd ~ meanwinter             , random =~ 1|order/genus/spec, data=slopes, weights=~npoints, method="ML")
+lmemod4<- lme(cd ~              sd_winter, random =~ 1|order/genus/spec, data=slopes, weights=~npoints, method="ML")
+lmenull<-lme(cd ~              1, random =~ 1|order/genus/spec, data=slopes, weights=~npoints, method="ML")
+anova(lmemod,lmemod2)
+anova(lmemod2,lmemod3)
+anova(lmemod2,lmemod4)
+
+plot(slopes$cd~slopes$meanwinter,pch=21,bg=slopes$order,ylim=c(150,350))
+for(i in 1:length(unique(slopes$order))){
+  x<-slopes$meanwinter[slopes$order==unique(slopes$order)[i]]
+  y<-fitted(lmemod2)[slopes$order==unique(slopes$order)[i]]
+points(x,y,col=i,cex=1.5)}
+plot(fitted(red)~slopes$meanwinter,col=slopes$order,ylim=c(200,350))
+plot(fitted(lmemod2)~slopes$meanwinter,pch=21,bg=slopes$order,ylim=c(150,350))
+new<-rma.mv(yi = cd,V=ese, mods= ~ meanwinter, random =~ 1|order,data = slopes)
+```
+
+#### cd vs w_on  
+```{r cdwon_results}
+#summary statistics
+quantile(slopes$meanwinter)
+#  0%       25%       50%       75%      100% 
+# 36.32246  95.82095 119.08168 138.79421 203.65533 
+mean(slopes$meanwinter) #115.2439
+weighted.mean(slopes$cd,slopes$npoints)# 239.2126
+
+#1. estimate +ci
+confint(mod,fixed=T,random=F)
+
+#4. pseudo-R^2
+rsq<-(sum(nullmod$sigma2)-sum(mod$sigma2))/sum(nullmod$sigma2)
+rsq #0
+#alternative R2
+summary(lm(mod$yi~fitted(mod), weights = 1/mod$vi))$adj.r.squared
+
+parsq<-(nullmod$sigma2-mod$sigma2)/nullmod$sigma2
+parsq
+n<-table(slopes$order)
+names(n)<- paste(names(n)," (", n, ")", sep = "")
+```
+
+#### plot cd ~ meanwinter
+
+```{r cdwon}
+svg("cd_won.svg",width=10,pointsize=12)
+par(mar = c(5,5,0,0)+0.1)
+
+ps<-predict.rma(red2)
+ub<-data.frame(slopes$meanwinter, ps$cr.ub, ps$ci.ub)
+names(ub)<-c("meanwinter","cr","ci")
+ub<-ub[order(ub$meanwinter),]
+lb<-data.frame(slopes$meanwinter, ps$cr.lb, ps$ci.lb)
+names(lb)<-c("meanwinter","cr","ci")
+lb<-lb[order(lb$meanwinter),]
+combined<-rbind(ub, lb[nrow(lb):1,])
+
+plot(x=slopes$meanwinter, y=slopes$cd, pch=21, cex=2*slopes$npoints/10, col=1, bg=slopes$col, main = "", xlab = "Winter onset", ylab = "Critical day",bty="n", xaxt="n", cex.axis = 1.5, cex.lab=1.5)
+
+legend("topleft",legend=names(n)[8:1], col=rep(1,8), pt.bg=hsv((7:0)/8,1,1), pch=21, bty="n", ncol=1,cex=1.5)
+#3. add CI and CR
+lines(sort(slopes$meanwinter), ub$cr, lwd=1.5, lty=3)
+lines(sort(slopes$meanwinter),lb$cr, lwd=1.5, lty=3)
+#polygon(x=combined$degN, y=combined$cr,col="lightgrey",border=NA)
+
+lines(x=slopes$meanwinter,y=ps$pred,lwd=2)
+
+
+axis(1,at=seq(30,210,length.out=7),cex.axis=1.5, cex.lab = 1.5)
+
+for(i in 1:length(unique(slopes$order))){
+  sub<-slopes[slopes$order==unique(slopes$order)[i],]
+  studmod<-rma.mv(yi = cd ~ meanwinter, V=1/npoints, data = sub,random = ~1|genus/spec)
+  sub$pred<-predict(studmod)$pred
+  #lines(sub$pred~sub$degN,col=sub$col[1],lwd=1.5 )
+ lines(sub$pred~sub$meanwinter,col=sub$col[1],lwd=1 + round(5* table(slopes$order)[i]/max(table(slopes$order))))
+  
+  ps<-predict.rma(studmod)
+  ub<-data.frame(sub$meanwinter,ps$cr.ub,ps$ci.ub)
+  names(ub)<-c("meanwinter","cr","ci")
+  ub<-ub[order(ub$meanwinter),]
+  lb<-data.frame(sub$meanwinter,ps$cr.lb,ps$ci.lb)
+  names(lb)<-c("meanwinter","cr","ci")
+  lb<-lb[order(lb$meanwinter),]
+  combined<-rbind(ub,lb[nrow(lb):1,])
+  polygon(x=combined$meanwinter, y=combined$ci,col=hsv((as.numeric(sub$order[1])-1)/8,1,1,alpha=0.5*sqrt(table(slopes$order)[i]/max(table(slopes$order)))),border=NA)#or alpha =0.25
+  print(sub$order[1])
+  print (coef(studmod)[2]*5*60)
+}
+points(x=slopes$meanwinter ,y=slopes$cd, pch=21, col=1, bg=slopes$col, cex=2*slopes$npoints/10)
+
+
+dev.off()
+```
+
+
 
 
 ### within vs between treat variance  
@@ -741,50 +829,6 @@ text(13,0.1,paste("within:",round(w_d,2)))
 text(13,0,paste("between:",round(bet_d,5)))
 
 ```
-
-
-### visualising
-```{r maps}
-#empty map
-p<-climate
-p<-p[!is.na(p$meanwinter),]
-plot(p$lat~p$lon,bg = rgb(0.8,0.8,0.8,maxColorValue =1),cex=0.3,pch=22,col=NA, main ="Study locations",xlab="",ylab="")
-points(slopes$degN~slopes$degE,pch=22,bg=1,cex=0.2)
-
-#test whether euclidian distance did something bad
-plot(p$lat~p$lon,bg = rgb(p$meanwinter,p$meanwinter,0,maxColorValue = max(p$meanwinter)),cex=0.3,pch=22,col=NA, main ="mean winter onset",xlab="",ylab="")
-points(slopes$degN~slopes$degE,pch=22,bg=rgb(slopes$meanwinter,slopes$meanwinter,0,maxColorValue = max(p$meanwinter)),cex=0.5,col=NA)
-#points are invisible, so the yblend perfectly with the other data
-
-
-#visualizing variability/predictability of study locations
-
-
-slopes$temp<-slopes$meanwinter
-plot(p$lat~p$lon,bg = rgb(0.8,0.8,0.8),cex=0.3,pch=22,col=NA, main ="mean winter",xlab="",ylab="")
-points(slopes$degN~slopes$degE,pch=22,bg=rgb(slopes$temp,slopes$temp,0,maxColorValue = max(slopes$temp)),cex=0.5,col=NA)
-
-slopes$temp<-slopes$sd_winter
-slopes$temp[slopes$temp>50]<-50
-plot(p$lat~p$lon,bg = rgb(0.8,0.8,0.8),cex=0.3,pch=22,col=NA, main ="sd(winter)",xlab="",ylab="")
-points(slopes$degN~slopes$degE,pch=22,bg=rgb(slopes$temp,slopes$temp,0,maxColorValue = max(slopes$temp)),cex=0.5,col=NA)
-
-slopes$temp<-slopes$p
-p<-p[!is.na(p$p),]
-x<-slopes[!is.na(slopes$p),]
-plot(p$lat~p$lon,bg = rgb(0.8,0.8,0.8),cex=0.3,pch=22,col=NA, main ="predictability(slopes)",xlab="",ylab="")
-points(x$degN~x$degE,pch=22,bg=rgb(x$temp,x$temp,0,maxColorValue = max(x$temp)),cex=0.5,col=NA)
-
-slopes$temp<-slopes$beta
-slopes$temp[slopes$temp<0]<-0
-plot(p$lat~p$lon,bg = rgb(0.8,0.8,0.8),cex=0.3,pch=22,col=NA, main ="predictability (beta)",xlab="",ylab="")
-points(slopes$degN~slopes$degE,pch=22,bg=rgb(slopes$temp,slopes$temp,0,maxColorValue = max(slopes$temp)),cex=0.5,col=NA)
-
-slopes$temp<-slopes$b
-plot(p$lat~p$lon,bg = rgb(0.8,0.8,0.8),cex=0.3,pch=22,col=NA, main ="b",xlab="",ylab="")
-points(slopes$degN~slopes$degE,pch=22,bg=rgb(slopes$temp,slopes$temp,0,maxColorValue = max(slopes$temp)),cex=0.8,col=NA)
-```
-
 
 ## correlation of CDL with mean winter onset
 
