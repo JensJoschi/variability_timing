@@ -9,22 +9,24 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-library(RCurl)
-library(readr)
-library(data.table)
-library(textreadr)
-library(tidyr)
-library(dplyr)
-library(stringr)
-library(magrittr)
-library(geomapdata)
-library(geosphere)
-library(MASS)
-library(lme4)
-library(nlme)
-library(metafor)
-library(maps)
-library(ggplot2)
+#library(tidyverse)
+#library(RCurl)
+#library(readr)
+#library(data.table)
+#library(textreadr)
+#library(tidyr)
+#library(dplyr)
+#library(stringr)
+#library(magrittr)
+#library(geomapdata)
+#library(geosphere)
+#library(MASS)
+#library(lme4)
+#library(nlme)
+#library(metafor)
+#library(maps)
+#library(ggplot2)
+#library(MuMIn)
 ```
 
 
@@ -151,7 +153,7 @@ climate$dl <- daylength(climate$lat,climate$meanwinter+182)
 
 ## maps  
 
-### map of winter onset  
+_map of winter onset  _  
 ```{r w_on}
 x<-climate$meanwinter
 x<-x-min(x)
@@ -177,7 +179,7 @@ mp+
 dev.off()
 ```
 
-### map of day length at winter onset
+_map of day length at winter onset_
 
 ```{r w_dl}
 x<-climate$dl
@@ -206,7 +208,7 @@ mp+
   geom_point(aes(x=slopes$degE,y=slopes$degN), col = 1, size=0.6)
 dev.off()
 ```
-### Map of winter predictability(by day length)
+_Map of winter predictability(by day length)_  
 
 Variability defined as standard deeviation of winter onset. 
 ```{r w_p_dl}
@@ -234,7 +236,7 @@ mp+
 dev.off()
 ```
 
-### predictability by temperature 
+_predictability by temperature _  
 This way of calculating winter unpredictability is the standard deviation in slopes of a temperature regression, 30 days before winter onset of each year
 ```{r w_p_t}
 x<-climate[!is.na(climate$p),]
@@ -266,7 +268,8 @@ dev.off()
 ```
 
 
-### predictability as colour of noise  
+_predictability as colour of noise  _  
+
 ```{r w_p_beta}
 x<-climate[!is.na(climate$beta),]
 nrow(x[x$beta>2,])/nrow(x)
@@ -298,10 +301,12 @@ dev.off()
 ```
 
 ### how do these climate pics change with parameters?  
-The following chunk correlates day length at winter onset with latitude, for a variety of parameter combinations (currently commented out). It also saves the slope estimates
+The following chunk correlates day length at winter onset with latitude, for a variety of parameter combinations (currently commented out). It also saves the slope estimates.
+It is currently disabled so that the script is not slowed down. in addition, running it will reload the climate data and erase all changes (e.g. climate$dl) from chunk4 ("load")
 ```{r sensitivity}
+dontrun<-function(){
 threshlist <-seq(0,150,5)
-t2list <-c(5,10,15)
+t2list <-5#c(5,10,15)
 Z<-1
 coeflist<-rep(NA,length(threshlist)*length(t2list))
 
@@ -342,6 +347,7 @@ for (lin in 1:length(t2list)){
 }
 axis(2,at=c(-0.5,0,0.5,1,1.5), cex.axis=1.5)
 dev.off()
+}
 ```
 
 
@@ -397,29 +403,29 @@ The optimal response is 0.81 h /5 degrees latitude. the curve is exponential tho
 Danilevsky quotes rates of 1-1.5 hours per 5°N. Let's see if that holds for the data in this meta-analysis.
 
 #### the full model  
-```{r cdl_lat_full}
+```{r degN_full}
 #rmamod_nested<-rma.mv(yi = e ~ degN, V=rep(1,nrow(slopes)), W = npoints, random = ~1|order/genus/spec/ID, data = slopes,test="t")
 rmamod_nested<-rma.mv(yi = e ~ degN, V=1/npoints, random = ~1|order/genus/spec/ID/popid, data = slopes,test="t")
 summary(rmamod_nested) # species has no variance explained
 profile(rmamod_nested, sigma2=1)#order
 profile(rmamod_nested, sigma2=2)#order/g
-profile(rmamod_nested, sigma2=3)#order/g/s #very flat
-profile(rmamod_nested, sigma2=4)#order/g/s/study
-profile(rmamod_nested, sigma2=5)#order/g/s/study
+profile(rmamod_nested, sigma2=3)#order/g/species #very flat
+profile(rmamod_nested, sigma2=4)#order/g/species/study
+profile(rmamod_nested, sigma2=5)#order/g/species/study/population
 ```
 
 Species explains nothing because in most cases each species is replicated once (one study per species). Only 5 species occur multiple (2-3) times, usually in studies from the same authors (except O.sauteri and 1 T.urticae). To complicate things, 2 studies have 2/4 species. It is probably best to remove ID from the random structure.
 
 
 #### alternative models  
-```{r profplots}
+```{r degN_profplots}
 #model without species
 reduced<-rma.mv(yi = e ~ degN, V=1/npoints, random = ~1|order/genus/ID/popid,data = slopes)
 
 profile(reduced, sigma2=1)#order
 profile(reduced, sigma2=2)#order/g 
 profile(reduced, sigma2=3)#order/g/study 
-profile(reduced, sigma2=4)#order/g/study/pop
+profile(reduced, sigma2=4)#order/g/study/population
 
 #model without study
 reduced2<-rma.mv(yi = e ~ degN, V=1/npoints, random = ~1|order/genus/spec/popid,data = slopes)
@@ -427,69 +433,121 @@ reduced2<-rma.mv(yi = e ~ degN, V=1/npoints, random = ~1|order/genus/spec/popid,
 profile(reduced2, sigma2=1)#order
 profile(reduced2, sigma2=2)#order/g 
 profile(reduced2, sigma2=3)#order/g/spec 
-profile(reduced2, sigma2=4)#order/g/spec 
+profile(reduced2, sigma2=4)#order/g/spec/population
+
 ```
 
 #### results  
-I stick to the one without study.
-estimates and conf intervals will be done with metafor package. I² makes no sense because I use sample size weighing approach. For R² I can report the nakagawa-R² (from metafor), a conditional or a marginal R². I use metafor for the conditional(?, ignores randoms), and lme for the marginal(?) pseudo-R² 
-```{r degN_results}
+I stick to the one without study. 
 
+_the models_   
+```{r degN_models}
+reduced2<-rma.mv(yi = e ~ degN, V=1/npoints, random = ~1|order/genus/spec/popid,data = slopes)
+nullmod<-rma.mv(yi = e ~ 1, V=1/npoints, random = ~1|order/genus/spec/popid, data = slopes)
+
+lme<-lme(e ~ degN, random =~ 1|order/genus/spec, data=slopes, weights=~npoints, method="REML")
+nullme<-lme(e ~ 1, random =~ 1|order/genus/spec, data=slopes, weights=~npoints, method="REML")
+
+
+summary(reduced2)
+summary(lme)
+#coefs are the same which is a good sign.
+sdevs<-c(1.0386240, 0.7267113, 0.2304249, 0.3656163)
+#random deviations are slightly larger but similar to sigma of metafor model; ratios are also similar
+
+#all as ML fits
+reduced2.ml<-rma.mv(yi = e ~ degN, V=1/npoints, random = ~1|order/genus/spec/popid,data = slopes, method= "ML")
+nullmod.ml<-rma.mv(yi = e ~ 1, V=1/npoints, random = ~1|order/genus/spec/popid, data = slopes, method="ML")
+nullme.ml<-lme(e ~ 1, random =~ 1|order/genus/spec, data=slopes, weights=~npoints, method="ML")
+lme.ml<-lme(e ~ degN, random =~ 1|order/genus/spec, data=slopes, weights=~npoints, method="ML")
+
+n<-table(slopes$order)
+names(n)<- paste(names(n)," (", n, ")", sep = "") #will be used for plotting later, better laod it together with the model so it wont get lost
+```
+
+The following chunk calculates summary statistics, I², R² and statistical significance of the main effect.
+confidence/prediction intervals, sigma estimates and LRT tests and plots are based on metafor, while R² is based on lme. LRT and sigma from lme is very similar to metafor though, and marginal R² from metafor is similar to lme.
+_summary statistics_    
+```{r degN_sumstat}
 #summary statistics
 quantile(slopes$degN)
 #     0%      25%      50%      75%     100% 
 #25.22806 36.08056 41.15000 51.84167 67.10000 
 mean(slopes$degN) #44.42637
 
-
 weighted.mean(slopes$e,slopes$npoints)# 14.00758
 x<-daylength(44.42637,1:360)
 which(x<14.05&x>13.95) #day 229 at 44.43 °N
 
 
-#modelling
-rmamod_nested<-reduced2
-nullmod<-rma.mv(yi = e ~ 1, V=1/npoints, random = ~1|order/genus/spec/popid, data = slopes)
-coef(nullmod)#same as weighted mean
-
-summary(rmamod_nested)
-
-#1. estimate +ci
-confint(rmamod_nested,fixed=T,random=F)
-#0.2020 ( 0.1846 - 0.2193)
-#=60.60 (55.38- 65.79) min
-
-#generalized calculation of I² is described in http://www.metafor-project.org/doku.php/tips:i2_multilevel_multivariate
-#but it makes no sense in sample-size weighing approach
-
-#4. pseudo-R^2
-rsq<-(sum(nullmod$sigma2)-sum(rmamod_nested$sigma2))/sum(nullmod$sigma2)
-rsq #0.5393216
-#partial rsquares
-parsq<-(nullmod$sigma2-rmamod_nested$sigma2)/nullmod$sigma2
-#parsq not sensible because 0 variance explained by genus in nullmod
-
-#alternative R2 - ignoring random
-summary(lm(rmamod_nested$yi~fitted(rmamod_nested), weights = 1/rmamod_nested$vi))$adj.r.squared #0.73
-
-#blup-based
-lme<-lme(e ~ degN, random =~ 1|order/genus/spec, data=slopes, weights=~npoints, method="REML")
-#level order
-summary(lm(slopes$e~fitted(lme, level = 1)))$adj.r.squared#0.84
-#genus
-summary(lm(slopes$e~fitted(lme, level = 2)))$adj.r.squared#0.89
-#species
-summary(lm(slopes$e~fitted(lme, level = 3)))$adj.r.squared#0.90
-
-
-n<-table(slopes$order)
-names(n)<- paste(names(n)," (", n, ")", sep = "")
-```
-```{r}
-ps<-predict(lme)
-#library effects
+#estimate +ci
+confint(reduced2,fixed=T,random=F)
+#0.2020 ( 0.1848 - 0.2156)
+#confint(reduced2,fixed=T,random=F)$fixed[2,]*5*60
+#=60.06726 (55.45489 - 64.67962)  min
 ```
 
+_ I²_  
+The generalized calculation of I² is described in http://www.metafor-project.org/doku.php/tips:i2_multilevel_multivariate .
+one can calculate the overall I² and the individual contribution of each random level:
+```{r degN_isq}
+W <- diag(slopes$npoints)
+X <- model.matrix(rmamod_nested)
+P <- W - W %*% X %*% solve(t(X) %*% W %*% X) %*% t(X) %*% W 
+100 * sum(reduced2$sigma2) / (sum(reduced2$sigma2) + (reduced2$k-reduced2$p)/sum(diag(P)))
+#I² of each level
+x<-round(100 * reduced2$sigma2 / (sum(reduced2$sigma2) + (reduced2$k-reduced2$p)/sum(diag(P))),4)
+x
+#heterogeneity is apparently 98.62%, 35%,48% and 14% due to order/genus/ID
+```
+
+I am not sure whether the I² calculation makes sense, because it calculates sample variance relative to overall variance. Does it make sense to compare sample size variation to overall variance? What is maybe more important is the relative contribution of each level:
+```{r degN_Icont}
+x/sum(x)
+# that is the same as:
+reduced2$sigma2/sum(reduced2$sigma2)
+
+#the same calculation based on the standard deviations of the random terms from the lme model:
+sdevs/sum(sdevs)
+```
+
+_R square_  
+The most frequently used approach is the approach by Nakagawa, which compares heterogeneity with effects to heterogeneity of the null model. Other approaches calculate R² from the correlation of original ~ fitted values. R² can include the random terms (conditional R²) or ignore them (marginal R²). 
+
+```{r degN_R}
+#table of all possible R² calculations
+rsq<-data.frame(metafor = rep(NA,2), lme = rep(NA,2))
+rownames(rsq) = c("marginal","conditional")
+
+#appraoch advertised by W.viechtbauer, maker of metafor:
+(sum(nullmod$sigma2)-sum(reduced2$sigma2))/sum(nullmod$sigma2) #0.54
+#possibly wrong, sigma may not be correctly calculated for sample-size based approach 
+rsq[1,1]<-summary(lm(reduced2$yi~fitted(reduced2), weights = 1/reduced2$vi))$adj.r.squared #0.73
+#the simpler yi~fitted method
+
+rsq[1,2]<-r.squaredGLMM(lme)[1]#marginal R², from library MuMin
+#0.77
+
+# simpler method for the marginal R² (the random terms need to be ignored which boils down to lm):
+fixedmod<-lm(slopes$e~slopes$degN,weights= slopes$npoints)
+summary(lm(slopes$e~fitted(fixedmod)))$adj.r.squared
+#0.76
+
+#conditional  
+rsq[2,1] <-NA # fitted with blups is not available for rma.mv
+
+rsq[2,2] <- r.squaredGLMM(lme)[2]
+#or alternatively 
+summary(lm(slopes$e~fitted(lme)))$adj.r.squared#0.90
+rsq
+```
+only the lme R² are the nakagawa approaches.
+
+_significance: LRT tests_  
+```{r degN_sig}
+anova(lme.ml,nullme.ml) #LRT ratio = 177.8717, p<0.001
+anova(reduced2.ml,nullmod.ml) #LRT ratio = 176.0836, p<0.001
+```
 
 #### plot  
 ```{r degN_plot}
@@ -526,7 +584,7 @@ rsq=round(rsq,2)
 dev.off()
 ```
 
-#### alternative plot of results  
+_alternative plot of results_  
 
 making the same plot as last one, but with lines for each order
 ```{r degN_plot_order}
