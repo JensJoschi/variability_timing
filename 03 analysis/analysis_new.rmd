@@ -9,7 +9,7 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-#library(tidyverse)
+library(tidyverse)
 #library(RCurl)
 #library(readr)
 #library(data.table)
@@ -19,14 +19,14 @@ knitr::opts_chunk$set(echo = TRUE)
 #library(stringr)
 #library(magrittr)
 #library(geomapdata)
-#library(geosphere)
+library(geosphere)
 #library(MASS)
 #library(lme4)
-#library(nlme)
-#library(metafor)
-#library(maps)
+library(nlme)
+library(metafor)
+library(maps)
 #library(ggplot2)
-#library(MuMIn)
+library(MuMIn)
 ```
 
 
@@ -57,38 +57,7 @@ The correct statistical approach should be:
 
 estimate ~ climate data, random = (study/species/genus/order), 
 
-with the estimate weighted by the inverse of its variance. The funnel plots showed however that inverse variance does not work, so I take the number of points on the sloped part as sample-size weighing (see manuscript and drc script). This goes in metafor with rma.mv(yi,V,W= sample_size), but is not so straight-forward. Testing with fake data how it works:
-
-```{r test_weighing}
-yi<-rnorm(120,1)
-ID<-rep(1:12,each = 10)
-group<-rep(1:4,each=30)
-yi<-yi*ID+5*group
-
-vi<-1/(1:120)^20 #weights would range from 1 - 10^20, if using that the model should crash
-vi2<-sample(1:10,120,replace=T) #much more reasonable weights...
-vi2[which(yi == min(yi))]<-0.2 #... but the lowest estimate gets very high weight, which should cause underestimation of yi
-
-w<-rep(1,120) #using that would cause an unweighted analysis
-w2<-sample(1:3,120,replace=T)
-data<-data.frame(yi,vi,vi2,as.factor(ID),as.factor(group),w,w2)
-
-M_unw<-rma.mv (yi, V=w, random = ~1|group/ID, data = data,test="t") #works and gives reasonable yi estimate
-#M_crash<-rma.mv (yi, vi, random = ~1|group/ID, data = data,test="t") #does not work, which is good
-#M_nocfrash<-M_crash<-rma.mv (yi, vi, W=w, random = ~1|group/ID, data = data,test="t") #does not work, which is strange
-M_invvar2<-rma.mv (yi, vi2, random = ~1|group/ID, data = data,test="t") #works, but estimate is lower than real yi
-
-M_userw<-rma.mv (yi, V= vi2, W= w,random = ~1|group/ID, data = data,test="t") #recovers unweighted case because weights are now overriding V
-M_userw2<-rma.mv (yi, V= w, W= w,random = ~1|group/ID, data = data,test="t") #recovers unweighted case because weights are now overriding V
-```
-So I will use V = 1 and W = 1/sample_size.
-
-
-What significance tests (if any) should be reported?
-p-values become difficult to calculate in this analysis, because it is nested, unbalanced and weighted, so conditional F-tests are no option (GLMM-Faq by ben bolker explains that well). likelihood-ratio test should work, though it might be inaccurate for small sample sizes. Using a bootstrap version that builds its own Chisquare-like distribution works only for lmer. P is problematic to defend for meta-analyses anyway, so I will not report it. Instead I will report the estimate of the coefficient with confidence interval (Wald-Type,because profile loglik and bootstrap are not available in metafor),I² + confidence interval, pseudo-R², a forest plot, and a plot of prediction + credible intervals. 
-
-Generally all outcome statistics are inaccurate, because they expect that variance of each point is known, but I only provide a coarse estimate of vairance that is based on a very low within-population sample size (~4-10 points to get a slope estimate). that needs to be discussed.
-
+with the estimate weighted by the inverse of its variance. The funnel plots showed however that inverse variance does not work, so I take the number of points on the sloped part as sample-size weighing (see manuscript and drc script). Usually meta-analyses are conducted with metafor, because this package can weigh each data point by its inverse variance, whereas lme/lmer make the weights proportional to an unknown constant. In this case the lme/lmer version is correct though, because the sample size should be only proportional to inverse variance. 
 
 # Script  
 
@@ -404,69 +373,54 @@ Danilevsky quotes rates of 1-1.5 hours per 5°N. Let's see if that holds for the
 
 #### the full model  
 ```{r degN_full}
-#rmamod_nested<-rma.mv(yi = e ~ degN, V=rep(1,nrow(slopes)), W = npoints, random = ~1|order/genus/spec/ID, data = slopes,test="t")
-rmamod_nested<-rma.mv(yi = e ~ degN, V=1/npoints, random = ~1|order/genus/spec/ID/popid, data = slopes,test="t")
-summary(rmamod_nested) # species has no variance explained
-profile(rmamod_nested, sigma2=1)#order
-profile(rmamod_nested, sigma2=2)#order/g
-profile(rmamod_nested, sigma2=3)#order/g/species #very flat
-profile(rmamod_nested, sigma2=4)#order/g/species/study
-profile(rmamod_nested, sigma2=5)#order/g/species/study/population
-```
+degN_full<-lme(e ~ degN, random =~ 1|order/genus/spec/ID, data=slopes, weights=~npoints, method="REML")
 
-Species explains nothing because in most cases each species is replicated once (one study per species). Only 5 species occur multiple (2-3) times, usually in studies from the same authors (except O.sauteri and 1 T.urticae). To complicate things, 2 studies have 2/4 species. It is probably best to remove ID from the random structure.
-
-
-#### alternative models  
-```{r degN_profplots}
-#model without species
-reduced<-rma.mv(yi = e ~ degN, V=1/npoints, random = ~1|order/genus/ID/popid,data = slopes)
-
-profile(reduced, sigma2=1)#order
-profile(reduced, sigma2=2)#order/g 
-profile(reduced, sigma2=3)#order/g/study 
-profile(reduced, sigma2=4)#order/g/study/population
-
-#model without study
-reduced2<-rma.mv(yi = e ~ degN, V=1/npoints, random = ~1|order/genus/spec/popid,data = slopes)
-
-profile(reduced2, sigma2=1)#order
-profile(reduced2, sigma2=2)#order/g 
-profile(reduced2, sigma2=3)#order/g/spec 
-profile(reduced2, sigma2=4)#order/g/spec/population
+#level species explains 0 variance. This is because there are very few replicates on that level. To show the problem, same model in metafor:
+metaf<-rma.mv(yi = e ~ degN, V=1/npoints, random = ~1|order/genus/spec/ID/popid,data = slopes)
+profile(metaf,sigma2=3)
 
 ```
+
+Species explains nothing because in most cases each species is replicated once (one study per species). Only 5 species occur multiple (2-3) times, usually in studies from the same authors (except O.sauteri and 1 T.urticae). To complicate things, 2 studies have 2/4 species. The low rpelication explains why the loglikelihood profile for same model in metafor is flat at the species level. It is probably best to remove ID or species from the random structure.
+
 
 #### results  
-I stick to the one without study. 
 
 _the models_   
 ```{r degN_models}
-reduced2<-rma.mv(yi = e ~ degN, V=1/npoints, random = ~1|order/genus/spec/popid,data = slopes)
-nullmod<-rma.mv(yi = e ~ 1, V=1/npoints, random = ~1|order/genus/spec/popid, data = slopes)
-
-lme<-lme(e ~ degN, random =~ 1|order/genus/spec, data=slopes, weights=~npoints, method="REML")
+#model without species
+degN_red<-lme(e ~ degN, random =~ 1|order/genus/ID, data=slopes, weights=~npoints, method="REML")
+#model without study
+degN_red2<-lme(e ~ degN, random =~ 1|order/genus/spec, data=slopes, weights=~npoints, method="REML")
+#null model (with species as random)
 nullme<-lme(e ~ 1, random =~ 1|order/genus/spec, data=slopes, weights=~npoints, method="REML")
 
-
-summary(reduced2)
-summary(lme)
-#coefs are the same which is a good sign.
+summary(degN_red2)
 sdevs<-c(1.0386240, 0.7267113, 0.2304249, 0.3656163)
+
+#for comparison:
+metafred<- rma.mv(yi = e ~ degN, V=1/npoints, random = ~1|order/genus/spec/popid,data = slopes)
+metanull<-rma.mv(yi = e ~ 1, V=1/npoints, random = ~1|order/genus/spec/popid,data = slopes)
+#summary(metafred)
+#coefs are the same which is a good sign.
+sdevs/sum(sdevs)
+# 0.43983837 0.30774902 0.09758075 0.15483185
+metafred$sigma2/sum(metafred$sigma2)
+# 0.54716464 0.26793208 0.01841289 0.16649038
 #random deviations are slightly larger but similar to sigma of metafor model; ratios are also similar
 
 #all as ML fits
-reduced2.ml<-rma.mv(yi = e ~ degN, V=1/npoints, random = ~1|order/genus/spec/popid,data = slopes, method= "ML")
-nullmod.ml<-rma.mv(yi = e ~ 1, V=1/npoints, random = ~1|order/genus/spec/popid, data = slopes, method="ML")
+degN_red2.ml<-lme(e ~ degN, random =~ 1|order/genus/spec, data=slopes, weights=~npoints, method="ML")
 nullme.ml<-lme(e ~ 1, random =~ 1|order/genus/spec, data=slopes, weights=~npoints, method="ML")
-lme.ml<-lme(e ~ degN, random =~ 1|order/genus/spec, data=slopes, weights=~npoints, method="ML")
+metafred.ml<- rma.mv(yi = e ~ degN, V=1/npoints, random = ~1|order/genus/spec/popid,data = slopes, method="ML")
+metanull.ml<-rma.mv(yi = e ~ 1, V=1/npoints, random = ~1|order/genus/spec/popid,data = slopes, method="ML")
 
 n<-table(slopes$order)
 names(n)<- paste(names(n)," (", n, ")", sep = "") #will be used for plotting later, better laod it together with the model so it wont get lost
 ```
 
-The following chunk calculates summary statistics, I², R² and statistical significance of the main effect.
-confidence/prediction intervals, sigma estimates and LRT tests and plots are based on metafor, while R² is based on lme. LRT and sigma from lme is very similar to metafor though, and marginal R² from metafor is similar to lme.
+The following chunk calculates summary statistics, R² and statistical significance of the main effect.
+
 _summary statistics_    
 ```{r degN_sumstat}
 #summary statistics
@@ -479,80 +433,49 @@ weighted.mean(slopes$e,slopes$npoints)# 14.00758
 x<-daylength(44.42637,1:360)
 which(x<14.05&x>13.95) #day 229 at 44.43 °N
 
+#estimate +se
+summary(degN_red2)$tTable
+ #0.207123 0.0079068
+#=62.13705 +- .372037 min
 
-#estimate +ci
-confint(reduced2,fixed=T,random=F)
-#0.2020 ( 0.1848 - 0.2156)
-#confint(reduced2,fixed=T,random=F)$fixed[2,]*5*60
-#=60.06726 (55.45489 - 64.67962)  min
-```
-
-_ I²_  
-The generalized calculation of I² is described in http://www.metafor-project.org/doku.php/tips:i2_multilevel_multivariate .
-one can calculate the overall I² and the individual contribution of each random level:
-```{r degN_isq}
-W <- diag(slopes$npoints)
-X <- model.matrix(rmamod_nested)
-P <- W - W %*% X %*% solve(t(X) %*% W %*% X) %*% t(X) %*% W 
-100 * sum(reduced2$sigma2) / (sum(reduced2$sigma2) + (reduced2$k-reduced2$p)/sum(diag(P)))
-#I² of each level
-x<-round(100 * reduced2$sigma2 / (sum(reduced2$sigma2) + (reduced2$k-reduced2$p)/sum(diag(P))),4)
-x
-#heterogeneity is apparently 98.62%, 35%,48% and 14% due to order/genus/ID
-```
-
-I am not sure whether the I² calculation makes sense, because it calculates sample variance relative to overall variance. Does it make sense to compare sample size variation to overall variance? What is maybe more important is the relative contribution of each level:
-```{r degN_Icont}
-x/sum(x)
-# that is the same as:
-reduced2$sigma2/sum(reduced2$sigma2)
-
-#the same calculation based on the standard deviations of the random terms from the lme model:
-sdevs/sum(sdevs)
+#contribution of random levels to overall variance
+sdevs/sum(sdevs) #0.43983837 0.30774902 0.09758075 0.15483185
+#can be used as replacement for I². Cant use I², because it calculates sample variance relative to overall variance. It makes little sense to compare sample size variation to overall variance
 ```
 
 _R square_  
 The most frequently used approach is the approach by Nakagawa, which compares heterogeneity with effects to heterogeneity of the null model. Other approaches calculate R² from the correlation of original ~ fitted values. R² can include the random terms (conditional R²) or ignore them (marginal R²). 
 
 ```{r degN_R}
-#table of all possible R² calculations
-rsq<-data.frame(metafor = rep(NA,2), lme = rep(NA,2))
-rownames(rsq) = c("marginal","conditional")
+#nakagawas R²
+r.squaredGLMM(degN_red2) #0.79, 0.98
+#marginal and conditional = without and with random effects
 
-#appraoch advertised by W.viechtbauer, maker of metafor:
-(sum(nullmod$sigma2)-sum(reduced2$sigma2))/sum(nullmod$sigma2) #0.54
-#possibly wrong, sigma may not be correctly calculated for sample-size based approach 
-rsq[1,1]<-summary(lm(reduced2$yi~fitted(reduced2), weights = 1/reduced2$vi))$adj.r.squared #0.73
-#the simpler yi~fitted method
-
-rsq[1,2]<-r.squaredGLMM(lme)[1]#marginal R², from library MuMin
-#0.77
-
-# simpler method for the marginal R² (the random terms need to be ignored which boils down to lm):
+#simpler method for comparison:
+#marginal (the random terms need to be ignored which boils down to lm):
 fixedmod<-lm(slopes$e~slopes$degN,weights= slopes$npoints)
-summary(lm(slopes$e~fitted(fixedmod)))$adj.r.squared
-#0.76
+summary(lm(slopes$e~fitted(fixedmod)))$adj.r.squared #0.76
+#conditional
+summary(lm(slopes$e~fitted(degN_red2)))$adj.r.squared#0.90
 
-#conditional  
-rsq[2,1] <-NA # fitted with blups is not available for rma.mv
+#for comparison: metafor package (marginal only)
+summary(lm(metafred$yi~fitted(metafred), weights = 1/metafred$vi))$adj.r.squared #0.73
 
-rsq[2,2] <- r.squaredGLMM(lme)[2]
-#or alternatively 
-summary(lm(slopes$e~fitted(lme)))$adj.r.squared#0.90
-rsq
 ```
-only the lme R² are the nakagawa approaches.
+
 
 _significance: LRT tests_  
 ```{r degN_sig}
-anova(lme.ml,nullme.ml) #LRT ratio = 177.8717, p<0.001
-anova(reduced2.ml,nullmod.ml) #LRT ratio = 176.0836, p<0.001
+anova(degN_red2.ml,nullme.ml) #LRT ratio = 177.8717, p<0.001
+anova(metafred.ml,metanull.ml) #LRT ratio = 176.0836, p<0.001
 ```
 
 #### plot  
+
 ```{r degN_plot}
+metafred<- rma.mv(yi = e ~ degN, V=1/npoints, random = ~1|order/genus/spec/popid,data = slopes)
 #1. caculate pi and ci
-ps<-predict.rma(rmamod_nested)
+ps<-predict.rma(metafred)
 ub<-data.frame(slopes$degN, ps$cr.ub, ps$ci.ub)
 names(ub)<-c("degN","cr","ci")
 ub<-ub[order(ub$degN),]
@@ -571,16 +494,12 @@ legend("topleft",legend=names(n)[8:1], col=rep(1,8), pt.bg=hsv((7:0)/8,1,1), pch
 #3. add CI and CR
 polygon(x=combined$degN, y=combined$cr,col="lightgrey",border=NA)
 #polygon(x=combined$degN, y=combined$ci,col="darkgrey",border=NA)
-lines(x=slopes$degN,y=ps$pred,lwd=2)
+lines(x=range(slopes$degN),y=degN_red2$coefficients$fixed[1] + degN_red2$coefficients$fixed[2] * range(slopes$degN),lwd=2)
+lines(x=slopes$degN,y=ps$pred,lwd=2,col=2)#a reminder that the prediction interval is based on metafor model
 points(x=slopes$degN,y=slopes$e,pch=21,col=1,bg=slopes$col,cex=2*slopes$npoints/10)
 
 axis(1,at=c(0,20,30,40,50,60,70,80),cex.axis=1.5, cex.lab = 1.5)
 
-s_est<-confint(rmamod_nested,fixed=T,random=F)$fixed[2,1]*5
-s_est<-round(s_est,2)
-rsq=round(rsq,2)
-#5 degrees latitude ~ 59 minutes
-#text(50,20,paste("slope = ",s_est, " hours/5°N\npseudo-R² = ",rsq),cex=0.8)
 dev.off()
 ```
 
@@ -599,14 +518,14 @@ lines(sort(slopes$degN), ub$cr, lwd=1.5, lty=3)
 lines(sort(slopes$degN),lb$cr, lwd=1.5, lty=3)
 #polygon(x=combined$degN, y=combined$cr,col="lightgrey",border=NA)
 
-lines(x=slopes$degN,y=ps$pred,lwd=2)
-
+lines(x=range(slopes$degN),y=degN_red2$coefficients$fixed[1] + degN_red2$coefficients$fixed[2] * range(slopes$degN),lwd=2)
+lines(x=slopes$degN,y=ps$pred,lwd=2,col=2)#a reminder that the prediction interval is based on metafor model
 
 axis(1,at=c(0,20,30,40,50,60,70,80),cex.axis=1.5, cex.lab = 1.5)
 
 for(i in 1:length(unique(slopes$order))){
   sub<-slopes[slopes$order==unique(slopes$order)[i],]
-  studmod<-rma.mv(yi = e ~ degN,V=1/npoints, data = sub,random = ~1|genus/ID)
+  studmod<-rma.mv(yi = e ~ degN,V=1/npoints, data = sub,random = ~1|genus/spec/popid)
   sub$pred<-predict(studmod)$pred
   #lines(sub$pred~sub$degN,col=sub$col[1],lwd=1.5 )
  lines(sub$pred~sub$degN,col=sub$col[1],lwd=1 + round(5* table(slopes$order)[i]/max(table(slopes$order))))
