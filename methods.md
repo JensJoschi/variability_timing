@@ -17,6 +17,7 @@ As expected, populations from northern latitudes shift their timing towards earl
 ## 1. Overview  
 We used climate station data to calculate mean winter onset and mean day length at winter onset for 25,340 locations. We then calculated winter predictability with three methods: First, we calculated the standard deviation in winter onset. This served as estimate of the reliability of day lenght as cue. Secondly, we estimated reliability of preceding autumn temperatures. For this we regressed temperatures of the last 30 days before winter onset for each year and calculated the between-years standard deviation of the slope. Thirdly, we determined the "colour of environmental noise" (Vasseur & Yodzis 2004), that is, the relative extent of long-frequency autocorrelations in temperatures.
 We then extracted photoperiodic response curves (PRCs) from 27 published studies (169 populations) along with their sampling locations. We calculated four-parameter dose-response curves to obtain estimates of lower and upper diapause limit, critical day length (inflection point) and slope of the curves. We converted critical day lengths into julian days, and we calculated variances within and between day lengths. We then correlated mean timing and variance components with the climate variables:
+0) critical day length was correlated with latitude
 1) mean diapause timing was correlated with mean winter onset (mean timing)
 2) mean diapause timing was correlated with an interaction of mean winter onset and day length predictability (conservative bet-hedging)
 3) Between-treatments variance were correlated with day length predictability (adaptive plasticity)
@@ -87,18 +88,15 @@ Meta-analysis models differ from regular mixed-effects models in that the data p
 Our analysis is based on 175 populations from 28 studies, which covers 24 species from 16 genera and 8 orders. To obtain estimates of mean winter onset and its predictability for the study site locations, we averaged the estimates from the 5 closest stations within a 5° radius (weighted by 1/euclidian distance). When the coordinates were not directly provided in the study, we used the coordinates of the quoted town or area. Town and area coordinates were made available by the WikiProject Geographical coordinates (https://en.wikipedia.org/wiki/Wikipedia:WikiProject_Geographical_coordinates) and the Geohack tool (https://www.mediawiki.org/wiki/GeoHack).
 
 We then correlated mean timing and variance components with the climate variables:
-
-1) mean diapause timing was correlated with an interaction of mean winter onset and day length predictability
-2) Between-treatments variance was correlated with day length predictability 
-3) Within-treatment variance was correlated with an interaction of day length and temperature predictabilities 
+2) mean diapause timing was correlated with an interaction of mean winter onset and day length predictability 
+3) Between-treatments variance was correlated with day length predictability 
+4) Within-treatment variance was correlated with an interaction of day length and temperature predictabilities 
 
 In addition we correlated critical day length with latitude to allow a comparison with earlier studies. We used binomial mixed-effects models with a random structure of “study” nested in “genus” nested in “order” (“species” explained zero variance) for all models, and sample size-based weighing as described in section 3.6.
 
-We then repeated all analyses based only individually on the two most prevalent orders of our datasets (lepidoptera, diptera).
 
 
-
-For all analyses we report 1) estimates of the fixed effects along with their Wald-Type confidence intervals; 2) a generalized I² value and I² values for each nesting level of the random terms (“I^2 for Multilevel and Multivariate Models [The metafor Package]” 2018) ); and 3) pseudo-R² values, defined as (sigma²random-effects model – sigma²mixed-effects model)/sigma²random-effects model (Raudenbush 2009).
+For all analyses we report 1) estimates of the fixed effects along with their standard errors; 2) pseudo-R² values (nakagawa shielzeth) 3) LRT results
 
 
 ### 4. Package information  
@@ -304,19 +302,11 @@ We tried a different weighing, based on the no. of points on the sloped part. We
 
 #### analysis
 
-The correct model should actually be order/genus/species/study, and initially I wanted to keep species in although it explains 0 variance, because random effects with nearly 0 explained variance have no effect anyway. But in the end I left them out as profile likelihood plots showed unambigously that they should be erased. 
+The correct statistical approach should be:
 
-I also decided at that point which significance tests should be reported.
-p-values become difficult to calculate in this analysis, because it is nested, unbalanced and weighted, so conditional F-tests are no option(GLMM-Faq by ben bolker explains that well). likelihood-ratio test should work, though it might be inaccurate for small sample sizes. Using a bootstrap version that builds its own Chisquare-like distribution works only for lmer. But p should not be used anyway for that kind of analysis, so I decided not to report it. 
-Instead I decided to report:
- 
-0) a forest plot of the dose-response curve estimates (slope and mean timing)   
-1) the estimate of the latitude coefficient with confidence interval (Wald-Type, because profile loglik and bootstrap are not available in metafor)  
-2) I² + confidence interval   
-3) pseudo-R²  
-4) and a plot of prediction + confidence intervals + credible intervals.
+estimate ~ climate data, random = (order/genus/species/study), 
 
-In addition I did the same model with lme() to see if the results are similar.
+with the estimate weighted by the inverse of its variance. The funnel plots showed however that inverse variance does not work, so I take the number of points on the sloped part as sample-size weighing (see manuscript and drc script). Usually meta-analyses are conducted with metafor, because this package can weigh each data point by its inverse variance, whereas lme/lmer make the weights proportional to an unknown constant. In this case the lme/lmer version is correct though, because the sample size should be only proportional to inverse variance. This means however that I² calculation is not possible. I tried both lme and metafor. Estimates and relative contributions of each random level were similar, as were LRT test results. 
 
 
 # References
