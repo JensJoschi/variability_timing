@@ -468,6 +468,7 @@ _significance: LRT tests_
 ```{r degN_sig}
 anova(degN_red2.ml,nullme.ml) #LRT ratio = 177.8717, p<0.001
 anova(metafred.ml,metanull.ml) #LRT ratio = 176.0836, p<0.001
+AIC(degN_red2.ml)-AIC(nullme.ml)#-175.8718
 ```
 
 #### plot  
@@ -478,8 +479,8 @@ par(mar = c(5,5,0,0)+0.1)
 
 plot(x=slopes$degN, y=slopes$e, pch=21, cex=2*slopes$npoints/10, col=1, bg=slopes$col, main = "", xlab = "Latitude (°N)", ylab = "Critical photoperiod (h)",bty="n", xaxt="n", cex.axis = 1.5, cex.lab=1.5)
 legend("topleft",legend=names(n)[8:1], col=rep(1,8), pt.bg=hsv((7:0)/8,1,1), pch=21, bty="n", ncol=1,cex=1.5)
-coffs <-  summary(degN_red2)$tTable[,1]
-lines(x= range(slopes$degN),y = coffs[1]+coffs[2]*range(slopes$degN),lwd=3,lty=2)
+coffs <-  summary(degN_red2)$tTable
+lines(x= range(slopes$degN),y = coffs[1,1]+coffs[2,1]*range(slopes$degN),lwd=3,lty=2)
 
 
 axis(1,at=c(0,20,30,40,50,60,70,80),cex.axis=1.5, cex.lab = 1.5)
@@ -487,17 +488,17 @@ axis(1,at=c(0,20,30,40,50,60,70,80),cex.axis=1.5, cex.lab = 1.5)
 for(i in c(2,6,8)){
   sub<-slopes[slopes$order==unique(slopes$order)[i],]
   sinord<-lme(e ~ degN, random =~ 1|genus/spec, data=sub, weights=~npoints,   method="REML")
-  coffs <-  summary(sinord)$tTable[,1]
-  lines(x= range(sub$degN),y = coffs[1]+coffs[2]*range(sub$degN), lwd= 1+round(5* table(slopes$order)[i]/max(table(slopes$order))), col=sub$col[1])
+  coffs <-  summary(sinord)$tTable
+  lines(x= range(sub$degN),y = coffs[1,1]+coffs[2,1]*range(sub$degN), lwd= 1+round(5* table(slopes$order)[i]/max(table(slopes$order))), col=sub$col[1])
   print(sub$order[1])
-  print (coffs[2]*5*60)
+  print (paste("slope: ",(coffs[2,1]*5*60), "se: ", (coffs[2,2]*5*60)))
 }
 points(x=slopes$degN ,y=slopes$e, pch=21, col=1, bg=slopes$col, cex=2*slopes$npoints/10)
 dev.off()
 #slope estimates: 
-#Diptera: 64.2182  min
-#Lepidoptera 69.09675 min
-#mites: 49.96711 min
+#Diptera: slope:  64.2181986214667 se:  2.68069414915251
+#Lepidoptera "slope:  69.0967518142614 se:  8.22812962302004"
+#mites: "slope:  49.9671137736757 se:  7.39115976448246"
 ```
 
 The estimate of 1 h per 5° N is not too bad, overall diapause becomes 49 min earlier per 5°.
@@ -560,11 +561,22 @@ cd_null.ml<-lme(cd ~1                      , random =~ 1|order/genus/spec, data=
 
 anova(cd_full.ml,cd_2.ml)
 AIC(cd_full.ml)-AIC(cd_2.ml)
+#          Model df      AIC      BIC    logLik   Test   L.Ratio p-value
+#cd_full.ml     1  8 1516.620 1541.846 -750.3099                         
+#cd_2.ml        2  7 1515.355 1537.428 -750.6773 1 vs 2 0.7348901  0.3913
+#AIC diff [1] 1.26511
 anova(cd_2.ml,cd_3.ml)
 AIC(cd_2.ml)-AIC(cd_3.ml)
+#        Model df      AIC      BIC    logLik   Test  L.Ratio p-value
+#cd_2.ml     1  7 1515.355 1537.428 -750.6773                        
+#cd_3.ml     2  6 1522.516 1541.435 -755.2578 1 vs 2 9.161056  0.0025
+#AIC diff [1] -7.161056
 anova(cd_2.ml, cd_4.ml)
 AIC(cd_2.ml)-AIC(cd_4.ml)
-
+#        Model df      AIC      BIC    logLik   Test L.Ratio p-value
+#cd_2.ml     1  7 1515.355 1537.428 -750.6773                       
+#cd_4.ml     2  6 1611.270 1630.189 -799.6349 1 vs 2 97.9152  <.0001
+#[1] -95.9152
 
 cd_full<-   lme(cd ~ meanwinter + sd_winter, random =~ 1|order/genus/spec, data=slopes, weights=~npoints, method="REML")
 cd_m<-   lme(cd ~ meanwinter              , random =~ 1|order/genus/spec, data=slopes, weights=~npoints, method="REML")
@@ -572,17 +584,16 @@ cd_sd<-   lme(cd ~              sd_winter, random =~ 1|order/genus/spec, data=sl
 
 #summary(cd_full)
 sdevs<-c(16.16497, 20.62354, 7.311302, 7.474556)
-sdevs/(sum(sdevs))
+sdevs/(sum(sdevs))# 0.3134303 0.3998796 0.1417623 0.1449277
 ```
 
 #### results
 ```{r cd_results}
 #summary statistics
-quantile(slopes$meanwinter)
-#  0%       25%       50%       75%      100% 
-#218.3225 277.9196 300.6706 320.4777 385.6553 
-mean(slopes$meanwinter) #297.1511
 weighted.mean(slopes$cd,slopes$npoints)# 239.2938
+quantile(slopes$cd)
+#  0%  25%  50%  75% 100% 
+#180  217  238  253  356 
 
 #estimate +se
 summary(cd_m)$tTable
@@ -756,6 +767,7 @@ bet_full<-lme(between ~ sd_winter, random =~ 1|order/genus/spec, data=slopes, we
 bet_full.ml<-lme(between ~ sd_winter, random =~ 1|order/genus/spec, data=slopes, weights=~npoints, method="ML")
 bet_null.ml<-lme(between ~ 1, random =~ 1|order/genus/spec, data=slopes, weights=~npoints, method="ML")
 anova(bet_full.ml,bet_null.ml)#lrt ratio 12.57719, p = 4e-04
+AIC(bet_full.ml)-AIC(bet_null.ml)#-10.03791
 
 #summary(cd_full)
 sdevs<-c(0.4167283, 0.522575, 0.4340173, 0.3766424)
