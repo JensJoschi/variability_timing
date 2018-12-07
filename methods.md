@@ -1,4 +1,4 @@
-
+﻿
 # Description of this file  
 This file consists of two parts: First, a copy of summary and methods section from the manuscript draft. This section is updated only sporadically and may be outdated.Secondly, there is a detailed account of all methods that are in use. Methods that were abandoned are in a separate script (unused.md).
 
@@ -40,13 +40,34 @@ As another method to calculate climate predictability, we calculated the “colo
 
 ### 2.4 Sensitivity of climate predictions to temperature threshold  
 Arthropod thermal requirements vary among species, and our use of a 10°C temperature threshold was an arbitrary decision. It resulted in a global median winter onset around Oct 11, which is within the range of commonly reported phenological windows and threshold values (Halkett et al. 2004; Waldock et al. 2013). We systematically varied the temperature threshold between 5 and 15°C, and the number of days below this threshold between 1 and 10 days. 
-
 ## 3. Empirical data  
 
 ### 3.1 Eligibility criteria  
-In our literature search for diapause reaction norms we concentrated on studies that measure photoperiodic response curves (PRCs) of invertebrates. We excluded marine and intertidal organisms, because corresponding climate estimates were only available for terrestrial systems. Invertebrates with a larval stage in shallow water (e.g. mosquitoes) were nevertheless included. Studies with estimates for less than 3 populations (samples) were excluded, because in these cases the variance would be absorbed by the random term “study”, which was included in the analysis. We also excluded all studies that measured diapause at less than three photoperiods. To maximize sample sizes, we did not restrict our analysis to any geographic location or publication language.
+In our literature search for diapause reaction norms we concentrated on studies that measure photoperiodic response curves (PRCs) of invertebrates. We excluded marine and intertidal organisms, because corresponding climate estimates were only available for terrestrial systems. Invertebrates with a larval stage in shallow water (e.g. mosquitoes) were nevertheless included. Studies with estimates for less than 3 populations (samples) were excluded, because in these cases the variance would be absorbed by the random term “study”, which was included in the analysis. We also excluded all studies that measured diapause at less than four photoperiods. To maximize sample sizes, we did not restrict our analysis to any geographic location or publication language.
 
 ### 3.2 Search strategy  
+
+A full description of the search strategy can be found in Supplementary material S1. In short, we conducted two independent literature searches in the Web of Science core collection: First (26.11.2018) we limited the search terms to: 
+TS = ((photoperiodic AND (geogr* OR range)) OR (photoperiod* AND latitud*) OR (photoperiod* AND longitud*))
+
+Secondly (28.11.2018), we used a wider range of search terms,
+
+TS = (("day length" OR photoperiod* OR diapaus* OR hibern* OR dorman*) AND (geogr* OR "range" OR latitud* OR longitud* OR cline$ OR clinal))
+
+but filtered the output by arthropod-related terminology. We found 1683 references in the first search, of which we judged 278 potentially relevant, and 57 met all inclusion criteria. In the second search we found further 2362 references, with 355 potentially relevant and 13 eligible articles. We did a forward-citation search on these 70 eligible articles on 4.12.2018 and found 790 new references, which included 117 potential and 4 eligible articles. A second forward-citation search on these four articles on 5.12.2018 brought 118 new articles, but none were relevant. Altogether there were 74 useful references (646 populations).
+
+
+
+### 3.3 Inclusion criteria  
+10 articles (110 populations) were not accompanied by raw data, tables or figures that allowed further analysis, and the authors were deceased, did no longer have the raw data or did not respond to our emails. These articles were hence excluded from analysis. From the remaining studies we only selected those populations with at least 2 estimates on the sloped part of the population’s PRC and two further estimates to define upper and lower limits, because otherwise the dose-response curve analysis would not allow for a meaningful slope estimate. Some PRCs were incomplete but nevertheless eligible for analysis, because the upper and lower limits of diapause could be interpolated from the remaining populations of a study (see below). We only included studies with at least 3 remaining populations. This procedure left 35 studies with 225 populations.
+
+#---
+## 3. Empirical data  (old)
+
+### 3.1 Eligibility criteria  (old)
+In our literature search for diapause reaction norms we concentrated on studies that measure photoperiodic response curves (PRCs) of invertebrates. We excluded marine and intertidal organisms, because corresponding climate estimates were only available for terrestrial systems. Invertebrates with a larval stage in shallow water (e.g. mosquitoes) were nevertheless included. Studies with estimates for less than 3 populations (samples) were excluded, because in these cases the variance would be absorbed by the random term “study”, which was included in the analysis. We also excluded all studies that measured diapause at less than three photoperiods. To maximize sample sizes, we did not restrict our analysis to any geographic location or publication language.
+
+### 3.2 Search strategy  (old)
 
 A full description of the search strategy can be found in Supplementary material S1. In short, we conducted two independent literature searches in the Web of Science core collection: First (19.02.2018) we limited the search terms to: 
 TS = ((photoperiodic AND (geogr* OR range)) OR (photoperiod* AND latitud*) OR (photoperiod* AND longitud*))
@@ -58,10 +79,10 @@ OR TI = (("day length" OR photoperiod* OR diapaus* OR hibern* OR dorman*) AND "p
 
 but filtered the output by arthropod-related terminology. We found 1638 references in the first search, of which we judged 377 potentially relevant, and 62 met all inclusion criteria. In the second search we found 2748 references, with 621 potentially relevant and 74 included articles. For both searches we did a full forward-citation search on all included articles, and we found 13 and 3 further references, respectively. The search results were largely congruent, and altogether there were 78 useful references (615 populations).
 
-### 3.3 Inclusion criteria  
+### 3.3 Inclusion criteria  (old)
 10 articles (110 populations) were not accompanied by raw data, tables or figures that allowed further analysis, and the authors were deceased, did no longer have the raw data or did not respond to our emails. These articles were hence excluded from analysis. From the remaining studies we only selected those populations with at least 2 estimates on the sloped part of the population’s PRC and two further estimates to define upper and lower limits, because otherwise the dose-response curve analysis would not allow for a meaningful slope estimate. Some PRCs were incomplete but nevertheless eligible for analysis, because the upper and lower limits of diapause could be interpolated from the remaining populations of a study (see below). We only included studies with at least 3 remaining populations. This procedure left 35 studies with 225 populations.
 
-
+#---
 
 ### 3.4. Data extraction  
 One study (7 populations) reported the slope and midpoint directly, and 34 studies presented the raw data as tables (5 studies) or figures (29 studies). In the latter case we saved the figure and extracted the data with WebPlotDigitizer Version 3.12 (Rohatgi 2017). Where neccessary, the day length was then rounded or corrected to match the description in materials and methods of the respective study. Y-values that were slightly above 100% or below 0% were set to 100% and 0% respectively.
@@ -116,16 +137,59 @@ Two Perl scripts extracted daily minimum and maximum temperatures from all clima
 ### winter onset  
 Across all stations with recorded winter onsets, 68.5 % of the years had more than 350 days with data, and 85.1% had more than 300 days with data.
 
-
-## empirical data  
-
+## empirical data 
 ### first search  
+
+I searched the web of science database for "(photoperiodic AND (geogr\* OR range)) OR (photoperiod\* AND latitud\*) OR(photoperiod\* AND longitud\*)" on 26.11.2018. This search yielded 1683 unique  results. 
+I classified the studies as plant/animal, Vertebrate/invertebrate, and water/terrestrial based on journal titles (journal names including e.g. “plant”, “ento*”, “fish” or “bird”) and manuscript titles. 437 studies concentrated on terrestrial invertebrates. We then screened the titles for potentially eligible studies, and found 278 records. We screened the full text of these candidate studies to determine whether PRCs were recorded, and if so, how many photoperiods and populations were measured. 53 articles met all eligibility criteria.
+
+### second search  
+The search procedure (filtering in excel) was not very transparent, and some critical key words were missing ("day length"!). I thus did another search:
+I searched the web of science core collection on 28.11.2018 with the search string
+"TS = (("day length" OR photoperiod* OR diapaus* OR hibern* OR dorman* ) AND (geogr* OR "range" OR latitud* OR longitud* OR cline$ OR clinal))" and excluded the results of the first search, as well as book and article reviews, notes, rectration notices and retracted papers. 
+
+This search provided **6179** results. To reduce the number of hits, we subsequently searched individual research areas with different criteria:
+1. we used all **600** hits from the area "entomology". 
+2. we used all articles that name an invertebrate in the title, keywords or abstract (**838 hits**)
+3. From the area "zoology" we used all remaining titles that name no vertebrate in title, keywords or abstract (**186 hits**)
+4. From the areas in the research fields ecology and evolution, we used all titles that name no vertebrate, microbes or plant-specific terms (**523 hits**).
+5. From all other relevant research areas (i.e not medicine or aquatic biology) we used all titles that name no vertebrate, microbes, plant-spceific terms or human health condition (**267**)
+6. Lastly we excluded all aquatic studies
+Altogether we found 2,362 studies.
+
+The exact search strings (and number of hits):
+#1 TS = ((photoperiodic AND (geogr* OR range)) OR (photoperiod* AND latitud*) OR (photoperiod* AND longitud*)) 1684
+
+	#2 (TS = (("day length" OR photoperiod* OR diapaus* OR hibern* OR dorman* ) AND (geogr* OR "range" OR latitud* OR longitud* OR cline$ OR clinal)) not #1) AND DOCUMENT TYPES: (Article OR Abstract of Published Item OR Art Exhibit Review OR Bibliography OR Biographical-Item OR Book OR Book Chapter OR Book Review OR Chronology OR Dance Performance Review OR Data Paper OR Database Review OR Discussion OR Early Access OR Editorial Material OR Excerpt OR Fiction, Creative Prose OR Film Review OR Hardware Review OR Item About an Individual OR Letter OR Music Performance Review OR Music Score OR Music Score Review OR News Item OR Note OR Poetry OR Proceedings Paper OR Record Review OR Reprint OR Script OR Software Review OR TV Review, Radio Review OR TV Review, Radio Review Video OR Theater Review) 6179
+
+#3 #2 and SU = "entomology" 600
+
+	#4 #2 not #3 AND TS =(invertebrat* OR worm* OR annelid* OR platyhelminth* OR nematod* OR mollusc* OR gastropod* OR slug* OR snail* OR arthropod* OR chelicer* OR arachnid* OR aranea* OR acari OR tetranych* OR ixod* OR opilion* OR spider* OR *scorpio* OR tick$ OR mite$ OR harvestmen OR crustace* OR malostraca* OR isopod* OR woodlice OR oniscid* OR armadillium OR myriapod* OR chilopod* OR diplopod* OR pauropod* OR symphyla OR millipede* OR centipede* OR hexapod* OR collembol* OR springtail* OR insect$ OR blattodea OR *ptera OR mantodea OR odonata OR phasmatodea OR psocodea OR thysanura OR zygentoma OR psyllid* OR stenorrhyn* OR cockroach* OR beetle$ OR earwig* OR *fly OR *flies OR droso* OR mosquit* OR *bug$ OR aphid* OR adelgid* OR phyllox* OR *wasp$ OR (*bee OR *bees) OR (ant OR ants) OR mantis OR grasshopper* OR locust* OR cricket* OR louse OR lice OR flea$ OR moth$ OR thrip* OR silverfish ) NOT TI = (paleo* or $chiroptera*)  838
+
+	#5 #2 not #3 not #4 AND SU = "Zoology" NOT TI =( palaeo* OR $vertebra* OR *fish* OR $amphib* OR $salientia* OR $anura* OR $caudata OR $salamand* OR newt$ OR $gymnophion* OR frog$ OR tadpole$ OR toad$ OR $reptil* OR $crocodil* OR *sauria* OR $squamat* OR $lizard* OR $lacert* OR $gekko* OR $serpent* OR $snake* OR $testudin* OR $turtle* OR $tortois* OR $mammal* OR $rodent* OR $sciurid* OR $hamster* OR *mouse* OR *mice* OR $squirrel* OR $rabbit* OR $hare OR $hares OR $chiropt* OR $bat OR $bats OR $myotis OR $sorciomorpha OR $soricid* OR $talpid* OR $shrew* OR $marmot* OR $mole OR $moles OR $primat* OR $carnivora OR $ursid* OR $ursus OR $felid OR $felids OR "$sea lion" OR "$fur seal" OR "$elephant seal" OR $marsupi* OR $goat* OR $sheep* OR $deer OR $cattle OR estrus OR suprachiasm*) 186
+
+	#6 #2 not #3 not #4 AND SU = (ENVIRONMENTAL SCIENCES ECOLOGY OR EVOLUTIONARY BIOLOGY OR GENETICS HEREDITY OR BIODIVERSITY CONSERVATION OR SOIL SCIENCE NOT Zoology) NOT TI = ( palaeo* OR $vertebra* OR *fish* OR $amphib* OR $salientia* OR $anura* OR $caudata OR $salamand* OR newt$ OR $gymnophion* OR frog$ OR tadpole$ OR toad$ OR $reptil* OR $crocodil* OR *sauria* OR $squamat* OR $lizard* OR $lacert* OR $gekko* OR $serpent* OR $snake* OR $testudin* OR $turtle* OR $tortois* OR $mammal* OR $rodent* OR $sciurid* OR $hamster* OR *mouse* OR *mice* OR $squirrel* OR $rabbit* OR $hare OR $hares OR $chiropt* OR $bat OR $bats OR $myotis OR $sorciomorpha OR $soricid* OR $talpid* OR $shrew* OR $marmot* OR $mole OR $moles OR $primat* OR $carnivora OR $ursid* OR $ursus OR $felid OR $felids OR "$sea lion" OR "$fur seal" OR "$elephant seal" OR $marsupi* OR $goat* OR $sheep* OR $deer OR $cattle OR estrus OR suprachiasm*OR microb* OR bacteria* OR fung* OR *ceae OR bloom OR yield OR germination OR molecular OR simulation OR QTL OR spring OR cell* OR tiller OR cultivar* OR bud* OR chill* OR (tree NEAR phenology)) 523
+
+	#7 #2 not #3 not #4 not #5 not #6 NOT SU = (ENTOMOLOGY OR ZOOLOGY OR ENVIRONMENTAL SCIENCES ECOLOGY OR EVOLUTIONARY BIOLOGY OR GENETICS HEREDITY OR BIODIVERSITY CONSERVATION OR SOIL SCIENCE OR AGRICULTURE OR PLANT SCIENCES OR FORESTRY OR FOOD SCIENCE TECHNOLOGY) AND SU =(SCIENCE TECHNOLOGY OTHER TOPICS OR LIFE SCIENCES BIOMEDICINE OTHER TOPICS OR ENDOCRINOLOGY METABOLISM OR NEUROSCIENCES NEUROLOGY OR PHYSIOLOGY OR REPRODUCTIVE BIOLOGY OR INFECTIOUS DISEASES OR BEHAVIORAL SCIENCES OR ANATOMY MORPHOLOGY OR HEMATOLOGY OR HEALTH CARE SCIENCES SERVICES ) NOT TI = (human OR sleep* OR disorder OR depress* OR palaeo* OR $vertebra* OR *fish* OR $amphib* OR $salientia* OR $anura* OR $caudata OR $salamand* OR newt$ OR $gymnophion* OR frog$ OR tadpole$ OR toad$ OR $reptil* OR $crocodil* OR *sauria* OR $squamat* OR $lizard* OR $lacert* OR $gekko* OR $serpent* OR $snake* OR $testudin* OR $turtle* OR $tortois* OR $mammal* OR $rodent* OR $sciurid* OR $hamster* OR *mouse* OR *mice* OR $squirrel* OR $rabbit* OR $hare OR $hares OR $chiropt* OR $bat OR $bats OR $myotis OR $sorciomorpha OR $soricid* OR $talpid* OR $shrew* OR $marmot* OR $mole OR $moles OR $primat* OR $carnivora OR $ursid* OR $ursus OR $felid OR $felids OR "$sea lion" OR "$fur seal" OR "$elephant seal" OR $marsupi* OR $goat* OR $sheep* OR $deer OR $cattle OR estrus OR suprachiasm*OR microb* OR bacteria* OR fung* OR *ceae OR bloom OR yield OR germination OR molecular OR simulation OR QTL* OR arabidopsis OR spring OR cell* OR tiller OR cultivar* OR bud* OR chill* OR (tree NEAR phenology)) 267
+
+	#8 (#3 or #4 or #5 or #6 or #7 AND TS = (terrest*) ) or (#3 or #4 or #5 or #6 or #7 not TS = (marine* OR aquat* OR limno* OR water )) 2362
+
+
+
+We screened the titles of the 2362 articles to filter out articles which were clearly not suited for meta-analysis (e.g. not based on terrestrial invertebrates), which reduced the dataset to 355 articles. We then assessed the full text of the articles, and excluded all articles with less than 3 populations or less than 4 day lengths. 13 articles remained.
+
+we did a forward citation search on the 70 articles from the first and second search on dec 4 2018 and found 1095 articles. 305 references were duplicates from earlier search, 90 were reviews, 4 editorial material and 3 proceedings papers (according to ISI meta-data), and 693 were novel articles. We filtered again by title, after which 115 references remained. 4 of these articles were eligible. Another forward citation search on these 4 articles on December 5th 2018 revealed 226 unique articles, including 118 novel references (with 1 editorial material, 1 conference proceeding and 6 reviews). 11 of the references had a fitting title, but none was eligible. In total, we found 74 eligible articles (646 populations)
+
+
+## empirical data  (old)
+
+### first search   (old)
 
 I searched the web of science database for "(photoperiodic AND (geogr\* OR range)) OR (photoperiod\* AND latitud\*) OR(photoperiod\* AND longitud\*)" on 19.2.2018. This search yielded 1628 unique  results. I added articles to the study that I knew or which were cited in these articles but that did not match the keywords (total: 1638). 
 I classified the studies as plant/animal, Vertebrate/invertebrate, and water/terrestrial based on journal titles (journal names including e.g. “plant”, “ento*”, “fish” or “bird”), manuscript titles, abstract or full text.  366 studies concentrated on terrestrial invertebrates. We screened the full text of these candidate studies to determine whether PRCs were recorded, and if so, how many photoperiods and populations were measured. We selected all studies with PRC estimates of more than 2 populations and 2 photoperiods (62 studies) for a forward-citation search on April 3rd 2018. We found 762 further articles(586 new), and selected those that met the stricter inclusion criteria (at least 3 populations and 3 day lengths). 11 articles were included for another forward-search. A forward search on these 11 articles on April 12th (182 refs, 94 new) brought 1 new study, and following its 20 citations on April 16th yielded another article. Its 14 citations (April 16th) yielded no further article. 
 notes [oct 1 2018]: the two articles from 2nd(3rd) levels forward search are not included in datasets because they have only 3 day lengths anyway. 
 
-### second search  
+### second search   (old)
 The search procedure (filtering in excel) was not very transparent, and some critical key words were missing ("day length"!). I thus did another search:
 I searched the web of science core collection on jun 15 2018 with the search string
 "TS = (("day length" OR photoperiod* OR diapaus* OR hibern* OR dorman* ) AND (geogr* OR "range" OR latitud* OR longitud* OR cline$ OR clinal)) OR TI = (("day length" OR photoperiod* OR diapaus* OR hibern* OR dorman*) AND "populations")" and excluded book and article reviews, notes, rectration notices and retracted papers. 
