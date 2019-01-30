@@ -1,6 +1,11 @@
 ﻿
+Legacy version, outdated!
+
+New file is in nov2018!
+
 # Description of this file  
 This file consists of two parts: First, a copy of summary and methods section from the manuscript draft. This section is updated only sporadically and may be outdated.Secondly, there is a detailed account of all methods that are in use. Methods that were abandoned are in a separate script (unused.md).
+This file is outdated since nov 2018. A completely updated literature survey was conducted, and the reaction norms were analysed with a MCMC instead of DRC, all these changes are not reflected in this document. After updating this file will have a manuscript-ready methods section, and then all additional information. The manuscript-ready section will be part of the manuscript.
 
 
 # Summary    

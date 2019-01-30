@@ -1,3 +1,10 @@
+Legacy version, outdated!
+
+New file is in nov2018!
+
+This file has a loose collection of approaches that did not work or were otherwise abandonded. It is incomplete as of nov 2018, were major changes were implemented.
+
+
 ## climate data  
 
  Three attempts to calculate winter variability/predictability were made (only 3rd one is interesting)
