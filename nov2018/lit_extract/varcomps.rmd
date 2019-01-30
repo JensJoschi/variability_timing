@@ -1,0 +1,338 @@
+---
+title: "read slopes"
+author: "Jens Joschinski"
+date: "March 15, 2018"
+output: 
+  md_document:
+  variant: markdown_github
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache=TRUE)
+#library(plyr)
+library(tidyr)
+#library(textreadr)
+#library(drc)
+#library(sandwich)
+#library(lmtest)
+#library(geosphere)
+#library(metafor)
+library(rjags)
+```
+
+
+# General description  
+## Project aim  
+The aim of this project is to correlate means and variance of diapause timing with climate means and climate predictability.
+
+## Script overview  
+We searched the Web of Science database for photoperiodic response curves of arthropods and selected 57 studies with individual reaction norms (dose-response curves) for 426 populations. The data was extracted with webplotdigitizer. For each population the most important columns are data$number ~ data$dl2.
+
+
+
+## load data  
+One study (7 populations) reported the slope and midpoint from drc analyiss directly. The script concentrates on the remaining populations
+
+```{r load_data}
+data<-read.table("02studies/00raw/nov2018/extr/variance_comp.csv", header=T,sep=";")
+length(unique(data$ID)) #57 studies that can be used for slope calculation
+length(unique(data$spec)) #45 species
+length(unique(data$genus)) #33 genera
+data<-unite(data,"popid",c("ID","pop","genus","spec"),sep="-",remove=F)
+length(unique(data$popid)) #426 populations (not 419 because lankinen 2013 is not in here)
+
+
+#summary of #pops per region and level of detail for sample sizes
+
+t<-data.frame(unique(data$popid))
+t$reg<-NA
+t$nMethod<-NA
+#each unique pop has multiple rows in dataset (1 per day length)
+#get this subset, take region and nMethod from first line (or use unique)
+for ( i in 1:nrow(t)){ 
+   t$reg[i]<-unique(data[data$popid==t[i,1],5])
+   t$nMethod[i]<-unique(data[data$popid==t[i,1],9])
+}
+table(t$reg) #unfortunately, the information was converted to values
+levels(data$region)
+#Asia 16
+#Europe (including caucasus): 116
+#Japan 237
+#US 57
+#japan has 55.6% of the populations, 46.8 % of the data
+
+
+table(t$nMethod)
+levels(data$nmethod)
+
+#accurate: 96
+#global average:283
+#pop level: 16
+#NA 31
+
+data$n2[is.na(data$n2)]<-100
+data$n2[data$n2<10]<-data$n2[data$n2<10]*10 #n = 5 may mean 5 replicates with 200 individuals each --> percentages may be 86.5% and n=5 will lose those an make it 100%.
+
+
+data$perc[data$perc<0]<-0
+data$perc[data$perc>100]<-100
+data$n2<-round(data$n2)
+data$number<-(data$perc/100) * data$n2
+data$number<-floor(data$number)
+number<-length(unique(data$popid))#426
+data$n<-data$number/data$n2
+```
+```{r own_algorithm}
+#trying with self-made algorithm
+
+logcurve<-function(x,b,c,d,e){(d-c)/(1+exp(b*(x-e)))+c} #4-paramter dose-response curve
+
+build_proposfunc <- function(input,jump,dl2){ #lets the four parameters of the dose-response curve vary, but imposes box constraints (0-100%)
+  out<-rnorm(4,input,jump)
+  #replace limits outside 0 and 100%:
+  if (out[2]<0){out[2]<- -1*out[2]}
+  if (out[2]>1){out[2]<-1}
+  
+  if (out[3]>1){out[3]<- 2-out[3]}
+  if (out[3]<out[2]){out[3]<-out[2]}
+  
+  #constrain midpoint to fall within data limits
+  if (out[4]>max(dl2)){out[4] <- max(dl2)}
+  if (out[4]<min(dl2)){out[4] <- min(dl2)}
+  return(out)
+}
+  
+mcmc<-function(test, iter, jump){
+  
+  accept = F
+  tracer<-data.frame(rep(NA,iter),rep(NA,iter), rep(NA,iter), rep(NA,iter))
+  #names(tracer)<- c("b","c","d","e") #this will store the results, 1 line = 1 markov chain step
+
+  #initialize with b=2,c= 0, d= 1, e = 15
+  tracer[1,]<-c(2,0,1,15) 
+  pred <- logcurve(x=test$dl2,b=tracer[1,1], c=tracer[1,2],d=tracer[1,3],e = tracer[1,4])
+  ll_old<-sum(dbinom(test$number,test$n2,pred,log=T))
+
+
+  for (i in 2:iter){
+    propos<-build_proposfunc(as.numeric(tracer[i-1,]),jump, test$dl2) #proposes new fit, but this fit has still to be evaluated against the last one
+  
+    #calculate fit with new combination
+    pred <- logcurve(x=test$dl2,b=propos[1], c=propos[2],d=propos[3],e = propos[4])
+    ll_new<-sum(dbinom(test$number,test$n2,pred,log=T))
+  
+   #compare LLs
+
+   if (ll_new>ll_old){ 
+  accept <-T
+   }else{
+     p <- exp(ll_new-ll_old)#diff not ratio because these are log-likelihoods
+      if (runif(1) < p) {accept<-T}
+   }
+  
+   if (accept == T){    
+     ll_old<- ll_new
+     tracer[i,]<-propos
+    }else{
+        tracer[i,]<-tracer[i-1,]
+      }
+  
+
+  accept<-F
+  }
+#remove burn-in
+  tracer<-tracer[(iter/10):iter,]
+
+  #1-mean(duplicated(tracer))
+
+  return(tracer)
+}
+
+calc_var<-function(tracer){
+  
+  within <- rep(NA,nrow(tracer))
+  between <- rep(NA,nrow(tracer))
+
+
+  for ( i in 1:nrow(tracer)){
+   x<-seq(tracer[i,4]-12,tracer[i,4]+12, length.out =1000)
+   y<-logcurve(x,tracer[i,1],tracer[i,2],tracer[i,3],tracer[i,4])
+
+   within[i]<- sum(y*(1-y))/1000
+   between[i]<-sd(y)^2 
+  }
+
+
+  tracer[,5]<-within
+  tracer[,6]<-between
+  return(tracer)
+}
+
+
+#iter <-100000
+iter<-1000#for testing purposes
+jump <-c(1,0.1,0.1,0.1)
+
+number<-10 #for testing purposes
+for (dataset  in 1:number) {
+  currpop <- unique(data$popid)[dataset]
+  currdat<-data[data$popid==currpop,]
+  tracer <- mcmc(currdat, iter, jump)
+  tracer<-calc_var(tracer)
+  write.table(tracer,paste(currpop,".txt"))
+}  
+```
+
+```{r}
+summary<-data.frame(popid=rep(NA,number), e_l=rep(NA,number), e_m = rep(NA,number), e_h=rep(NA,number), w_l=rep(NA,number), w_m=rep(NA,number), w_h=rep(NA,number), bet_l=rep(NA,number), bet_m=rep(NA,number), bet_h=rep(NA,number))
+for (dataset in 1:number){
+  t<-read.table(paste(unique(data$popid)[dataset],".txt"))
+  summary$popid[dataset] <- unique(data$popid)[dataset]
+  summary$e_l[dataset] <- quantile(t[,4],0.025)
+  summary$e_m[dataset] <- quantile(t[,4],0.5)
+  summary$e_h[dataset] <- quantile(t[,4],0.975)
+  
+  summary$w_l[dataset] <- quantile(t[,5],0.025)
+  summary$w_m[dataset] <- quantile(t[,5],0.5)
+  summary$w_h[dataset] <- quantile(t[,5],0.975)
+  
+  summary$bet_l[dataset] <- quantile(t[,6],0.025)
+  summary$bet_m[dataset] <- quantile(t[,6],0.5)
+  summary$bet_h[dataset] <- quantile(t[,6],0.975)
+  
+
+
+}
+
+summary$range = summary$e_h-summary$e_l
+plot(NA,xlim= c(5,20),ylim= c(1,number),xlab = "CDL", ylab = "study index")
+segments(x0 = summary$e_l,y0=1:number,x1 = summary$e_h,y1=1:number,col=1) #"lightgrey")
+points(x=summary$e_m,y = 1:number,pch=22,bg=1)
+
+summary$range = summary$w_h-summary$w_l
+plot(NA,xlim= c(0,0.25),ylim= c(1,number),xlab = "variance within environments (bet-hedging)",ylab = "Index")
+segments(x0 = summary$w_l,y0=1:number,x1 = summary$w_h,y1=1:number,col=1) #"lightgrey")
+points(x=summary$w_m,y = 1:number,pch=22,bg=1)
+
+
+summary$range = summary$bet_h-summary$bet_l
+plot(NA,xlim= c(0,0.25),ylim= c(1,number),xlab = "variance between environments (plasticity)",ylab = "Index")
+segments(x0 = summary$bet_l,y0=1:number,x1 = summary$bet_h,y1=1:number,col=1,xpd=T) #"lightgrey")
+points(x=summary$bet_m,y = 1:number,pch=22,bg=1)
+  
+```
+
+
+
+###rjags
+```{r}
+model.string <- 
+"model {
+	for (i in 1:N){
+		y[i] ~ dbin(success[i],trials[i])     #this incorporates sample size per point (number of individuals per day length)
+		success[i] <- (d-c)/(1+exp(b*(x[i]-e)))+c #4-parameter logit curve
+	}
+
+	#priors
+	b ~dunif(-1000,1000)       
+	c ~dunif(0,1)
+	d ~dunif(c,1)             #constrained to be bigger than c
+	e ~dunif(min(x),max(x))   #constrained within range(day lengths)
+
+
+}"
+
+model <- jags.model(textConnection(model.string), 
+                    data = list(y=test$number, x= test$dl2, N = nrow(test),trials = test$n2), 
+                    n.chains=4,n.adapt=1000)#trials=test$n2, 
+out <- coda.samples(model,   c( 'b', 'c', 'd', 'e'), 100000)
+
+
+calc_var<-function(tracer){
+  
+  within <- rep(NA,nrow(tracer))
+  between <- rep(NA,nrow(tracer))
+
+
+  for ( i in 1:nrow(tracer)){
+   x<-seq(tracer[i,4]-12,tracer[i,4]+12, length.out =1000)
+   y<-logcurve(x,tracer[i,1],tracer[i,2],tracer[i,3],tracer[i,4])
+
+   within[i]<- sum(y*(1-y))/1000
+   between[i]<-sd(y)^2 
+  }
+
+out <- data.frame(b=tracer[,1],c=tracer[,2],d=tracer[,3],e=tracer[,4],within=within,between=between)
+
+  
+  return(out)
+}
+
+inn<-calc_var(out[[1]])
+```
+
+
+### saving results  
+Now that the model is selected for each study, a simple plot of it will be saved (for later checking, not high-quality plots as in papers). This chunk can run, no need to copy to console.
+
+```{r save_plot}
+  
+  
+    png(paste("02studies/01extracted_data/",i,"-",unique(data$id)[i],".png",sep="")) 
+    plot(final, xlab = "Day length", ylab = "percentage diapause", main = "upper and lower limit fixed at global mean", log="", col=TRUE)
+    dev.off()
+  
+
+```
+
+Lastly, the estimates of b and CDL need to be extracted and saved, along with their standard errors. This chunk runs, except for ll.2 in which lines 220-225 have to be used.
+
+```{r save_data}
+ 
+
+write.table(results, "02studies/02output/slopes.txt",append=T,sep="\t",col.names=FALSE)
+ print(paste(i,"|",results$id[1],"|",choice,sep=""))
+```
+
+## quality control  
+All models were done semi-automatically, now we need to check what the data looks like.
+
+```{r data_summary}
+
+#removed 7 studies (21 pops) and 29 further pops
+#218-21-29 = 168 pops left
+#in: 27 studies (though one study has 2 and one has 4 species = 31 studies)
+```
+
+
+```{r funnel_plots}
+
+
+```
+
+
+## lankinen 
+One publication is misssing so far, that is lankinen 2013. They gave b and CDL estimates directly so there was no need to extract data with a drc analysis. The paper does not directly mention standard error of the estimates, but this is not neccessary anyway with a sample-size based approach. What would be needed though is the snumber of points that contribute to the slope estimation. The only mention in the study is that there are 7 day length treatments, which seems to include multiple points at 0 or 100 %. I take the median sample size (4) of all data, so that lankinen has an average weight. The closely related study by tyukmaeva has same methods and gets 3-5 (median 4) day lengths per population, so that seems to fit.
+
+```{r lankinen}
+lank <- data.frame(
+  row = c("b:lankinen_13-Pelkosenniemi-Drosophila-montana", "b:lankinen_13-Oulanka-Drosophila-montana", "b:lankinen_13-Kemi-Drosophila-montana", "b:lankinen_13-Pudasjarvi-Drosophila-montana", "b:lankinen_13-Paltamo-Drosophila-montana", "b:lankinen_13-ivaskila-Drosophila-montana","b:lankinen_13-lahti-Drosophila-montana"),
+  set=rep("byhand",7),
+  popid=c("b:lankinen_13-Pelkosenniemi-Drosophila-montana", "b:lankinen_13-Oulanka-Drosophila-montana", "b:lankinen_13-Kemi-Drosophila-montana", "b:lankinen_13-Pudasjarvi-Drosophila-montana", "b:lankinen_13-Paltamo-Drosophila-montana", "b:lankinen_13-ivaskila-Drosophila-montana","b:lankinen_13-lahti-Drosophila-montana"),
+  ID = rep("lankinen_13",7), PY = rep(2013,7), region = rep ("Europe",7), pops_left= rep(7,7), genus = rep("Drosophila",7), spec = rep("montana",7), order = rep("Diptera",7), 
+  pop = c("Pelkosenniemi", "Oulanka", "Kemi", "Pudasjarvi", "Paltamo", "ivaskila","lahti"), 
+  degN =c(67.1, 66.4, 65.7, 65.4, 64.3, 62.2, 61.1),
+  degE = c(27.3, 29.2, 24.7, 27.0, 27.9, 25.7, 25.7),
+  nmethod = rep(NA,7), perc = rep(NA,7), n2 = rep(NA,7), dl2= rep(NA,7), number= rep(NA,7),nslop=rep(NA,7),inc2=rep(NA,7),
+  b=c(35.59, 26.40, 39.38, 27.91, 43.03, 36.72, 45.38),
+  bse = rep(NA,7),# c(11.61, 7.04, 19.64, 7.25, 13.84, 14.22, 12.81),
+  c = rep(0,7),cse = rep(NA,7),d=rep(1,7),dse = rep(NA,7),
+  e = c(19.22, 19.38, 18.63, 19.46, 18.78, 18.32, 17.70),
+  ese = rep(NA,7), #c(0.46,0.72,1.13, 1.00, 0.42, 0.75, 0.34)),
+  col = rep( "#FFBF00",7),
+  npoints = rep(4,7))
+
+results<-rbind(results,lank)
+                   
+write.table(results,"02studies/02output/slopes_clean.txt",sep = "\t",row.names=F)
+
