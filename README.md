@@ -2,15 +2,15 @@
 # Summary    
 
 Global change alters selection on phenology, due to rises in temperature means, variability and predictability. Species persistence will depend on how phenology evolves, which may encompass according changes in means, variability (bet-hedging) or plasticity.
-We conducted a meta-analysis of arthropod diapause timing across species and climatic gradients. We calculated means and slopes of day length reaction norms for 146 populations in 8 orders. We correlated means and slopes of diapause with mean, variability and predictability of winter onset, which we derived from climate station data.
-While timing of diapause and winter onset correlated closely, the slopes were neither explained by winter variability nor by predictability. Insect phenology hence responds readily to mean change, but is vulnerable to altered climate variability and predictability.
+We conducted a meta-analysis of arthropod diapause timing across species and climatic gradients. We calculated means and slopes of day length reaction norms for ~400 populations in 8 orders. We correlated means and variance components of the reaction norms (variance within environments = bet-hedging, variance among environments = plasticity) with mean and predictability of winter onset, which we derived from climate station data.
+This is an ongoing project, and there is currently some restructuring. Most recent things are in the folder Nov2018, the remaining parts are (mostly) old. This readme file needs an update!
 .
 
-See final/short_draft.pdf  for a full description, or methods.md for further details on methods.
+See methods.md for further details on methods.
 
 
 # Structure  
-The main folder contains a detailed description of methods and this readme file. The folder final has copies of all important scripts for a full analysis as well as a draft of a manuscript. Because not all steps of analysis are done, the final folder may be slightly outdated.
+The main folder contains a detailed description of methods and this readme file. The folder nov2018 will have all final files as well as a draft of a manuscript. For now, this is the old structure:
 
 * __01climate_data__: calculations of winter onset, variability and predictability. 
   * __01raw__: (nearly) empty becasue the dataset is too big for github (get it at noaa). 
