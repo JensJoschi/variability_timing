@@ -34,12 +34,13 @@ We searched the Web of Science database for photoperiodic response curves of art
 One study (7 populations) reported the slope and midpoint from drc analyiss directly. The script concentrates on the remaining populations
 
 ```{r load_data}
-data<-read.table("02studies/00raw/nov2018/extr/variance_comp.csv", header=T,sep=";")
+data<-read.table("nov2018/lit_extract/variance_comp.csv", header=T,sep=";")
+#changes to .xlsx: Diatraea had gen + sp in genus column; Laodelphax has added space in hou
 length(unique(data$ID)) #57 studies that can be used for slope calculation
 length(unique(data$spec)) #45 species
-length(unique(data$genus)) #33 genera
-data<-unite(data,"popid",c("ID","pop","genus","spec"),sep="-",remove=F)
-length(unique(data$popid)) #426 populations (not 419 because lankinen 2013 is not in here)
+length(unique(data$genus)) #32 genera
+data<-unite(data,"popid",c("ID","pop","genus","spec"),sep=".",remove=F)
+length(unique(data$popid)) #433 populations (not 440 because lankinen 2013 is not in here)
 
 
 #summary of #pops per region and level of detail for sample sizes
@@ -56,9 +57,9 @@ for ( i in 1:nrow(t)){
 table(t$reg) #unfortunately, the information was converted to values
 levels(data$region)
 #Asia 16
-#Europe (including caucasus): 116
-#Japan 237
-#US 57
+#Europe (including caucasus): 117
+#Japan 242
+#US 58
 #japan has 55.6% of the populations, 46.8 % of the data
 
 
@@ -66,12 +67,21 @@ table(t$nMethod)
 levels(data$nmethod)
 
 #accurate: 96
-#global average:283
+#global average:288
 #pop level: 16
-#NA 31
+#NA 33
+
+
+#check whether some studies have <3 pops
+t<-data.frame(unique(data$ID))
+t$pop<-NA
+for ( i in 1:nrow(t)){ 
+  t$pop[i]<-length(unique(data[data$ID==t[i,1],1]))
+}
+
 
 data$n2[is.na(data$n2)]<-100
-data$n2[data$n2<10]<-data$n2[data$n2<10]*10 #n = 5 may mean 5 replicates with 200 individuals each --> percentages may be 86.5% and n=5 will lose those an make it 100%.
+#data$n2[data$n2<10]<-data$n2[data$n2<10]*10 #n = 5 may mean 5 replicates with 200 individuals each --> percentages may be 86.5% and n=5 will lose those an make it 100%.
 
 
 data$perc[data$perc<0]<-0
@@ -79,8 +89,13 @@ data$perc[data$perc>100]<-100
 data$n2<-round(data$n2)
 data$number<-(data$perc/100) * data$n2
 data$number<-floor(data$number)
-number<-length(unique(data$popid))#426
+number<-length(unique(data$popid))#433
 data$n<-data$number/data$n2
+
+#check whether some studies have <4 dls
+#sort (table(data$popid))
+#get a vector of form "ID-population" for later labelling
+nams<-unite(data,"nams",c("ID","pop"), sep = "-", remove=T)$nams 
 ```
 ```{r own_algorithm}
 #trying with self-made algorithm
@@ -225,96 +240,319 @@ points(x=summary$bet_m,y = 1:number,pch=22,bg=1)
 
 
 ###rjags
-```{r}
+```{r jags}
+#the model in BUGS code for jags
+#instead of saving as separate file this is put into a string, and later opened with textConnection(model_string)
+
 model.string <- 
 "model {
+  
+  #likelihood function
 	for (i in 1:N){
 		y[i] ~ dbin(success[i],trials[i])     #this incorporates sample size per point (number of individuals per day length)
 		success[i] <- (d-c)/(1+exp(b*(x[i]-e)))+c #4-parameter logit curve
 	}
 
 	#priors
-	b ~dunif(-1000,1000)       
+	b ~dunif(-100,100)       
 	c ~dunif(0,1)
 	d ~dunif(c,1)             #constrained to be bigger than c
 	e ~dunif(min(x),max(x))   #constrained within range(day lengths)
 
-
 }"
 
-model <- jags.model(textConnection(model.string), 
-                    data = list(y=test$number, x= test$dl2, N = nrow(test),trials = test$n2), 
-                    n.chains=4,n.adapt=1000)#trials=test$n2, 
-out <- coda.samples(model,   c( 'b', 'c', 'd', 'e'), 100000)
 
+iter<-10000
+chains <-4
+#number<-2 #for testing purposes
 
-calc_var<-function(tracer){
+for (dataset  in (1:number)) {
+  currpop <- unique(data$popid)[dataset]
+  currdat<-data[data$popid==currpop,]
   
-  within <- rep(NA,nrow(tracer))
-  between <- rep(NA,nrow(tracer))
-
-
-  for ( i in 1:nrow(tracer)){
-   x<-seq(tracer[i,4]-12,tracer[i,4]+12, length.out =1000)
-   y<-logcurve(x,tracer[i,1],tracer[i,2],tracer[i,3],tracer[i,4])
-
-   within[i]<- sum(y*(1-y))/1000
-   between[i]<-sd(y)^2 
-  }
-
-out <- data.frame(b=tracer[,1],c=tracer[,2],d=tracer[,3],e=tracer[,4],within=within,between=between)
-
   
-  return(out)
+  model <- jags.model(textConnection(model.string), 
+                    data = list(y=currdat$number, x= currdat$dl2, N = nrow(currdat),trials = currdat$n2), 
+                    n.chains=chains, n.adapt=1000)
+
+  out <- coda.samples(model,   c( 'b', 'c', 'd', 'e'), iter)
+  outname <- paste("model_", currpop, sep="")
+  assign(outname, out)
+  save(list = outname ,file = paste(outname, ".rds", sep = ""))
+  rm(list= outname)
 }
 
-inn<-calc_var(out[[1]])
 ```
 
+```{r calc_variance}
 
-### saving results  
-Now that the model is selected for each study, a simple plot of it will be saved (for later checking, not high-quality plots as in papers). This chunk can run, no need to copy to console.
+logcurve<-function(x,b,c,d,e){(d-c)/(1+exp(b*(x-e)))+c} #4-paramter dose-response curve
 
-```{r save_plot}
+calc_var <- function(row){
+  b<-row[1]
+  c<-row[2]
+  d<-row[3]
+  e<-row[4]
   
-  
-    png(paste("02studies/01extracted_data/",i,"-",unique(data$id)[i],".png",sep="")) 
-    plot(final, xlab = "Day length", ylab = "percentage diapause", main = "upper and lower limit fixed at global mean", log="", col=TRUE)
-    dev.off()
-  
+  x<-seq(e-12,e+12, length.out =1000)
+  y<-(d-c)/(1+exp(b*(x-e)))+c
+  c( 
+      (sum(y*(1-y))/1000), #variance within
+      (sd(y)^2)            #variance between
+      )
+}
+
+
+   #between[i]<-sd(y)^2 
+
+
+for (dataset in 1:number){
+  currpop <- unique(data$popid)[dataset]
+  outname <- paste("model_", currpop, sep="")
+  load(paste(outname, ".rds", sep=""))
+  sav <- data.frame(rep(NA, iter))
+  for (i in (1:chains)){
+    dat <- get(outname)[[i]]
+    temp <- apply(dat, 1, calc_var)
+    temp<-t(temp)
+
+    sav <- cbind(sav, temp, dat[,4]) #order: within, between, e, within ...[4 times]
+  }
+  sav<-sav[,-1]
+  rm(list=outname)
+  write.table(sav, file = paste("res_", currpop, ".txt", sep = "" ), row.names=F, col.names=F)
+}
 
 ```
 
-Lastly, the estimates of b and CDL need to be extracted and saved, along with their standard errors. This chunk runs, except for ll.2 in which lines 220-225 have to be used.
 
-```{r save_data}
- 
+### forest plots
+```{r}
+scale <- 0.9
+num <- 40
+png("forest_b.png",width=480, height = 480*2, pointsize=12)
+par(mfrow = c(1,2),mar = c(4,2,1,0))
+plot(NA,xlim=c(8,20),ylim=c(1,num+2), xlab = "CDL", ylab ="",bty="n",yaxt="n" )
+abline(h=1:num,col="lightgrey")
 
-write.table(results, "02studies/02output/slopes.txt",append=T,sep="\t",col.names=FALSE)
- print(paste(i,"|",results$id[1],"|",choice,sep=""))
+for (dataset in 1:num){
+  currpop <- unique(data$popid)[dataset]
+  res<-read.table(file = paste("res_", currpop, ".txt", sep = "" ))
+
+   for ( i in 1:chains){
+    dens<-density(res[,i*3])
+    lines(x=dens$x,y = dataset+ scale * dens$y/max(dens$y),col=5-i)
+   # points(x= dens$x[which.max(dens$y)],y = dataset + 0.5,col =i,bg = i, pch=22)
+   }
+  abline(h=dataset,col="lightgrey")
+  segments (x0 = quantile(res[,3], 0.025), x1= quantile(res[,3], 0.975), y0 = dataset,y1 = dataset,col=4) #draw 95% credible interval for first chain
+  points(x =median (res[,3]), y = dataset, cex=0.3, pch=22, bg=1)
+  text(x=16, y = dataset+0.5, pos = 4, labels = unique(data$ID[data$popid == currpop]), cex = 0.8, col ="darkgrey") #author
+  text(x=8,  y = dataset+0.5, pos = 4, labels = unique(data$pop[data$popid==currpop]), cex = 0.8, col = "darkgrey") #pop
+}
+
+##another copy to be plotted right next to it
+## only changes to above: dataset in header of loop,  "dataset-num" whenever dataset is mentioned
+plot(NA,xlim=c(8,20),ylim=c(1,num+2), xlab = "CDL", ylab ="",bty="n",yaxt="n" )
+abline(h=1:num,col="lightgrey")
+
+for (dataset in ((num+1):(2*num))){
+  currpop <- unique(data$popid)[dataset]
+  res<-read.table(file = paste("res_", currpop, ".txt", sep = "" ))
+
+   for ( i in 1:chains){
+    dens<-density(res[,i*3])
+    lines(x=dens$x,y = dataset-num+ scale * dens$y/max(dens$y),col=5-i)
+   # points(x= dens$x[which.max(dens$y)],y = dataset + 0.5,col =i,bg = i, pch=22)
+   }
+    abline(h=dataset-num,col="lightgrey")
+  segments (x0 = quantile(res[,3], 0.025), x1= quantile(res[,3], 0.975), y0 = dataset-num,y1 = dataset-num,col=4) #draw 95% credible interval for first chain
+  points(x =median (res[,3]), y = dataset-num, cex=0.3, pch=22, bg=1)
+  text(x=16, y = dataset+0.5-num, pos = 4, labels = unique(data$ID[data$popid == currpop]), cex = 0.8, col ="darkgrey") #author
+  text(x=8,  y = dataset+0.5-num, pos = 4, labels = unique(data$pop[data$popid==currpop]), cex = 0.8, col = "darkgrey") #pop
+}
+
+dev.off()
 ```
 
-## quality control  
-All models were done semi-automatically, now we need to check what the data looks like.
 
-```{r data_summary}
+## same for variance within
+```{r}
+scale <- 0.9
+num <- 40
+png("forest_w.png",width=480, height = 480*2, pointsize=12)
+par(mfrow = c(1,2),mar = c(4,2,1,0))
+plot(NA,xlim=c(-0.025,0.275),ylim=c(1,num+2), xlab = "Variance within environments", ylab ="",bty="n",yaxt="n" )
+abline(h=1:num,col="lightgrey")
 
-#removed 7 studies (21 pops) and 29 further pops
-#218-21-29 = 168 pops left
-#in: 27 studies (though one study has 2 and one has 4 species = 31 studies)
+for (dataset in 1:num){
+  currpop <- unique(data$popid)[dataset]
+  res<-read.table(file = paste("res_", currpop, ".txt", sep = "" ))
+
+   for ( i in 1:chains){
+    dens<-density(res[,i*3-2])
+    lines(x=dens$x,y = dataset+ scale * dens$y/max(dens$y),col=5-i)
+   # points(x= dens$x[which.max(dens$y)],y = dataset + 0.5,col =i,bg = i, pch=22)
+   }
+  abline(h=dataset,col="lightgrey")
+  segments (x0 = quantile(res[,1], 0.025), x1= quantile(res[,1], 0.975), y0 = dataset,y1 = dataset,col=4) #draw 95% credible interval for first chain
+  points(x =median (res[,1]), y = dataset, cex=0.3, pch=22, bg=1)
+  text(x=0.2, y = dataset+0.5, pos = 4, labels = unique(data$ID[data$popid == currpop]), cex = 0.8, col ="darkgrey") #author
+  text(x=-0.025,  y = dataset+0.5, pos = 4, labels = unique(data$pop[data$popid==currpop]), cex = 0.8, col = "darkgrey") #pop
+}
+
+##another copy to be plotted right next to it
+## only changes to above: dataset in header of loop,  "dataset-num" whenever dataset is mentioned
+plot(NA,xlim=c(-0.025,0.275),ylim=c(1,num+2), xlab = "Variance within environments", ylab ="",bty="n",yaxt="n" )
+abline(h=1:num,col="lightgrey")
+
+for (dataset in ((num+1):(2*num))){
+  currpop <- unique(data$popid)[dataset]
+  res<-read.table(file = paste("res_", currpop, ".txt", sep = "" ))
+
+   for ( i in 1:chains){
+    dens<-density(res[,i*3-2])
+    lines(x=dens$x,y = dataset-num+ scale * dens$y/max(dens$y),col=5-i)
+   # points(x= dens$x[which.max(dens$y)],y = dataset + 0.5,col =i,bg = i, pch=22)
+   }
+    abline(h=dataset-num,col="lightgrey")
+  segments (x0 = quantile(res[,1], 0.025), x1= quantile(res[,1], 0.975), y0 = dataset-num,y1 = dataset-num,col=4) #draw 95% credible interval for first chain
+  points(x =median (res[,1]), y = dataset-num, cex=0.3, pch=22, bg=1)
+  text(x=0.2, y = dataset+0.5-num, pos = 4, labels = unique(data$ID[data$popid == currpop]), cex = 0.8, col ="darkgrey") #author
+  text(x=-0.025,  y = dataset+0.5-num, pos = 4, labels = unique(data$pop[data$popid==currpop]), cex = 0.8, col = "darkgrey") #pop
+}
+
+dev.off()
+
+
 ```
+
+
+## comparison. are the results stored in res_ reliable enough?
+```{r}
+estimates <- data.frame(lower = rep(NA,num), med = rep(NA,num), upper = rep(NA,num))
+for (dataset in 1:10){
+  currpop <- unique(data$popid)[dataset]
+  res<-read.table(file = paste("res_", currpop, ".txt", sep = "" ))
+  estimates[dataset,]<-quantile(res[,3], c(0.025,0.5,0.975))
+}
+
+
+est2<-data.frame(lower = rep(NA,num), med = rep(NA,num), upper = rep(NA,num))
+for (dataset in 1:10){
+  currpop <- unique(data$popid)[dataset]
+  nam <-paste("model_", currpop, sep="")
+  load(file = paste(nam, ".rds", sep=""))
+  est2[dataset,] <- summary(get(nam))$quantile[4,c(1,3,5)]
+}
+(est2-estimates)/est2 #diff is negligible
+```
+
+
+
+## get estimates and ci
+```{r}
+num<-number
+estimates_e <- data.frame(lower = rep(NA,num), med = rep(NA,num), upper = rep(NA,num))
+estimates_w <- data.frame(lower = rep(NA,num), med = rep(NA,num), upper = rep(NA,num))
+estimates_b <- data.frame(lower = rep(NA,num), med = rep(NA,num), upper = rep(NA,num))
+
+for (dataset in 1:num){
+  currpop <- unique(data$popid)[dataset]
+  res<-read.table(file = paste("res_", currpop, ".txt", sep = "" ))
+  estimates_e[dataset,]<-quantile(res[,3], c(0.025,0.5,0.975))
+  estimates_w[dataset,]<-quantile(res[,1], c(0.025,0.5,0.975))
+  estimates_b[dataset,]<-quantile(res[,2], c(0.025,0.5,0.975))
+}
+
+estimates_e$popid <- unique(data$popid)
+estimates_e$order<-sapply(estimates_e$popid,function(x){unique(data$order[data$popid == x])})
+estimates_w$popid <- unique(data$popid)
+estimates_w$order<-sapply(estimates_w$popid,function(x){unique(data$order[data$popid == x])})
+estimates_b$popid <- unique(data$popid)
+estimates_b$order<-sapply(estimates_b$popid,function(x){unique(data$order[data$popid == x])})
+```
+
+#forest plot, simplified
+```{r}
+
+ordered_e<-estimates_e[order(estimates_e$order),]
+n<-table(ordered_e$order)
+png("forest_e_simple.png",height = 480*2)
+plot(NA, xlim = c(7.8,24), ylim = c(1,433),xlab = "CDL", ylab="", yaxt ="n", bty="n",xaxt="n")
+axis(1, at= seq(8,24,2))
+segments (x0 = ordered_e$lower, x1 = ordered_e$upper, y0=1:433,col="lightgrey")
+points(x= ordered_e$med, y= 1:433, pch=22, cex=0.4 ,bg=ordered_e$order,col=ordered_e$order)
+text(x=22,y = n[1]/2, labels = names(n[1]),col=1)
+text(x=22,y = cumsum(n)[1:8]+n[2:9]/2, labels = names(n[2:9]),col=1)
+abline(v=median(ordered_e$med),lty=2)
+dev.off()
+
+ordered_w<-estimates_w[order(estimates_w$order),]
+png("forest_w_simple.png",height = 480*2)
+plot(NA, xlim = c(0,0.25), ylim = c(1,433),xlab = "variance within", ylab="", yaxt ="n", bty="n",xaxt="n")
+axis(1, at= seq(0,0.25,length.out = 5))
+segments (x0 = ordered_w$lower, x1 = ordered_w$upper, y0=1:433,col="lightgrey")
+points(x= ordered_w$med, y= 1:433, pch=22, cex=0.4 ,bg=ordered_w$order,col=ordered_w$order)
+text(x=0.19,y = n[1]/2, labels = names(n[1]),col=1)
+text(x=0.19,y = cumsum(n)[1:8]+n[2:9]/2, labels = names(n[2:9]),col=1)
+abline(v=median(ordered_w$med),lty=2)
+dev.off()
+
+
+
+ordered_b<-estimates_b[order(estimates_b$order),]
+png("forest_b_simple.png",height = 480*2)
+plot(NA, xlim = c(0,0.25), ylim = c(1,433),xlab = "variance between", ylab="", yaxt ="n", bty="n",xaxt="n")
+axis(1, at= seq(0,0.25,length.out = 5))
+segments (x0 = ordered_b$lower, x1 = ordered_b$upper, y0=1:433,col="lightgrey")
+points(x= ordered_b$med, y= 1:433, pch=22, cex=0.4 ,bg=ordered_b$order,col=ordered_b$order)
+text(x=0.05,y = n[1]/2, labels = names(n[1]),col=1)
+text(x=0.05,y = cumsum(n)[1:8]+n[2:9]/2, labels = names(n[2:9]),col=1)
+abline(v=median(ordered_b$med),lty=2)
+dev.off()
+
+png("within_between.png")
+plot(estimates_w$med~estimates_b$med,pch=22,bg=1, xlab = "variance between environments", ylab = "variance within environments",cex=0.5)
+dev.off()
+```
+
+
+
 
 
 ```{r funnel_plots}
-
-
+a <- rep(NA, number)
+  for (dataset in 1:number){
+  currpop <- unique(data$popid)[dataset]
+  a[dataset] <- nrow(data[data$popid==currpop,])
+}
+r <- estimates_e$upper-estimates_e$lower
+plot(r~jitter(a),pch=22, cex=1, col="grey",ylim=c(0,5)) # no decrease with sample size
+plot(estimates_e$med~a)
+r <- estimates_w$upper-estimates_w$lower
+plot(r~jitter(a))
+plot(estimates_w$med~a)
 ```
 
 
 ## lankinen 
-One publication is misssing so far, that is lankinen 2013. They gave b and CDL estimates directly so there was no need to extract data with a drc analysis. The paper does not directly mention standard error of the estimates, but this is not neccessary anyway with a sample-size based approach. What would be needed though is the snumber of points that contribute to the slope estimation. The only mention in the study is that there are 7 day length treatments, which seems to include multiple points at 0 or 100 %. I take the median sample size (4) of all data, so that lankinen has an average weight. The closely related study by tyukmaeva has same methods and gets 3-5 (median 4) day lengths per population, so that seems to fit.
+One publication is misssing so far, that is lankinen 2013. They gave b and CDL estimates directly so there was no need to extract data and do the MCMC. They give only a SD though, needs to be converted into credible intervals
 
 ```{r lankinen}
+cdlvec<-seq(19.22-0.46*2,19.22+0.46*2,length.out=1000)
+bvec <- seq(35.59-11.61*2,35.59+11.61,length.out=1000)
+x<-seq(19.22-6,19.22+6,length.out=1000)
+
+res<-data.frame(w = rep(NA,100*100), b = rep(NA,100*100))
+for ( i in 1:100){
+  for(j in 1:100){
+
+    res[i*100 +j,]<-    calc_var(c(bvec[i],0,1,cdlvec[j]))
+  }
+}
+quantile(res[,1],c(0.025,0.975),na.rm=T)
+
 lank <- data.frame(
   row = c("b:lankinen_13-Pelkosenniemi-Drosophila-montana", "b:lankinen_13-Oulanka-Drosophila-montana", "b:lankinen_13-Kemi-Drosophila-montana", "b:lankinen_13-Pudasjarvi-Drosophila-montana", "b:lankinen_13-Paltamo-Drosophila-montana", "b:lankinen_13-ivaskila-Drosophila-montana","b:lankinen_13-lahti-Drosophila-montana"),
   set=rep("byhand",7),
@@ -334,5 +572,36 @@ lank <- data.frame(
 
 results<-rbind(results,lank)
                    
-write.table(results,"02studies/02output/slopes_clean.txt",sep = "\t",row.names=F)
+#write.table(results,"02studies/02output/slopes_clean.txt",sep = "\t",row.names=F)
+```
 
+
+## combine with degN etc
+```{r}
+alone <- data[1,]
+for (dataset in 1: number){
+  currpop <- unique(data$popid)[dataset]
+  alone[dataset,]<-data[data$popid==currpop,][1,]
+}
+alone<-alone[,-c(10,14:18)]
+
+names(estimates_e)<-c("lower_e","med_e","upper_e","popid","order")
+names(estimates_w)<-c("lower_w","med_w","upper_w","popid","order")
+names(estimates_b)<-c("lower_b","med_b","upper_b","popid","order")
+
+together <- merge(estimates_e,alone)
+together <- merge(estimates_w,together, by = "popid")
+together <- merge(estimates_b,together, by = "popid")
+plot(together$med_e~together$degN)
+segments(x0=together$degN,x1 = together$degN, y0 = together$lower_e, y1 = together$upper_e)
+```
+
+
+
+```{r save_data}
+write.table(estimates_e, "estimates_e.txt",append=T,sep="\t",col.names=FALSE)
+write.table(estimates_w, "estimates_w.txt",append=T,sep="\t",col.names=FALSE)
+write.table(estimates_b, "estimates_b.txt",append=T,sep="\t",col.names=FALSE)
+write.table(together, "mcmcresults.txt",append=F,sep="\t")
+
+```
