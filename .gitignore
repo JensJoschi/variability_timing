@@ -16,7 +16,7 @@ res_*
 
 writing/
 
-nov2018/lit_figs/
+lit_figs/
 
 not_under_git/
 
@@ -27,79 +27,79 @@ results\.txt
 temp\.txt
 
 
-nov2018/clim_read/converted_max\.txt
+clim_read/converted_max\.txt
 
 
-nov2018/clim_read/converted_min\.txt
+clim_read/converted_min\.txt
 
-nov2018/clim_calc/output/results_0-5\.txt
+clim_calc/output/results_0-5\.txt
 
-nov2018/clim_calc/output/results_10-5\.txt
+clim_calc/output/results_10-5\.txt
 
-nov2018/clim_calc/output/results_105-5\.txt
+clim_calc/output/results_105-5\.txt
 
-nov2018/clim_calc/output/results_110-5\.txt
+clim_calc/output/results_110-5\.txt
 
-nov2018/clim_calc/output/results_115-5\.txt
+clim_calc/output/results_115-5\.txt
 
-nov2018/clim_calc/output/results_120-5\.txt
+clim_calc/output/results_120-5\.txt
 
-nov2018/clim_calc/output/results_125-5\.txt
+clim_calc/output/results_125-5\.txt
 
-nov2018/clim_calc/output/results_130-5\.txt
+clim_calc/output/results_130-5\.txt
 
-nov2018/clim_calc/output/results_135-5\.txt
+clim_calc/output/results_135-5\.txt
 
-nov2018/clim_calc/output/results_140-5\.txt
+clim_calc/output/results_140-5\.txt
 
-nov2018/clim_calc/output/results_145-5\.txt
+clim_calc/output/results_145-5\.txt
 
-nov2018/clim_calc/output/results_15-5\.txt
+clim_calc/output/results_15-5\.txt
 
-nov2018/clim_calc/output/results_150-5\.txt
+clim_calc/output/results_150-5\.txt
 
-nov2018/clim_calc/output/results_20-5\.txt
+clim_calc/output/results_20-5\.txt
 
-nov2018/clim_calc/output/results_25-5\.txt
+clim_calc/output/results_25-5\.txt
 
-nov2018/clim_calc/output/results_30-5\.txt
+clim_calc/output/results_30-5\.txt
 
-nov2018/clim_calc/output/results_35-5\.txt
+clim_calc/output/results_35-5\.txt
 
-nov2018/clim_calc/output/results_40-5\.txt
+clim_calc/output/results_40-5\.txt
 
-nov2018/clim_calc/output/results_45-5\.txt
+clim_calc/output/results_45-5\.txt
 
-nov2018/clim_calc/output/results_5-5\.txt
+clim_calc/output/results_5-5\.txt
 
-nov2018/clim_calc/output/results_50-5\.txt
+clim_calc/output/results_50-5\.txt
 
-nov2018/clim_calc/output/results_55-5\.txt
+clim_calc/output/results_55-5\.txt
 
-nov2018/clim_calc/output/results_60-5\.txt
+clim_calc/output/results_60-5\.txt
 
-nov2018/clim_calc/output/results_65-5\.txt
+clim_calc/output/results_65-5\.txt
 
-nov2018/clim_calc/output/results_70-5\.txt
+clim_calc/output/results_70-5\.txt
 
-nov2018/clim_calc/output/results_75-5\.txt
+clim_calc/output/results_75-5\.txt
 
-nov2018/clim_calc/output/results_80-5\.txt
+clim_calc/output/results_80-5\.txt
 
-nov2018/clim_calc/output/results_85-5\.txt
+clim_calc/output/results_85-5\.txt
 
-nov2018/clim_calc/output/results_90-5\.txt
+clim_calc/output/results_90-5\.txt
 
-nov2018/clim_calc/output/results_95-5\.txt
+clim_calc/output/results_95-5\.txt
 
-nov2018/lit_extract/reaction_norms/bradshaw_amnat\.xlsx
+lit_extract/reaction_norms/bradshaw_amnat\.xlsx
 
-nov2018/lit_extract/reaction_norms/ichijo\.txt
+lit_extract/reaction_norms/ichijo\.txt
 
-nov2018/lit_extract/reaction_norms/kimura_1984\.txt
+lit_extract/reaction_norms/kimura_1984\.txt
 
-nov2018/lit_extract/reaction_norms/kimura_1993\.txt
+lit_extract/reaction_norms/kimura_1993\.txt
 
-nov2018/lit_extract/reaction_norms/kimura_1994\.txt
+lit_extract/reaction_norms/kimura_1994\.txt
 
-nov2018/lit_extract/reaction_norms/ryan\.txt
+lit_extract/reaction_norms/ryan\.txt
