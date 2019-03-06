@@ -72,3 +72,10 @@ temp\.txt
 writing/
 
 nov2018/lit_figs/
+*.rds
+res_*
+
+
+*.un~
+
+*.md~

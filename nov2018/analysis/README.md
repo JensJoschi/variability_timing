@@ -1,0 +1,2 @@
+# Content  
+This folder contains the last step of the meta-analysis, the correlation of climate data and effect sizes (means and variance compositions) from the original studies. The script "analysis_new.rmd" produces maps of the climate variables, funnel and forest plots of the effect sizes, and plots and models of their correlations.
