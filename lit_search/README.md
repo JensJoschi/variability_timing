@@ -1,8 +1,8 @@
-# content  
+# Content  
 
-This folder contains the literature search for the project. "S2.docx" describes the search algorithm and contains all keywords and numbers of results. The .txt files are the WOS outputs, saved in batches of 500 references. The excel fileis a merge of these .txt files, and contains screening, eligibility and inclusion results, as well as the extracted raw data from the studies.
+This folder contains the literature search for the project. "searchterms.md" describes the search algorithm and contains all keywords and numbers of results. The .txt files are the WOS outputs, saved in batches of 500 references. The excel fileis a merge of these .txt files, and contains screening, eligibility and inclusion results, as well as the extracted raw data from the studies.
 
-# details on search_2018_11.xlsx  
+# Details on search_2018_11.xlsx  
 The tabs "search1", "search2", "forward" and "forward2" contain the merged search results of the four searches (i.e. the .txt files). "combined" merges all eligible articles of the four searches, and "extract" adds metadata and raw data extracted from figures. The columns in the first 4 tabs generally correspond to the WOS saves (the .txt files), but in addition there are a few added columns to allow filtering for eligible articles:
 * In tab "search 1", columns BQ:BX can be used to filter the results:
     * "title_animal" describes whether the article is, judging from the title, about animals (a), plants (p), does not mention either(n), or mentions both(b). 

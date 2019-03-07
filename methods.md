@@ -107,11 +107,11 @@ We converted the inflection point into julian days, by using the reported latitu
 ## 4. analysis  
 We used linear mixed-effects models with a nested random strucutre (nlme) to correlate the reaction norm properties with climate variables. As random terms we nested species in order, ignoring both study ID and genus. Study ID was disregarded because most species were only represented by a single study, and those species that were represented by multiple studies usually contained the same first or lead authors (Table 1). Genus was disregarded because there were either only very few genera per order available (e.g. Diptera), or all species within an order were placed in different genera (Lepidoptera, Table 1). We weighed the reaction norm estimates by the reverse of the credible intervals, but truncated the intervals to prevent some estimates from obtaining nearly infinite weight. 
 
-We performed the following models (credible interval lower limit truncation in brackets):
-0) Critical photoperiod was correlated with latitude  (10 minutes)
-1) Mean diapause timing was correlated with mean winter onset (1 week)
-3a ) The ratio of the variances (e.q. 4) was correlated with day length predictability (5%)
-3b) The ratio of the variances (e.q. 4) was correlated with temperature predictability (5%)
-4) the residuals of model 1 were correlated with the residuals of models 3a and 3b.
+We performed the following models (credible interval lower limit truncation in brackets):  
+0. Critical photoperiod was correlated with latitude  (10 minutes)  
+1. Mean diapause timing was correlated with mean winter onset (1 week)  
+3.  * The ratio of the variances (e.q. 4) was correlated with day length predictability (5%)  
+    * The ratio of the variances (e.q. 4) was correlated with temperature predictability (5%)  
+4. the residuals of model 1 were correlated with the residuals of models 3a and 3b.  
 For all models we report marginal and conditional R² values (Nakagawa & Schielzeth 2014, MuMin), likelihood ratio test statistics and differences in AIC.
 
