@@ -22,20 +22,21 @@ library(imputeTS)
 
 # General description  
 ## Project aim  
-The aim of this project is to correlate means and variance of diapause timing with climate means and climate predictability.
+To understand the evolvability of phenological strategies such as plasticity and bet-hedging, we correlate variance components and means of reaction norms with climate parameters. 
+
 
 ## Script overview  
-The script calculates mean winter onset and winter predictability for all climate stations around the world. The data will be combined with reaction norms of various arthropod species in separate scripts. 
-The script first has a general part: it uses the daily minimum and maximum temeratures for all months, years and climate stations all over the world from the GHCN dataste (~ 12million X 31 days).These were pre-processed with PERL and saved as two txt files. The two datasets are now opened, cleaned, and the mean of min and max is calculated for each day. The resulting workspace with one matrix of 11 mil x 31days is saved as textfile.  
+The script calculates mean winter onset and winter predictability for all multiple climate stations in the northern hemisphere. The data will be combined with reaction norms of various arthropod species in separate scripts. 
+The script first has a general part: it uses the daily minimum and maximum temeratures for all months, years and climate stations all over the world from the GHCN dataste (~ 12million X 31 days).These were pre-processed with PERL and saved as two txt files. The two datasets are now opened, cleaned, and the mean of min and max is calculated for each day. The resulting workspace with one matrix of 11 mil x 31days is saved as R workspace. Then the data is transposed to a matrix of 934k station - years * 365 days, and saved as .txt file.  
 
-The second part of the script calculates mean and standard deviation of winter onset. This calculation depends on the definition of winter, and for a sensitivity analysis a larger range of definitions is used in a loop. For each definition the script takes about 30 minutes to complete. The resulting data is saved as .txt file.
+The second part of the script calculates mean and predictability of winter onset. This calculation depends on the definition of winter, and for a sensitivity analysis a larger range of definitions is used in a loop. For each definition the script takes about 30 minutes to complete. The resulting data is saved as .txt file.
 
 The last part calculates predictability as colour of noise, i.e. based on autocorrelations in the temperature data. This part has to run only once.
 
 
 The data was generated with R version `r getRversion()`. It uses the GHCN-daily dataset by NOAA:
 ```{r, echo =F}
-text<- read_document("01climate_data/01raw/ghcnd_all/ghcnd-version.txt")
+text<- read_document("ghcnd-version.txt")
 print (text[1])
 ```
 
@@ -48,9 +49,9 @@ print (text[1])
 The following chunk opens the two datasets that were extracted from the GHCN-D database (min and max temperature). Those rows that occur in both datasets are used to calculte mean temperature. Everything else is discarded 
 
 ```{r join}
-converted<-fread("01climate_data/02processing/001data_conversion/converted_max.txt", sep ="|", na.strings=c("NA","-9999"),verbose=F) #12,616,909 rows
+converted<-fread("clim_read\\converted_max.txt", sep ="|", na.strings=c("NA","-9999"),verbose=F) #12,616,909 rows
 length(unique(converted$V1)) #34,145                                                                  
-converted2<-fread("01climate_data/02processing/001data_conversion/converted_min.txt", sep ="|", na.strings=c("NA","-9999"),verbose=F) #12,658,376
+converted2<-fread("clim_read\\converted_min.txt", sep ="|", na.strings=c("NA","-9999"),verbose=F) #12,658,376
 length(unique(converted2$V1)) #34,052 
 
 
@@ -62,13 +63,13 @@ names(converted2)<-c("new_id","ID","year","month",1:31)
 
 n1<-unique(converted$new_id)
 n2<-unique(converted2$new_id)
-both <- n1[n1 %in% n2]
+both <- n1[n1 %in% n2] #has set of rows that occur in both dataset
 rm(n1)
 rm(n2)
 
 converted2<-converted2[converted2$new_id %in% both]
 converted<-converted[converted$new_id %in% both]
-nrow(converted)
+nrow(converted)#12,543,632
 rm(both)
 #we are now down to 12.5 million rows in each dataset
 
@@ -235,7 +236,7 @@ rm(converted)
 
 
 ### 1. calculate mean winter onset, sd(winter), predictability  
-In the following chunk, a loop selects 1 station at a time. The temperature matrix is transformed to a binomial matrix (1 if winter is cold enough, 0 if not), and cumSum is used to determine the 5th day of the year that crosses the threshold. The mean winter onset and the standard deviation among years is recorded. Lastly, the 30 days before winter onset of each year are selected, a correlation of temperature ~ time is made, and the slope for each year recorded. The standard deviation between years is another predictability estimate. In the end, all of these variables are saved. A loop is constructed around these calculations to do different thresholds.
+In the following chunk, a loop selects 1 station at a time. The temperature matrix (number years * 365) is transformed to a binomial matrix (1 if winter is cold enough, 0 if not), and cumSum is used to determine the 5th day of the year that crosses the threshold. The mean winter onset and the standard deviation among years is recorded. Lastly, the 30 days before winter onset of each year are selected, a correlation of temperature ~ time is made, and the slope for each year recorded. The standard deviation between years is another predictability estimate. In the end, all of these variables are saved. A loop is constructed around these calculations to do different thresholds.
   
 ```{r mean}   
 threshlist <-seq(0,150,5)
@@ -274,16 +275,9 @@ for (i in 1:length(stations)){ #this loop goes through each of the stations
   
   ####calculate winter arrival#####
  # make a binomial matrix with all Temps<threshold = 1, all others =0(including NA)
-
-  #bino<-rep(0,nrow(s)*(ncol(s)-2))
-  #bino[s[,3:368]<threshold]<-1
-  bino<-s[,3:368]<threshold
+  bino<-s[,3:368]<threshold #T/F and hence 0 or 1
   bino[is.na(bino)]<-0
   used<-rowSums(bino,na.rm=T)>t2
- # bino<-matrix(data=bino,nrow=nrow(s),ncol=ncol(s)-2)
-
-  #exclude years that never reach winter (less than x days below y°C)
-  #used<-rowSums(bino)>t2
   
   #exclude stations that reach winter in less than 3 years 
   if (sum(used) <3) {

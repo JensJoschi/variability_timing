@@ -23,10 +23,10 @@ library(rjags)
 
 # General description  
 ## Project aim  
-The aim of this project is to correlate means and variance of diapause timing with climate means and climate predictability.
+To understand the evolvability of phenological strategies such as plasticity and bet-hedging, we correlate variance components and means of reaction norms with climate parameters. 
 
 ## Script overview  
-We searched the Web of Science database for photoperiodic response curves of arthropods and selected 57 studies with individual reaction norms (dose-response curves) for 426 populations. The data was extracted with webplotdigitizer. For each population the most important columns are data$number ~ data$dl2.
+We searched the Web of Science database for photoperiodic response curves of arthropods and selected 57 studies with individual reaction norms (dose-response curves) for 426 populations. The data was extracted with webplotdigitizer, and can be found in "lit_search/search_2018_11.xlsx".
 This script does an MCMC to get estimates fo slopes, midpoints and upper and lower limit. It then calculates the variance within and between datapoints based on the same MCMC approach.
 
 
@@ -34,13 +34,13 @@ This script does an MCMC to get estimates fo slopes, midpoints and upper and low
 One study (7 populations) reported the slope and midpoint from drc analyiss directly. The script concentrates on the remaining populations
 
 ```{r load_data}
-data<-read.table("nov2018/lit_extract/variance_comp.csv", header=T,sep=";")
+data<-read.table("lit_extract/variance_comp.csv", header=T,sep=";")
 #changes to .xlsx: Diatraea had gen + sp in genus column; Laodelphax has added space in hou
 length(unique(data$ID)) #57 studies that can be used for slope calculation
 length(unique(data$spec)) #45 species
 length(unique(data$genus)) #32 genera
 data<-unite(data,"popid",c("ID","pop","genus","spec"),sep=".",remove=F)
-length(unique(data$popid)) #433 populations (not 440 because lankinen 2013 is not in here)
+(number <- length(unique(data$popid))) #433 populations (not 440 because lankinen 2013 is not in here)
 
 
 #summary of #pops per region and level of detail for sample sizes
@@ -78,13 +78,12 @@ t$pop<-NA
 for ( i in 1:nrow(t)){ 
   t$pop[i]<-length(unique(data[data$ID==t[i,1],1]))
 }
-
+#table t$pop
 
 data$n2[is.na(data$n2)]<-100
-#data$n2[data$n2<10]<-data$n2[data$n2<10]*10 #n = 5 may mean 5 replicates with 200 individuals each --> percentages may be 86.5% and n=5 will lose those an make it 100%.
 
 
-data$perc[data$perc<0]<-0
+data$perc[data$perc<0]<-0 #sometimes percentages are estimated as e.g. -0.3% or 101%. these are rounded here to prevent errors
 data$perc[data$perc>100]<-100
 data$n2<-round(data$n2)
 data$number<-(data$perc/100) * data$n2
@@ -96,156 +95,14 @@ data$n<-data$number/data$n2
 #sort (table(data$popid))
 #get a vector of form "ID-population" for later labelling
 nams<-unite(data,"nams",c("ID","pop"), sep = "-", remove=T)$nams 
-```
 
-## own algorithm  
-
-This is only for testing purposes and will beerased eventually. 
-```{r own_algorithm}
-#trying with self-made algorithm
-
-logcurve<-function(x,b,c,d,e){(d-c)/(1+exp(b*(x-e)))+c} #4-paramter dose-response curve
-
-build_proposfunc <- function(input,jump,dl2){ #lets the four parameters of the dose-response curve vary, but imposes box constraints (0-100%)
-  out<-rnorm(4,input,jump)
-  #replace limits outside 0 and 100%:
-  if (out[2]<0){out[2]<- -1*out[2]}
-  if (out[2]>1){out[2]<-1}
-  
-  if (out[3]>1){out[3]<- 2-out[3]}
-  if (out[3]<out[2]){out[3]<-out[2]}
-  
-  #constrain midpoint to fall within data limits
-  if (out[4]>max(dl2)){out[4] <- max(dl2)}
-  if (out[4]<min(dl2)){out[4] <- min(dl2)}
-  return(out)
-}
-  
-mcmc<-function(test, iter, jump){
-  
-  accept = F
-  tracer<-data.frame(rep(NA,iter),rep(NA,iter), rep(NA,iter), rep(NA,iter))
-  #names(tracer)<- c("b","c","d","e") #this will store the results, 1 line = 1 markov chain step
-
-  #initialize with b=2,c= 0, d= 1, e = 15
-  tracer[1,]<-c(2,0,1,15) 
-  pred <- logcurve(x=test$dl2,b=tracer[1,1], c=tracer[1,2],d=tracer[1,3],e = tracer[1,4])
-  ll_old<-sum(dbinom(test$number,test$n2,pred,log=T))
-
-
-  for (i in 2:iter){
-    propos<-build_proposfunc(as.numeric(tracer[i-1,]),jump, test$dl2) #proposes new fit, but this fit has still to be evaluated against the last one
-  
-    #calculate fit with new combination
-    pred <- logcurve(x=test$dl2,b=propos[1], c=propos[2],d=propos[3],e = propos[4])
-    ll_new<-sum(dbinom(test$number,test$n2,pred,log=T))
-  
-   #compare LLs
-
-   if (ll_new>ll_old){ 
-  accept <-T
-   }else{
-     p <- exp(ll_new-ll_old)#diff not ratio because these are log-likelihoods
-      if (runif(1) < p) {accept<-T}
-   }
-  
-   if (accept == T){    
-     ll_old<- ll_new
-     tracer[i,]<-propos
-    }else{
-        tracer[i,]<-tracer[i-1,]
-      }
-  
-
-  accept<-F
-  }
-#remove burn-in
-  tracer<-tracer[(iter/10):iter,]
-
-  #1-mean(duplicated(tracer))
-
-  return(tracer)
-}
-
-calc_var<-function(tracer){
-  
-  within <- rep(NA,nrow(tracer))
-  between <- rep(NA,nrow(tracer))
-
-
-  for ( i in 1:nrow(tracer)){
-   x<-seq(tracer[i,4]-12,tracer[i,4]+12, length.out =1000)
-   y<-logcurve(x,tracer[i,1],tracer[i,2],tracer[i,3],tracer[i,4])
-
-   within[i]<- sum(y*(1-y))/1000
-   between[i]<-sd(y)^2 
-  }
-
-
-  tracer[,5]<-within
-  tracer[,6]<-between
-  return(tracer)
-}
-
-
-#iter <-100000
-iter<-1000#for testing purposes
-jump <-c(1,0.1,0.1,0.1)
-
-number<-10 #for testing purposes
-for (dataset  in 1:number) {
-  currpop <- unique(data$popid)[dataset]
-  currdat<-data[data$popid==currpop,]
-  tracer <- mcmc(currdat, iter, jump)
-  tracer<-calc_var(tracer)
-  write.table(tracer,paste(currpop,".txt"))
-}  
-```
-
-```{r}
-summary<-data.frame(popid=rep(NA,number), e_l=rep(NA,number), e_m = rep(NA,number), e_h=rep(NA,number), w_l=rep(NA,number), w_m=rep(NA,number), w_h=rep(NA,number), bet_l=rep(NA,number), bet_m=rep(NA,number), bet_h=rep(NA,number))
-for (dataset in 1:number){
-  t<-read.table(paste(unique(data$popid)[dataset],".txt"))
-  summary$popid[dataset] <- unique(data$popid)[dataset]
-  summary$e_l[dataset] <- quantile(t[,4],0.025)
-  summary$e_m[dataset] <- quantile(t[,4],0.5)
-  summary$e_h[dataset] <- quantile(t[,4],0.975)
-  
-  summary$w_l[dataset] <- quantile(t[,5],0.025)
-  summary$w_m[dataset] <- quantile(t[,5],0.5)
-  summary$w_h[dataset] <- quantile(t[,5],0.975)
-  
-  summary$bet_l[dataset] <- quantile(t[,6],0.025)
-  summary$bet_m[dataset] <- quantile(t[,6],0.5)
-  summary$bet_h[dataset] <- quantile(t[,6],0.975)
-  
-
-
-}
-
-summary$range = summary$e_h-summary$e_l
-plot(NA,xlim= c(5,20),ylim= c(1,number),xlab = "CDL", ylab = "study index")
-segments(x0 = summary$e_l,y0=1:number,x1 = summary$e_h,y1=1:number,col=1) #"lightgrey")
-points(x=summary$e_m,y = 1:number,pch=22,bg=1)
-
-summary$range = summary$w_h-summary$w_l
-plot(NA,xlim= c(0,0.25),ylim= c(1,number),xlab = "variance within environments (bet-hedging)",ylab = "Index")
-segments(x0 = summary$w_l,y0=1:number,x1 = summary$w_h,y1=1:number,col=1) #"lightgrey")
-points(x=summary$w_m,y = 1:number,pch=22,bg=1)
-
-
-summary$range = summary$bet_h-summary$bet_l
-plot(NA,xlim= c(0,0.25),ylim= c(1,number),xlab = "variance between environments (plasticity)",ylab = "Index")
-segments(x0 = summary$bet_l,y0=1:number,x1 = summary$bet_h,y1=1:number,col=1,xpd=T) #"lightgrey")
-points(x=summary$bet_m,y = 1:number,pch=22,bg=1)
-  
 ```
 
 
 
-### rjags  
+### MCMC
 
-Markov Chain Monte Carlo simulation. Data is saved as .rds objects, so this chunkdoes not need to be repeated
+Markov Chain Monte Carlo simulation. Data is saved as .rds objects, so this chunk does not need to be repeated
 ```{r jags}
 #the model in BUGS code for jags
 #instead of saving as separate file this is put into a string, and later opened with textConnection(model_string)
@@ -270,7 +127,6 @@ model.string <-
 
 iter<-10000
 chains <-4
-#number<-2 #for testing purposes
 
 for (dataset  in (1:number)) {
   currpop <- unique(data$popid)[dataset]
@@ -291,11 +147,12 @@ for (dataset  in (1:number)) {
 ```
 
 
-## calculation of variance components
-We follow the trace of the MCMC (which was saved in previous step), and calculate the variance at each iteration. The frequency distribution of variance estimates is used to get estimate  + credible interval.
+## calculation of variance components  
+We follow the trace of the MCMC (which was saved in previous step), and calculate the variance components at each iteration. The frequency distribution of variance estimates is used to get estimate  + credible interval.
+
 ```{r calc_variance}
 
-logcurve<-function(x,b,c,d,e){(d-c)/(1+exp(b*(x-e)))+c} #4-paramter dose-response curve
+logcurve<-function(x,b,c,d,e){(d-c)/(1+exp(b*(x-e)))+c} #4-paramter dose-response curve, eq.1
 
 calc_var <- function(row){
   b<-row[1]
@@ -304,14 +161,11 @@ calc_var <- function(row){
   e<-row[4]
   
   x<-seq(e-12,e+12, length.out =1000)
-  y<-(d-c)/(1+exp(b*(x-e)))+c
-  w <- sum(y*(1-y))/1000 #variance within
-  b <- sd(y)^2  #variance between
-  c(w, b,  b+w, b/(b+w)) #retursn variance within, variance between, their sum, and the ratio of plasticity 
+  y<-(d-c)/(1+exp(b*(x-e)))+c #produces logitcurve along a segment of mean +-12 h
+  w <- sum(y*(1-y))/1000 #variance within, eq.2
+  b <- sd(y)^2  #variance among, eq.3
+  c(w, b,  b+w, b/(b+w)) #returns variance within, variance among, their sum (eq.5), and the ratio (eq.4)
 }
-
-
-   #between[i]<-sd(y)^2 
 
 
 for (dataset in 1:number){
@@ -334,10 +188,14 @@ for (dataset in 1:number){
 ```
 
 
-### forest plots
-```{r}
+## forest plots  
+The following chunk creates forest plots of all estimates. It shows not only estimate + credible interval, but also frequency distribution, independently for the four chains. There are 5 different forest plots to make: variance among, within, their sum, ratio, and the mean timing. Each forest plot has 433 entries, which is too long for a single figure. Thus, there will be 3 columns of 50 points per page, which makes 3 pages for each of the 5 forest plots. 
 
-plot_forest <- function (column, xlab, xlim, ylim, num = c(1,40), scale ){
+```{r}
+plot_forest <- function (column, xlab, xlim, ylim, num = c(1,50), scale ){ #this function will be used for all 5 forest plots
+  #column = column of the dataset, 1 = variance within, 2 = between, 3 = sum, 4 = ratio, 5 = mean
+  #num = rows of the dataset that should be plotted. 
+  #scale = scaling factor that shrinks the historgrams so they do not touch. should be smaller than 1
 r <- num[2] - num[1]
 plot(NA, xlim = xlim, xlab = xlab, ylim = ylim, ylab = "", bty="n", yaxt="n" )
 abline(h=1:r, col="lightgrey")
@@ -353,7 +211,7 @@ for (dataset in (num[1]:num[2])){
     lines(x=dens$x,y = h+ scale * dens$y/max(dens$y),col=5-i)
    }
   abline(h=h,col="lightgrey")
-  segments (x0 = quantile(res[,column], 0.025), x1= quantile(res[,column], 0.975), y0 = h,y1 = h,col=4) #draw 95% credible interval for first chain
+  segments (x0 = quantile(res[,column], 0.025), x1= quantile(res[,column], 0.975), y0 = h,y1 = h,col=4) #draw 95% credible interval. this is only based on first chain
   points(x =median (res[,column]), y = h, cex=0.5, pch=22, bg=1)
   text(x=xlim[2], y = h+0.5, pos = 2, labels = unique(data$ID[data$popid == currpop]), cex = 0.8, col ="darkgrey") #author
   text(x=xlim[1], y = h+0.5, pos = 4, labels = unique(data$pop[data$popid==currpop]), cex = 0.8, col = "darkgrey") #pop
@@ -451,7 +309,7 @@ dev.off()
 ```
 
 
-## comparison. are the results stored in res_ reliable enough?
+## comparison. are the results stored in res_ reliable enough?  
 ```{r}
 estimates <- data.frame(lower = rep(NA,num), med = rep(NA,num), upper = rep(NA,num))
 for (dataset in 1:10){
@@ -474,6 +332,7 @@ for (dataset in 1:10){
 
 
 ## get estimates and ci
+This chunk saves the estimats (within, between, sum, ration, mean) in one common table
 ```{r}
 num<-number
 estimates_w <- data.frame(lower = rep(NA,num), med = rep(NA,num), upper = rep(NA,num))
