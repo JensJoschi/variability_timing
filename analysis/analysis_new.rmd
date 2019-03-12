@@ -70,7 +70,7 @@ with the estimate weighted by the inverse the credible interval. However, there 
 The data with the mcmc results needs to be loaded. This has for each of the 433 reaction norms the estimate of mean, vairance within and variance among environments, the ratio, the sum and of course credible intervals for all. var between = sd(percentages)^2 across environments, var within = sum(percentages * (1-percentages))/n
 
 ```{r load_studies}
-studies <- read.table("nov2018/lit_extract/mcmcresults.txt")
+studies <- read.table("lit_extract/mcmcresults.txt")
 studies<-studies[order(studies$order),]
 studies$col<-as.numeric(studies$order)
 studies$col<-hsv(studies$col/10,1,1)
@@ -93,7 +93,7 @@ locations<-read.fwf(
   widths=c(11, 9, 10, 7,2,35)
 )
 
-reslist<-read.table("nov2018/clim_calc/output/results_100-5.txt",na.string = c("NA","-9999","-999.9"))
+reslist<-read.table("clim_calc/output/results_100-5.txt",na.string = c("NA","-9999","-999.9"))
 names(reslist)<-c("ID","meanwinter","sd_winter","p","nyears","ndays_300","ndays_350","ndays_365")
 reslist<-reslist[1:26804,] #the same data was appended twice
 climate<-merge(locations,reslist,by=1)
