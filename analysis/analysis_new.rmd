@@ -22,14 +22,13 @@ library(maps)
 #library(geomapdata)
 library(geosphere)
 #library(MASS)
-#library(lme4)
-library(nlme)
 library(metafor)
 #library(maps)
 #library(ggplot2)
 library(MuMIn)
 library(fcuk)
-
+library(glmmTMB)
+library(sjstats)
 ```
 
 
@@ -101,7 +100,7 @@ rm(reslist)
 names(climate)<-c("ID","lat","lon","alt","name","no_idea","meanwinter","sd_winter", "p",  "nyears" ,  "ndays_300"  ,"ndays_350",  "ndays_365" )
 
 climate<-climate[!is.na(climate$meanwinter),] #because these cannot be used anyway
-beta<-read.table("nov2018/clim_calc/output/beta.txt",header=T)
+beta<-read.table("clim_calc/output/beta.txt",header=T)
 climate<-merge(climate,beta,by=1)
 
 climate<-climate[climate$lat<70,] #at higher latitudes winter onset is at midsummer
@@ -305,11 +304,10 @@ r<-studies$upper_e-studies$lower_e
 quantile(r,0.2)#20% have credible interval < 10 minutes
 
 r[r<(1/6)]<-1/6  #all reaction norms with credible interval of 10 min or less have same weight
-r<-1/r #now reaction norms with <=10 min are weighed 6 times as stronlgy as those with 1h interval
-r<-length(r) * r/sum(r) #weight has a mean of 1 now
-#making r<-r/433 will not change any results except r.squaredGLMM, which makes R² very small
-degN_full<-lme(med_e ~ degN, random =~ 1|order/genus/spec/ID, data=studies, weights=~r, method="REML")
-#this model has very little vraiance explained by order, because spec and genus absorb most of it
+vi <- (r / (2*1.96))^2 #calculation of variance from CI
+
+metaf<-rma.mv(yi = med_e ~ degN, V=1, random = ~1|order/genus/spec/ID,data = studies) 
+#this model has very little vraiance explained by ID, because spec and genus absorb most of it
 
 ```
 
@@ -317,17 +315,24 @@ There are just not enough replicate studies per species, not enouhg species per 
 
 ### the reduced model
 ```{r degN_models}
-#model without order and ID
-degN_red<-lme(med_e ~ degN, random =~ 1|order/spec, data=studies, weights=~r, method="REML")
+#unweighted models
+metaf<-rma.mv(yi = med_e ~ degN, V=1, random = ~1|order/spec,data = studies) 
+glmmtmb <- glmmTMB( med_e ~ degN + (1|order/spec), data=studies ) #nearly same
 
-#null model (with species as random)
-nullme<-lme(med_e ~ 1, random =~ 1|order/spec, data=studies, weights=~r, method="REML")
 
-summary(degN_red)
+#weighted
+metaf<-rma.mv(yi = med_e ~ degN, V=vi, random = ~1|order/spec,data = studies) 
+w<-1/vi 
+w<-w/sum(w) #weight has a sum of 1 now; this affects glmmtmb, see "weights" in ?glmmTMB
+glmmtmb <- glmmTMB( med_e ~ degN + (1|order/spec), data=studies, weights=w, REML = F) 
 
-#as ML fits
-degN_red.ml<-lme(med_e ~ degN, random =~ 1|order/spec, data=studies, weights=~r, method="ML")
-nullme.ml<-lme(med_e ~ 1, random =~ 1|order/spec, data=studies, weights=~r, method="ML")
+
+#null models and ML models (weighted)
+metaf.ml<-rma.mv(yi = med_e ~ degN, V=vi, random = ~1|order/spec,data = studies, method = "ML") 
+metanull<-rma.mv(yi = med_e ~ 1, V=vi, random = ~1|order/spec,data = studies,method = "ML") 
+glmmtmb.ml <- glmmTMB( med_e ~ degN + (1|order/spec), data=studies, weights=w, REML = F) 
+tmbnull <- glmmTMB( med_e ~ 1 + (1|order/spec), data=studies, weights=w) 
+
 
 n<-table(studies$order)
 names(n)<- paste(names(n)," (", n, ")", sep = "") #will be used for plotting later, better laod it together with the model so it wont get lost
@@ -689,9 +694,19 @@ studies<-studies[studies$med_e>0.125,]
 r <- studies$upper_r-studies$lower_r
 r[r<0.05]<-0.05 #changes < 0.05 are irrelevant
 r<-1/r
-studies$r<-nrow(studies) * r/sum(r)
-varc<-lme(med_r ~ sd_winter, random =~ 1|order/spec, data=studies, weights=~r, method="REML")
+studies$r<- r/sum(r) 
 
+
+varc <- glmmTMB(med_r ~ sd_winter , data=studies, family=beta_family(),weights=studies$r) 
+#issues: random structure may be broken, at least r2 warns about that
+
+#rsq calculation with glmmTMB package does not work in sjstats 0.17.3? though it should
+#+ (1|order/spec)
+
+ coffs <- summary(varc)$coefficients$cond[,1]
+#points(x=studies$sd_winter,y=plogis(predict(varc)))
+#or
+points(x=seq(5,25, length.out=100), y = plogis(coffs[1]+coffs[2] * seq(5,25,length.out=100)))
 
 #null model (with species as random)
 nullvarc<-lme(med_r ~ 1, random =~ 1|order/spec, data=studies, weights=~r, method="REML")
@@ -738,6 +753,9 @@ for (i in 1:nrow(ord)){
 }
 dev.off()
 ```
+
+
+
 
 
 ### how do these climate pics change with parameters?  
