@@ -8,31 +8,24 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, cache=TRUE)
-#library(plyr)
 library(tidyr)
-#library(textreadr)
-#library(drc)
-#library(sandwich)
-#library(lmtest)
-#library(geosphere)
-#library(metafor)
 library(rjags)
 ```
 
 
 # General description  
 ## Project aim  
-To understand the evolvability of phenological strategies such as plasticity and bet-hedging, we correlate variance components and means of reaction norms with climate parameters. 
+To understand the evolvability of phenological strategies such as plasticity and bet-hedging, we correlate reaction norm properties with climate parameters. 
 
 ## Script overview  
 We searched the Web of Science database for photoperiodic response curves of arthropods and selected 57 studies with individual reaction norms (dose-response curves) for 402 populations (447 reaction norms). The data was extracted with webplotdigitizer, and can be found in "lit_search/search_2018_11.xlsx".
 This script does an MCMC to get estimates fo slopes, midpoints and upper and lower limit. It then calculates the variance within and between datapoints based on the same MCMC approach.
 
 
+# Script  
 ## load data  
 
-
+This chunk loads the extracted raw data from the 57 studies. It requires a .csv copy of the file "lit_search/search_2018_11.xlsx". First we calculate the number of populations, sample sizes etc. Then the diapause percentages (y-axis of the reaction norm) are rounded and converted in number of successes vs number of trials.
 ```{r load_data}
 data<-read.table("lit_extract/variance_comp.csv", header=T,sep=";")
 length(unique(data$ID)) #57 studies that can be used for slope calculation
@@ -59,15 +52,15 @@ levels(data$region)
 #Europe (including caucasus): 117
 #Japan 256
 #US 58
-#japan has 55.6% of the populations, 46.8 % of the data
+#japan has 57.3% of the populations, 47.8 % of the data
 
 
 table(t$nMethod)
 levels(data$nmethod)
 
-#accurate: 96
-#global average:288
-#pop level: 16
+#accurate: 97
+#global average:291
+#pop level: 26
 #NA 33
 
 
@@ -99,11 +92,10 @@ nams<-unite(data,"nams",c("ID","pop"), sep = "-", remove=T)$nams
 
 
 
-### MCMC
+## MCMC  
 
-Markov Chain Monte Carlo simulation. Data is saved as .rds objects, so this chunk does not need to be repeated
+Markov Chain Monte Carlo simulation. The estimates will be calculated independently for each of the 447 reaction norms. The actual model is in BUGS code, and interpreted by the R package rjags. Data is saved as .rds objects, so this chunk does not need to be repeated if changes are made to remainder of the script.
 ```{r jags}
-#the model in BUGS code for jags
 #instead of saving as separate file this is put into a string, and later opened with textConnection(model_string)
 
 model.string <- 
@@ -124,7 +116,7 @@ model.string <-
 }"
 
 
-iter<-10000
+iter<-10000 #+1000 as burn-in
 chains <-4
 
 for (dataset  in (1:number)) {
@@ -172,7 +164,7 @@ for (dataset in 1:number){
   outname <- paste("model_", currpop, sep="")
   load(paste(outname, ".rds", sep=""))
   sav <- data.frame(rep(NA, iter))
-  for (i in (1:chains)){
+  for (i in (1:chains)){ #for each chain: get the data from model, apply calc_var on each row
     dat <- get(outname)[[i]]
     temp <- apply(dat, 1, calc_var)
     temp<-t(temp)
@@ -188,7 +180,7 @@ for (dataset in 1:number){
 
 
 ## forest plots  
-The following chunk creates forest plots of all estimates. It shows not only estimate + credible interval, but also frequency distribution, independently for the four chains. There are 5 different forest plots to make: variance among, within, their sum, ratio, and the mean timing. Each forest plot has 433 entries, which is too long for a single figure. Thus, there will be 3 columns of 50 points per page, which makes 3 pages for each of the 5 forest plots. 
+The following chunk creates forest plots of all estimates. It shows not only estimate + credible interval, but also frequency distribution, independently for the four chains. There are 5 different forest plots to make: variance among, within, their sum, ratio, and the mean timing. Each forest plot has 447 entries, which is too long for a single figure. Thus, there will be 3 columns of 50 points per page, which makes 3 pages for each of the 5 forest plots. 
 
 ```{r}
 plot_forest <- function (column, xlab, xlim, ylim, num = c(1,50), scale ){ #this function will be used for all 5 forest plots
@@ -289,7 +281,6 @@ plot_forest(4, "Percentage Plasticity", c(0,1), c(1,52), c(l[9]+1,447), 0.9)
 dev.off()
 
 #CDL plots
-#need to plot 433/50 = 9 cols
 l <- 50*0:9
 pdf("forest_cdl.pdf",width=7, height = 7*2, pointsize=12)
 par(mfrow = c(1,3),mar = c(4,2,1,0))
