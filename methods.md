@@ -14,9 +14,8 @@ We conducted a meta-analysis on 58 studies of insect diapause and extracted 433 
 
 ## 1. Overview
 
-We used climate station data to calculate mean winter onset for 25,340 locations. We then calculated winter predictability with three methods: First, we calculated the standard deviation in winter onset. This served as estimate of the reliability of day length as cue. Secondly, we estimated reliability of preceding autumn temperatures. For this we regressed temperatures of the last 30 days before winter onset for each year and calculated the between-years standard deviation of the slope. Thirdly, we determined the "colour of environmental noise" (Vasseur & Yodzis 2004), that is, the relative extent of long-frequency autocorrelations in temperatures.
-We then extracted photoperiodic response curves from 58 published studies (433 reaction norms) along with their sampling locations. For each of these logit-curves we applied a Markov chain Monte Carlo algorithm to estimate lower and upper diapause limit, inflection point and slope. Based on these parameters we calculated mean diapause, total phenotypic variance and variance composition, which we correlated with the climate variables.
-
+We used climate station data to calculate mean winter onset for 25,340 locations. We then calculated winter predictability with three methods: First, we calculated the standard deviation in winter onset. This served as estimate of the reliability of day length as cue. Secondly, we estimated reliability of preceding autumn temperatures. For this we regressed temperatures of the last 30 days before winter onset for each year and calculated the between-years standard deviation of the slope. Thirdly, we determined the "colour of environmental noise" (Vasseur & Yodzis 2004), that is, the relative extent of long-frequency autocorrelations in temperatures.  
+We then extracted photoperiodic response curves from 57 published studies (447 diapause reaction norms) along with their sampling locations. In these studies multiple populations of a species have been subjected to several day length conditions in climate chambers, and the percentage of diapausing individuals under each day length was reported. To reconstruct continuous reaction norms from this discontinuous data, we applied a Markov chain Monte Carlo algorithm to estimate lower and upper limit, inflection point and slope. Based on these parameters we calculated mean diapause timing, degree of canalization and variance composition, and correlated them with the climate variables.
 
 ## 2. climate data  
 ### 2.1. data preparation  
@@ -36,32 +35,10 @@ Arthropod thermal requirements vary among species, and our use of a 10Â°C temper
 ## 3. Empirical data  
 
 ### 3.1 Rationale  
-Our aim of the meta-analytic approach was to extract reaction norms and quantify their position on the three axes mean, flexibility and variance composition. Insect diapause timing generally follows a logit-curve, which can be specified via four parameters:
-
-p(x)=c+((d-c)  )/(1+exp^((b\*(x-e))))							(eq. 1)
-
-In this equation p(x) is the frequency of diapausing individuals under day length x. e influences the inflection point of the curve, and hence directly represents the axis mean. c and d indicate the lower and upper diapause threshold, and b is the slope of the curve. To estimate the variance composition, we calculated variance between and among environments. The variance within each environment is that of a Bernoulli draw: px * (1-px). Because multiple p were estimated along an environmental gradient (day length treatments), we define the variance within environments as: 
-
-s_within^2 = sum(p\*(1-p))/n;	n = number of day length treatments		(eq. 2) 
-
-s_within^2 constitutes a potential bet-hedging trait, and is maximized by a flat reaction norm at the 0.5 level. 
-We define the variance among treatments as the squared standard deviation,
-
-s_among^2? = sum(p-pmean)^2 / (n-1) 						(eq.3)
-
-This component may represent phenotypic plasticity and is maximized by a steep reaction norm. The relative contribution of variance among environments can then be defined as the ratio of the two components: 
-
-r=  (s_among^2)/(s_among^2+ s_within^2 ) 							(eq. 4)
-
-Lastly, the flexibility describes the magnitude of phenotypic variation, and can be regarded the sum of the two variance components,
-
-s= s_among^2+ s_within^2						(eq. 5)
-
-The flexibility is zero for flat reaction norms at the 0 % level, and increases as the phenotype move away from 0% in some (plasticity) or all (diversified bet-hedging) environments.
+Our aim of the meta-analytic approach was to extract diapause reaction norms and quantify their position on the three axes mean, phenotypic variance and variance composition. We therefore searched for photoperiodic response curves (probability of induction vs. day length) from published studies. We used this data to reconstruct reaction norm shapes and calculated the variance components. Mean, phenotypic variance and variance composition were then correlated with climate parameters.
 
 
 ### 3.2. Eligibility criteria  
-
 In our literature search for diapause reaction norms we concentrated on studies that measure photoperiodic response curves of arthropods. We excluded marine and intertidal organisms, because corresponding climate estimates were only available for terrestrial systems. Invertebrates with a larval stage in shallow water (e.g. mosquitoes) were nevertheless included. Studies with estimates for fewer than 3 populations were excluded, because in these cases the variance would be absorbed by the random term “study” which was included in the analysis. We also excluded all studies that measured diapause at less than four photoperiods. To maximize sample sizes, we did not restrict our analysis to any geographic location or publication language.
 
 ### 3.3. Search strategy    
@@ -72,21 +49,47 @@ TS = ((photoperiodic AND (geogr\* OR range)) OR (photoperiod\* AND latitud\*) OR
 Secondly (28.11.2018), we used a wider range of search terms,
 
 TS = (("day length" OR photoperiod\* OR diapaus\* OR hibern\* OR dorman\*) AND (geogr\* OR "range" OR latitud\* OR longitud\* OR cline$ OR clinal))
-but filtered the output by arthropod-related terminology (Supplementary material S1). We found 1683 references in the first search, of which we judged 278 potentially relevant, and 57 met all eligibility criteria. In the second search we found further 2362 references (6179 before filtering), with 355 potentially relevant and ygible articles. We did a forward-citation search on the 70 eligible articles of both searches on 4.12.2018 and found 790 new references, which included 117 potential and 4 eligible articles. A second forward-citation search on these four articles on 5.12.2018 brought 118 new articles, but none were relevant. One further article was found to be wrongly tagged as negative after the search was closed. Altogether there were 75 useful references (629 populations).
+
+but filtered the output by arthropod-related terminology (Supplementary material S1). We found 1683 references in the first search, of which we judged 278 potentially relevant, and 57 met all eligibility criteria. In the second search we found further 2362 references (6179 before filtering), with 355 potentially relevant and 13 eligible articles. We did a forward-citation search on the 70 eligible articles of both searches on 4.12.2018 and found 790 new references, which included 117 potential and 4 eligible articles. A second forward-citation search on these four articles on 5.12.2018 brought 118 new articles, but none were relevant. One further article was found to be wrongly tagged as negative after the search was closed. Altogether there were 75 useful references (623 populations).  
 
 ### 3.4. Inclusion criteria  
-11 articles (140 populations) were excluded because they were not accompanied by raw data, tables or figures that allowed further analysis, and the authors were deceased, did no longer have the raw data or did not respond to our emails. We further removed six articles (26 populations) that were otherwise not usable . From the remaining 58 studies we removed 40 further individual populations with less than three day length measurements, and four populations from the southern hemisphere, so 419 populations remained. Because some studies reported reaction norms for multiple lines from the same population, there were 433 reaction norms available, and these  433 reaction norms consisted of 2989 individual data points.
+12 articles (147 populations) were excluded because they were not accompanied by raw data, tables or figures that allowed further analysis, and the authors were deceased, did no longer have the raw data or did not respond to our emails. We further removed six articles (26 populations) that were otherwise not usable . From the remaining 57 studies we removed 43 further individual populations with less than three day length measurements, and five populations from the southern hemisphere, so 402 populations remained. Because some studies reported reaction norms for multiple lines from the same population, there were 447 reaction norms available, and these 447 reaction norms consisted of 3035 individual data points.
 
 ### 3.5. Data extraction  
-One study (7 populations) reported the slope and midpoint directly,  and the remaining 57 studies presented the raw data as tables (8 studies) or figures (49 studies). In the latter case we saved the figure and extracted the data with WebPlotDigitizer Version 3.12 (Rohatgi 2017). Where neccessary, the day length was then rounded or corrected to match the description in materials and methods of the respective study. Y-values  that were slightly above 100% or below 0% were set to 100% and 0% respectively.
+The reaction norms in 49 of the 57 studies were presented as figures. In these cases we saved the figure and extracted the data with WebPlotDigitizer Version 3.12 (Rohatgi 2017). Where neccessary, the day length was then rounded or corrected to match the description in materials and methods of the respective study. Y-values  that were slightly above 100% or below 0% were set to 100% and 0% respectively.
 
-Detailed information on number of individuals per point estimate was rarely available (96 reaction norms), as sample sizes were either given as population-level means (16 populations), as global average or range (288 populations), or missed entirely (33 populations). We wish to emphasize that a lack of detailed information should not be confused with an unweighted (“vote-count”) meta-analysis, because the sample size (day lengths per population) was always known. Rather, the missing information occurred on a lower level (points within population) than the level of replication (population). Where the data was provided, we recorded it for later weighing of the data points.
+Detailed information on numbers of individuals per day length estimate were rarely available (97 reaction norms), as numbers were either given as population-level means (26 reaction norms), as global average or range (291 reaction norms), or missed entirely (33 reaction norms). We wish to emphasize that a lack of detailed information should not be confused with an unweighted (“vote-count”) meta-analysis, because the sample size (day lengths per population) was always known. Rather, the missing information occurred on a lower level (points within population) than the level of replication (population). Where the data was provided, we recorded it for later weighing of the data points.
+
 
 ### 3.6. Effect size calculation  		
+Insect diapause timing generally follows a logit-curve, which can be specified via four parameters:
+
+p(x)=c+((d-c)  )/(1+exp^((b\*(x-e)))) 							(eq. 1)
+
+In this equation p(x) is the frequency of diapausing individuals under day length x. e influences the inflection point of the curve, and hence directly represents the axis mean. c and d indicate the lower and upper diapause threshold, and b is the slope of the curve. To estimate the variance composition, we calculated variance between and among environments. The variance within each environment is that of a Bernoulli draw: px \* (1-px). Because multiple p were estimated along an environmental gradient (day length treatments), we define the variance within environments as: 
+
+s_within^2 = sum(px \* (1- px))/n ;	n = number of day length treatments		(eq. 2) 
+
+s_within^2 constitutes a potential diversified bet-hedging trait, and is maximized by a flat reaction norm at the 0.5 level. 
+We define the variance among treatments as the squared standard deviation,
+
+s_among^2 = sum((px -px_mean)^2) / n 						(eq.3)
+
+This component may represent phenotypic plasticity and is maximized by a steep reaction norm. The relative contribution of variance among environments can then be defined as the ratio of the two components: 
+
+r=  (s_among^2)/(s_among^2+ s_within^2 ) 							(eq. 4)
+
+Lastly, phenotypic variance describes the magnitude of phenotypic variation, and can be regarded the sum of the two variance components,
+
+s= s_among^2+ s_within^2						(eq. 5)
+
+Phenotypic variance is zero for flat reaction norms at the 0 % level, and increases as the phenotype move away from 0% in some (s_among^2) or all (s_within^2) environments.
+
 To derive midpoints and variance components along with a measure of reliability, we modelled each reaction norm as logistic curve according to eq. 1. Due to the data scarcity (on average seven data points per reaction norm), standard non-linear regression techniques did not always yield reasonable estimates, for example the slope could not be estimated when there was only one data point present on the sloped part of the reaction norm. Nevertheless, the range of the possible parameter space can be estimated with Markov chain Monte Carlo methods . We thus estimated the 4-dimensional credible parameter space and calculated the variance components based on this parameter space.
 
+
 ### 3.6.1 MCMC specifications  
-We used rjags () to run Markov chain simulations on each of the 433 reaction norms. We ran 4 replicate chains with lengths of 11,000 iterations and discarded a burn-in of 1,000 iterations.  We specified our model with (eq. 1), and consequently chose the binomial density function to estimate the likelihood. If specified in the primary study, we used the sample sizes of each day length treatment as number of trials, otherwise we used the global average of the study (see section 3.4). For those studies that did not mention sample sizes, we used a global average of 100 trials for each of the data points. We implemented uninformative priors for all four parameters. These were:
+We used rjags () to run Markov chain simulations on each of the 447 reaction norms. We ran 4 replicate chains with lengths of 11,000 iterations and discarded a burn-in of 1,000 iterations.  We specified our model with (eq. 1), and consequently chose the binomial density function to estimate the likelihood. If specified in the primary study, we used the sample sizes of each day length treatment as number of trials, otherwise we used the global average of the study (see section 3.4). For those studies that did not mention sample sizes, we used a global average of 100 trials for each of the data points. We implemented uninformative priors for all four parameters. These were:
 
 b ~ unif {-100, 100}
 c ~ unif {0, 1}
@@ -101,17 +104,17 @@ This MCMC algorithm provided a 4-dimensional parameter space to define continuou
 ### 3.6.3 Merging with climate data  
 To combine climate data and study site locations, we averaged the climate estimates from the 5 closest stations within a 5° radius (weighted by 1/euclidian distance). When the coordinates were not directly provided in the study, we used the coordinates of the quoted town or area. Town and area coordinates were made available by the WikiProject Geographical coordinates (https://en.wikipedia.org/wiki/Wikipedia:WikiProject_Geographical_coordinates) and the Geohack tool (https://www.mediawiki.org/wiki/GeoHack). 12 populations did not have any climate station nearby and were only used for correlations with latitude (see below), but not in any further analysis.
 
-We converted the inflection point into julian days, by using the reported latitude of the sampling location and the daylength function from the package geosphere (Hijmans 2017). For 25 reaction norms the midpoint was at daylengths that do not naturally occur at the latitude at which the populations were sampled (21 were longer than midsummer days, 4 shorter than midwinter days). For these reaction norms we assumed that diapause induction occurs at midsummer and midwinter, respectively. Similarly, the credible intervals of 50 reaction norms crossed unrealistic values (37 midsummer, 8 midwinter, 5 both) and were truncated to midsummer and midwinter. In the analysis we refer to the unconverted inflection point as critical photoperiod, and to the converted inflection point as mean diapause timing . 
+We converted the inflection point into julian days, by using the reported latitude of the sampling location and the daylength function from the package geosphere (Hijmans 2017). For 25 reaction norms the midpoint was at daylengths that do not naturally occur at the latitude at which the populations were sampled (21 were longer than midsummer days, 4 shorter than midwinter days). For these reaction norms we assumed that diapause induction occurs at midsummer and midwinter, respectively. Similarly, the credible intervals of 62 reaction norms crossed unrealistic values (47 midsummer, 9 midwinter, 6 both) and were truncated to midsummer and midwinter. In the analysis we refer to the unconverted inflection point as critical photoperiod, and to the converted inflection point as mean diapause timing. 
 
 
 ## 4. analysis  
-We used linear mixed-effects models with a nested random strucutre (nlme) to correlate the reaction norm properties with climate variables. As random terms we nested species in order, ignoring both study ID and genus. Study ID was disregarded because most species were only represented by a single study, and those species that were represented by multiple studies usually contained the same first or lead authors (Table 1). Genus was disregarded because there were either only very few genera per order available (e.g. Diptera), or all species within an order were placed in different genera (Lepidoptera, Table 1). We weighed the reaction norm estimates by the reverse of the credible intervals, but truncated the intervals to prevent some estimates from obtaining nearly infinite weight. 
+We used linear mixed-effects models with a nested random structure (package metafor) to correlate the reaction norm properties with climate variables. As random terms we nested populations in species in order, ignoring both study ID and genus. Study ID was disregarded because most species were only represented by a single study, and those species that were represented by multiple studies usually contained the same first or lead authors (Table 1). Genus was disregarded because there were either only very few genera per order available (e.g. Diptera), or all species within an order were placed in different genera (Lepidoptera, Table 1). We weighed the reaction norm estimates by the reverse of the variance (credible interval ranges, divided by 2\*1.96 and squared), but truncated the intervals to prevent some estimates from obtaining nearly infinite weight. 
 
 We performed the following models (credible interval lower limit truncation in brackets):  
 0. Critical photoperiod was correlated with latitude  (10 minutes)  
 1. Mean diapause timing was correlated with mean winter onset (1 week)  
-3.  * The ratio of the variances (e.q. 4) was correlated with day length predictability (5%)  
+2.  * The ratio of the variances (e.q. 4) was correlated with day length predictability (5%)  
     * The ratio of the variances (e.q. 4) was correlated with temperature predictability (5%)  
-4. the residuals of model 1 were correlated with the residuals of models 3a and 3b.  
-For all models we report marginal and conditional R² values (Nakagawa & Schielzeth 2014, MuMin), likelihood ratio test statistics and differences in AIC.
+3. the residuals of model 1 were correlated with the residuals of models 3a and 3b.  
+For all models we report an extension of marginal and conditional R² values (Nakagawa & Schielzeth 2014, MuMin), likelihood ratio test statistics and differences in AIC.
 
