@@ -335,8 +335,7 @@ quantile(r,0.2)#20% have credible interval < 10 minutes
 
 r[r<(1/6)]<-1/6  #all reaction norms with credible interval of 10 min or less have same weight
 vi <- (r / (2*1.96))^2 #calculation of variance from CI
-#using this vi causes a very large range of weights, making in metafor AIC and deviance very big, residual heterogeneity very big, too ; and in glmmTMB randoms that epxlain nothing
-#using only r instead will give no such problems, both approaches give very similar results
+
 
 metaf<-rma.mv(yi = med_e ~ degN, V=1, random = ~1|order/genus/spec/ID/popid,data = studies) 
 #this model does not actuallz use vi, but is an unweighted version. But general problems should be similar in weighted model
@@ -464,6 +463,8 @@ studies$sd_winter<-NA
 studies$p<-NA
 studies$nyears<-NA
 studies$beta<-NA 
+studies$sd_p<-NA
+studies$n_s<-NA
 
 for ( i in 1:nrow(studies)){
   #reduce to +-5 °
@@ -482,6 +483,8 @@ for ( i in 1:nrow(studies)){
   studies$p[i]<-weighted.mean(sub$p,1/sub$diff)
   studies$nyears[i]<-weighted.mean(sub$nyears,1/sub$diff)
   studies$beta[i]<-weighted.mean(sub$beta,1/sub$diff)
+  studies$sd_p[i]<-sd(sub$p) #quality control. the predictability of nearby stations should be similar to each other
+  studies$n_s <- nrow(sub) #a location may not have 5 stations around
 
 }
 studies[is.na(studies$meanwinter),]
@@ -664,7 +667,6 @@ dev.off()
 x<-cumsum(1/vi[order(1/vi,decreasing = T)])
 which.min(x<sum(1/vi)*0.9) 
 200/447 #45% of the points account for 90% of the total weight
-
 ```
 
 Mean winter onset increases roughly linearly with latitude. The critical day length that is associated with it, however, increases exponentially. The insects only respond linearly, so the gap between mean winter onset and mean timing widens with increasing latitude.  This explains why the curve is bent. the ideal line would roughly follow that of mites (which is much steeper) with a slope of 1. My interpretation: either insects cannot their CDL "far enough", i.e. evolutionary constraints, or they co-opt other mechanisms such as cold tolerance
@@ -677,7 +679,7 @@ In any case there is a strange intercept that requires explanation, mean diapaus
 png("variance_composition.png")
 plot(studies$med_s~studies$med_r,xlab="variance composition",ylab ="responsiveness",pch=22, cex=0.5,bg=1)
 text(1,0,"plasticity",pos=2)
-text(0,0,"bet-hedging",pos=4)
+text(0,0,"bet-hedging",pos=4,xpd=T)
 dev.off()
 segments(x0 = studies$med_r, y0 = studies$upper_s,y1 = studies$lower_s,col="grey")
 segments(x0 = studies$lower_r, x1 = studies$upper_r, y0 = studies$med_s,col="grey")
@@ -746,50 +748,30 @@ dev.off()
 ### 5. variance composition vs day length predictability
 
 ```{r varcomp}
-x<-studies
-studies<-studies[studies$med_e>0.125,]
+x<-studies # a backup
+studies<-studies[!is.na(studies$p),] #3 pops removed
+studies[studies$p>4,]#sth is strange about obernai - inachis io
+hist(studies$sd_p,breaks=100)#this is the only point in the dataset with high standard deviation in predictability among close stations
+#strassbourg( close to obernai) has a predictability of 10, all other stations in +-5 km a predictability between 1 and 2. 
+studies <- studies[studies$p<4,]
+
+
 r <- studies$upper_r-studies$lower_r
 r[r<0.05]<-0.05 #changes < 0.05 are irrelevant
-r<-1/r
-studies$r<- r/sum(r) 
+vi<-(r / (2*1.96))^2 
+studies$r<- vi
 
+mod <- rma.mv(med_r ~ p,vi, random = ~ 1 | order/spec/popid, data=studies)
+plot(rstandard(mod)$z, ylim=c(-3,3), pch=19) #not very nice
+studies$yti <- transf.logit(studies$med_r)
+studies$vti <- studies$r / (studies$med_r * (1 - studies$med_r))^2
+mod <- rma.mv(yti ~ p, vti, random = ~ 1 | order/spec/popid, data=studies)
 
-varc <- glmmTMB(med_r ~ sd_winter , data=studies, family=beta_family(),weights=studies$r) 
-#issues: random structure may be broken, at least r2 warns about that
+mod
+plot(rstandard(mod)$z, pch=19)
+plot(studies$p, studies$yti, pch=19)
 
-#rsq calculation with glmmTMB package does not work in sjstats 0.17.3? though it should
-#+ (1|order/spec)
-
- coffs <- summary(varc)$coefficients$cond[,1]
-#points(x=studies$sd_winter,y=plogis(predict(varc)))
-#or
-points(x=seq(5,25, length.out=100), y = plogis(coffs[1]+coffs[2] * seq(5,25,length.out=100)))
-
-#null model (with species as random)
-nullvarc<-lme(med_r ~ 1, random =~ 1|order/spec, data=studies, weights=~r, method="REML")
-
-summary(varc)
-
-#as ML fits
-varc.ml<-lme(med_r ~ sd_winter, random =~ 1|order/spec, data=studies, weights=~r, method="ML")
-nullvarc.ml<-lme(med_r ~ 1, random =~ 1|order/spec, data=studies, weights=~r, method="ML")
-
-
-#estimate +se
-summary(varc)$tTable
- #                 Value  Std.Error  DF   t-value      p-value
-#(Intercept)  0.83359121 0.041886949 374 19.900977 1.278151e-60
-#sd_winter   -0.01996018 0.003215419 374 -6.207646 1.429865e-09
-
-plot(resid(varc))
-
-
-anova(varc.ml,nullvarc.ml) #LRT ratio = 36.93616 , p<.0001
-AIC(varc.ml)-AIC(nullvarc.ml)  #-34.93616
-
-#nakagawas R²
-r.squaredGLMM(varc) #0.06740201 0.3389683
-#marginal and conditional = without and with random effects
+?transf.ilogit
 ```
 
 plot
