@@ -411,14 +411,14 @@ svg("CDL_lat.svg",width=10,pointsize=12)
 par(mar = c(5,5,0,0)+0.1)
 
 max.size<-((1/6)/(2*1.96))^2; max.size <- 1/max.size #minimum credible interval range was capped at 1/6 (10 min) to prevent infinite weights. this line calculates variance for this value; it will be used to control the point cex in the plot
-plot(x=studies$degN, y=studies$med_e, pch=21, cex=0.3+1.5*(1/vi)/max.size, col=1, bg=studies$col, main = "", xlab = "Latitude (°N)", ylab = "Critical photoperiod (h)",bty="n", xaxt="n", cex.axis = 1.5, cex.lab=1.5) #cex ranges from 0 to 1.5, with 1.5 for those with heighest weight (ci = 10 min)
+plot(x=studies$degN, y=studies$med_e, pch=21, cex=0.3+1.5*(1/vi)/max.size, col=1, bg=studies$col, main = "", xlab = "Latitude (°N)", ylab = "Critical photoperiod (h)",bty="n", xaxt="n", cex.axis = 1.5, cex.lab=1.5) #cex ranges from 0.3 to 1.5, with 1.5 for those with heighest weight (ci = 10 min)
 legend("topleft",legend=names(n), col=rep(1,8), pt.bg=unique(studies$col), pch=21, bty="n", ncol=1,cex=1.5)
 coffs <-  coef(metaf)
 coffs
 #  intrcpt      degN 
 #7.0539704 0.1611997 
 
-lines(x= range(studies$degN),y = coffs[1]+coffs[2]*range(studies$degN),lwd=3,lty=2)
+lines(x= range(studies$degN),y = coffs[1]+coffs[2]*range(studies$degN),lwd=3,lty=1)
 
 
 axis(1,at=c(0,20,30,40,50,60,70,80),cex.axis=1.5, cex.lab = 1.5)
@@ -463,7 +463,7 @@ studies$sd_winter<-NA
 studies$p<-NA
 studies$nyears<-NA
 studies$beta<-NA 
-studies$sd_p<-NA
+studies$sd_sd<-NA #standard deviation in winter predictabilities of nearby stations
 studies$n_s<-NA
 
 for ( i in 1:nrow(studies)){
@@ -483,7 +483,7 @@ for ( i in 1:nrow(studies)){
   studies$p[i]<-weighted.mean(sub$p,1/sub$diff)
   studies$nyears[i]<-weighted.mean(sub$nyears,1/sub$diff)
   studies$beta[i]<-weighted.mean(sub$beta,1/sub$diff)
-  studies$sd_p[i]<-sd(sub$p) #quality control. the predictability of nearby stations should be similar to each other
+  studies$sd_sd[i]<-sd(sub$sd_winter) #quality control. the predictability of nearby stations should be similar to each other
   studies$n_s <- nrow(sub) #a location may not have 5 stations around
 
 }
@@ -504,7 +504,7 @@ The relationship of CDL ~ latitude was smaller than expected. Given the climate 
 ```{r cor}
 svg("corr_dl_lat_10C5d.svg")
 par(mar=c(5,5,3,2)+0.1)
-plot(climate$dl[!between(climate$lat, 21, 69)]~climate$lat[!between(climate$lat, 21, 69)], pch=22,cex=0.2,xlab = "Latitude",ylab = "Day length at winter onset",main="",col=NA,bg="darkgrey",bty="n",yaxt="n",cex.axis=1.5,cex.lab=1.5)
+plot(climate$dl[!between(climate$lat, 21, 69)]~climate$lat[!between(climate$lat, 21, 69)], pch=22,cex=0.2,xlab = "Latitude",ylab = "Day length at winter onset",main="",col=NA,bg="darkgrey",bty="n",yaxt="n",cex.axis=1.5,cex.lab=1.5,ylim = c(9,24))
 axis(2,at=c(4,8,12,16,20,24),cex.axis=1.5)
 climred<-climate[between(climate$lat, 21,69),]
 points(climred$dl~climred$lat, pch=22, cex=0.2, bg=1, col=NA)
@@ -525,14 +525,6 @@ M<-lm(studies$expdl~studies$degN)
 lines(x=c(20,70),y=coef(M)[1]+c(20,70)*coef(M)[2],lwd=4,col="darkgrey")
 coef(M)[2]*5*60 # 44.68448 
 
-boxcox(M, lambda = seq(-5,5,0.1)) #-4
-par(mar=c(5,5,3,2)+0.1)
-plot(studies$expdl~studies$degN,pch=22,cex=1,xlab = "Latitude",ylab = "Day length at winter onset",main="",bty="n",yaxt="n",cex.axis=1.5,cex.lab=1.5,bg=1,col=1)
-axis(2,at=c(4,8,12,16,20,24),cex.axis=1.5)
-t <- studies$expdl^(-4)
-M_ex <- lm(t~studies$degN)
-c<-coef(M_ex)[1] + coef(M_ex)[2] * seq(20,70,length.out=1000)
-lines(seq(20,70,length.out=1000), c^(1/(-4)))
 ```
 We calculated the optimal response based on climate data as 0.74 h/5°N = 46.34 min. If only the study sites are included, this changes to 44.68 min.  Oviously the estimates are very coarse because they are exponential, but danilevskys values of 1h - 90 min are definitely too high. Indeed the expected values are very close to the observed response of 48 minutes /5°N.
 
@@ -579,11 +571,11 @@ r<-studies$mwl-studies$mwh # mwl = winter onset according to lower CDL = later w
 mean(studies$med_e)#13.78
 c(13.78-1/6, 13.78+1/6) #mean +/- 10 minutes = 13.61, 13.95
 daylength(mean (studies$degN), 226:236)
-#day length change of 10 minutes is approx 4 days
+#day length change of 10 minutes is approx 7 days
 
-quantile(r,0.3)#30% have credible interval < 4 days (10 minutes in cdl)
+quantile(r,0.48)#48% have credible interval < 7 days (10 minutes in cdl)
 
-r[r<4]<-4 #changes < 1 wk are irrelevant  
+r[r<7]<-7 #changes < 1 wk are irrelevant  
 vi <- (r / (2*1.96))^2
 mw<-rma.mv(yi = mw ~ meanwinter, V=vi, random = ~(1|order/spec/popid), data = studies)
 
@@ -614,18 +606,18 @@ summary(mw)
 #Model Results:#
 
 #            estimate       se     zval    pval    ci.lb     ci.ub     
-#intrcpt      77.4392  13.7455   5.6338  <.0001  50.4985  104.3800  ***
-#meanwinter    0.5202   0.0381  13.6692  <.0001   0.4456    0.5947  ***
+#intrcpt      77.4644  13.7504   5.6336  <.0001  50.5141  104.4147  ***
+#meanwinter    0.5201   0.0381  13.6609  <.0001   0.4455    0.5947  ***
 
 plot(resid(mw))
 
 #nakagawas R²
-(mwnull$sigma2-mw$sigma2)/mwnull$sigma2 # -0.1421312  0.1210780  0.3546741
-(sum(mwnull$sigma2)-sum(mw$sigma2))/sum(mwnull$sigma2) #0.1485663
+(mwnull$sigma2-mw$sigma2)/mwnull$sigma2  #-0.1418872  0.1212247  0.3551717
+(sum(mwnull$sigma2)-sum(mw$sigma2))/sum(mwnull$sigma2) #0.1487213
 
 #significance testing
-anova(mw.ml,mwnull.ml) #LRT ratio = 152.7559, p<.0001
-AIC(mw.ml)-AIC(mwnull.ml)#    -150.7559
+anova(mw.ml,mwnull.ml) #LRT ratio = 152.6196, p<.0001
+AIC(mw.ml)-AIC(mwnull.ml)#     -150.6196
 
 ```
 
@@ -639,7 +631,7 @@ svg("mw_meanwinter.svg",width=10,pointsize=12)
 par(mar = c(5,5,0,0)+0.1)
 
 
-max.size<-(4/(2*1.96))^2; max.size <- 1/max.size 
+max.size<-(7/(2*1.96))^2; max.size <- 1/max.size 
 
 plot(x=studies$meanwinter, y=studies$mw, pch=21, cex= 0.3+1.5*(1/vi)/max.size , col=1, bg=studies$col, main = "", xlab = "Mean winter onset", ylab = "Mean diapause timing",bty="n", cex.axis = 1.5, cex.lab=1.5,xlim=c(170,400), ylim=c(170,400)) #cex again set so that max ptsize = 2
 
@@ -649,7 +641,7 @@ coffs <-  coef(mw)
 coffs
 #   intrcpt meanwinter 
 #77.4392099  0.5201638 
-lines(x= range(studies$meanwinter),y = coffs[1]+coffs[2]*range(studies$mw),lwd=3,lty=2)
+lines(x= range(studies$meanwinter),y = coffs[1]+coffs[2]*range(studies$mw),lwd=3,lty=1)
 
 segments(x0=studies$meanwinter[r<30],y0 = studies$mwl[r<30],y1=studies$mwh[r<30],col="darkgrey") #credible intervals > 1 month are not shown
 
@@ -666,7 +658,7 @@ dev.off()
 #many points add very little to the graph - how many exactly?
 x<-cumsum(1/vi[order(1/vi,decreasing = T)])
 which.min(x<sum(1/vi)*0.9) 
-200/447 #45% of the points account for 90% of the total weight
+239/447 #53% of the points account for 90% of the total weight
 ```
 
 Mean winter onset increases roughly linearly with latitude. The critical day length that is associated with it, however, increases exponentially. The insects only respond linearly, so the gap between mean winter onset and mean timing widens with increasing latitude.  This explains why the curve is bent. the ideal line would roughly follow that of mites (which is much steeper) with a slope of 1. My interpretation: either insects cannot their CDL "far enough", i.e. evolutionary constraints, or they co-opt other mechanisms such as cold tolerance
@@ -747,55 +739,165 @@ dev.off()
 
 ### 5. variance composition vs day length predictability
 
-```{r varcomp}
+```{r varcomp_sd}
 x<-studies # a backup
-studies<-studies[!is.na(studies$p),] #3 pops removed
-studies[studies$p>4,]#sth is strange about obernai - inachis io
-hist(studies$sd_p,breaks=100)#this is the only point in the dataset with high standard deviation in predictability among close stations
-#strassbourg( close to obernai) has a predictability of 10, all other stations in +-5 km a predictability between 1 and 2. 
-studies <- studies[studies$p<4,]
-
 
 r <- studies$upper_r-studies$lower_r
 r[r<0.05]<-0.05 #changes < 0.05 are irrelevant
-vi<-(r / (2*1.96))^2 
-studies$r<- vi
+vi<- (r / (2*1.96))^2 
 
-mod <- rma.mv(med_r ~ p,vi, random = ~ 1 | order/spec/popid, data=studies)
+
+mod <- rma.mv(med_r ~ sd_winter,vi, random = ~ 1 | order/spec/popid, data=studies)
 plot(rstandard(mod)$z, ylim=c(-3,3), pch=19) #not very nice
 studies$yti <- transf.logit(studies$med_r)
-studies$vti <- studies$r / (studies$med_r * (1 - studies$med_r))^2
-mod <- rma.mv(yti ~ p, vti, random = ~ 1 | order/spec/popid, data=studies)
+studies$vti <- vi / (studies$med_r * (1 - studies$med_r))^2
+mod <- rma.mv(yti ~ sd_winter, vti, random = ~ 1 | order/spec/popid, data=studies)
 
 mod
 plot(rstandard(mod)$z, pch=19)
-plot(studies$p, studies$yti, pch=19)
+plot(studies$sd_winter, studies$yti, pch=19)
+x<-seq(5,25,length.out=1000) #will be used to plot prediction line
+ y=coef(mod)[1]+x*coef(mod)[2] #inverse logit transform this to get prediction
 
-?transf.ilogit
+ 
+ #null models and ML models (weighted)
+modnull<-rma.mv(yti  ~ 1, vi, random = ~(1|order/spec/popid), data = studies)
+mod.ml<- rma.mv(yti ~ sd_winter,vi, random = ~ 1 | order/spec/popid, data=studies, method = "ML") 
+modnull.ml<-rma.mv(yti ~ 1, vi, random = ~(1|order/spec/popid), data = studies, method = "ML") 
 ```
+_summary statistics_    
+```{r sdw_sumstat}
 
+#estimate +se
+summary(mod)
+#Model Results:#
+
+#intrcpt      2.0465  0.3172   6.4527  <.0001   1.4249   2.6681  ***
+#sd_winter   -0.1203  0.0188  -6.3927  <.0001  -0.1571  -0.0834  ***
+transf.ilogit(-0.1203)# 0.4699612
+
+
+#nakagawas R²
+(modnull$sigma2-mod$sigma2)/modnull$sigma2  # -1.280828e+07  5.737585e-01  5.603210e-01
+(sum(modnull$sigma2)-sum(mod$sigma2))/sum(modnull$sigma2) #0.5137324
+
+#significance testing
+anova(mod.ml,modnull.ml) #LRT ratio =  34.2463, p<.0001
+AIC(mod.ml)-AIC(modnull.ml)#  -32.24626
+
+```
 plot
-```{r}
+```{r plot_sdwinter}
+
+max.size<-(0.05/(2*1.96))^2; max.size <- 1/max.size 
+
+
+studies$r <- r
 svg("varc.svg",width=10,pointsize=12)
 par(mar = c(5,5,0,0)+0.1)
 
-plot(x=studies$sd_winter, y=studies$med_r, pch=21, cex=studies$r/max(studies$r) * 2, col=1, bg=studies$col, main = "", xlab = "Winter unpredictability", ylab = "Ratio of varaiance components",bty="n", cex.axis = 1.5, cex.lab=1.5,xlim=c(0,25), ylim=c(0,1)) #cex again set so that max ptsize = 2
+plot(x=studies$sd_winter, y=studies$med_r, pch=21, cex= 0.3+1.5*(1/vi)/max.size , col=1, bg=studies$col, main = "", xlab = "Winter unpredictability", ylab = "Ratio of varaiance components",bty="n", cex.axis = 1.5, cex.lab=1.5,xlim=c(0,25), ylim=c(0,1)) #cex again set so that max ptsize = 2
 #legend("bottomright",legend=names(n), col=rep(1,8), pt.bg=unique(studies$col), pch=21, bty="n", ncol=1,cex=1.5)
-coffs <-  summary(varc)$tTable
-lines(x= range(studies$sd_winter),y = coffs[1,1]+coffs[2,1]*range(studies$sd_winter),lwd=2,lty="dotted")
+coffs <-  coef(mod)
+lines(x= x,y=transf.ilogit(y),lwd=2)
 
 #433*(1/0.1)/sum(r) = 0.8869712
-segments(x0=studies$sd_winter[studies$r> 0.8869712],y0 = studies$lower_r[studies$r>0.8869712],y1=studies$upper_r[studies$r>0.8869712],col="darkgrey") #credible intervals > 0.1 not shown 
+segments(x0=studies$sd_winter[studies$r< 0.1],y0 = studies$lower_r[studies$r<.1],y1=studies$upper_r[studies$r<0.1],col="darkgrey") #credible intervals > 0.1 not shown 
+studies$cex <- 0.3+1.5*(1/vi)/max.size
 ord<-studies[order(studies$r,as.numeric(studies$order),decreasing = c(T,F), method = "radix"),] #to make sure smalles points are printed last, on top of the larger points. order is included so that dipterns do not completely dominate pic
+
 for (i in 1:nrow(ord)){
-  points(x=ord$sd_winter[i] ,y=ord$med_r[i], pch=21, col=1, bg=ord$col[i], cex=ord$r[i]/max(studies$r) * 2)
+  points(x=ord$sd_winter[i] ,y=ord$med_r[i], pch=21, col=1, bg=ord$col[i], cex=ord$cex[i])
 }
 dev.off()
 ```
 
 
 
+### 6. Variance composition vs. temperature predictability  
+```{r}
 
+varc_tp <- rma.mv(yti ~ beta, vti, random = ~ 1 | order/spec/popid, data=studies)
+
+plot(rstandard(varc_tp)$z, pch=19)
+plot(studies$beta, studies$yti, pch=19)
+x<-seq(5,25,length.out=1000) #will be used to plot prediction line
+ y=coef(varc_tp)[1]+x*coef(varc_tp)[2] #inverse logit transform this to get prediction
+
+ 
+ #null models and ML models (weighted)
+#null models are in workspace already
+varc_tp.ml<- rma.mv(yti ~ beta ,vi, random = ~ 1 | order/spec/popid, data=studies, method = "ML") 
+
+
+#summary statistics
+#estimate +se
+summary(varc_tp)
+#intrcpt    0.8820  0.2460   3.5848  0.0003   0.3998  1.3642  ***
+#beta      -0.1886  0.3309  -0.5702  0.5686  -0.8371  0.4598     
+transf.ilogit(-0.1886)# 0.4529893
+
+
+#nakagawas R²
+(modnull$sigma2-varc_tp$sigma2)/modnull$sigma2  # -4.748462e+06  4.324297e-01  5.151490e-01
+(sum(modnull$sigma2)-sum(varc_tp$sigma2))/sum(modnull$sigma2) #0.4589706
+
+#significance testing
+anova(varc_tp.ml,modnull.ml) #LRT ratio =  0.0545, p=0.82
+AIC(varc_tp.ml)-AIC(modnull.ml)#  1.945543
+x<-seq(min(studies$beta),max(studies$beta),length.out=1000)
+ y=coef(mod)[1]+x*coef(varc_tp)[2] #inverse logit transform this to get prediction
+```
+
+```{r plot_beta}
+
+max.size<-(0.05/(2*1.96))^2; max.size <- 1/max.size 
+
+
+studies$r <- r
+svg("var_beta.svg",width=10,pointsize=12)
+par(mar = c(5,5,0,0)+0.1)
+
+plot(x=studies$beta, y=studies$med_r, pch=21, cex= 0.3+1.5*(1/vi)/max.size , col=1, bg=studies$col, main = "", xlab = "Temperature unpredictability", ylab = "Ratio of varaiance components",bty="n", cex.axis = 1.5, cex.lab=1.5,xlim=c(-1,1.5), ylim=c(0,1)) #cex again set so that max ptsize = 2
+#legend("bottomright",legend=names(n), col=rep(1,8), pt.bg=unique(studies$col), pch=21, bty="n", ncol=1,cex=1.5)
+lines(x= x,y=transf.ilogit(y),lwd=2)
+
+
+segments(x0=studies$beta[studies$r< 0.1],y0 = studies$lower_r[studies$r<.1],y1=studies$upper_r[studies$r<0.1],col="darkgrey") #credible intervals > 0.1 not shown 
+studies$cex <- 0.3+1.5*(1/vi)/max.size
+ord<-studies[order(studies$r,as.numeric(studies$order),decreasing = c(T,F), method = "radix"),] #to make sure smalles points are printed last, on top of the larger points. order is included so that dipterns do not completely dominate pic
+
+for (i in 1:nrow(ord)){
+  points(x=ord$beta[i] ,y=ord$med_r[i], pch=21, col=1, bg=ord$col[i], cex=ord$cex[i])
+}
+dev.off()
+```
+
+
+### 7. conservative bet-hedging  
+```{r}
+studies$res_varc <- rstandard(mod)$z
+studies$res_mw<-rstandard(mw)$z
+cbh<- rma.uni(res_mw ,vi, mod  = res_varc ,data=studies) 
+
+summary(cbh)
+#estimate      se    zval    pval    ci.lb   ci.ub   
+#intrcpt    0.0876  0.0466  1.8816  0.0599  -0.0037  0.1789  .
+#mods       0.0077  0.0447  0.1726  0.8630  -0.0798  0.0952   
+
+#R² = 0
+anova(cbh)#0.0298, p-val = 0.8630
+#AIC diff: 0.1996261
+
+svg("cbh.svg",width=10,pointsize=12)
+par(mar = c(5,5,0,0)+0.1)
+plot(res_mw ~ res_varc, pch=21, cex= 0.3+1.5*(1/vi)/max.size , col=1, bg=studies$col, main = "", ylab = "Residulas diapause timing", xlab = "Residuals variance composition",bty="n", cex.axis = 1.5, cex.lab=1.5,xlim=c(-3,3.5), ylim=c(-3,3)) #cex again set so that max ptsize = 2
+#legend("bottomright",legend=names(n), col=rep(1,8), pt.bg=unique(studies$col), pch=21, bty="n", ncol=1,cex=1.5)
+x<-seq(min(res_varc),max(res_varc), length.out=1000)
+y<-coef(cbh)[1]+coef(cbh)[2]*x
+lines(y~x,lwd=2)
+dev.off()
+```
 
 ### how do these climate pics change with parameters?  
 The following chunk correlates day length at winter onset with latitude, for a variety of parameter combinations (currently commented out). It also saves the slope estimates.
@@ -845,309 +947,5 @@ for (lin in 1:length(t2list)){
 axis(2,at=c(-0.5,0,0.5,1,1.5), cex.axis=1.5)
 dev.off()
 }
-```
-
-
-## correlation critical day ~ w_on * p
-__calculate critical julian day__  
-```{r critical_day}
-slopes$cd<-NA
-for ( i in 1:nrow(slopes)){
-  x<-daylength(slopes[i,12],180:360)
-  slopes$cd[i]<-which.min(abs(slopes[i,27]-x))+179
-}
-slopes$meanwinter<-slopes$meanwinter+182
-```
-
-__ the models__  
-```{r cd_models}
-cd_full.ml<-lme(cd ~ meanwinter * sd_winter, random =~ 1|order/genus/spec, data=slopes, weights=~npoints, method="ML")
-cd_2.ml<-   lme(cd ~ meanwinter + sd_winter, random =~ 1|order/genus/spec, data=slopes, weights=~npoints, method="ML")
-cd_3.ml<-   lme(cd ~ meanwinter              , random =~ 1|order/genus/spec, data=slopes, weights=~npoints, method="ML")
-cd_4.ml<-   lme(cd ~              sd_winter, random =~ 1|order/genus/spec, data=slopes, weights=~npoints, method="ML")
-cd_null.ml<-lme(cd ~1                      , random =~ 1|order/genus/spec, data=slopes, weights=~npoints, method="ML")
-
-anova(cd_full.ml,cd_2.ml)
-AIC(cd_full.ml)-AIC(cd_2.ml)
-#          Model df      AIC      BIC    logLik   Test   L.Ratio p-value
-#cd_full.ml     1  8 1516.620 1541.846 -750.3099                         
-#cd_2.ml        2  7 1515.355 1537.428 -750.6773 1 vs 2 0.7348901  0.3913
-#AIC diff [1] 1.26511
-anova(cd_2.ml,cd_3.ml)
-AIC(cd_2.ml)-AIC(cd_3.ml)
-#        Model df      AIC      BIC    logLik   Test  L.Ratio p-value
-#cd_2.ml     1  7 1515.355 1537.428 -750.6773                        
-#cd_3.ml     2  6 1522.516 1541.435 -755.2578 1 vs 2 9.161056  0.0025
-#AIC diff [1] -7.161056
-anova(cd_2.ml, cd_4.ml)
-AIC(cd_2.ml)-AIC(cd_4.ml)
-#        Model df      AIC      BIC    logLik   Test L.Ratio p-value
-#cd_2.ml     1  7 1515.355 1537.428 -750.6773                       
-#cd_4.ml     2  6 1611.270 1630.189 -799.6349 1 vs 2 97.9152  <.0001
-#[1] -95.9152
-
-cd_full<-   lme(cd ~ meanwinter + sd_winter, random =~ 1|order/genus/spec, data=slopes, weights=~npoints, method="REML")
-cd_m<-   lme(cd ~ meanwinter              , random =~ 1|order/genus/spec, data=slopes, weights=~npoints, method="REML")
-cd_sd<-   lme(cd ~              sd_winter, random =~ 1|order/genus/spec, data=slopes, weights=~npoints, method="REML")
-
-#summary(cd_full)
-sdevs<-c(16.16497, 20.62354, 7.311302, 7.474556)
-sdevs/(sum(sdevs))# 0.3134303 0.3998796 0.1417623 0.1449277
-```
-
-#### results
-```{r cd_results}
-#summary statistics
-weighted.mean(slopes$cd,slopes$npoints)# 239.2938
-quantile(slopes$cd)
-#  0%  25%  50%  75% 100% 
-#180  217  238  253  356 
-
-#estimate +se
-summary(cd_m)$tTable
- #m : 0.7048972 +- 0.05925753
-summary(cd_sd)$tTable
-# sd: 1.078942 +- 0.4745538
-
-#nakagawas R²
-r.squaredGLMM(cd_full) #0.4438754 0.9609653
-r.squaredGLMM(cd_m) #0.4530274 0.9595231
-r.squaredGLMM(cd_sd) #0.02544708 0.8896726
-#marginal and conditional = without and with random effects
-```
-
-#### plot cd ~ meanwinter
-```{r cdwon}
-svg("cd_won.svg",width=10,pointsize=12)
-par(mar = c(5,5,0,0)+0.1)
-
-plot(x=slopes$meanwinter, y=slopes$cd, pch=21, cex=2*slopes$npoints/10, col=1, bg=slopes$col, main = "", xlab = "Julian day of winter onset", ylab = "Critical day",bty="n", xaxt="n", cex.axis = 1.5, cex.lab=1.5)
-legend("topleft",legend=names(n)[8:1], col=rep(1,8), pt.bg=hsv((7:0)/8,1,1), pch=21, bty="n", ncol=1,cex=1.5)
-coffs <-  summary(cd_m)$tTable[,1]
-lines(x= range(slopes$meanwinter),y = coffs[1]+coffs[2]*range(slopes$meanwinter),lwd=3,lty=2,xpd=T)
-
-axis(1,at=c(210,240,270,300,330,365,395),labels = c(210,240,270,300,330,0,30),cex.axis=1.5, cex.lab = 1.5)
-
-for(i in c(2,6,8)){
-  sub<-slopes[slopes$order==unique(slopes$order)[i],]
-  sub<-droplevels(sub)
-  sinord<-lme(cd ~ meanwinter, random =~ 1|genus/spec, data=sub, weights=~npoints,   method="REML")
-  coffs <-  summary(sinord)$tTable[,1]
-  lines(x= range(sub$meanwinter),y = coffs[1]+coffs[2]*range(sub$meanwinter), lwd= 1+round(5* table(slopes$order)[i]/max(table(slopes$order))), col=sub$col[1])
-  print(sub$order[1])
-  print (coffs[2])
-}
-points(y=slopes$cd ,x=slopes$meanwinter, pch=21, col=1, bg=slopes$col, cex=2*slopes$npoints/10)
-dev.off()
-#slope estimates
-#diptera: 0.5287144 
-#lepidoptera: 1.34405 
-#mites: 1.056231
-```
-
-#### plot cd ~ sd_winter
-```{r cdsd}
-svg("cd_sd.svg",width=10,pointsize=12)
-par(mar = c(5,5,0,0)+0.1)
-
-plot(x=slopes$sd_winter, y=slopes$cd, pch=21, cex=2*slopes$npoints/10, col=1, bg=slopes$col, main = "", xlab = "Winter predictability", ylab = "Critical day",bty="n", xaxt="n", cex.axis = 1.5, cex.lab=1.5)
-legend("topleft",legend=names(n)[8:1], col=rep(1,8), pt.bg=hsv((7:0)/8,1,1), pch=21, bty="n", ncol=1,cex=1.5)
-coffs <-  summary(cd_sd)$tTable[,1]
-lines(x= range(slopes$sd_winter),y = coffs[1]+coffs[2]*range(slopes$sd_winter),lwd=3,lty=2,xpd=T)
-
-axis(1,at=c(5,10,15,20,25),cex.axis=1.5, cex.lab = 1.5)
-
-for(i in c(2,6,8)){
-  sub<-slopes[slopes$order==unique(slopes$order)[i],]
-  sub<-droplevels(sub)
-  sinord<-lme(cd ~ sd_winter, random =~ 1|genus/spec, data=sub, weights=~npoints,   method="REML")
-  coffs <-  summary(sinord)$tTable[,1]
-  lines(x= range(sub$sd_winter),y = coffs[1]+coffs[2]*range(sub$sd_winter), lwd= 1+round(5* table(slopes$order)[i]/max(table(slopes$order))), col=sub$col[1])
-  print(sub$order[1])
-  print (coffs[2])
-}
-points(x=slopes$cd ,y=slopes$sd_winter, pch=21, col=1, bg=slopes$col, cex=2*slopes$npoints/10)
-dev.off()
-```
-
-
-## within vs between treat variance  
-making a plot of plasticity - bet-hedging - non-adaptive variation and showing where the data points lie on this plot
-
-```{r varwithbet}
-svg("parspace.svg",width=10,pointsize=12)
-par(mar = c(5,5,0,0)+0.1)
-
-x<-(slopes$sd_winter-min(slopes$sd_winter))/(max(slopes$sd_winter)-min(slopes$sd_winter)) #a vector for the colours, ranges from 0(lowest winter sd, highest predictability) to 1 (lowest predictability)
-#hsv(1,1-x,1) will be red for high predictability, white for low predictability
-plot(y=slopes$within,x=slopes$between,pch=21,col=NA,bg=hsv(1,1-x,1),xlab = "Variance between environments",ylab="Variance within environments",ylim = c(0,250),xaxt="n",yaxt="n",cex.lab=1.5,bty="n") 
-axis(1,at=c(0,0.000125,0.00025), labels=c("low","medium","high"), cex.axis=1.5)
-axis(2, at = c(0,125,250), labels=c("low","medium","high"), cex.axis=1.5)
-logcurve<-function(x,b,c,d,e){(d-c)/(1+exp(-b*(x-e)))+c}
-x<-seq(12-4, 12+4, length.out =1000)
-
-w<-rep(NA,100)
-bet<-rep(NA,100)
-for ( i in 0:999){
- y_a<-logcurve(x,b=i/20,c= 0,d=1,e=12)
-    w[i]<-sum(y_a*(1-y_a))
-    bet[i]<- (sd(y_a)/(sqrt(length(y_a))))^2
-}
-segments(x0 = bet[1:999],y0 = w[1:999],x1 = bet[2:1000],y1 = w[2:1000],lwd=3,col="grey") #this line shows varying slopes for c,d = 0,1; it is also the outer parameter space
-
-for ( i in 0:999){
- y_a<-logcurve(x,b=100,c= 0,d=i/1000,e=12)
-    w[i]<-sum(y_a*(1-y_a))
-    bet[i]<- (sd(y_a)/(sqrt(length(y_a))))^2
-}
-segments(x0 = bet[1:999],y0 = w[1:999],x1 = bet[2:1000],y1 = w[2:1000],lwd=3,col="grey") # this line shows varing d for max slope
-
-
-for ( i in 0:999){
- y_a<-logcurve(x,b=100,c= 0.5-(5*i/1000),d=0.5+(5*i/1000),e=12)
-    w[i]<-sum(y_a*(1-y_a))
-    bet[i]<- (sd(y_a)/(sqrt(length(y_a))))^2
-}
-segments(x0 = bet[1:999],y0 = w[1:999],x1 = bet[2:1000],y1 = w[2:1000],lwd=3,col="grey") # this line shows varing range for max slope
-
-x<-(slopes$sd_winter-min(slopes$sd_winter))/(max(slopes$sd_winter)-min(slopes$sd_winter))
-points(y=slopes$within,x=slopes$between,pch=21,col=NA,bg=hsv(1,1-x,1))
-#points(y=slopes$within,x=slopes$between,pch=21,col=NA,bg=hsv(1,1-x,1))
-#points(points(w_a~bet_a,col=4,pch=22,bg=4))
-#text(x=bet_a+0.00001,y= w_a, "C")
-#points(points(w_b~bet_b,col=4,pch=22,bg=4))
-#text(x=bet_b+0.00001,y= w_b, "B")
-#points(points(w_c~bet_c,col=4,pch=22,bg=4))
-#text(x=bet_c+0.00001,y= w_c, "D")
-#points(points(w_d~bet_d,col=4,pch=22,bg=4))
-#text(x=bet_d-0.00001,y= w_d, "A")
-dev.off()
-```
-drawing curves for four corners of above plot (to check whether everything is correct)
-
-```{r explain}
-x<-seq(12-4, 12+4, length.out =1000)
-y_a<-logcurve(x,b=0,c=0.5,d=0.5,e=12)
-y_b<-logcurve(x,b=100,c=0.1,d=0.9,e=12)
-y_c<-logcurve(x,b=0,c=0,d=0.1,e=12)
-y_d<-logcurve(x,b=100,c=0,d=1,e=12)
-
-w_a<-sum(y_a*(1-y_a))
-w_b<-sum(y_b*(1-y_b))
-w_c<-sum(y_c*(1-y_c))
-w_d<-sum(y_d*(1-y_d))
-
-bet_a <- (sd(y_a)/(sqrt(length(y_a))))^2
-bet_b <- (sd(y_b)/(sqrt(length(y_b))))^2
-bet_c <- (sd(y_c)/(sqrt(length(y_c))))^2
-bet_d <- (sd(y_d)/(sqrt(length(y_d))))^2
-
-
-
-par(mfrow=c(2,2),mar=c(2,2,2,2))
-plot(y_a~x,type="l",ylim=c(0,1),lwd=2)
-text(13,0.1,paste("within:",round(w_a,2)))
-text(13,0,paste("between:",round(bet_a,5)))
-plot(y_b~x,type="l",ylim=c(0,1),lwd=2)
-text(13,0.1,paste("within:",round(w_b,2)))
-text(13,0,paste("between:",round(bet_b,5)))
-plot(y_c~x,type="l",ylim=c(0,1),lwd=2)
-text(13,0.1,paste("within:",round(w_c,2)))
-text(13,0,paste("between:",round(bet_c,5)))
-plot(y_d~x,type="l",ylim=c(0,1),lwd=2)
-text(13,0.1,paste("within:",round(w_d,2)))
-text(13,0,paste("between:",round(bet_d,5)))
-
-```
-
-## plasticity vs predictability
-```{r plastic_mod}
-slopes$between<-scale(slopes$between)
-bet_full<-lme(between ~ sd_winter, random =~ 1|order/genus/spec, data=slopes, weights=~npoints, method="REML")
-
-#metaf<-rma.mv(yi = between ~ sd_winter, V=0.06, random = ~1|order/genus/spec/popid,data = slopes) 
-#profile(metaf,sigma2=1)#
-#profile(metaf,sigma2=2)
-#profile(metaf,sigma2=3)
-#profile(metaf,sigma2=4)
-#model looks good
-
-bet_full.ml<-lme(between ~ sd_winter, random =~ 1|order/genus/spec, data=slopes, weights=~npoints, method="ML")
-bet_null.ml<-lme(between ~ 1, random =~ 1|order/genus/spec, data=slopes, weights=~npoints, method="ML")
-anova(bet_full.ml,bet_null.ml)#lrt ratio 12.57719, p = 4e-04
-AIC(bet_full.ml)-AIC(bet_null.ml)#-10.03791
-
-#summary(cd_full)
-sdevs<-c(0.4167283, 0.522575, 0.4340173, 0.3766424)
-sdevs/(sum(sdevs))#0.2381355 0.2986206 0.2480151 0.2152288
-
-summary(bet_full)$tTable
- #-0.06229402 +- 0.01749654
-
-#nakagawas R²
-r.squaredGLMM(bet_full) #0.08688312 0.8332844
-```
-
-
-```{r plot_plast}
-svg("betw_sd.svg",width=10,pointsize=12)
-par(mar = c(5,5,0,0)+0.1)
-
-plot(x=slopes$sd_winter, y=slopes$between, pch=21, cex=2*slopes$npoints/10, col=1, bg=slopes$col, main = "", xlab = "Winter unpredictability", ylab = "Plasticity",bty="n", xaxt="n", cex.axis = 1.5, cex.lab=1.5)
-legend("bottomleft",legend=names(n)[8:1], col=rep(1,8), pt.bg=hsv((7:0)/8,1,1), pch=21, bty="n", ncol=1,cex=1.5)
-coffs <-  summary(bet_full)$tTable[,1]
-lines(x= range(slopes$sd_winter),y = coffs[1]+coffs[2]*range(slopes$sd_winter),lwd=3,lty=2,xpd=T)
-
-axis(1,at=c(5,10,15,20,25),cex.axis=1.5, cex.lab = 1.5)
-
-for(i in c(2,6,8)){
-  sub<-slopes[slopes$order==unique(slopes$order)[i],]
-  sub<-droplevels(sub)
-  sinord<-lme(between ~ sd_winter, random =~ 1|genus/spec, data=sub, weights=~npoints,   method="REML")
-  coffs <-  summary(sinord)$tTable[,1]
-  lines(x= range(sub$sd_winter),y = coffs[1]+coffs[2]*range(sub$sd_winter), lwd= 1+round(5* table(slopes$order)[i]/max(table(slopes$order))), col=sub$col[1])
-  print(sub$order[1])
-  print (coffs[2])
-}
-points(x=slopes$cd ,y=slopes$sd_winter, pch=21, col=1, bg=slopes$col, cex=2*slopes$npoints/10)
-dev.off()
-#diptera: -0.07337133 
-#lepidoptera: -0.008580579 
-#mites: 0.008729344 
-```
-
-```{r}
-slopes$between<-scale(slopes$between)
-slopes$within<-scale(slopes$within)
-slopes$p<-scale(slopes$p)
-
-plot(slopes$within~slopes$between)
-x<-slopes$p- min(slopes$p)
-x<-x/max(x)
-points(slopes$within~slopes$between,pch=21,bg=hsv(1,1-x,1))
-
-
-bet_full<-lme(within ~ between*p, random =~ 1|order/genus/spec, data=slopes, weights=~npoints, method="REML")
-bet_red<-lme(within ~ between+p, random =~ 1|order/genus/spec, data=slopes, weights=~npoints, method="REML")
-#nakagawas R²
-r.squaredGLMM(bet_full) #0.8413381 0.9755626
-r.squaredGLMM(bet_red) # 0.79405 0.9671184
-```
-
-```{r}
-svg("parspace2.svg",width=10,pointsize=12)
-par(mar = c(5,5,0,0)+0.1)
-x<-slopes$p- min(slopes$p)
-x<-x/max(x)
-plot(y=slopes$within,x=slopes$between,pch=21,col=NA,bg=hsv(1,1-x,1),xlab = "Variance between environments",ylab="Variance within environments",xaxt="n",yaxt="n",cex.lab=1.5,bty="n") 
-axis(1,at=c(min(slopes$between),max(slopes$between)), labels=c("low","high"), cex.axis=1.5)
-axis(2, at = c(min(slopes$within),max(slopes$within)), labels=c("low","high"), cex.axis=1.5)
-logcurve<-function(x,b,c,d,e){(d-c)/(1+exp(-b*(x-e)))+c}
-x<-seq(12-4, 12+4, length.out =1000)
-
-dev.off()
-```
-```{r beta}
-
 ```
 
