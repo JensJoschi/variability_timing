@@ -8,27 +8,12 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
-library(maps)
+#library(maps)
 library(geosphere)
 library(fcuk)
-library(glmmTMB)
 library(metafor)
 
-#library(RCurl)
-#library(readr)
-#library(data.table)
-#library(textreadr)
-#library(tidyr)
-#library(dplyr)
-#library(stringr)
-#library(magrittr)
-#library(geomapdata)
-#library(MASS)
-#library(ggplot2)
-#library(MuMIn)
-#library(sjstats)
 ```
 
 
@@ -43,16 +28,7 @@ Previous scripts calculated winter onset means and predictability based on clima
 
 ### Specific description  
 
-The data was generated with R version `r getRversion()` (3.4.3). It requires the datasets "/nov2018/lit_extract/mcmcresults.txt", "/nov2018/clim_calc/output/beta.txt" and "[...]/output/results_100_5.txt", and the locations.txt file from the NOAA server.
-
-In this script we do:
-1. maps of winter onset and winter predictability (day length and 2x temperature)
-
-2a. correlate critical day length (CDL) with latitude
-2b. correlate day length of mean winter onset with latitude. 
-
-3. correlate mean diapause timing with mean winter onset
-4. correlate the residuals of 3) with day length predictability
+The data was generated with R version `r getRversion()` (3.4.3). It requires the datasets "/lit_extract/mcmcresults.txt", "/clim_calc/output/beta.txt" and "clim_calc/output/results_100_5.txt", and the locations.txt file from the NOAA server.
 ...
 
  
@@ -107,7 +83,7 @@ studies$col<-hsv(studies$col/10,1,1)
 
 
 
-## climate data  
+#### climate data  
 As climate dataset I chose the parameters (5 days below 10°C), a combination that is close to e.g. halkett 2004, and results in a mean winter onset in mid-october (when many animals start their diapause). the climate dataset "results_100-5.txt" has mean winter onset, standard deviation in winter onset ( measure of day length predictbaility), and predictability based on standard deviation of slopes of a temperature regression. The dataset "beta.txt" adds a colour of noise approach. the file ghcnd-stations.txt has latitudes and longitutes. These files will now be merged
 
 ```{r load_climate}
@@ -143,104 +119,8 @@ climate$dl <- daylength(climate$lat,climate$meanwinter+182)
 
 
 ## 1. maps  
-MAking worldwide maps of winter onset, sd(winter onset) etc 
-```{r individual_maps}
-plotmap<-function(r,g,b){
-  par(fg = "darkgrey")
-  map("world",xlim= c(-160, 150),ylim = c(0,75), interior=T, fill=T, bg = "white",col ="darkgrey")
-  points(x= climate$lon, y= climate$lat, col = NA, bg = rgb(r,g,b,maxColorValue = 255), pch = 22,  cex=0.5)
-  points(x = studies$degE, y= studies$degN, col =1, pch=4, cex = 0.5)
-}
+Making worldwide maps of winter onset, sd(winter onset) etc 
 
-
-#winter onset
-x<-climate$meanwinter
-x<-x-min(x)
-x<-x/(max(x)) #values between 0 and 1
-#large values (winter is late in year, high number) should be red
-#range should be: 192,0,0 (red) to 30,100,200 (blue)
-
-r<- x * 162
-r <- r + 30
-g<-100 - (x * 100)
-b<-200 - (x * 200)
-svg("w_on_10C5d.svg", width = 14, height = 7, pointsize=12)
-plotmap(r,g,b)
-dev.off()
-
-
-### day length at winter onset###
-x<-climate$dl
-length(x[x>16])/length(x)
-x[x>16]<-16
-x<-24-x #x is night length now, high values = short days
-#high values should be red ( winter very late in year, under very short days)
-x<-x-min(x)
-x<-x/(max(x)) #values between 0 and 1
-
-r<- x * 162
-r <- r + 30
-g<-100 - (x * 100)
-b<-200 - (x * 200)
-svg("w_dl_10C5d.svg", width = 14, height = 7, pointsize=12)
-plotmap(r,g,b)
-dev.off()
-
-###winter predictability by day length###
-x<-climate$sd_winter
-x[x>30]<-30 #capped to make plotting sensible
-x<-x-min(x)
-x<-x/(max(x)) #values between 0 and 1
-#large values (high standard deviation) should be red
-
-r<- x * 162
-r <- r + 30
-g<-100 - (x * 100)
-b<-200 - (x * 200)
-svg("w_sd_10C5d.svg", width = 14, height = 7, pointsize=12)
-plotmap(r,g,b)
-dev.off()
-
-
-###predictability by temperature###
-#This way of calculating winter unpredictability is the standard deviation in slopes of a temperature regression, 30 days before winter onset of each year
-#x<-climate[!is.na(climate$p),]
-x<-climate$p
-length(x[x>4])/length(x)
-x[x>4]<-4 #capped to make plotting sensible
-x<-x-min(x,na.rm=T)
-x<-x/(max(x,na.rm=T)) #values between 0 and 1
-#large values (high standard deviation) should be red
-
-r<- x * 162
-r <- r + 30; r[is.na(r)]<-0
-g<-100 - (x * 100); g[is.na(g)]<-0
-b<-200 - (x * 200); b[is.na(b)]<-0
-svg("w_p_10C5d.svg", width = 14, height = 7, pointsize=12)
-plotmap(r,g,b)
-dev.off()
-
-
-###predictability as colour of noise###
-x<-climate[!is.na(climate$beta),]
-nrow(x[x$beta>2,])/nrow(x)
-x$beta[x$beta>2]<-2 #capped to make plotting sensible
-x$beta[x$beta<(-2)]<-(-2) #capped to make plotting sensible
-x$beta<-x$beta-min(x$beta)
-x$beta<-x$beta/(max(x$beta)) #values between 0 and 1
-#large values (high standard deviation) should be red
-
-r<- x$beta * 162
-r <- r + 30
-g<-100 - (x$beta * 100)
-b<-200 - (x$beta * 200)
-svg("w_b_10C5d.svg", width = 14, height = 7, pointsize=12)
-plotmap(r,g,b)
-dev.off()
-```
-
-
-all maps in one figure (code is essentially copy of above)
 ```{r all_maps}
 plotmap<-function(r,g,b){
   map("world",xlim= c(-160, 150),ylim = c(0,75), interior=T, fill=T, bg = "white",col ="darkgrey")
@@ -249,7 +129,7 @@ plotmap<-function(r,g,b){
 }
 
 svg("all.svg", width = 14*360/310, height = 7*2.4, pointsize=12)
-  par(fg = "darkgrey", mfrow = c(4,1),mar=c(0,0,0,0))
+  par(fg = "darkgrey", mfrow = c(3,1),mar=c(0,0,0,0))
 
 
 ### day length at winter onset###
@@ -284,23 +164,7 @@ plotmap(r,g,b)
 rect(-163,0-1.38,153,75+1.38,col=NA,border = 1 ,xpd=T)
 text(-160,10,"B",pos=4,cex=4, col=1)
 
-###predictability by temperature###
-#This way of calculating winter unpredictability is the standard deviation in slopes of a temperature regression, 30 days before winter onset of each year
-#x<-climate[!is.na(climate$p),]
-x<-climate$p
-length(x[x>4])/length(x)
-x[x>4]<-4 #capped to make plotting sensible
-x<-x-min(x,na.rm=T)
-x<-x/(max(x,na.rm=T)) #values between 0 and 1
-#large values (high standard deviation) should be red
 
-r<- x * 162
-r <- r + 30; r[is.na(r)]<-0
-g<-100 - (x * 100); g[is.na(g)]<-0
-b<-200 - (x * 200); b[is.na(b)]<-0
-plotmap(r,g,b)
-rect(-163,0-1.38,153,75+1.38,col=NA,border = 1 ,xpd=T)
-text(-160,10,"C",pos=4,cex=4, col=1)
 
 ###predictability as colour of noise###
 x<-climate[!is.na(climate$beta),]
@@ -317,7 +181,7 @@ g<-100 - (x$beta * 100)
 b<-200 - (x$beta * 200)
 plotmap(r,g,b)
 rect(-163,0-1.38,153,75+1.38,col=NA,border = 1 ,xpd=T)
-text(-160,10,"D",pos=4,cex=4, col=1)
+text(-160,10,"C",pos=4,cex=4, col=1)
 
 
 ```
@@ -349,7 +213,7 @@ metaf<-rma.mv(yi = med_e ~ degN, V=1, random = ~1|order/genus/spec/ID/popid,data
 
 There are just not enough replicate studies per species, not enough species per genus (usually), and not enough genera per order. studies on the smae species were usually conducted by the same authors, so ID can be safely removed. This assumes that different studies on the same species will give the same results. Genus can also be removed.
 
-### the reduced model
+#### the reduced model
 ```{r degN_models}
 
 metaf<-rma.mv(yi = med_e ~ degN, V=vi, random = ~(1|order/spec/popid), data = studies)
@@ -402,7 +266,7 @@ AIC(metaf.ml)-AIC(metanull.ml)#    -362.9981
 
 
 
-### plot  
+__plot__    
 Plot critical day length vs latitude, with character size proportional to weight, with credible intervals around the points, and different colours for different orders.
 ```{r degN_plot}
 studies$r<-r
@@ -423,15 +287,6 @@ lines(x= range(studies$degN),y = coffs[1]+coffs[2]*range(studies$degN),lwd=3,lty
 
 axis(1,at=c(0,20,30,40,50,60,70,80),cex.axis=1.5, cex.lab = 1.5)
 
-
-function(notneeded){for(i in 1:9){ #prints individual lines per order, not needed currently
-  sub<-studies[studies$order==unique(studies$order)[i],]
-  sinord<-lm(med_e ~ degN, data=sub, weights=r)
-  coffs <-  coef(sinord)
-  lines(x= range(sub$degN),y = coffs[1]+coffs[2]*range(sub$degN), lwd= 1+round(5* table(studies$order)[i]/max(table(studies$order))), col=sub$col[1])
-  print(sub$order[1])
-  print (paste("slope: ",(coffs[1]*5*60), "se: ", (coffs[2]*5*60)))
-}}
 
 segments(x0=studies$degN[studies$r<2], y0 = studies$upper_e[studies$r<2], y1=studies$lower_e[studies$r<2] ,col="darkgrey") #only credible intervals <2 hours are printed, otherwise fig would be cluttered
 
@@ -497,7 +352,7 @@ studies<-studies[!is.na(studies$meanwinter),] #435 left
 ```
 
 
-### correlation day length at winter onset with latitude  
+## correlation day length at winter onset with latitude  
 
 The relationship of CDL ~ latitude was smaller than expected. Given the climate data, what is the optimal diapause shift with latitude?
 
@@ -530,9 +385,9 @@ We calculated the optimal response based on climate data as 0.74 h/5°N = 46.34 
 
 
 ## 3. Mean winter onset and mean diapaue timing
-In the following chunks we will corerlate mean timing with mean winter conditions, expected a close relationship due to genetic tracking
+In the following chunks we will corerlate mean timing with mean winter conditions, expecting a close relationship due to genetic tracking
 
-### conversion of CDL to mean winter
+#### conversion of CDL to mean winter
 To convert CDL to mean winter, we need the latitude. The daylength() function goes wrong way (day -> day length), so we need to inverse it
 ```{r model_means}
 studies$mw<-NA
@@ -564,7 +419,7 @@ segments(x0=studies$meanwinter, y0 = studies$mwl, y1 = studies$mwh,col="lightgre
 ```
 
 
-### model mean winter ~ winter_onset  
+#### model mean winter ~ winter_onset  
 This is mostly a copy of the cdl ~ latitude part, with only minor changes
 ```{r model_mw}
 r<-studies$mwl-studies$mwh # mwl = winter onset according to lower CDL = later winter onset; so mwl is actually upper limit
@@ -623,7 +478,7 @@ AIC(mw.ml)-AIC(mwnull.ml)#     -150.6196
 
 Okay the R² is actually worse than for CDL ~ latitude, but more relevant for fitness.
 
-### plot  
+__plot__  
 ```{r plot_mw}
 studies$r<-r
 
@@ -680,66 +535,15 @@ points(studies$med_s ~ studies$med_r, pch=22, cex=0.5,bg=1)
 
 
 ## 4. correlation of responsiveness with winter severity  
-Phenotypic variation only makes sense if there is sufficient envrionmental change. Thus responses by either plasticity or bet-hedging should only occur in environments with harsh enough winters (or actually a differenc ebetween summer and winter). for the moment I use mean winter onset as indicator of amplitude, because winter harshness sohuld correlate strongly with that
+Phenotypic variation only makes sense if there is sufficient envrionmental change. Thus responses by either plasticity or bet-hedging should only occur in environments with harsh enough winters (or actually a difference between summer and winter). But there is not enough variation in responsiveness to do any model:
 
 ```{r responsiveness}
-r <- studies$upper_s-studies$lower_s
-r[r<0.01]<-0.01 #changes < 0.01 are irrelevant
-r<-1/r
-studies$r<-nrow(studies) * r/sum(r) #1/3 of all points gets full weight
-resp<-lme(med_s ~ meanwinter, random =~ 1|order/spec, data=studies, weights=~r, method="REML")
-
-
-#null model (with species as random)
-nullresp<-lme(med_s ~ 1, random =~ 1|order/spec, data=studies, weights=~r, method="REML")
-
-summary(resp)
-
-#as ML fits
-resp.ml<-lme(med_s ~ meanwinter, random =~ 1|order/spec, data=studies, weights=~r, method="ML")
-nullresp.ml<-lme(med_s ~ 1, random =~ 1|order/spec, data=studies, weights=~r, method="ML")
-
-
-#estimate +se
-summary(resp)$tTable
- #                 Value  Std.Error  DF   t-value      p-value
-#(Intercept)  0.3525786037 0.035176447 374 10.023144 4.218810e-21
-#meanwinter  -0.0004794173 0.000109729 374 -4.369101 1.618061e-05
-
-plot(resid(resp))
-
-
-anova(resp.ml,nullresp.ml) #LRT ratio = 17.11208 , p<.0001
-AIC(resp.ml)-AIC(nullresp.ml)  #-15.11208
-
-#nakagawas R²
-r.squaredGLMM(resp) #0.03990663 0.3437253
-#marginal and conditional = without and with random effects
+hist(studies$med_s,breaks=100)
 ```
 
+## 5. variance composition vs day length predictability  
 
-plot
-```{r}
-svg("sums.svg",width=10,pointsize=12)
-par(mar = c(5,5,0,0)+0.1)
-
-plot(x=studies$meanwinter, y=studies$med_s, pch=21, cex=studies$r/max(studies$r) * 2, col=1, bg=studies$col, main = "", xlab = "Mean winter onset", ylab = "Sum of varaiance components",bty="n", cex.axis = 1.5, cex.lab=1.5,xlim=c(200,400), ylim=c(0,0.25)) #cex again set so that max ptsize = 2
-#legend("bottomright",legend=names(n), col=rep(1,8), pt.bg=unique(studies$col), pch=21, bty="n", ncol=1,cex=1.5)
-coffs <-  summary(resp)$tTable
-lines(x= range(studies$meanwinter),y = coffs[1,1]+coffs[2,1]*range(studies$meanwinter),lwd=2,lty="dotted")
-
-
-segments(x0=studies$meanwinter[studies$r>0.2452147],y0 = studies$lower_s[studies$r>0.2452147],y1=studies$upper_s[studies$r>0.2452147],col="darkgrey") #credible intervals > 0.05 not shown
-ord<-studies[order(studies$r,as.numeric(studies$order),decreasing = c(T,F), method = "radix"),] #to make sure smalles points are printed last, on top of the larger points. order is included so that dipterns do not completely dominate pic
-for (i in 1:nrow(ord)){
-  points(x=ord$meanwinter[i] ,y=ord$med_s[i], pch=21, col=1, bg=ord$col[i], cex=ord$r[i]/max(studies$r) * 2)
-}
-dev.off()
-```
-
-### 5. variance composition vs day length predictability
-
-```{r varcomp_sd}
+```{r varcomp_sdw}
 x<-studies # a backup
 
 r <- studies$upper_r-studies$lower_r
@@ -786,8 +590,8 @@ anova(mod.ml,modnull.ml) #LRT ratio =  34.2463, p<.0001
 AIC(mod.ml)-AIC(modnull.ml)#  -32.24626
 
 ```
-plot
-```{r plot_sdwinter}
+__plot__ 
+```{r plot_sdw}
 
 max.size<-(0.05/(2*1.96))^2; max.size <- 1/max.size 
 
@@ -815,7 +619,7 @@ dev.off()
 
 
 ### 6. Variance composition vs. temperature predictability  
-```{r}
+```{r varcomp_sdt}
 
 varc_tp <- rma.mv(yti ~ beta, vti, random = ~ 1 | order/spec/popid, data=studies)
 
@@ -826,8 +630,9 @@ x<-seq(5,25,length.out=1000) #will be used to plot prediction line
 
  
  #null models and ML models (weighted)
-#null models are in workspace already
-varc_tp.ml<- rma.mv(yti ~ beta ,vi, random = ~ 1 | order/spec/popid, data=studies, method = "ML") 
+modnull <- rma.mv(yti ~ 1, vti, random = ~ 1 | order/spec/popid, data=studies)
+modnull.ml <- rma.mv(yti ~ 1, vti, random = ~ 1 | order/spec/popid, data=studies, method="ML")
+varc_tp.ml<- rma.mv(yti ~ beta ,vti, random = ~ 1 | order/spec/popid, data=studies, method = "ML") 
 
 
 #summary statistics
@@ -839,17 +644,17 @@ transf.ilogit(-0.1886)# 0.4529893
 
 
 #nakagawas R²
-(modnull$sigma2-varc_tp$sigma2)/modnull$sigma2  # -4.748462e+06  4.324297e-01  5.151490e-01
-(sum(modnull$sigma2)-sum(varc_tp$sigma2))/sum(modnull$sigma2) #0.4589706
+(modnull$sigma2-varc_tp$sigma2)/modnull$sigma2  #  -0.047561935  0.001780985 -0.001627487
+(sum(modnull$sigma2)-sum(varc_tp$sigma2))/sum(modnull$sigma2) #-0.00161734
 
 #significance testing
-anova(varc_tp.ml,modnull.ml) #LRT ratio =  0.0545, p=0.82
-AIC(varc_tp.ml)-AIC(modnull.ml)#  1.945543
+anova(varc_tp.ml,modnull.ml) #LRT ratio =  0.3217 , p=0.5706
+AIC(varc_tp.ml)-AIC(modnull.ml)#  1.678301
 x<-seq(min(studies$beta),max(studies$beta),length.out=1000)
  y=coef(mod)[1]+x*coef(varc_tp)[2] #inverse logit transform this to get prediction
 ```
-
-```{r plot_beta}
+__plot__  
+```{r plot_sdt}
 
 max.size<-(0.05/(2*1.96))^2; max.size <- 1/max.size 
 
@@ -874,7 +679,7 @@ dev.off()
 ```
 
 
-### 7. conservative bet-hedging  
+### 7. conservative bet-hedging 
 ```{r}
 #get vi from mean winter:
 r<-studies$mwl-studies$mwh #
@@ -943,52 +748,117 @@ dev.off()
 
 
 ### how do these climate pics change with parameters?  
-The following chunk correlates day length at winter onset with latitude, for a variety of parameter combinations (currently commented out). It also saves the slope estimates.
-It is currently disabled so that the script is not slowed down. in addition, running it will reload the climate data and erase all changes (e.g. climate$dl)
-```{r sensitivity}
-dontrun<-function(){
-threshlist <-seq(0,150,5)
-t2list <-5#c(5,10,15)
-Z<-1
-coeflist<-rep(NA,length(threshlist)*length(t2list))
+The following chunk correlates day length at winter onset with latitude, for a variety of parameter combinations  
+```{r}
+url<-"ghcnd-stations.txt"
+#"ftp://ftp.ncdc.noaa.gov/pub/data/ghcn/daily/ghcnd-stations.txt"
+#this dataset is fixed-width delimited, requiring a few additional steps
+locations<-read.fwf(
+  file=url
+  ,sep="!",na.strings=c("NA","-999.9"), #sep = ! because ! does not exist in dataset - > dataset is fixed-width and should have no additional separators
+  widths=c(11, 9, 10, 7,2,35)
+)
 
 
-for(threloop in 1:length(threshlist)){
-  threshold<-threshlist[threloop]
-  for (t2loop in 1:length(t2list)){
-    t2<-t2list[t2loop]
-    reslist<-read.table(paste("01climate_data/03output/results_",threshold,"-",t2,".txt",sep=""))
-    names(reslist)<-c("ID","meanwinter","sd_winter","p","nyears","ndays_300","ndays_350","ndays_365")
-    climate<-merge(locations,reslist,by=1)
+rsq<-rep(NA,length(seq(0,150,5)))
+rsq2<-rsq
+nams<-seq(0,150,5)
+for ( t in 1:length(rsq)){
+#get data
+studies <- read.table("lit_extract/mcmcresults.txt") #reload for each i because some with meanwinter= NA get erased every time
+studies<-studies[order(studies$order),]
+studies$col<-as.numeric(studies$order)
+studies$col<-hsv(studies$col/10,1,1)
+
+reslist<-read.table(paste("clim_calc/output/results_",nams[t],"-5.txt", sep =""),na.string = c("NA","-9999","-999.9"))
+names(reslist)<-c("ID","meanwinter","sd_winter","p","nyears","ndays_300","ndays_350","ndays_365")
+reslist<-reslist[1:26804,] #the same data was appended twice
+climate<-merge(locations,reslist,by=1)
 rm(reslist)
-names(climate)<-c("ID","lat","lon","alt","name","no_idea","meanwinter","sd_winter",   "p", "nyears" , "ndays_300"  ,"ndays_350",  "ndays_365" )
+names(climate)<-c("ID","lat","lon","alt","name","no_idea","meanwinter","sd_winter", "p",  "nyears" ,  "ndays_300"  ,"ndays_350",  "ndays_365" )
+climate<-climate[!is.na(climate$meanwinter),] #because these cannot be used anyway
+climate<-climate[climate$lat<70,] #at higher latitudes winter onset is at midsummer
+climate$dl <- daylength(climate$lat,climate$meanwinter+182)
 
-climate<-climate[!is.na(climate$meanwinter),] 
-climate<-climate[climate$lat<70,]
-climate<-climate[climate$lat>20,]
+studies$meanwinter<-NA
+studies$sd_winter<-NA
+studies$nyears<-NA
+studies$sd_sd<-NA #standard deviation in winter predictabilities of nearby stations
+studies$n_s<-NA
 
 
-climate$expdl<-daylength(climate$lat,climate$meanwinter+182)
-coeflist[Z]<-coef(lm(climate$expdl~climate$lat))[2]
+#combine with climate data
+for ( i in 1:nrow(studies)){
+  #reduce to +-5 °
+  sub<-climate[between(climate$lat,studies[i,"degN"]-5,studies[i,"degN"]+5)& between(climate$lon,studies[i,"degE"]-5,studies[i,"degE"]+5),]
 
-#png(paste("results_",threshold,"-",t2,".png",sep=""))
-#plot(climate$expdl~climate$lat,pch=22,bg=1,col=NA,cex=0.1)
-#abline(lm(climate$expdl~climate$lat),col=2)
-#text(x=min(climate$lat)+5,y= min(climate$expdl)+1,paste("slope:",round(coeflist[Z],2)*5))
-#text(x=60,y=min(climate$expdl)+1,paste("median winter:",182+round(median(climate$meanwinter))))
-#dev.off()
+    sub$diffN<-sub$lat-studies[i,"degN"] #calculate distance in latitude
+    sub$diffE<-sub$lon-studies[i,"degE"] #same for longitude
+    sub$diff<-sqrt(sub$diffN^2+sub$diffE^2) #euclidian distance
 
-Z<-Z+1
-}}
+    sub<-arrange(sub,diff)[1:5,] #sort and take 5 lowest values = 5 closest stations
+  
 
-svg("slope_par.svg",pointsize=12)
-par(mar=c(5,5,3,2)+0.1)
-plot(x=threshlist/10, y=coeflist[seq(1,length(threshlist)*length(t2list),length(t2list))]*5, xlab="T threshold (°C)", ylab="Slope coefficient (h/5°N)", bty="n", type="l", lwd=3, yaxt="n", cex.lab=1.5, cex.axis=1.5,ylim=range(coeflist)*5)
-for (lin in 1:length(t2list)){
-  lines(x=threshlist/10,y=coeflist[seq(lin,length(threshlist)*length(t2list),length(t2list))]*5,col=col_def[lin],lwd=3,lty=lin)
+  
+  studies$meanwinter[i]<-weighted.mean(sub$meanwinter,1/sub$diff)
+  studies$sd_winter[i]<-weighted.mean(sub$sd_winter,1/sub$diff)
+  studies$nyears[i]<-weighted.mean(sub$nyears,1/sub$diff)
+  studies$sd_sd[i]<-sd(sub$sd_winter) #quality control. the predictability of nearby stations should be similar to each other
+  studies$n_s <- nrow(sub) #a location may not have 5 stations around
+
 }
-axis(2,at=c(-0.5,0,0.5,1,1.5), cex.axis=1.5)
-dev.off()
+  studies <- studies[!is.na(studies$meanwinter),]
+studies$mw<-NA
+studies$mwl<-NA
+studies$mwh<-NA
+studies$meanwinter <- studies$meanwinter + 182 #was counted in days since midsummer
+
+
+#calc day length
+for ( i in 1:nrow(studies)){
+  x<-daylength(studies$degN[i],173:357) #357 = shortest day of year, 173 = longest
+  #plot(x) will show the day length decline from midsummer to midwinter for a given latitude. We need to find the x value which is closest to the CDL, and record on which day it occurs
+
+  studies$mw[i]<-which.min(abs(studies$med_e[i] - x))+173 -1 #day 173 is at x == 1 ,this is why 1 is substracted
+  studies$mwl[i]<-which.min(abs(studies$lower_e[i] - x))+172
+  studies$mwh[i]<-which.min(abs(studies$upper_e[i] - x))+172
 }
+
+
+#model mean winter
+r<-studies$mwl-studies$mwh 
+r[r<7]<-7 #changes < 1 wk are irrelevant  
+vi <- (r / (2*1.96))^2
+mw<-rma.mv(yi = mw ~ meanwinter, V=vi, random = ~(1|order/spec/popid), data = studies)
+mwnull<-rma.mv(yi = mw ~         1, V=vi, random = ~(1|order/spec/popid), data = studies)
+rsq[t]<-(sum(mwnull$sigma2)-sum(mw$sigma2))/sum(mwnull$sigma2)
+
+#model variance composition
+r <- studies$upper_r-studies$lower_r
+r[r<0.05]<-0.05 #changes < 0.05 are irrelevant
+vi<- (r / (2*1.96))^2 
+studies$yti <- transf.logit(studies$med_r)
+studies$vti <- vi / (studies$med_r * (1 - studies$med_r))^2
+mod <- rma.mv(yti ~ sd_winter, vti, random = ~ 1 | order/spec/popid, data=studies)
+modnull<-rma.mv(yti  ~ 1, vi, random = ~(1|order/spec/popid), data = studies)
+rsq2[t]<-(sum(modnull$sigma2)-sum(mod$sigma2))/sum(modnull$sigma2)
+}
+
 ```
+
+
+```{r}
+plot(rsq,pch=19, xlab ="Temperature threshold",xaxt="n", ylab = "R² diapause timing - winter onset",bty="n")
+lines(rsq)
+axis(1, at= 1:length(rsq2),labels=nams/10)
+abline(v=21)
+
+plot(rsq2,pch=19, xlab ="Temperature threshold",xaxt="n", ylab = "R² variance composition - winter predictability", bty = "n")
+lines(rsq2)
+axis(1, at= 1:length(rsq2),labels=nams/10)
+abline(v=21)
+```
+
+
+
 
