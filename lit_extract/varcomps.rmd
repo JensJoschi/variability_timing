@@ -30,7 +30,7 @@ This script does an MCMC to get estimates fo slopes, midpoints and upper and low
 
 This chunk loads the extracted raw data from the 57 studies. It requires a .csv copy of the file "lit_search/search_2018_11.xlsx". First we calculate the number of populations, sample sizes etc. Then the diapause percentages (y-axis of the reaction norm) are rounded and converted in number of successes vs number of trials. Lastly, the x-axis of the reaction norm is transformed into day of year.
 ```{r load_data}
-data<-read.table("lit_extract/variance_comp.csv", header=T,sep=";")
+data<-read.table("lit_extract/variance_comp.csv", header=T,sep=";") #pullin has been coded wrongly (1.0 instead of 100 percent); changed directly in csv script
 length(unique(data$ID)) #57 studies that can be used for slope calculation
 length(unique(data$spec)) #45 species
 length(unique(data$genus)) #32 genera
