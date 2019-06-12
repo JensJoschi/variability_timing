@@ -699,15 +699,15 @@ dev.off()
 
 ### 7. conservative bet-hedging 
 ```{r}
-#get vi from mean winter:
-r<-studies$mwl-studies$mwh #
-r[r<7]<-7
-vi <- (r / (2*1.96))^2
-
 #3 models: 
 # mean winter residuals vs predictability by day length
 # mean winter residuals vs predictability by temperature
 # mean winter residuals vs variance composition residuals , test whether dbh and cbh trade off against each other
+
+r<-studies$upper_e-studies$lower_e
+r[r<7]<-7 #changes < 1 wk are irrelevant  
+vi <- (r / (2*1.96))^2
+
 
 studies$res_mw<-rstandard(mw)$z
 cbh_dl <- rma.uni(res_mw~sd_winter, vi = vi, data= studies)
@@ -720,17 +720,17 @@ cbh_dbh<- rma.uni(res_mw ,vi, mod  = res_varc ,data=studies)
 
 summary(cbh_dl)
 #           estimate      se     zval    pval    ci.lb   ci.ub   
-#intrcpt      0.1713  0.3096   0.5535  0.5799  -0.4354  0.7781   
-#sd_winter   -0.0060  0.0282  -0.2117  0.8324  -0.0613  0.0494   
+#intrcpt      0.3169  0.3223   0.9833  0.3255  -0.3147  0.9485   
+#sd_winter   -0.0117  0.0293  -0.3998  0.6893  -0.0692  0.0457    
 
 #R² = 0
-anova(cbh_dl)#0.0448, p = 0.8324
-#AIC diff: 0.1996261
+anova(cbh_dl)# 0.1598, p =  0.6893
+#AIC diff:  -1.65269
 
 
 svg("cbh_dl.svg", width = 10, pointsize=12)
 par(mar = c(5,5,0,0)+0.1)
-plot(res_mw ~ studies$sd_winter, pch=21, cex= 0.3+1.5*(1/vi)/(max(1/vi)) , col=1, bg=studies$col, main = "", ylab = "Residulas diapause timing", xlab = "Winter Unpredictability (day length)",bty="n", cex.axis = 1.5, cex.lab=1.5,xlim=c(0,26), ylim=c(-3,4)) #cex again set so that max ptsize = 2
+plot(studies$res_mw ~ studies$sd_winter, pch=21, cex= 0.3+1.5*(1/vi)/(max(1/vi)) , col=1, bg=studies$col, main = "", ylab = "Residulas diapause timing", xlab = "Winter Unpredictability (day length)",bty="n", cex.axis = 1.5, cex.lab=1.5,xlim=c(0,26), ylim=c(-3,4)) #cex again set so that max ptsize = 2
 #legend("bottomright",legend=names(n), col=rep(1,8), pt.bg=unique(studies$col), pch=21, bty="n", ncol=1,cex=1.5)
 abline(coef(cbh_dl),lwd=2)
 dev.off()
@@ -738,24 +738,24 @@ dev.off()
 
 summary(cbh_t)
 #         estimate      se    zval    pval    ci.lb   ci.ub   
-#intrcpt    0.0703  0.2223  0.3163  0.7518  -0.3653  0.5059   
-#beta       0.1183  0.5705  0.2073  0.8358  -0.9999  1.2364   
+#intrcpt    0.2211  0.2294   0.9638  0.3351  -0.2286  0.6708   
+#beta      -0.0709  0.5755  -0.1231  0.9020  -1.1989  1.0572   
 
 anova(cbh_t)
-#0.0430, p = 0.8358
+# 0.0152, p = 0.9020
 
 svg("cbh_t.svg",width=10,pointsize=12)
 par(mar = c(5,5,0,0)+0.1)
-plot(res_mw ~ studies$beta, pch=21, cex= 0.3+1.5*(1/vi)/(max(1/vi)) , col=1, bg=studies$col, main = "", ylab = "Residulas diapause timing", xlab = "Winter unpredictability (temperature)",bty="n", cex.axis = 1.5, cex.lab=1.5,xlim=c(-1,1.5), ylim=c(-3,4)) #cex again set so that max ptsize = 2
+plot(studies$res_mw ~ studies$beta, pch=21, cex= 0.3+1.5*(1/vi)/(max(1/vi)) , col=1, bg=studies$col, main = "", ylab = "Residulas diapause timing", xlab = "Winter unpredictability (temperature)",bty="n", cex.axis = 1.5, cex.lab=1.5,xlim=c(-1,1.5), ylim=c(-3,4)) #cex again set so that max ptsize = 2
 #legend("bottomright",legend=names(n), col=rep(1,8), pt.bg=unique(studies$col), pch=21, bty="n", ncol=1,cex=1.5)
 abline(cbh_t,lwd=2)
 dev.off()
 
 svg("cbh_dbh.svg",width=10,pointsize=12)
 par(mar = c(5,5,0,0)+0.1)
-plot(res_mw ~ res_varc, pch=21, cex= 0.3+1.5*(1/vi)/(max(1/vi)) , col=1, bg=studies$col, main = "", ylab = "Residulas diapause timing", xlab = "Residuals variance composition",bty="n", cex.axis = 1.5, cex.lab=1.5,xlim=c(-3,3.5), ylim=c(-3,3)) #cex again set so that max ptsize = 2
+plot(studies$res_mw ~ studies$res_varc, pch=21, cex= 0.3+1.5*(1/vi)/(max(1/vi)) , col=1, bg=studies$col, main = "", ylab = "Residulas diapause timing", xlab = "Residuals variance composition",bty="n", cex.axis = 1.5, cex.lab=1.5,xlim=c(-3,3.5), ylim=c(-3,3)) #cex again set so that max ptsize = 2
 #legend("bottomright",legend=names(n), col=rep(1,8), pt.bg=unique(studies$col), pch=21, bty="n", ncol=1,cex=1.5)
-x<-seq(min(res_varc),max(res_varc), length.out=1000)
+x<-seq(min(studies$res_varc),max(studies$res_varc), length.out=1000)
 y<-coef(cbh_dbh)[1]+coef(cbh_dbh)[2]*x
 lines(y~x,lwd=2)
 dev.off()
@@ -777,10 +777,10 @@ locations<-read.fwf(
   widths=c(11, 9, 10, 7,2,35)
 )
 
-
-rsq<-rep(NA,length(seq(0,150,5)))
-rsq2<-rsq
 nams<-seq(0,150,5)
+rsq<-rep(NA,length(nams))
+rsq2<-rsq
+
 for ( t in 1:length(rsq)){
 #get data
 studies <- read.table("lit_extract/mcmcresults.txt") #reload for each i because some with meanwinter= NA get erased every time
@@ -790,7 +790,7 @@ studies$col<-hsv(studies$col/10,1,1)
 
 reslist<-read.table(paste("clim_calc/output/results_",nams[t],"-5.txt", sep =""),na.string = c("NA","-9999","-999.9"))
 names(reslist)<-c("ID","meanwinter","sd_winter","p","nyears","ndays_300","ndays_350","ndays_365")
-reslist<-reslist[1:26804,] #the same data was appended twice
+reslist<-reslist[1:26804,] # if the same data was appended twice
 climate<-merge(locations,reslist,by=1)
 rm(reslist)
 names(climate)<-c("ID","lat","lon","alt","name","no_idea","meanwinter","sd_winter", "p",  "nyears" ,  "ndays_300"  ,"ndays_350",  "ndays_365" )
@@ -825,30 +825,16 @@ for ( i in 1:nrow(studies)){
   studies$n_s <- nrow(sub) #a location may not have 5 stations around
 
 }
-  studies <- studies[!is.na(studies$meanwinter),]
-studies$mw<-NA
-studies$mwl<-NA
-studies$mwh<-NA
+studies <- studies[!(is.na(studies$meanwinter)|is.na(studies$upper_e)),]
 studies$meanwinter <- studies$meanwinter + 182 #was counted in days since midsummer
 
 
-#calc day length
-for ( i in 1:nrow(studies)){
-  x<-daylength(studies$degN[i],173:357) #357 = shortest day of year, 173 = longest
-  #plot(x) will show the day length decline from midsummer to midwinter for a given latitude. We need to find the x value which is closest to the CDL, and record on which day it occurs
-
-  studies$mw[i]<-which.min(abs(studies$med_e[i] - x))+173 -1 #day 173 is at x == 1 ,this is why 1 is substracted
-  studies$mwl[i]<-which.min(abs(studies$lower_e[i] - x))+172
-  studies$mwh[i]<-which.min(abs(studies$upper_e[i] - x))+172
-}
-
-
 #model mean winter
-r<-studies$mwl-studies$mwh 
+r<-studies$upper_e-studies$lower_e 
 r[r<7]<-7 #changes < 1 wk are irrelevant  
 vi <- (r / (2*1.96))^2
-mw<-rma.mv(yi = mw ~ meanwinter, V=vi, random = ~(1|order/spec/popid), data = studies)
-mwnull<-rma.mv(yi = mw ~         1, V=vi, random = ~(1|order/spec/popid), data = studies)
+mw<-rma.mv(yi = med_e ~ meanwinter, V=vi, random = ~(1|order.x/spec/popid), data = studies)
+mwnull<-rma.mv(yi = med_e ~         1, V=vi, random = ~(1|order.x/spec/popid), data = studies)
 rsq[t]<-(sum(mwnull$sigma2)-sum(mw$sigma2))/sum(mwnull$sigma2)
 
 #model variance composition
@@ -857,11 +843,12 @@ r[r<0.05]<-0.05 #changes < 0.05 are irrelevant
 vi<- (r / (2*1.96))^2 
 studies$yti <- transf.logit(studies$med_r)
 studies$vti <- vi / (studies$med_r * (1 - studies$med_r))^2
-mod <- rma.mv(yti ~ sd_winter, vti, random = ~ 1 | order/spec/popid, data=studies)
-modnull<-rma.mv(yti  ~ 1, vi, random = ~(1|order/spec/popid), data = studies)
+mod <- rma.mv(yti ~ sd_winter, vti, random = ~ 1 | order.x/spec/popid, data=studies)
+modnull<-rma.mv(yti  ~ 1, vi, random = ~(1|order.x/spec/popid), data = studies)
 rsq2[t]<-(sum(modnull$sigma2)-sum(mod$sigma2))/sum(modnull$sigma2)
 }
-
+write.table( rsq, "rsq.txt",row.names=F)
+write.table( rsq2, "rsq2.txt",row.names=F)
 ```
 
 
