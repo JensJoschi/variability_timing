@@ -13,7 +13,7 @@ library(tidyverse)
 library(geosphere)
 library(fcuk)
 library(metafor)
-
+library(viridis)
 ```
 
 
@@ -47,8 +47,8 @@ The data with the mcmc results needs to be loaded. This has for each of the 447 
 ```{r load_studies}
 studies <- read.table("lit_extract/mcmcresults.txt")
 studies<-studies[order(studies$order),]
-studies$col<-as.numeric(studies$order)
-studies$col<-hsv(studies$col/10,1,1)
+studies$col<-as.numeric(studies$order) #numbers from 1:9
+studies$col<-viridis(9)[studies$col]
 ##constrain to between tropics and polar circle
 #studies <- studies[between(studies$degN, 23.434, 66.57),]
 
