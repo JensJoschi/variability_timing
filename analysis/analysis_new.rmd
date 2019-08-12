@@ -123,13 +123,14 @@ Making worldwide maps of winter onset, sd(winter onset) etc
 
 ```{r all_maps}
 plotmap<-function(r,g,b){
-  map("world",xlim= c(-160, 150),ylim = c(0,75), interior=T, fill=T, bg = "white",col ="darkgrey")
+  map("world",xlim= c(-160, 150),ylim = c(0,75), interior=T, fill=T, bg = "white",col ="darkgrey",mar = c(0,0.3,0,0.3))
   points(x= climate$lon, y= climate$lat, col = NA, bg = rgb(r,g,b,maxColorValue = 255), pch = 22,  cex=0.5)
   points(x = studies$degE, y= studies$degN, col =1, pch=4, cex = 0.5)
 }
 
-svg("all.svg", width = 14*360/310, height = 7*2.4, pointsize=12)
-  par(fg = "darkgrey", mfrow = c(3,1),mar=c(0,0,0,0))
+#svg("all.svg", width = 14*360/310, height = 7*2.4, pointsize=12)
+tiff("all_A.tif", width = 16, height = 6, units = "cm", pointsize=8, res = 150)
+  par(fg = "darkgrey",mar=c(0,0,0,0)+0.1)
 
 
 ### day length at winter onset###
@@ -150,6 +151,9 @@ rect(-163,0-1.38,153,75+1.38,col=NA,border = 1 ,xpd=T)
 text(-160,10,"A",pos=4,cex=4, col=1)
 
 ###winter predictability by day length###
+tiff("all_B.tif", width = 16, height = 6, units = "cm", pointsize=8, res = 150)
+  par(fg = "darkgrey",mar=c(0,0,0,0)+0.1)
+  
 x<-climate$sd_winter
 x[x>30]<-30 #capped to make plotting sensible
 x<-x-min(x)
@@ -584,9 +588,9 @@ x<-seq(5,25,length.out=1000) #will be used to plot prediction line
 
  
  #null models and ML models (weighted)
-modnull<-rma.mv(yti  ~ 1, vi, random = ~(1|order/spec/popid), data = studies)
-mod.ml<- rma.mv(yti ~ sd_winter,vi, random = ~ 1 | order/spec/popid, data=studies, method = "ML") 
-modnull.ml<-rma.mv(yti ~ 1, vi, random = ~(1|order/spec/popid), data = studies, method = "ML") 
+modnull<-rma.mv(yti  ~ 1, vti, random = ~(1|order/spec/popid), data = studies)
+mod.ml<- rma.mv(yti ~ sd_winter,vti, random = ~ 1 | order/spec/popid, data=studies, method = "ML") 
+modnull.ml<-rma.mv(yti ~ 1, vti, random = ~(1|order/spec/popid), data = studies, method = "ML") 
 ```
 _summary statistics_    
 ```{r sdw_sumstat}
