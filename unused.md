@@ -6,19 +6,20 @@ Analysis of biological data requires multiple choices (which models to use, what
 
 Three attempts to calculate winter variability were made:
 
-* I followed the definition of (Halkett et al., 2004) and defined winter onset as the point where a regression line from august to December crosses 12째C. Winter variability was then defined as standard deviation in winter onset. I used daily mean temperatures of the GHCN-d dataset (NOAA)
-* I defined winter onset as the xth day on which temperates fell below y 캜, and used the standard deviation of julian date. Again I used daily mean temperatures
-* Instead of using daily mean temperatures, I used the mean of daily max and daily min temperatures, applying the same approach as before. This is the approach I stuck with
+* I followed the definition of (Halkett et al., 2004) and defined winter onset as the point where a regression line from august to December crosses 12캜. Winter variability was then defined as standard deviation in winter onset. I used daily mean temperatures of the GHCN-d dataset (NOAA). This approach was discontinued early on, because it causes infinite standard deviations towards the equator.  
+* I defined winter onset as the xth day on which temperates fell below y 캜, and used the standard deviation of julian date. Again I used daily mean temperatures. This approach was discontinued because there are not many stations with enough daily mean temperatures recorded.  
+* Instead of using daily mean temperatures, I used the mean of daily max and daily min temperatures, applying the same approach as before. This is the approach I stuck with.  
 
-Further climate data calculations that were made but fell out of use:
-* I calculated Amplitude, phase angle and annual temperature average of each station with a non-linear least-square regression
-* I calculated the correlation of temperature at winter onset with temperature 1,2, or three weeks before winter onset. However, as the correlation was on average 0, this procedure was dropped.
+Further climate data calculations that were made but fell out of use:  
+* I calculated Amplitude, phase angle and annual temperature average of each station with a non-linear least-square regression  
+* I calculated the correlation of temperature at winter onset with temperature 1,2, or three weeks before winter onset. However, as the correlation was on average 0, this procedure was dropped.  
 * When calculating winter predictability as based on a linear regression over temperatures in the preceding month (see methods), I initially used pearsons R instead of the standard deviation in slopes that I use now 
+* I calculated the color of noise as is done in Yodzis (2004). The data was not used in later versions of the analysis, because the empirical data does not have temperature plasticity data. Correlating day length responses with temperature predictability is very weak and indirect evidence for bet-hedigng.
 
-Use of alternative thresholds
-* I used x=5째C and y = 10 days for an initial analysis. It resulted in a mean winter onset around 30 november, much earlier than the day lengths from the empirical studies (~13 hours, mid-july). 
-* I then tried to find the most suitable parameter combination, by finding out which mean timing best fits the data, and adjusting the parameters to get such a mean timing. The best fit was 94 days earlier than the 5째,10 day combination. The combination 15째,7 days yielded a winter onset that is still 1 month away from the best fit, but I left it at that gap
-* Finally, I settled for 5 days below 10째C (not 10 days below 5), because this is similar to the values of halkett et al (regression over monthly means crosses 12째C) and waldock (threshold value of 11째C).  It resulted in a global median winter onset around Oct 11. Neverhteless I also prepared datasets for a sensitivity analysis
+Use of alternative thresholds  
+* I used x=5캜 and y = 10 days for an initial analysis. It resulted in a mean winter onset around 30 november, much earlier than the day lengths from the empirical studies (~13 hours, mid-july). 
+* I then tried to find the most suitable parameter combination, by finding out which mean timing best fits the data, and adjusting the parameters to get such a mean timing. The best fit was 94 days earlier than the 5�,10 day combination. The combination 15�,7 days yielded a winter onset that is still 1 month away from the best fit, but I left it at that gap
+* Finally, I settled for 5 days below 10캜 (not 10 days below 5), because this is similar to the values of halkett et al (regression over monthly means crosses 12캜) and waldock (threshold value of 11캜).  It resulted in a global median winter onset around Oct 11. Neverhteless I also prepared datasets for a sensitivity analysis
 
 
 ## Literature searches  
@@ -34,11 +35,13 @@ All literature searches were accompanied by forward citation searches.
 * In the first analysis we focussed on variation in slopes. Eligibility criteria were thus first only 3 day lengths, then after analysis 4 day lengths, and then 4 day lengths with at least 2 points on the sloped part
 * We also excluded entirely flat reaction norms initially, as slope estimates make no sense for canalized genotypes
 * the handling of incomplete reaction norms varied, depending on analysis: either exclusion upfront, or when models did not converge
+* eligibility and inclusion criteria were more strict and standardized for the newest approach (as mentioned now in methods section) 
+
 
 ## Effect size calculation
 * initially we calculated effect sizes by dose response curve analysis. We used 4-parameter drcs, but with upper, lower or both upper and lower limit fixed at population mean, and chose appropriate models by AIC differences. Depending on eligibility criteria some (or many) populations were excluded after analysis. 
 * we applied various ways to standardize variance estimates: truncating very small standard errors to a minimum, using 1/s.e. instead of 1/s.e�, weighing by sample size (number of day length treatments)
-
+* the use of variance decomposition and MCMC as described in the manuscript were superior, so old uses were dropped.  
  
 ## Statistical analysis  
 
@@ -54,7 +57,7 @@ All literature searches were accompanied by forward citation searches.
 
 all kinds of DRC analysis were problematic because the slope models may not have a single likelihood maximum (slope may be anything from steep to infinity) which is why we switched to MCMC. This allowed also variance partitioning according to the new hypothesis laid out in manuscript
 * we initially included models on canalization ~ mean winter (as surrogate for amplitude in winter) but the lack of canalized reaction norms did not allow further exploration
-
+* we correlated the bet-hedging/plasticity balance (variance composition) with the colour of environmental noise (temperature autocorrelation), expecting that bet-hedging is not required when the organism can predict winter onset based on a high temperature autocorrelation. This approach was dropped as it is very circumstantial.  
 
 ## Searches that were conducted but not used  
 * search for diapause termination:  
