@@ -9,7 +9,7 @@ output:
 
 ```{r setup, include=FALSE}
 library(tidyverse)
-#library(maps)
+library(maps)
 library(geosphere)
 library(fcuk)
 library(metafor)
@@ -128,7 +128,6 @@ plotmap<-function(r,g,b){
   points(x = studies$degE, y= studies$degN, col =1, pch=4, cex = 0.5)
 }
 
-#svg("all.svg", width = 14*360/310, height = 7*2.4, pointsize=12)
 tiff("all_A.tif", width = 16, height = 6, units = "cm", pointsize=8, res = 150)
   par(fg = "darkgrey",mar=c(0,0,0,0)+0.1)
 
@@ -149,7 +148,7 @@ b<-200 - (x * 200)
 plotmap(r,g,b)
 rect(-163,0-1.38,153,75+1.38,col=NA,border = 1 ,xpd=T)
 text(-160,10,"A",pos=4,cex=4, col=1)
-
+dev.off()
 ###winter predictability by day length###
 tiff("all_B.tif", width = 16, height = 6, units = "cm", pointsize=8, res = 150)
   par(fg = "darkgrey",mar=c(0,0,0,0)+0.1)
@@ -168,25 +167,7 @@ plotmap(r,g,b)
 rect(-163,0-1.38,153,75+1.38,col=NA,border = 1 ,xpd=T)
 text(-160,10,"B",pos=4,cex=4, col=1)
 
-
-
-###predictability as colour of noise###
-x<-climate[!is.na(climate$beta),]
-nrow(x[x$beta>2,])/nrow(x)
-x$beta[x$beta>2]<-2 #capped to make plotting sensible
-x$beta[x$beta<(-2)]<-(-2) #capped to make plotting sensible
-x$beta<-x$beta-min(x$beta)
-x$beta<-x$beta/(max(x$beta)) #values between 0 and 1
-#large values (high standard deviation) should be red
-
-r<- x$beta * 162
-r <- r + 30
-g<-100 - (x$beta * 100)
-b<-200 - (x$beta * 200)
-plotmap(r,g,b)
-rect(-163,0-1.38,153,75+1.38,col=NA,border = 1 ,xpd=T)
-text(-160,10,"C",pos=4,cex=4, col=1)
-
+dev.off()
 
 ```
 
@@ -415,8 +396,8 @@ summary(mw_N)
 #Model Results:#
 
 #         estimate      se     zval    pval   ci.lb   ci.ub     
-#intrcpt  317.8246  8.4949   37.4137  <.0001  301.1750  334.4742  ***
-#degN      -1.8891  0.1462  -12.9230  <.0001   -2.1757   -1.6026  ***
+#intrcpt  318.2257  8.4909   37.4785  <.0001  301.5839  334.8675  ***
+#degN      -1.8995  0.1457  -13.0399  <.0001   -2.1850   -1.6140  ***
 
 
 plot(resid(mw_N))
@@ -427,11 +408,11 @@ metanull.ml<-rma.mv(yi = med_e ~ 1, V=vi, random = ~1|order/spec/popid,data = st
 
 
 #nakagawas R²
-(metanull$sigma2-mw_N$sigma2)/metanull$sigma2 # -0.138245857       -0.007524803         0.348698927
-(sum(metanull$sigma2)-sum(mw_N$sigma2))/sum(metanull$sigma2) #0.1103475
+(metanull$sigma2-mw_N$sigma2)/metanull$sigma2 #  -0.15030588 -0.00888036  0.35462072
+(sum(metanull$sigma2)-sum(mw_N$sigma2))/sum(metanull$sigma2) #0.1096057
 #significance testing
 anova(metaf.ml,metanull.ml) #LRT ratio =  136.9356, p<.0001
-AIC(metaf.ml)-AIC(metanull.ml)#    -134.9356
+AIC(metaf.ml)-AIC(metanull.ml)#  -136.6441
 
 n<-table(studies$order) #numbers differ!
 names(n)<- paste(names(n)," (", n, ")", sep = "")
@@ -453,8 +434,8 @@ legend("topright",legend=names(n), col=rep(1,8), pt.bg=unique(studies$col), pch=
  
 coffs <-  coef(mw_N)
 coffs
-#   intrcpt degN
-#317.824584  -1.889139 
+#   intrcpt       degN 
+#318.225698  -1.899532 
 lines(x= range(studies$degN),y = coffs[1]+coffs[2]*range(studies$degN),lwd=3,lty=1)
 
 segments(x0=studies$degN[r<30],y0 = studies$lower_e[r<30],y1=studies$upper_e[r<30],col="darkgrey") #credible intervals > 1 month are not shown
@@ -493,18 +474,18 @@ summary(mw)
 #Model Results:#
 
 #            estimate       se     zval    pval    ci.lb     ci.ub     
-#intrcpt      86.4068  12.3836   6.9775  <.0001  62.1354  110.6782  ***
-#meanwinter    0.5002   0.0354  14.1157  <.0001   0.4308    0.5697  ***
+#intrcpt      83.2647  12.1857   6.8330  <.0001  59.3813  107.1482  ***
+#meanwinter    0.5116   0.0347  14.7284  <.0001   0.4435    0.5796  ***
 
 plot(resid(mw))
 
 #nakagawas R²
-(mwnull$sigma2-mw$sigma2)/mwnull$sigma2  #-0.08537631  0.07625613   0.38816284
-(sum(mwnull$sigma2)-sum(mw$sigma2))/sum(mwnull$sigma2) # 0.1703643
+(mwnull$sigma2-mw$sigma2)/mwnull$sigma2  # -0.1370383  0.1484955  0.4085796
+(sum(mwnull$sigma2)-sum(mw$sigma2))/sum(mwnull$sigma2) # 0.1977801
 
 #significance testing
-anova(mw.ml,mwnull.ml) #LRT ratio =  158.9401, p<.0001
-AIC(mw.ml)-AIC(mwnull.ml)#     -156.9401
+anova(mw.ml,mwnull.ml) #LRT ratio = 169.9964, p<.0001
+AIC(mw.ml)-AIC(mwnull.ml)#     -167.9964
 
 ```
 
@@ -527,7 +508,7 @@ legend("topleft",legend=names(n), col=rep(1,8), pt.bg=unique(studies$col), pch=2
 coffs <-  coef(mw)
 coffs
 #   intrcpt meanwinter 
-#77.4392099  0.5201638 
+#83.2647137  0.5115616 
 lines(x= range(studies$meanwinter),y = coffs[1]+coffs[2]*range(studies$med_e),lwd=3,lty=1)
 
 segments(x0=studies$meanwinter[r<30],y0 = studies$lower_e[r<30],y1=studies$upper_e[r<30],col="darkgrey") #credible intervals > 1 month are not shown
@@ -598,18 +579,18 @@ _summary statistics_
 #estimate +se
 summary(mod)
 #Model Results:
-#intrcpt      1.6362  0.2747   5.9567  <.0001   1.0978   2.1746  ***
-#sd_winter   -0.1061  0.0178  -5.9753  <.0001  -0.1409  -0.0713  ***
-transf.ilogit(-0.1061)# 0.4734999
+#intrcpt      1.6791  0.2799   5.9991  <.0001   1.1305   2.2277  ***
+#sd_winter   -0.1103  0.0176  -6.2705  <.0001  -0.1448  -0.0758  ***
+transf.ilogit(-0.1103)#  0.4724529
 
 
 #nakagawas R²
-(modnull$sigma2-mod$sigma2)/modnull$sigma2   #-5.388152e+06  3.142705e-01  6.164752e-01
-(sum(modnull$sigma2)-sum(mod$sigma2))/sum(modnull$sigma2) #0.4932114
+(modnull$sigma2-mod$sigma2)/modnull$sigma2   # -7.481264e+06  3.141777e-01  8.415775e-02
+(sum(modnull$sigma2)-sum(mod$sigma2))/sum(modnull$sigma2)  #0.1126181
 
 #significance testing
-anova(mod.ml,modnull.ml) #LRT ratio =  30.9318, p<.0001
-AIC(mod.ml)-AIC(modnull.ml)# -28.9318
+anova(mod.ml,modnull.ml) #LRT ratio =  36.1787, p<.0001
+AIC(mod.ml)-AIC(modnull.ml)# -34.17869
 
 ```
 __plot__ 
@@ -639,74 +620,9 @@ dev.off()
 ```
 
 
-
-### 6. Variance composition vs. temperature predictability  
-```{r varcomp_sdt}
-
-varc_tp <- rma.mv(yti ~ beta, vti, random = ~ 1 | order/spec/popid, data=studies)
-
-plot(rstandard(varc_tp)$z, pch=19)
-plot(studies$beta, studies$yti, pch=19)
-x<-seq(5,25,length.out=1000) #will be used to plot prediction line
- y=coef(varc_tp)[1]+x*coef(varc_tp)[2] #inverse logit transform this to get prediction
-
- 
- #null models and ML models (weighted)
-modnull <- rma.mv(yti ~ 1, vti, random = ~ 1 | order/spec/popid, data=studies)
-modnull.ml <- rma.mv(yti ~ 1, vti, random = ~ 1 | order/spec/popid, data=studies, method="ML")
-varc_tp.ml<- rma.mv(yti ~ beta ,vti, random = ~ 1 | order/spec/popid, data=studies, method = "ML") 
-
-
-#summary statistics
-#estimate +se
-summary(varc_tp)
-#intrcpt    0.5690  0.1922   2.9599  0.0031   0.1922  0.9458  **
-#beta      -0.1127  0.3056  -0.3689  0.7122  -0.7116  0.4862    
-transf.ilogit(-0.1127)# 0.4718548
-
-
-#nakagawas R²
-(modnull$sigma2-varc_tp$sigma2)/modnull$sigma2  #   -0.0224784137 -0.0000118826 -0.0026317557
-(sum(modnull$sigma2)-sum(varc_tp$sigma2))/sum(modnull$sigma2) #-0.001381472
-
-#significance testing
-anova(varc_tp.ml,modnull.ml) #LRT ratio =  0.1372 , p  = 0.7111
-AIC(varc_tp.ml)-AIC(modnull.ml)#  1.862777
-x<-seq(min(studies$beta),max(studies$beta),length.out=1000)
- y=coef(mod)[1]+x*coef(varc_tp)[2] #inverse logit transform this to get prediction
-```
-__plot__  
-```{r plot_sdt}
-
-max.size<-(0.05/(2*1.96))^2; max.size <- 1/max.size 
-
-
-studies$r <- r
-svg("var_beta.svg",width=10,pointsize=12)
-par(mar = c(5,5,0,0)+0.1)
-
-plot(x=studies$beta, y=studies$med_r, pch=21, cex= 0.3+1.5*(1/vi)/max.size , col=1, bg=studies$col, main = "", xlab = "Temperature unpredictability", ylab = "Ratio of varaiance components",bty="n", cex.axis = 1.5, cex.lab=1.5,xlim=c(-1,1.5), ylim=c(0,1)) #cex again set so that max ptsize = 2
-#legend("bottomright",legend=names(n), col=rep(1,8), pt.bg=unique(studies$col), pch=21, bty="n", ncol=1,cex=1.5)
-lines(x= x,y=transf.ilogit(y),lwd=2)
-
-
-segments(x0=studies$beta[studies$r< 0.1],y0 = studies$lower_r[studies$r<.1],y1=studies$upper_r[studies$r<0.1],col="darkgrey") #credible intervals > 0.1 not shown 
-studies$cex <- 0.3+1.5*(1/vi)/max.size
-ord<-studies[order(studies$r,as.numeric(studies$order),decreasing = c(T,F), method = "radix"),] #to make sure smalles points are printed last, on top of the larger points. order is included so that dipterns do not completely dominate pic
-
-for (i in 1:nrow(ord)){
-  points(x=ord$beta[i] ,y=ord$med_r[i], pch=21, col=1, bg=ord$col[i], cex=ord$cex[i])
-}
-dev.off()
-```
-
-
 ### 7. conservative bet-hedging 
 ```{r}
-#3 models: 
 # mean winter residuals vs predictability by day length
-# mean winter residuals vs predictability by temperature
-# mean winter residuals vs variance composition residuals , test whether dbh and cbh trade off against each other
 
 r<-studies$upper_e-studies$lower_e
 r[r<7]<-7 #changes < 1 wk are irrelevant  
@@ -715,21 +631,19 @@ vi <- (r / (2*1.96))^2
 
 studies$res_mw<-rstandard(mw)$z
 cbh_dl <- rma.uni(res_mw~sd_winter, vi = vi, data= studies)
-cbh_t <- rma.uni(res_mw ~ beta, vi = vi , data=studies)
 
 studies$res_varc <- rstandard(mod)$z
-cbh_dbh<- rma.uni(res_mw ,vi, mod  = res_varc ,data=studies) 
 
 
 
 summary(cbh_dl)
 #           estimate      se     zval    pval    ci.lb   ci.ub   
-#intrcpt      0.3169  0.3223   0.9833  0.3255  -0.3147  0.9485   
-#sd_winter   -0.0117  0.0293  -0.3998  0.6893  -0.0692  0.0457    
+#intrcpt      0.0942  0.3204  0.2939  0.7689  -0.5338  0.7222   
+#sd_winter    0.0144  0.0298  0.4825  0.6294  -0.0441  0.0728  
 
 #R² = 0
-anova(cbh_dl)# 0.1598, p =  0.6893
-#AIC diff:  -1.65269
+anova(cbh_dl)# 0.2328, p =  0.6294
+#AIC diff:  -1.723492
 
 
 svg("cbh_dl.svg", width = 10, pointsize=12)
@@ -737,31 +651,6 @@ par(mar = c(5,5,0,0)+0.1)
 plot(studies$res_mw ~ studies$sd_winter, pch=21, cex= 0.3+1.5*(1/vi)/(max(1/vi)) , col=1, bg=studies$col, main = "", ylab = "Residulas diapause timing", xlab = "Winter Unpredictability (day length)",bty="n", cex.axis = 1.5, cex.lab=1.5,xlim=c(0,26), ylim=c(-3,4)) #cex again set so that max ptsize = 2
 #legend("bottomright",legend=names(n), col=rep(1,8), pt.bg=unique(studies$col), pch=21, bty="n", ncol=1,cex=1.5)
 abline(coef(cbh_dl),lwd=2)
-dev.off()
-
-
-summary(cbh_t)
-#         estimate      se    zval    pval    ci.lb   ci.ub   
-#intrcpt    0.2211  0.2294   0.9638  0.3351  -0.2286  0.6708   
-#beta      -0.0709  0.5755  -0.1231  0.9020  -1.1989  1.0572   
-
-anova(cbh_t)
-# 0.0152, p = 0.9020
-
-svg("cbh_t.svg",width=10,pointsize=12)
-par(mar = c(5,5,0,0)+0.1)
-plot(studies$res_mw ~ studies$beta, pch=21, cex= 0.3+1.5*(1/vi)/(max(1/vi)) , col=1, bg=studies$col, main = "", ylab = "Residulas diapause timing", xlab = "Winter unpredictability (temperature)",bty="n", cex.axis = 1.5, cex.lab=1.5,xlim=c(-1,1.5), ylim=c(-3,4)) #cex again set so that max ptsize = 2
-#legend("bottomright",legend=names(n), col=rep(1,8), pt.bg=unique(studies$col), pch=21, bty="n", ncol=1,cex=1.5)
-abline(cbh_t,lwd=2)
-dev.off()
-
-svg("cbh_dbh.svg",width=10,pointsize=12)
-par(mar = c(5,5,0,0)+0.1)
-plot(studies$res_mw ~ studies$res_varc, pch=21, cex= 0.3+1.5*(1/vi)/(max(1/vi)) , col=1, bg=studies$col, main = "", ylab = "Residulas diapause timing", xlab = "Residuals variance composition",bty="n", cex.axis = 1.5, cex.lab=1.5,xlim=c(-3,3.5), ylim=c(-3,3)) #cex again set so that max ptsize = 2
-#legend("bottomright",legend=names(n), col=rep(1,8), pt.bg=unique(studies$col), pch=21, bty="n", ncol=1,cex=1.5)
-x<-seq(min(studies$res_varc),max(studies$res_varc), length.out=1000)
-y<-coef(cbh_dbh)[1]+coef(cbh_dbh)[2]*x
-lines(y~x,lwd=2)
 dev.off()
 ```
 
@@ -848,7 +737,7 @@ vi<- (r / (2*1.96))^2
 studies$yti <- transf.logit(studies$med_r)
 studies$vti <- vi / (studies$med_r * (1 - studies$med_r))^2
 mod <- rma.mv(yti ~ sd_winter, vti, random = ~ 1 | order.x/spec/popid, data=studies)
-modnull<-rma.mv(yti  ~ 1, vi, random = ~(1|order.x/spec/popid), data = studies)
+modnull<-rma.mv(yti  ~ 1, vti, random = ~(1|order.x/spec/popid), data = studies)
 rsq2[t]<-(sum(modnull$sigma2)-sum(mod$sigma2))/sum(modnull$sigma2)
 }
 write.table( rsq, "rsq.txt",row.names=F)
