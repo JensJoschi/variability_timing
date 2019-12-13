@@ -31,11 +31,11 @@ This script does an MCMC to get estimates fo slopes, midpoints and upper and low
 This chunk loads the extracted raw data from the 57 studies. It requires a .csv copy of the file "lit_search/search_2018_11.xlsx". First we calculate the number of populations, sample sizes etc. Then the diapause percentages (y-axis of the reaction norm) are rounded and converted in number of successes vs number of trials. Lastly, the x-axis of the reaction norm is transformed into day of year.
 ```{r load_data}
 data<-read.table("lit_extract/variance_comp.csv", header=T,sep=";") #pullin has been coded wrongly (1.0 instead of 100 percent); changed directly in csv script
-length(unique(data$ID)) #57 studies that can be used for slope calculation
-length(unique(data$spec)) #45 species
-length(unique(data$genus)) #32 genera
+length(unique(data$ID)) #60 studies that can be used for slope calculation
+length(unique(data$spec)) #48 species
+length(unique(data$genus)) #36 genera
 data<-unite(data,"popid",c("ID","pop","genus","spec"),sep=".",remove=F)
-(number <- length(unique(data$popid))) #447 reaction norms
+(number <- length(unique(data$popid))) #458 reaction norms
 
 
 #summary of #pops per region and level of detail for sample sizes
@@ -52,18 +52,18 @@ for ( i in 1:nrow(t)){
 table(t$reg) #unfortunately, the information was converted to values
 levels(data$region)
 #Asia 16
-#Europe (including caucasus): 117
-#Japan 256
-#US 58
-#japan has 57.3% of the populations, 47.8 % of the data
+#Europe (including caucasus): 121
+#Japan 260
+#US 61
+#japan has 56.8% of the populations, 47.8 % of the data
 
 
 table(t$nMethod)
 levels(data$nmethod)
 
-#accurate: 97
-#global average:291
-#pop level: 26
+#accurate: 100
+#global average:295
+#pop level: 30
 #NA 33
 
 

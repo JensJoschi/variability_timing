@@ -1,25 +1,25 @@
 # Content  
 
-Analysis of biological data requires multiple choices (which models to use, what significance tests to perform, which data to include....) and this is particlarly true for meta-analyses (e.g. search terms, inclusion criteria...). In this document I attempt to summarize all alternative pathways I followed in the course of this analysis. Approaches that are still in use are not included in this document, unless indicated otherwise. More thorough descriptions of the alternative approaches can be found by following the github timeline.
+Analysis of biological data requires multiple choices (which models to use, what significance tests to perform, which data to include....) and this is particlarly true for meta-analyses (e.g. search terms, inclusion criteria...). In this document we attempt to summarize all alternative pathways we followed in the course of this analysis. Approaches that are still in use are not included in this document, unless indicated otherwise. More thorough descriptions of the alternative approaches can be found by following the github timeline.
 
 ## Climate data  
 
 Three attempts to calculate winter variability were made:
 
-* I followed the definition of (Halkett et al., 2004) and defined winter onset as the point where a regression line from august to December crosses 12°C. Winter variability was then defined as standard deviation in winter onset. I used daily mean temperatures of the GHCN-d dataset (NOAA). This approach was discontinued early on, because it causes infinite standard deviations towards the equator.  
-* I defined winter onset as the xth day on which temperates fell below y °C, and used the standard deviation of julian date. Again I used daily mean temperatures. This approach was discontinued because there are not many stations with enough daily mean temperatures recorded.  
-* Instead of using daily mean temperatures, I used the mean of daily max and daily min temperatures, applying the same approach as before. This is the approach I stuck with.  
+* we followed the definition of (Halkett et al., 2004) and defined winter onset as the point where a regression line from august to December crosses 12°C. Winter variability was then defined as standard deviation in winter onset. we used daily mean temperatures of the GHCN-d dataset (NOAA). This approach was discontinued early on, because it causes infinite standard deviations towards the equator.  
+* we defined winter onset as the xth day on which temperates fell below y °C, and used the standard deviation of julian date. Again we used daily mean temperatures. This approach was discontinued because there are not many stations with enough daily mean temperatures recorded.  
+* Instead of using daily mean temperatures, we used the mean of daily max and daily min temperatures, applying the same approach as before. This is the approach we stuck with.  
 
 Further climate data calculations that were made but fell out of use:  
-* I calculated Amplitude, phase angle and annual temperature average of each station with a non-linear least-square regression  
-* I calculated the correlation of temperature at winter onset with temperature 1,2, or three weeks before winter onset. However, as the correlation was on average 0, this procedure was dropped.  
-* When calculating winter predictability as based on a linear regression over temperatures in the preceding month (see methods), I initially used pearsons R instead of the standard deviation in slopes that I use now 
-* I calculated the color of noise as is done in Yodzis (2004). The data was not used in later versions of the analysis, because the empirical data does not have temperature plasticity data. Correlating day length responses with temperature predictability is very weak and indirect evidence for bet-hedigng.
+* we calculated Amplitude, phase angle and annual temperature average of each station with a non-linear least-square regression  
+* we calculated the correlation of temperature at winter onset with temperature 1,2, or three weeks before winter onset. However, as the correlation was on average 0, this procedure was dropped.  
+* When calculating winter predictability as based on a linear regression over temperatures in the preceding month (see methods), we initially used pearsons R instead of the standard deviation in slopes that we use now 
+* we calculated the color of noise as is done in Yodzis (2004). The data was not used in later versions of the analysis, because the empirical data does not have temperature plasticity data. Correlating day length responses with temperature predictability is very weak and indirect evidence for bet-hedigng.
 
 Use of alternative thresholds  
-* I used x=5°C and y = 10 days for an initial analysis. It resulted in a mean winter onset around 30 november, much earlier than the day lengths from the empirical studies (~13 hours, mid-july). 
-* I then tried to find the most suitable parameter combination, by finding out which mean timing best fits the data, and adjusting the parameters to get such a mean timing. The best fit was 94 days earlier than the 5°,10 day combination. The combination 15°,7 days yielded a winter onset that is still 1 month away from the best fit, but I left it at that gap
-* Finally, I settled for 5 days below 10°C (not 10 days below 5), because this is similar to the values of halkett et al (regression over monthly means crosses 12°C) and waldock (threshold value of 11°C).  It resulted in a global median winter onset around Oct 11. Neverhteless I also prepared datasets for a sensitivity analysis
+* we used x=5°C and y = 10 days for an initial analysis. It resulted in a mean winter onset around 30 november, much earlier than the day lengths from the empirical studies (~13 hours, mid-july). 
+* we then tried to find the most suitable parameter combination, by finding out which mean timing best fits the data, and adjusting the parameters to get such a mean timing. The best fit was 94 days earlier than the 5°,10 day combination. The combination 15°,7 days yielded a winter onset that is still 1 month away from the best fit, but we left it at that gap
+* Finally, we settled for 5 days below 10°C (not 10 days below 5), because this is similar to the values of halkett et al (regression over monthly means crosses 12°C) and waldock (threshold value of 11°C).  It resulted in a global median winter onset around Oct 11. Neverhteless we also prepared datasets for a sensitivity analysis
 
 
 ## Literature searches  
@@ -28,7 +28,8 @@ Use of alternative thresholds
 *  15.6.2018 WOS search for 
 "TS = (("day length" OR photoperiod\* OR diapaus\* OR hibern\* OR dorman\* ) AND (geogr\* OR "range" OR latitud\* OR longitud\* OR cline$ OR clinal)) OR TI = (("day length" OR photoperiod\* OR diapaus\* OR hibern\* OR dorman\*) AND "populations")" and subsequent filtering by keywords
 * 07.09.2018: searched in new google dataset beta search "photoperiodic response insect" - 9 results, not relevant or duplicates 
-* 26.11.2018 and 28.11.2018 new search as described in methods (subsequent filtering is different from earlier approaches)
+* 26.11.2018 and 28.11.2018 new search as described in methods (subsequent filtering is different from earlier approaches), but only on WOS core collection.
+* 12.12.2019 update of the search, as described in the methods section 
 All literature searches were accompanied by forward citation searches.
 
 ## Eligibility and inclusion criteria
