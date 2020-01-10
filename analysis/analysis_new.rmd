@@ -11,7 +11,6 @@ output:
 library(tidyverse)
 library(maps)
 library(geosphere)
-library(fcuk)
 library(metafor)
 library(viridis)
 ```
@@ -47,14 +46,14 @@ The data with the mcmc results needs to be loaded. This has for each of the 458 
 ```{r load_studies}
 studies <- read.table("lit_extract/mcmcresults.txt")
 studies<-studies[order(studies$order),]
-studies$col<-as.numeric(studies$order) #numbers from 1:9
-studies$col<-viridis(9)[studies$col]
+studies$col<-as.numeric(studies$order) #numbers from 1:8
+studies$col<-viridis(8)[studies$col]
 
 #data structure: 458 rows, 33 variables
 
 #names of cols:
 #popid: unique identifier of the reaction norm (458 levels)
-#order.x: insect or mite order (9 levels)
+#order.x: insect or mite order (8 levels)
 #ID: first author of study from which reaction norm comes. 60 levels, because each study has multiple reaction norms
 #PY: publication year of study
 #pops_left_drc: number of populations within each study. Not necessarily equal to number of reaction norms, e.g. lehmann has 6 reaction norms from 5 populations (in total there are 458 reaction norms for 413 populations)
@@ -268,24 +267,24 @@ summary(metaf)
 #Model Results:#
 
 #         estimate      se     zval    pval   ci.lb   ci.ub     
-#intrcpt    6.9807  0.3709  18.8231  <.0001  6.2538  7.7076  ***
-#degN       0.1619  0.0063  25.6976  <.0001  0.1495  0.1742  ***
-#48.57 min per 5 deg N
+#intrcpt    6.9876  0.3859  18.1079  <.0001  6.2313  7.7439  ***
+#degN       0.1618  0.0063  25.6669  <.0001  0.1494  0.1741  ***
+# 48.54 min per 5 deg N
 
-#metaf2: 48.51
+#metaf2: 48.48
 #metaf3: 48.57
-#year: 48.6
+#year: 48.54
 
 plot(resid(metaf))
 
 #nakagawas R²
-(metanull$sigma2-metaf$sigma2)/metanull$sigma2 #-11.2652101   0.6918200   0.6192251
+(metanull$sigma2-metaf$sigma2)/metanull$sigma2 #-20.1423040    0.6946232   0.6184270
 
-(sum(metanull$sigma2)-sum(metaf$sigma2))/sum(metanull$sigma2) #0.58165
+(sum(metanull$sigma2)-sum(metaf$sigma2))/sum(metanull$sigma2) # 0.5726174
 
 #significance testing
-anova(metaf.ml,metanull.ml) #LRT ratio = 400.3325, p<.0001
-AIC(metaf.ml)-AIC(metanull.ml)#     -398.3325
+anova(metaf.ml,metanull.ml) #LRT ratio = 399.1726, p<.0001
+AIC(metaf.ml)-AIC(metanull.ml)#     -397.1726
 
 #funnel plot
 png("residuals_cdl_degN.png")
@@ -312,7 +311,7 @@ legend("topleft",legend=names(n), col=rep(1,8), pt.bg=unique(studies$col), pch=2
 coffs <-  coef(metaf)
 coffs
 #  intrcpt      degN 
-#6.9807183 0.1618943  
+#6.9875724 0.1617683 
 
 lines(x= range(studies$degN),y = coffs[1]+coffs[2]*range(studies$degN),lwd=3,lty=1)
 
@@ -445,12 +444,12 @@ summary(mw_N)
 #Model Results:#
 
 #         estimate      se     zval    pval   ci.lb   ci.ub     
-#intrcpt  317.2594  8.3331   38.0722  <.0001  300.9268  333.5919  ***
-#degN      -1.8755  0.1426  -13.1548  <.0001   -2.1549   -1.5960  ***
+#intrcpt  316.9942  8.6379   36.6980  <.0001  300.0642  333.9242  ***
+#degN      -1.8763  0.1426  -13.1575  <.0001   -2.1558   -1.5968  ***
 
-#mwN2: 315.4311  8.3472;  -1.8135  0.1458
-#mwN3: 316.9558  8.3864;-1.8652  0.1441
-#mw_N_year: 316.9558  8.3864;   -1.8652  0.1441 
+#mwN2: 314.9805  8.6047;   -1.8115  0.1456
+#mwN3: 316.7157  8.6865; -1.8671  0.1440 
+#mw_N_year: 317.0758  8.6817;   -1.8756  0.1438
 plot(resid(mw_N))
 
 metanull<-rma.mv(yi = med_e ~ 1, V=vi, random = ~(1|order/spec/popid), data = studies)
@@ -459,11 +458,11 @@ metanull.ml<-rma.mv(yi = med_e ~ 1, V=vi, random = ~1|order/spec/popid,data = st
 
 
 #nakagawas R²
-(metanull$sigma2-mw_N$sigma2)/metanull$sigma2 #   -0.04609830  0.05612879  0.35045230
-(sum(metanull$sigma2)-sum(mw_N$sigma2))/sum(metanull$sigma2) #0.1501087
+(metanull$sigma2-mw_N$sigma2)/metanull$sigma2 #   -0.08697811  0.05505461  0.35055292
+(sum(metanull$sigma2)-sum(mw_N$sigma2))/sum(metanull$sigma2) #0.1384581
 #significance testing
-anova(metaf.ml,metanull.ml) #LRT ratio =  141.8189, p<.0001
-AIC(metaf.ml)-AIC(metanull.ml)#   -139.8189
+anova(metaf.ml,metanull.ml) #LRT ratio =  141.7762, p<.0001
+AIC(metaf.ml)-AIC(metanull.ml)#  -139.7762
 
 
 n<-table(studies$order) #numbers differ!
@@ -496,7 +495,7 @@ legend("topright",legend=names(n), col=rep(1,8), pt.bg=unique(studies$col), pch=
 coffs <-  coef(mw_N)
 coffs
 #   intrcpt       degN 
-#317.259389  -1.875468 
+#316.994201  -1.876339 
 lines(x= range(studies$degN),y = coffs[1]+coffs[2]*range(studies$degN),lwd=3,lty=1)
 
 segments(x0=studies$degN[r<30],y0 = studies$lower_e[r<30],y1=studies$upper_e[r<30],col="darkgrey") #credible intervals > 1 month are not shown
@@ -537,22 +536,22 @@ summary(mw)
 #Model Results:#
 
 #            estimate       se     zval    pval    ci.lb     ci.ub     
-#intrcpt       84.4230  11.9306   7.0762  <.0001  61.0394  107.8066  ***
-#meanwinter     0.5081   0.0339  14.9963  <.0001   0.4417    0.5745  ***
+#intrcpt      83.9671  12.0830   6.9492  <.0001  60.2850  107.6493  ***
+#meanwinter    0.5079   0.0339  14.9977  <.0001   0.4415    0.5743  ***
 
-#mw2: 87.0599  12.1009 ; 0.5020   0.0347 
-#mw3: 85.3778  11.9987; 0.5056   0.0340
-#year: 84.7304  11.9964  ;0.5075   0.0340
+#mw2: 86.7158  12.2406 ;  0.5018   0.0347
+#mw3:  84.8622  12.1509; 0.5057   0.0340
+#year:  84.3096  12.1586 ; 0.5078   0.0340
 
 plot(resid(mw))
 
 #nakagawas R²
-(mwnull$sigma2-mw$sigma2)/mwnull$sigma2  #-0.06021944  0.18414530  0.41126139
-(sum(mwnull$sigma2)-sum(mw$sigma2))/sum(mwnull$sigma2) #  0.2223478
+(mwnull$sigma2-mw$sigma2)/mwnull$sigma2  #-0.08690513  0.18344098  0.41092969
+(sum(mwnull$sigma2)-sum(mw$sigma2))/sum(mwnull$sigma2) #   0.2131471
 
 #significance testing
-anova(mw.ml,mwnull.ml) #LRT ratio =  175.6366, p<.0001
-AIC(mw.ml)-AIC(mwnull.ml)#    -173.6366
+anova(mw.ml,mwnull.ml) #LRT ratio =  175.6902, p<.0001
+AIC(mw.ml)-AIC(mwnull.ml)#    -173.6902
 
 
 #funnel plot
@@ -583,7 +582,7 @@ legend("topleft",legend=names(n), col=rep(1,8), pt.bg=unique(studies$col), pch=2
 coffs <-  coef(mw)
 coffs
 #   intrcpt meanwinter 
-#84.4230181  0.5080629 
+#83.9671261  0.5079211 
 lines(x= range(studies$meanwinter),y = coffs[1]+coffs[2]*range(studies$med_e),lwd=3,lty=1)
 
 segments(x0=studies$meanwinter[r<30],y0 = studies$lower_e[r<30],y1=studies$upper_e[r<30],col="darkgrey") #credible intervals > 1 month are not shown
@@ -656,20 +655,21 @@ _summary statistics_
 #estimate +se
 summary(mod)
 #Model Results:
-#intrcpt      1.7774  0.2805   6.3361  <.0001   1.2276   2.3271  ***
-#sd_winter   -0.1197  0.0179  -6.7073  <.0001  -0.1547  -0.0847  ***
-transf.ilogit(-0.1197)# 0.4701107
+#intrcpt      1.7696  0.2817   6.2823  <.0001   1.2175   2.3217  ***
+#sd_winter   -0.1202  0.0179  -6.7156  <.0001  -0.1553  -0.0851  ***
 
-#mod2: 0.4693385
-#mod3: 0.4688902
-#year: 0.4699114
+transf.ilogit(-0.1202)#  0.4699861
+
+#mod2: 0.4693634
+#mod3: 0.4689151
+#year: 0.4703598
 #nakagawas R²
-(modnull$sigma2-mod$sigma2)/modnull$sigma2   #  -4.091876e+06  3.268443e-01  9.549636e-02
-(sum(modnull$sigma2)-sum(mod$sigma2))/sum(modnull$sigma2)  #0.1232669
+(modnull$sigma2-mod$sigma2)/modnull$sigma2   # -4.355522e+06  3.160831e-01  9.638133e-02
+(sum(modnull$sigma2)-sum(mod$sigma2))/sum(modnull$sigma2)  # 0.1266816
 
 #significance testing
-anova(mod.ml,modnull.ml) #LRT ratio =  41.1793, p<.0001
-AIC(mod.ml)-AIC(modnull.ml)#  -39.17931
+anova(mod.ml,modnull.ml) #LRT ratio =  41.3545, p<.0001
+AIC(mod.ml)-AIC(modnull.ml)#  -39.35448
 
 
 #funnel plot
@@ -744,12 +744,12 @@ cbh_dl <- rma.uni(res_mw~sd_winter, vi = vi, data= studies)
 
 summary(cbh_dl)
 #           estimate      se     zval    pval    ci.lb   ci.ub   
-#intrcpt      0.0059  0.3264  0.0182  0.9855  -0.6337  0.6456   
-#sd_winter    0.0211  0.0310  0.6806  0.4961  -0.0396  0.0818   
+#intrcpt      0.0254  0.3264  0.0779  0.9379  -0.6142  0.6651   
+#sd_winter    0.0209  0.0310  0.6735  0.5006  -0.0398  0.0815 
 
 #R² = 0
-anova(cbh_dl)#  0.4633 p =   p-val = 0.4961
-#AIC diff:  -1.987
+anova(cbh_dl)#  0.4536p =   p-val = 0.5006
+#AIC diff:  -1.977
 
 
 svg("cbh_dl.svg", width = 10, pointsize=12)

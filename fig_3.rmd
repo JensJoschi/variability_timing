@@ -18,8 +18,8 @@ library(viridis)
 ```{r load}
 studies <- read.table("lit_extract/mcmcresults.txt")
 studies<-studies[order(studies$order),]
-studies$col<-as.numeric(studies$order) #numbers from 1:9
-studies$col<-viridis(9)[studies$col]
+studies$col<-as.numeric(studies$order) #numbers from 1:8
+studies$col<-viridis(8)[studies$col]
 names(studies)[5]<-"order"
 
 url<-"ghcnd-stations.txt"
