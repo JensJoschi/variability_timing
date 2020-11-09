@@ -88,6 +88,7 @@ for ( i in 1:nrow(studies)){
     sub$diffE<-sub$lon-studies[i,"degE"] #same for longitude
     sub$diff<-sqrt(sub$diffN^2+sub$diffE^2) #euclidian distance
     sub<-arrange(sub,diff)[1:5,] #sort and take 5 lowest values = 5 closest stations
+    sub = na.omit(sub)
   studies$meanwinter[i]<-weighted.mean(sub$meanwinter,1/sub$diff)
   studies$sd_winter[i]<-weighted.mean(sub$sd_winter,1/sub$diff)
   studies$p[i]<-weighted.mean(sub$p,1/sub$diff)
@@ -96,7 +97,7 @@ for ( i in 1:nrow(studies)){
   studies$sd_sd[i]<-sd(sub$sd_winter) #quality control. the predictability of nearby stations should be similar to each other
   studies$n_s <- nrow(sub) #a location may not have 5 stations around
 }
-studies<-studies[!(is.na(studies$meanwinter)|is.na(studies$med_e)),]#425 left
+studies<-studies[!(is.na(studies$meanwinter)|is.na(studies$med_e)),]
 studies$meanwinter<-studies$meanwinter + 180
 
 #####PANEL B#####
